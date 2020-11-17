@@ -39,31 +39,25 @@ async function initPlugin(args, message) {
     }
 
     // Initialize the requested plugin
+    let plugin
     try {
         const Plugin = require(path.join(PLUGINS_DIR, pluginName))
 
-        const plugin = new Plugin()
-        
-        await plugin.init(args.slice(2), message)
+        plugin = await Plugin.fromMessage(message, args.slice(2))
+
+        if (!plugin) {
+            throw new Error("Illegal invocation")
+        }
+
+        plugin.init()
     } catch (error) {
-        console.error(error)
         return await message.channel.send("Plugin konnte nicht geladen werden")
     }
 
+    // Store the plugin's configuration
+    await StorageFacade.setItem("plugins." + pluginName, plugin.getConfig())
+
     await message.channel.send(`Plugin '${pluginName}' wurde erfolgreich geladen`)
-    
-    // Add plugin to the list of initialized plugins
-    let initializedPlugins = await StorageFacade.getItem("plugins")
-    
-    if (!initializedPlugins) {
-        initializedPlugins = []
-    }
-
-    if (!initializedPlugins.includes(pluginName)) {
-        initializedPlugins.push(pluginName)
-    }
-
-    await StorageFacade.setItem("plugins", initializedPlugins)
 } 
 
 module.exports = new Command(run)

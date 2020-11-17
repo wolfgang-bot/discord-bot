@@ -1,8 +1,12 @@
 const attachEvents = require("../events")
+const restorePlugins = require("../Plugins")
 
 function boot(client) {
     return new Promise(async resolve => {
-        client.once("ready", resolve)
+        client.once("ready", async () => {
+            await restorePlugins(client)
+            resolve()
+        })
 
         attachEvents(client)
 
