@@ -1,6 +1,7 @@
 const Plugin = require("../../lib/Plugin.js")
 const Configuration = require("./Configuration.js")
 const ChannelManager = require("./ChannelManager.js")
+const HelpEmbed = require("./HelpEmbed.js")
 
 class QuestionChannelsPlugin extends Plugin {
     client = null
@@ -37,7 +38,12 @@ class QuestionChannelsPlugin extends Plugin {
         this.channelManager = new ChannelManager(this.client, this.config.channel)
     }
 
-    init() {
+    async init() {
+        // Send help embed into channel if there isn't any
+        if ((await this.config.channel.messages.fetch()).size === 0) {
+            await this.config.channel.send(new HelpEmbed())
+        }
+
         this.channelManager.init()
     }
 

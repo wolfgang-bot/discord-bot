@@ -49,7 +49,7 @@ async function initPlugin(args, message) {
             throw new Error("Illegal invocation")
         }
 
-        plugin.init()
+        await plugin.init()
     } catch (error) {
         return await message.channel.send("Plugin konnte nicht geladen werden")
     }

@@ -12,7 +12,7 @@ async function restore(client) {
         if (config) {
             const Plugin = require(path.join(__dirname, file))
             const plugin = await Plugin.fromConfig(client, config)
-            plugin.init()
+            await plugin.init()
         }
     }))
 }
