@@ -1,5 +1,6 @@
 const Plugin = require("../../lib/Plugin.js")
 const Configuration = require("./Configuration.js")
+const ChannelManager = require("./ChannelManager.js")
 
 class QuestionChannelsPlugin extends Plugin {
     client = null
@@ -33,16 +34,11 @@ class QuestionChannelsPlugin extends Plugin {
 
         this.client = client
         this.config = config
+        this.channelManager = new ChannelManager(this.client, this.config.channel)
     }
 
     init() {
-        this.client.on("message", this.handleMessage.bind(this))
-    }
-
-    async handleMessage(message) {
-        if (message.channel.id === this.config.channel.id && message.author.id !== this.client.user.id) {
-            await message.channel.send(message.content)
-        }
+        this.channelManager.init()
     }
 
     getConfig() {

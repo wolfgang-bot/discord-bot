@@ -1,11 +1,11 @@
 const Discord = require("discord.js")
-const { COLORS } = require("../../config/constants.js")
+const config = require("../../config")
 
 class BaseEmbed extends Discord.MessageEmbed {
     constructor() {
         super()
 
-        this.setColor(COLORS["PRIMARY"])
+        this.setColor(config.colors.primary)
     }
 }
 
