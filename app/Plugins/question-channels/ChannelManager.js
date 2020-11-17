@@ -35,6 +35,9 @@ class ChannelManager {
         const question = await newChannel.send(new QuestionEmbed(message))
         await question.pin()
 
+        // Add deletion emoji to question
+        await question.react(settings.questionChannelDeleteReactionName)
+
         // Delete channel when user reacts to question
         const reactionFilter = (reaction, user) => user.id === message.author.id && reaction.emoji.name === settings.questionChannelDeleteReactionName
         await question.awaitReactions(reactionFilter, { max: 1 })
