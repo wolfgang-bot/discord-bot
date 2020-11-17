@@ -1,8 +1,8 @@
-const fs = require("fs")
+const glob = require("glob")
 const path = require("path")
 
-async function attachEvents(client) {
-    const files = (await fs.promises.readdir(__dirname)).filter(filename => filename !== "index.js")
+function attachEvents(client) {
+    const files = glob.sync("!(index).js", { cwd: __dirname })
 
     // Attach events from this folder
     files.forEach(filename => {

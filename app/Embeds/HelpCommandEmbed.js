@@ -7,7 +7,6 @@ class HelpCommandEmbed extends BaseEmbed {
 
         this.setTitle("Hilfe: " + command.name)
             .setDescription(command.description)
-            .setTimestamp(false)
 
         this.addField("Benutzung", makeCodeblock(process.env.DISCORD_BOT_PREFIX + command.usage))
 

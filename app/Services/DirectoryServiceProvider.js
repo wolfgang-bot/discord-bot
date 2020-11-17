@@ -16,7 +16,7 @@ class DirectoryServiceProvider {
     }
 
     /**
-     * Get all commands from the "./Commands" directory
+     * Get all commands from the "app/Commands" directory
      */
     static async getCommands() {
         const dir = await fs.promises.readdir(COMMANDS_DIR)
