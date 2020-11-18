@@ -17,16 +17,31 @@ class VoiceChannelManager {
         const name = settings.voiceChannelName.replace(/{}/g, index + 1)
         const channel = await this.parentChannel.guild.channels.create(name, {
             type: "voice",
-            parent: this.parentChannel
+            parent: this.parentChannel,
+            position: index
         })
         this.channels[index] = channel
     }
 
     async updateVoiceChannels() {
-        // Create a new voice channel if there is at least one user in every channel
-        const shouldCreateChannel = this.channels.every(channel => channel.members.size > 0)
+        // Delete all but one useless voicechannels
+        let shouldDeleteChannels = false
+        await Promise.all(this.channels.map((channel, index) => {
+            if (channel.members.size === 0) {
+                if (!shouldDeleteChannels) {
+                    shouldDeleteChannels = true
+                    return
+                }
 
-        if (!shouldCreateChannel) {
+                if (index >= settings.amountDefaultVoiceChannels) {
+                    this.channels.splice(index, 1)
+                    return channel.delete()
+                }
+            }
+        }))
+
+        // Create a new voice channel if there is at least one user in every channel,
+        if (this.channels.every(channel => channel.members.size > 0)) {
             this.createVoiceChannel(this.channels.length)
         }
     }
