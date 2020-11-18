@@ -16,14 +16,14 @@ class QuestionChannelsPlugin extends Plugin {
     static async fromMessage(message, args) {
         if (!args[0]) {
             await message.channel.send("Kein Textkanal angegeben")
-            return null
+            return
         }
 
         const channel = message.guild.channels.cache.get(args[0])
 
         if (!channel) {
             await message.channel.send("Der Textkanal existiert nicht")
-            return null
+            return
         }
 
         const config = new Configuration({ channel })

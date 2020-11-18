@@ -47,7 +47,11 @@ async function startPlugin(args, message) {
     let plugin
     try {
         plugin = await PluginServiceProvider.startPluginFromMessage(pluginName, message, args.slice(2))
-    } catch {
+    } catch(error) {
+        if (process.env.NODE_ENV === "development") {
+            console.error(error)
+        }
+        
         return await message.channel.send("Plugin konnte nicht gestartet werden")
     }
 
