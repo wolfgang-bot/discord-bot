@@ -1,16 +1,16 @@
 /**
- * The interface for the main class of a plugin
+ * The interface for the main class of a module
  * 
  * @interface
  */
-class Plugin {
+class Module {
     /**
      * Creates a new instance of the class from a configuration object.
      * 
      * @param {Discord.Client} client 
      * @param {Object} config 
      * 
-     * @returns {Plugin}
+     * @returns {Module}
      */
     static async fromConfig(client, config) {}
 
@@ -20,29 +20,29 @@ class Plugin {
      * @param {Discord.Message} message
      * @param {String[]} args
      *
-     * @returns {Plugin}
+     * @returns {Module}
      */
     static async fromMessage(message, args) {}
 
     /**
-     * Starts the plugin.
-     * Code which needs to be run whenever the plugin is loaded should go here.
+     * Starts the module.
+     * Code which needs to be run whenever the module is loaded should go here.
      */
     async start() {}
 
     /**
-     * Stops the plugin.
-     * Code which reverts the actions done in plugin.start should go here.
+     * Stops the module.
+     * Code which reverts the actions done in module.start should go here.
      */
     async stop() {}
 
     /**
-     * Get the configuration object of the plugin from which the plugin can be
-     * restored via the Plugin.fromConfig method.
+     * Get the configuration object of the module from which the module can be
+     * restored via the Module.fromConfig method.
      * 
      * @returns {Object} 
      */
     getConfig() {}
 }
 
-module.exports = Plugin
+module.exports = Module

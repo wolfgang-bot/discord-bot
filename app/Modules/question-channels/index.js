@@ -1,16 +1,16 @@
-const Plugin = require("../../lib/Plugin.js")
+const Module = require("../../lib/Module.js")
 const Configuration = require("./Configuration.js")
 const ChannelManager = require("./ChannelManager.js")
 const HelpEmbed = require("./HelpEmbed.js")
 
-class QuestionChannelsPlugin extends Plugin {
+class QuestionChannelsModule extends Module {
     client = null
     config = null
 
     static async fromConfig(client, config) {
         const channel = await client.channels.fetch(config.channelId)
         const helpMessage = await channel.messages.fetch(config.helpMessageId)
-        return new QuestionChannelsPlugin(client, new Configuration({ channel, helpMessage }))
+        return new QuestionChannelsModule(client, new Configuration({ channel, helpMessage }))
     }
 
     static async fromMessage(message, args) {
@@ -28,7 +28,7 @@ class QuestionChannelsPlugin extends Plugin {
 
         const config = new Configuration({ channel })
 
-        return new QuestionChannelsPlugin(message.client, config)
+        return new QuestionChannelsModule(message.client, config)
     }
 
     constructor(client, config) {
@@ -58,4 +58,4 @@ class QuestionChannelsPlugin extends Plugin {
     }
 }
 
-module.exports = QuestionChannelsPlugin
+module.exports = QuestionChannelsModule

@@ -1,4 +1,4 @@
-* Plugins
+* Modules
     * Fragen: Frage im definierten Kanal stellen -> Textchat für die Frage wird erstellt
         * Reaktion auf eine Antwort
             * Verfasser bekommt Reputation

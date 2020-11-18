@@ -33,7 +33,7 @@ class ChannelManager {
         const channelName = settings.questionChannelName.replace(/{}/g, message.author.username)
         const channelOptions = {
             parent: this.channel.parent.id,
-            reason: `Question Channels Plugin: Channel Manager (Invoked by '${message.author.username}' - '${message.author.id}')`
+            reason: `Question Channels Module: Channel Manager (Invoked by '${message.author.username}' - '${message.author.id}')`
         }
         const newChannel = await this.channel.guild.channels.create(channelName, channelOptions)
 

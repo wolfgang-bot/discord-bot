@@ -1,19 +1,19 @@
-const Plugin = require("../../lib/Plugin.js")
+const Module = require("../../lib/Module.js")
 const Configuration = require("./Configuration.js")
 const VoiceChannelManager = require("./VoiceChannelManager.js")
 
-class DynamicVoicechannelPlugin extends Plugin {
+class DynamicVoicechannelModule extends Module {
     client = null
     config = null
 
     static async fromConfig(client, config) {
         const parentChannel = await client.channels.fetch(config.parentChannelId)
-        return new DynamicVoicechannelPlugin(client, new Configuration({ parentChannel }))
+        return new DynamicVoicechannelModule(client, new Configuration({ parentChannel }))
     }
 
     static async fromMessage(message, args) {
         if (!args[0]) {
-            await message.chanenl.send("Keine Kategorie angegeben")
+            await message.channel.send("Keine Kategorie angegeben")
             return
         }
 
@@ -24,7 +24,7 @@ class DynamicVoicechannelPlugin extends Plugin {
             return
         }
 
-        return new DynamicVoicechannelPlugin(message.client, new Configuration({ parentChannel }))
+        return new DynamicVoicechannelModule(message.client, new Configuration({ parentChannel }))
     }
 
     constructor(client, config) {
@@ -49,4 +49,4 @@ class DynamicVoicechannelPlugin extends Plugin {
     }
 }
 
-module.exports = DynamicVoicechannelPlugin
+module.exports = DynamicVoicechannelModule

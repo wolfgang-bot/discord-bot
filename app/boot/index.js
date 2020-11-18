@@ -1,10 +1,10 @@
 const attachEvents = require("../events")
-const PluginServiceProvider = require("../Services/PluginServiceProvider.js")
+const ModuleServiceProvider = require("../Services/ModuleServiceProvider.js")
 
 function boot(client) {
     return new Promise(async resolve => {
         client.once("ready", async () => {
-            await PluginServiceProvider.restorePlugins(client)
+            await ModuleServiceProvider.restoreModules(client)
             resolve()
         })
 
