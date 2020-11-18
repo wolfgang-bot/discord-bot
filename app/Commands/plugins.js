@@ -1,66 +1,83 @@
-const glob = require("glob")
-const path = require("path")
 const Command = require("../lib/Command.js")
 const StorageFacade = require("../Facades/StorageFacade.js")
-
+const PluginServiceProvider = require("../Services/PluginServiceProvider.js")
 const PluginsEmbed = require("../Embeds/PluginsEmbed.js")
 
-const PLUGINS_DIR = path.join(__dirname, "..", "Plugins")
-
-const plugins = glob.sync("?*/", { cwd: PLUGINS_DIR }).map(name => name.replace("/", ""))
+const plugins = PluginServiceProvider.getPluginNamesSync()
 
 /**
  * Run sub-commands, list the plugins no sub-command is given
  */
 async function run(args, message) {
     if (args.length === 0) {
-        return await message.channel.send(new PluginsEmbed(plugins))
+        const loaded = PluginServiceProvider.getLoadedPlugins().map(entry => entry.name)
+        return await message.channel.send(new PluginsEmbed({ available: plugins, loaded }))
     }
 
-    if (args[0] === "init") {
-        return await initPlugin(args, message)
+    if (args[0] === "start") {
+        return await startPlugin(args, message)
+    } 
+
+    if (args[0] === "stop") {
+        return await stopPlugin(args, message)
     }
 
     await message.channel.send("Unbekannter Command")
 }
 
 /**
- * Initialize plugin
+ * Start plugin
  */
-async function initPlugin(args, message) {
+async function startPlugin(args, message) {
     const pluginName = args[1]
 
     if (!pluginName) {
-        return await message.channel.send("Kein Plugin angegeben.")
+        return await message.channel.send("Kein Plugin angegeben")
     }
 
     if (!plugins.includes(pluginName)) {
-        return await message.channel.send("Plugin existiert nicht.")
+        return await message.channel.send("Plugin existiert nicht")
     }
 
-    // Initialize the requested plugin
+    if (PluginServiceProvider.isLoaded(pluginName)) {
+        return await message.channel.send("Plugin ist bereits gestartet")
+    }
+
+    // Start the requested plugin
     let plugin
     try {
-        const Plugin = require(path.join(PLUGINS_DIR, pluginName))
-
-        plugin = await Plugin.fromMessage(message, args.slice(2))
-
-        if (!plugin) {
-            throw new Error("Illegal invocation")
-        }
-
-        await plugin.init()
-    } catch (error) {
-        return await message.channel.send("Plugin konnte nicht geladen werden")
+        plugin = await PluginServiceProvider.startPluginFromMessage(pluginName, message, args.slice(2))
+    } catch {
+        return await message.channel.send("Plugin konnte nicht gestartet werden")
     }
 
     // Store the plugin's configuration
     await StorageFacade.setItem("plugins." + pluginName, plugin.getConfig())
 
-    await message.channel.send(`Plugin '${pluginName}' wurde erfolgreich geladen`)
-} 
+    await message.channel.send(`Plugin '${pluginName}' wurde erfolgreich gestartet`)
+}
+
+/**
+ * Stop plugin
+ */
+async function stopPlugin(args, message) {
+    const pluginName = args[1]
+
+    if (!pluginName) {
+        return await message.channel.send("Kein Plugin angegeben")
+    }
+
+    if (!PluginServiceProvider.isLoaded(pluginName)) {
+        return await message.channel.send("Plugin ist nicht gestartet")
+    }
+
+    await PluginServiceProvider.stopPlugin(pluginName)
+    await StorageFacade.deleteItem("plugins." + pluginName)
+
+    await message.channel.send(`Plugin '${pluginName}' wurde erfolgreich gestoppt`)
+}
 
 module.exports = new Command(run)
     .setDescription("Zeigt Plugins an.")
-    .setUsage("plugins <command?>")
+    .setUsage("plugins [start|stop] [plugin]")
     .setPermissions(["MANAGE_GUILD"])

@@ -25,10 +25,16 @@ class Plugin {
     static async fromMessage(message, args) {}
 
     /**
-     * Initializes the plugin.
+     * Starts the plugin.
      * Code which needs to be run whenever the plugin is loaded should go here.
      */
-    async init() {}
+    async start() {}
+
+    /**
+     * Stops the plugin.
+     * Code which reverts the actions done in plugin.start should go here.
+     */
+    async stop() {}
 
     /**
      * Get the configuration object of the plugin from which the plugin can be

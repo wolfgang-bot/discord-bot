@@ -5,10 +5,15 @@ class ChannelManager {
     constructor(client, channel) {
         this.client = client
         this.channel = channel
+        this.handleMessage = this.handleMessage.bind(this)
     }
 
     init() {
-        this.client.on("message", this.handleMessage.bind(this))
+        this.client.on("message", this.handleMessage)
+    }
+
+    delete() {
+        this.client.removeListener("message", this.handleMessage)
     }
 
     async handleMessage(message) {

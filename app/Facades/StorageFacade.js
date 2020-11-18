@@ -26,6 +26,12 @@ class StorageFacade {
         const storage = await StorageFacade.readStorage()
         return storage[key]
     }
+
+    static async deleteItem(key) {
+        const storage = await StorageFacade.readStorage()
+        delete storage[key]
+        await StorageFacade.writeStorage(storage)
+    }
 }
 
 module.exports = StorageFacade

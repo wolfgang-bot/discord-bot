@@ -1,11 +1,13 @@
 class Configuration {
-    constructor({ channel }) {
+    constructor({ channel, helpMessage }) {
         this.channel = channel
+        this.helpMessage = helpMessage
     }
 
     toJSON() {
         return {
-            channelId: this.channel.id
+            channelId: this.channel.id,
+            helpMessageId: this.helpMessage.id
         }
     }
 }

@@ -25,5 +25,5 @@ async function run(args, message) {
 
 module.exports = new Command(run)
     .setDescription("Zeigt Informationen zu den verfügbaren Commands an.")
-    .setUsage("help <command?>")
+    .setUsage("help [command]")
     .setAlias(["?"])

@@ -9,7 +9,8 @@ class QuestionChannelsPlugin extends Plugin {
 
     static async fromConfig(client, config) {
         const channel = await client.channels.fetch(config.channelId)
-        return new QuestionChannelsPlugin(client, new Configuration({ channel }))
+        const helpMessage = await channel.messages.fetch(config.helpMessageId)
+        return new QuestionChannelsPlugin(client, new Configuration({ channel, helpMessage }))
     }
 
     static async fromMessage(message, args) {
@@ -38,13 +39,18 @@ class QuestionChannelsPlugin extends Plugin {
         this.channelManager = new ChannelManager(this.client, this.config.channel)
     }
 
-    async init() {
-        // Send help embed into channel if there isn't any
-        if ((await this.config.channel.messages.fetch()).size === 0) {
-            await this.config.channel.send(new HelpEmbed())
+    async start() {
+        // Send help embed into channel if hasn't already
+        if (!this.config.helpMessage) {
+            this.config.helpMessage = await this.config.channel.send(new HelpEmbed())
         }
 
         this.channelManager.init()
+    }
+
+    async stop() {
+        await this.config.helpMessage.delete()
+        this.channelManager.delete()
     }
 
     getConfig() {

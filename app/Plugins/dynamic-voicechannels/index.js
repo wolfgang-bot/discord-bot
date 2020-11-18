@@ -1,7 +1,7 @@
 const Plugin = require("../../lib/Plugin.js")
 
 class DynamicVoicechannelPlugin extends Plugin {
-    init(args) {
+    start(args) {
         console.log("[Dynamic Voicechanenels Plugin]", args)
     }
 }
