@@ -16,7 +16,7 @@ class QuestionEmbed extends Discord.MessageEmbed {
             .setAuthor(message.author.username, makeAvatarURL(message.author))
             .setTimestamp()
             .setColor(settings.embedColor)
-            .addField(`Problem gelöst?`, `Super! Reagiere mit ${settings.questionChannelDeleteReaction} auf diese Nachricht, um den Kanal aufzulösen.`)
+            .addField(`Problem gelöst?`, `Super! Reagiere mit ${settings.questionChannelDeleteReaction} auf die Nachricht, die dein Problem gelöst hat.`)
     }
 }
 

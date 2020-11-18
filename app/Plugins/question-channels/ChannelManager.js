@@ -5,6 +5,7 @@ class ChannelManager {
     constructor(client, channel) {
         this.client = client
         this.channel = channel
+
         this.handleMessage = this.handleMessage.bind(this)
     }
 
@@ -40,13 +41,36 @@ class ChannelManager {
         const question = await newChannel.send(new QuestionEmbed(message))
         await question.pin()
 
-        // Add deletion emoji to question
-        await question.react(settings.questionChannelDeleteReactionName)
+        // Delete channel when user reacts to an answer
+        const handleReaction = async (reaction, user) => {
+            if (
+                reaction.message.channel.id === newChannel.id && 
+                reaction.emoji.name === settings.questionChannelDeleteReactionName
+            ) {
+                if (user.id !== message.author.id) {
+                    await reaction.remove()
+                    await reaction.message.channel.send("Du bist nicht berechtigt eine Nachricht als Antwort zu markieren")
+                    return
+                }
 
-        // Delete channel when user reacts to question
-        const reactionFilter = (reaction, user) => user.id === message.author.id && reaction.emoji.name === settings.questionChannelDeleteReactionName
-        await question.awaitReactions(reactionFilter, { max: 1 })
-        await newChannel.delete()
+                if (reaction.message.author.bot) {
+                    await reaction.remove()
+                    await reaction.message.channel.send("Du kannst nicht die Nachricht eines Bots als Antwort markieren")
+                    return
+                }
+
+                if (reaction.message.author.id === user.id) {
+                    await reaction.remove()
+                    await reaction.message.channel.send("Du kannst nicht deine eigene Nachricht als Antwort markieren")
+                    return
+                }
+
+                await newChannel.delete()
+                this.client.removeListener("messageReactionAdd", handleReaction)
+            }
+        }
+
+        this.client.on("messageReactionAdd", handleReaction)
     }
 }
 
