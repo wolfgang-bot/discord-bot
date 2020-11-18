@@ -1,9 +1,8 @@
-const Discord = require("discord.js")
-const settings = require("./settings.json")
+const BaseEmbed = require("../../Embeds/BaseEmbed.js")
 
 const makeAvatarURL = user => `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`
 
-class QuestionEmbed extends Discord.MessageEmbed {
+class QuestionEmbed extends BaseEmbed {
     constructor(message) {
         super()
 
@@ -15,8 +14,8 @@ class QuestionEmbed extends Discord.MessageEmbed {
             .setDescription(content)
             .setAuthor(message.author.username, makeAvatarURL(message.author))
             .setTimestamp()
-            .setColor(settings.embedColor)
-            .addField(`Problem gelöst?`, `Super! Reagiere mit ${settings.questionChannelDeleteReaction} auf die Nachricht, die dein Problem gelöst hat.`)
+            .setColor(config.colors.primary)
+            .addField(`Problem gelöst?`, `Super! Reagiere mit ${config.questionChannels.resolveReaction} auf die Nachricht, die dein Problem gelöst hat.`)
     }
 }
 

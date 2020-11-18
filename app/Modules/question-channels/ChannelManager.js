@@ -1,5 +1,5 @@
 const QuestionEmbed = require("./QuestionEmbed.js")
-const settings = require("./settings.json")
+const config = require("../../../config")
 
 class ChannelManager {
     constructor(client, channel) {
@@ -30,7 +30,7 @@ class ChannelManager {
         await message.delete()
         
         // Create new channel for user
-        const channelName = settings.questionChannelName.replace(/{}/g, message.author.username)
+        const channelName = config.questionChannels.channelName.replace(/{}/g, message.author.username)
         const channelOptions = {
             parent: this.channel.parent.id,
             reason: `Question Channels Module: Channel Manager (Invoked by '${message.author.username}' - '${message.author.id}')`
@@ -45,7 +45,7 @@ class ChannelManager {
         const handleReaction = async (reaction, user) => {
             if (
                 reaction.message.channel.id === newChannel.id && 
-                reaction.emoji.name === settings.questionChannelDeleteReactionName
+                reaction.emoji.name === config.questionChannels.resolveReactionName
             ) {
                 if (user.id !== message.author.id) {
                     await reaction.remove()
