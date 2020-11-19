@@ -1,7 +1,7 @@
-const Command = require("../lib/Command.js")
-const StorageFacade = require("../Facades/StorageFacade.js")
-const ModuleServiceProvider = require("../Services/ModuleServiceProvider.js")
-const ModulesEmbed = require("../Embeds/ModuleEmbed.js")
+const Command = require("../../lib/Command.js")
+const StorageFacade = require("../../Facades/StorageFacade.js")
+const ModuleServiceProvider = require("../../Services/ModuleServiceProvider.js")
+const ModulesEmbed = require("../../Embeds/ModuleEmbed.js")
 
 const modules = ModuleServiceProvider.getModuleNamesSync()
 

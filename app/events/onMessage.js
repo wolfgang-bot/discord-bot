@@ -1,3 +1,4 @@
+const { parseCommand } = require("../utils")
 const runCommand = require("../Commands")
 
 /**
@@ -9,12 +10,7 @@ async function run(client, message) {
             return await message.channel.send("Commands sind nur auf Servern verfügbar.")
         }
 
-        const args = message.content
-            .replace(process.env.DISCORD_BOT_PREFIX, "")
-            .replace(/\s+/g, " ")
-            .split(" ")
-
-        const command = args.shift()
+        const [command, args] = parseCommand(message.content)
 
         runCommand(command, args, message)
     }

@@ -1,7 +1,7 @@
-const Command = require("../lib/Command.js")
-const DirectoryServiceProvider = require("../Services/DirectoryServiceProvider.js")
-const HelpEmbed = require("../Embeds/HelpEmbed.js")
-const HelpCommandEmbed = require("../Embeds/HelpCommandEmbed.js")
+const Command = require("../../lib/Command.js")
+const DirectoryServiceProvider = require("../../Services/DirectoryServiceProvider.js")
+const HelpEmbed = require("../../Embeds/HelpEmbed.js")
+const HelpCommandEmbed = require("../../Embeds/HelpCommandEmbed.js")
 
 async function run(args, message) {
     const commands = await DirectoryServiceProvider.getCommands()

@@ -2,6 +2,7 @@ class Command {
     constructor(run) {
         this.run = run
         this.name = null
+        this.group = null
         this.description = null
         this.usage = null
         this.alias = null
@@ -10,6 +11,11 @@ class Command {
 
     setName(name) {
         this.name = name
+        return this
+    }
+
+    setGroup(group) {
+        this.group = group
         return this
     }
 
