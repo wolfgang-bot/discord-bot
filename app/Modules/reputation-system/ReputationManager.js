@@ -30,15 +30,11 @@ class ReputationManager {
         const newLevel = this.getLevel(model.reputation)
 
         if (newLevel > prevLevel) {
-            const level = config.reputationSystem.roles[newLevel]
-            console.log(`${member.user.username} ist zu '${level}' aufgestiegen`)
             await Promise.all([
                 this.changeLevel(member, prevLevel, newLevel),
                 this.announceLevelUp(member.user, newLevel)
             ])
         }
-
-        console.log(`${member.user.username} hat jetzt ${model.reputation} Punkte`)
     }
 
     async createRoles() {

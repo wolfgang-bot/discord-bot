@@ -6,6 +6,9 @@ class ChannelManager {
         this.client = client
         this.channel = channel
 
+        this.activeChannels = {} // Map: channel-id -> creator-id
+        this.timeoutUsers = new Set()
+
         this.handleMessage = this.handleMessage.bind(this)
     }
 
@@ -19,8 +22,25 @@ class ChannelManager {
 
     async handleMessage(message) {
         if (message.author.id !== this.client.user.id) {
+            // Create a new question channel
             if (message.channel.id === this.channel.id) {
                 await this.createChannel(message)
+                return
+            }
+
+            // Add reputation to author
+            if (
+                this.activeChannels[message.channel.id] && // Channel is one of the question channels
+                message.author.id !== this.activeChannels[message.channel.id] && // User is not the question channel's creator 
+                !this.timeoutUsers.has(message.author.id) // User is not throttled
+            ) {
+                this.client.emit("reputationAdd", message.member, config.questionChannels.messageReputation)
+
+                this.timeoutUsers.add(message.author.id)
+
+                setTimeout(() => {
+                    this.timeoutUsers.delete(message.author.id)
+                }, config.questionChannels.messageReputationTimeout)
             }
         }
     }
@@ -36,6 +56,7 @@ class ChannelManager {
             reason: `Question Channels Module: Channel Manager (Invoked by '${message.author.username}' - '${message.author.id}')`
         }
         const newChannel = await this.channel.guild.channels.create(channelName, channelOptions)
+        this.activeChannels[newChannel.id] = message.author.id
 
         // Send message of user as embed into new channel
         const question = await newChannel.send(new QuestionEmbed(message))
@@ -65,9 +86,10 @@ class ChannelManager {
                     return
                 }
 
-                this.client.emit("reputationAdd", user, config.questionChannels.acceptReputation)
+                this.client.emit("reputationAdd", reaction.message.member, config.questionChannels.acceptReputation)
 
                 await newChannel.delete()
+                delete this.activeChannels[newChannel.id]
                 this.client.removeListener("messageReactionAdd", handleReaction)
             }
         }

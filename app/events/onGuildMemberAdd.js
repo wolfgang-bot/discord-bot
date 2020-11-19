@@ -1,7 +1,6 @@
 const User = require("../Models/User.js")
 
 async function run(client, member) {
-    console.log(client, member)
     const model = new User({ id: member.user.id })
     await model.store()
 }

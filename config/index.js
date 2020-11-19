@@ -13,7 +13,8 @@ module.exports = {
         resolveReaction: ":white_check_mark:",
         resolveReactionName: "✅",
         acceptReputation: 10,
-        messageReputation: 1
+        messageReputation: 1,
+        messageReputationTimeout: 7500
     },
 
     reputationSystem: {
