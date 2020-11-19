@@ -19,8 +19,6 @@ class ChannelManager {
 
     async handleMessage(message) {
         if (message.author.id !== this.client.user.id) {
-            this.client.emit("reputationAdd", message.member, 10)
-
             if (message.channel.id === this.channel.id) {
                 await this.createChannel(message)
             }
