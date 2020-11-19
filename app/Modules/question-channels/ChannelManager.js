@@ -19,6 +19,8 @@ class ChannelManager {
 
     async handleMessage(message) {
         if (message.author.id !== this.client.user.id) {
+            this.client.emit("reputationAdd", message.member, 10)
+
             if (message.channel.id === this.channel.id) {
                 await this.createChannel(message)
             }
@@ -49,21 +51,23 @@ class ChannelManager {
             ) {
                 if (user.id !== message.author.id) {
                     await reaction.remove()
-                    await reaction.message.channel.send("Du bist nicht berechtigt eine Nachricht als Antwort zu markieren")
+                    await reaction.message.channel.send("Du bist nicht berechtigt eine Antwort zu akzeptieren")
                     return
                 }
 
                 if (reaction.message.author.bot) {
                     await reaction.remove()
-                    await reaction.message.channel.send("Du kannst nicht die Nachricht eines Bots als Antwort markieren")
+                    await reaction.message.channel.send("Du kannst nicht die Nachricht eines Bots als Antwort akzeptieren")
                     return
                 }
 
                 if (reaction.message.author.id === user.id) {
                     await reaction.remove()
-                    await reaction.message.channel.send("Du kannst nicht deine eigene Nachricht als Antwort markieren")
+                    await reaction.message.channel.send("Du kannst nicht deine eigene Antwort akzeptieren")
                     return
                 }
+
+                this.client.emit("reputationAdd", user, config.questionChannels.acceptReputation)
 
                 await newChannel.delete()
                 this.client.removeListener("messageReactionAdd", handleReaction)

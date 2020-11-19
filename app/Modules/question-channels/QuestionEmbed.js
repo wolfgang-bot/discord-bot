@@ -1,6 +1,5 @@
 const BaseEmbed = require("../../Embeds/BaseEmbed.js")
-
-const makeAvatarURL = user => `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`
+const config = require("../../../config")
 
 class QuestionEmbed extends BaseEmbed {
     constructor(message) {
@@ -12,9 +11,8 @@ class QuestionEmbed extends BaseEmbed {
 
         this.setTitle(title)
             .setDescription(content)
-            .setAuthor(message.author.username, makeAvatarURL(message.author))
+            .setAuthor(message.author.username, message.author.displayAvatarURL())
             .setTimestamp()
-            .setColor(config.colors.primary)
             .addField(`Problem gelöst?`, `Super! Reagiere mit ${config.questionChannels.resolveReaction} auf die Nachricht, die dein Problem gelöst hat.`)
     }
 }

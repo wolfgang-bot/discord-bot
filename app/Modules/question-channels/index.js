@@ -4,9 +4,6 @@ const ChannelManager = require("./ChannelManager.js")
 const HelpEmbed = require("./HelpEmbed.js")
 
 class QuestionChannelsModule extends Module {
-    client = null
-    config = null
-
     static async fromConfig(client, config) {
         const channel = await client.channels.fetch(config.channelId)
         const helpMessage = await channel.messages.fetch(config.helpMessageId)
@@ -19,7 +16,7 @@ class QuestionChannelsModule extends Module {
             return
         }
 
-        const channel = message.guild.channels.cache.get(args[0])
+        const channel = await message.guild.channels.cache.get(args[0])
 
         if (!channel) {
             await message.channel.send("Der Textkanal existiert nicht")

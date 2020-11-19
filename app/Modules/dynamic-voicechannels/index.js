@@ -3,9 +3,6 @@ const Configuration = require("./Configuration.js")
 const VoiceChannelManager = require("./VoiceChannelManager.js")
 
 class DynamicVoicechannelModule extends Module {
-    client = null
-    config = null
-
     static async fromConfig(client, config) {
         const parentChannel = await client.channels.fetch(config.parentChannelId)
         return new DynamicVoicechannelModule(client, new Configuration({ parentChannel }))
@@ -17,7 +14,7 @@ class DynamicVoicechannelModule extends Module {
             return
         }
 
-        const parentChannel = message.guild.channels.cache.get(args[0])
+        const parentChannel = await message.guild.channels.cache.get(args[0])
 
         if (!parentChannel) {
             await message.channel.send("Die Kategorie existiert nicht")

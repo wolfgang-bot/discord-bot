@@ -64,7 +64,7 @@ class ModuleServiceProvider {
         await Promise.all(modules.map(async name => {
             const config = await StorageFacade.getItem(ModuleServiceProvider.storagePrefix + name)
 
-            if (config) {
+            if (typeof config !== "undefined") {
                 await ModuleServiceProvider.startModuleFromConfig(name, client, config)
             }
         }))
