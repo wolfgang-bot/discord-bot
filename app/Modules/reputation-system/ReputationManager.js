@@ -1,11 +1,13 @@
 const User = require("../../Models/User.js")
+const LevelUpEmbed = require("./LevelUpEmbed.js")
 const config = require("../../../config")
 const { hslToRgb } = require("../../utils")
 
 class ReputationManager {
-    constructor(client, guild) {
+    constructor(client, guild, channel) {
         this.client = client
         this.guild = guild
+        this.channel = channel
 
         this.roles = []
 
@@ -30,7 +32,10 @@ class ReputationManager {
         if (newLevel > prevLevel) {
             const level = config.reputationSystem.roles[newLevel]
             console.log(`${member.user.username} ist zu '${level}' aufgestiegen`)
-            await this.changeLevel(member, prevLevel, newLevel)
+            await Promise.all([
+                this.changeLevel(member, prevLevel, newLevel),
+                this.announceLevelUp(member.user, newLevel)
+            ])
         }
 
         console.log(`${member.user.username} hat jetzt ${model.reputation} Punkte`)
@@ -69,6 +74,11 @@ class ReputationManager {
             await member.roles.remove(this.roles[prevLevel])
         }
         await member.roles.add(this.roles[newLevel])
+    }
+
+    async announceLevelUp(user, newLevel) {
+        const message = await this.channel.send(new LevelUpEmbed(user, newLevel))
+        await message.react(config.reputationSystem.levelUpReactionEmoji)
     }
 
     getLevel(reputation) {
