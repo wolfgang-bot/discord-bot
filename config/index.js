@@ -14,7 +14,8 @@ module.exports = {
         resolveReactionName: "✅",
         acceptReputation: 10,
         messageReputation: 1,
-        messageReputationTimeout: 7500
+        messageReputationTimeout: 7500,
+        askChannelRateLimit: 60 * 5 // 5 minutes
     },
 
     reputationSystem: {

@@ -48,12 +48,15 @@ class ChannelManager {
     async createChannel(message) {
         // Delete original message of user
         await message.delete()
+
         
         // Create new channel for user
         const channelName = config.questionChannels.channelName.replace(/{}/g, message.author.username)
+        const lines = message.content.split("\n")
         const channelOptions = {
             parent: this.channel.parent.id,
-            reason: `Question Channels Module: Channel Manager (Invoked by '${message.author.username}' - '${message.author.id}')`
+            reason: `Question Channels Module: Channel Manager (Invoked by '${message.author.username}' - '${message.author.id}')`,
+            topic: lines.length > 1 ? lines[0] : ""
         }
         const newChannel = await this.channel.guild.channels.create(channelName, channelOptions)
         this.activeChannels[newChannel.id] = message.author.id

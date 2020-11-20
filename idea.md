@@ -1,5 +1,5 @@
 * Modules
-    * Fragen: Frage im definierten Kanal stellen -> Textchat für die Frage wird erstellt
+    * Fragen: Frage im definierten Kanal stellen -> Textchat für die Frage wird erstellt (Kanalbeschreibung = Überschrift der Frage)
         * Reaktion auf eine Antwort
             * Verfasser bekommt Reputation
             * Kanal wird gelöscht
@@ -10,6 +10,9 @@
             * Slow mode
             
     * Voicechat: Drei standard Voicechats -> Wenn alle belegt sind (min. 1 Benutzer), erstelle einen weiteren Voicechat -> Entferne ihn wieder, wenn einer der drei Voicechats frei ist, sofern er frei ist.
+
+    * Verification: Benutzer bekommt nach dem joinen die "Unverifiziert" -> Regeln akzeptieren -> "User" Rolle
+        * "Unverifiziert" Rolle: Kann keine Nachrichten senden / Keinem Voicechannel beitreten
 
 * Hinzugefügte Events (name: [arg] [...])
     * reputationAdd: member: Discord.GuildMember, amount: Number

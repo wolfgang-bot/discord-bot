@@ -60,7 +60,7 @@ class ReputationManager {
             color[2] = 1 - .5 / config.reputationSystem.roles.length * (i + 1)
             color = hslToRgb(...color)
 
-            role = await this.guild.roles.create({ data: { name, color } })
+            role = await this.guild.roles.create({ data: { name, color, hoist: true } })
             this.roles[i] = role
         }
     }

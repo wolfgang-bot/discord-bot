@@ -1,0 +1,1 @@
+Stelle deine Frage in diesem Kanal und wir erstellen einen neuen für dich, in den wir deine Nachricht verschieben.
