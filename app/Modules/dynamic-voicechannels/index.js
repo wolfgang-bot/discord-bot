@@ -46,4 +46,14 @@ class DynamicVoicechannelModule extends Module {
     }
 }
 
+DynamicVoicechannelModule.meta = {
+    description: "Sorgt dafür, dass es immer mindestens einen freien Kanal gibt.",
+    arguments: "<kategorie_id>",
+    features: [
+        "Erstellt eine vorher definierte Anzahl an Sprachkanälen in der angegeben Kategorie, die immer existieren.",
+        "Erstellt einen neuen Sprachkanal, wenn sich in allen Sprachkanälen mindestens ein Benutzer befindet.",
+        "Entfernt die dynamisch erstellten Sprachkanäle wieder, wenn diese nicht mehr benötigt werden."
+    ]
+}
+
 module.exports = DynamicVoicechannelModule

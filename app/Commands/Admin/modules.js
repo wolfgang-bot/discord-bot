@@ -2,6 +2,7 @@ const Command = require("../../lib/Command.js")
 const StorageFacade = require("../../Facades/StorageFacade.js")
 const ModuleServiceProvider = require("../../Services/ModuleServiceProvider.js")
 const ModulesEmbed = require("../../Embeds/ModuleEmbed.js")
+const ModuleHelpEmbed = require("../../Embeds/ModuleHelpEmbed.js")
 
 const modules = ModuleServiceProvider.getModuleNamesSync()
 
@@ -22,6 +23,10 @@ async function run(args, message) {
         return await stopModule(args, message)
     }
 
+    if (args[0] === "help") {
+        return await helpModule(args, message)
+    }
+
     await message.channel.send("Unbekannter Command")
 }
 
@@ -36,11 +41,11 @@ async function startModule(args, message) {
     }
 
     if (!modules.includes(moduleName)) {
-        return await message.channel.send("Modul existiert nicht")
+        return await message.channel.send("Das Modul existiert nicht")
     }
 
     if (ModuleServiceProvider.isLoaded(moduleName)) {
-        return await message.channel.send("Modul ist bereits gestartet")
+        return await message.channel.send("Das Modul ist bereits gestartet")
     }
 
     // Start the requested module
@@ -52,17 +57,17 @@ async function startModule(args, message) {
             console.error(error)
         }
         
-        return await message.channel.send("Modul konnte nicht gestartet werden")
+        return await message.channel.send("Das Modul konnte nicht gestartet werden")
     }
 
     // Store the instance's configuration
     await StorageFacade.setItem(ModuleServiceProvider.storagePrefix + moduleName, instance.getConfig())
 
-    await message.channel.send(`Modul '${moduleName}' wurde erfolgreich gestartet`)
+    await message.channel.send(`Das Modul '${moduleName}' wurde erfolgreich gestartet`)
 }
 
 /**
- * Stop Module
+ * Stop module
  */
 async function stopModule(args, message) {
     const moduleName = args[1]
@@ -72,7 +77,7 @@ async function stopModule(args, message) {
     }
 
     if (!ModuleServiceProvider.isLoaded(moduleName)) {
-        return await message.channel.send("Modul ist nicht gestartet")
+        return await message.channel.send("Das Modul ist nicht gestartet")
     }
 
     await ModuleServiceProvider.stopModule(moduleName)
@@ -81,7 +86,25 @@ async function stopModule(args, message) {
     await message.channel.send(`Modul '${moduleName}' wurde erfolgreich gestoppt`)
 }
 
+/**
+ * Send module's help message
+ */
+async function helpModule(args, message) {
+    const moduleName = args[1]
+
+    if (!moduleName) {
+        return await message.channel.send("Kein Modul angegeben")
+    }
+
+    if (!modules.includes(moduleName)) {
+        return await message.channel.send("Das Modul existiert nicht")
+    }
+
+    const module = ModuleServiceProvider.getModule(moduleName)
+    await message.channel.send(new ModuleHelpEmbed(module))
+}
+
 module.exports = new Command(run)
-    .setDescription("Zeigt Modul an.")
-    .setUsage("modules [start|stop] [module]")
+    .setDescription("Zeigt Informationen über die Module an.")
+    .setUsage("modules [start|stop|help] [module]")
     .setPermissions(["MANAGE_GUILD"])

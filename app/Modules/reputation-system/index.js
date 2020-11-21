@@ -48,4 +48,14 @@ class ReputationSystemModule extends Module {
     }
 }
 
+ReputationSystemModule.meta = {
+    description: "Verwaltet die Punkte sowie die Level-Rollen der Benutzer.",
+    arguments: "<benachrichtigungskanal_id>",
+    features: [
+        "Erstellt für jedes Level eine neue Rolle mit einer individuellen Farbe.",
+        "Erstellt ein neues Discord Event, das von anderen Modulen verwendet werden kann, um Benutzern Punkte zu geben.",
+        "Sendet eine Nachricht in den Benachrichtigungskanal, wenn ein Benutzer ein neues Level erreicht."
+    ]
+}
+
 module.exports = ReputationSystemModule

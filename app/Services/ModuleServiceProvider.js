@@ -17,6 +17,12 @@ class ModuleServiceProvider {
         return ModuleServiceProvider.modules
     }
 
+    static getModule(moduleName) {
+        const Module = require(path.join(MODULES_DIR, moduleName))
+        Module.meta.name = moduleName
+        return Module
+    }
+
     static getModuleNamesSync() {
         return glob.sync("?*/", { cwd: MODULES_DIR }).map(name => name.replace("/", ""))
     }
@@ -26,7 +32,7 @@ class ModuleServiceProvider {
             throw new Error("Module already loaded")
         }
 
-        const Module = require(path.join(MODULES_DIR, name))
+        const Module = ModuleServiceProvider.getModule(name)
 
         const instance = await Module.fromMessage(message, args)
 
@@ -42,7 +48,7 @@ class ModuleServiceProvider {
     }
 
     static async startModuleFromConfig(name, client, config) {
-        const Module = require(path.join(MODULES_DIR, name))
+        const Module = ModuleServiceProvider.getModule(name)
         const instance = await Module.fromConfig(client, config)
 
         await instance.start()

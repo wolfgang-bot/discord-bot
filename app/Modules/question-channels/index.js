@@ -61,4 +61,14 @@ class QuestionChannelsModule extends Module {
     }
 }
 
+QuestionChannelsModule.meta = {
+    description: "Erstellt einen neuen Textkanal für jeden Benutzer, der eine Frage stellt.",
+    arguments: "<fragenkanal_id>",
+    features: [
+        "Erstellt einen neuen Textkanal für einen Benutzer, wenn dieser eine Frage im Fragenkanal stellt.",
+        "Löscht den Kanal wieder, wenn der Benutzer einen Nachricht als Antwort, oder die Frage als irrelevant markiert.",
+        "Integriert das 'reputation-system' Modul."
+    ]
+}
+
 module.exports = QuestionChannelsModule

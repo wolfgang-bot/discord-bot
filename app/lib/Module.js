@@ -5,6 +5,15 @@
  */
 class Module {
     /**
+     * Meta data (required for the "help" command)
+     */
+    static meta = {
+        description: "", // Short description about what the module does
+        arguments: "", // Required and / or optional arguments to start the module
+        features: [] // All the features of the module
+    }
+
+    /**
      * Creates a new instance of the class from a configuration object.
      * 
      * @param {Discord.Client} client 

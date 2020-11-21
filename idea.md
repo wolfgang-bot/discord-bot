@@ -1,5 +1,8 @@
 * Modules
-    * Fragen: Frage im definierten Kanal stellen -> Textchat für die Frage wird erstellt (Kanalbeschreibung = Überschrift der Frage)
+    * Fragen: Frage im definierten Kanal stellen
+        * Textchat für die Frage wird erstellt (Kanalbeschreibung = Überschrift der Frage)
+        * Höchstens eine aktive Frage pro Benutzer
+        * Abbruchreaktion -> Kanal löschen
         * Reaktion auf eine Antwort
             * Verfasser bekommt Reputation
             * Kanal wird gelöscht
@@ -26,4 +29,5 @@
         * Entferne die letzten n Nachrichten aus dem Kanal
 
 * TODO:
-    * Usage Nachrichten für Module ("start" Command)
+    * Maximal zwei Rollen pro Frage taggen
+    * Rollenfarben für Level von Chill Heaven klauen

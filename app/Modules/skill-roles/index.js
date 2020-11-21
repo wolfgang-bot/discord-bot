@@ -64,4 +64,13 @@ class RoleManagerModule extends Module {
     }
 }
 
+RoleManagerModule.meta = {
+    description: "Erstellt eine Nachricht, über dessen Reaktionen die Skill-Rollen vergeben werden.",
+    arguments: "<textkanal_id>",
+    features: [
+        "Erstellt die Skill-Rollen sowie jeweils ein Emoji für jede Rolle,",
+        "Sendet eine Nachricht in den angegebenen Textkanal, die jeweils eine Reaktion zur Vergebung der Rollen besitzt."
+    ]
+}
+
 module.exports = RoleManagerModule
