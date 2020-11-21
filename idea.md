@@ -14,9 +14,16 @@
     * Verification: Benutzer bekommt nach dem joinen die "Unverifiziert" -> Regeln akzeptieren -> "User" Rolle
         * "Unverifiziert" Rolle: Kann keine Nachrichten senden / Keinem Voicechannel beitreten
 
+    * Skill-Rollen:
+        * Zuweisung über Reaktionen
+        * Hinweis in Fragenachricht, dass bis zu zwei Skill Rollen getagged werden können.
+
 * Hinzugefügte Events (name: [arg] [...])
     * reputationAdd: member: Discord.GuildMember, amount: Number
 
 * Commands
     * sweep <n>
         * Entferne die letzten n Nachrichten aus dem Kanal
+
+* TODO:
+    * Usage Nachrichten für Module ("start" Command)

@@ -24,5 +24,22 @@ module.exports = {
         initialRoleColor: [2/3, 1, 0], // HSL
         roleThresholds: [10, 100, 500, 1000, 2500], // n[i] < n[i+1]; |roleThresholds| = |roles|,
         levelUpReactionEmoji: "💯"
+    },
+
+    skillRoles: {
+        emojiPrefix: "skill_",
+        roleColor: "AQUA",
+        roles: [
+            "Javascript",
+            "HTML",
+            "CSS",
+            "Python",
+            "React",
+            "Vue",
+            "Angular",
+            "Linux",
+            "Java",
+            "Cpp"
+        ]
     }
 }

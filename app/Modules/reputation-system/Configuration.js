@@ -1,6 +1,7 @@
 class Configuration {
     constructor({ guild, channel }) {
         this.guild = guild
+        // Notification channel
         this.channel = channel
     }
 

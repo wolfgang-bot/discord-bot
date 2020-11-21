@@ -1,14 +1,7 @@
-const glob = require("glob")
+const glob = require("glob-promise")
 const path = require("path")
 
 const COMMANDS_DIR = path.join(__dirname, "..", "Commands")
-
-const globAsync = (pattern, config) => new Promise((resolve, reject) => {
-    glob(pattern, config, (error, matches) => {
-        if (error) reject(error)
-        else resolve(matches)
-    })
-})
 
 class DirectoryServiceProvider {
     /**
@@ -28,7 +21,7 @@ class DirectoryServiceProvider {
      * Get all commands from the "app/Commands" directory
      */
     static async getCommands() {
-        const paths = await globAsync("?*/*.js", { cwd: COMMANDS_DIR })
+        const paths = await glob("?*/*.js", { cwd: COMMANDS_DIR })
         return DirectoryServiceProvider.parseCommandsDir(paths)
     }
 

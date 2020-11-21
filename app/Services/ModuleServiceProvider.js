@@ -1,4 +1,4 @@
-const glob = require("glob")
+const glob = require("glob-promise")
 const path = require("path")
 const StorageFacade = require("../Facades/StorageFacade.js")
 

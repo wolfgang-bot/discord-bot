@@ -1,4 +1,4 @@
-const glob = require("glob")
+const glob = require("glob-promise")
 const path = require("path")
 
 function attachEvents(client) {
