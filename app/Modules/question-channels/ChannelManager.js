@@ -1,5 +1,13 @@
+const fs = require("fs")
+const path = require("path")
 const QuestionEmbed = require("./QuestionEmbed.js")
 const config = require("../../../config")
+
+const CONTENT_DIR = path.join(__dirname, "content")
+
+const content = {
+    tooManyQuestions: fs.readFileSync(path.join(CONTENT_DIR, "too-many-questions.md"), "utf-8")
+}
 
 class ChannelManager {
     constructor(client, channel) {
@@ -83,6 +91,13 @@ class ChannelManager {
     async createChannel(message) {
         // Delete original message of user
         await message.delete()
+
+        // Check if user already has an active channel
+        if (Object.values(this.activeChannels).some(({ user }) => user.id === message.author.id)) {
+            const channel = await message.author.createDM()
+            await channel.send(content.tooManyQuestions.replace(/{}/g, message.content))
+            return
+        }
         
         // Create new channel for user
         const channelName = config.questionChannels.channelName.replace(/{}/g, message.author.username)
