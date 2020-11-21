@@ -1,5 +1,5 @@
 module.exports = {
-    userRole: "Benutzer",
+    userRole: "User",
 
     colors: {
         primary: "#3f51b5"
