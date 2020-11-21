@@ -7,7 +7,7 @@ class LevelUpEmbed extends BaseEmbed {
 
         this.setTitle("Level Up")
             .setDescription(`
-                ${user} ist jetzt ${config.reputationSystem.roleArticles[level]} ${config.reputationSystem.roles[level]}! :partying_face:
+                ${user} hat ${config.reputationSystem.roles[level]} erreicht! :partying_face:
                 Herzlichen Dank für dein Engagement!
             `)
             .setThumbnail(user.displayAvatarURL({ dynamic: true }))

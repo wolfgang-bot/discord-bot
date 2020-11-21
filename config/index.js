@@ -7,7 +7,7 @@ module.exports = {
 
     dynamicVoicechannels: {
         defaultChannels: 3,
-        channelName: "Voice {}"
+        channelName: "🔊┃voice {}"
     },
 
     questionChannels: {
@@ -21,9 +21,8 @@ module.exports = {
     },
 
     reputationSystem: {
-        roles: ["Anfänger", "Fortgeschrittener", "Experte", "Profi", "Gott"],
-        roleArticles: ["ein", "ein", "ein", "ein", "ein"],
-        initialRoleColor: [2/3, 1, 0], // HSL
+        roles: ["Bronze", "Silber", "Gold", "Platin", "Diamant"],
+        roleColors: ["ORANGE", "#ffffff", "GOLD", "#607d8b", "BLUE"],
         roleThresholds: [10, 100, 500, 1000, 2500], // n[i] < n[i+1]; |roleThresholds| = |roles|,
         levelUpReactionEmoji: "💯"
     },

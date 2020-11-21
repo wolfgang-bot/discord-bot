@@ -1,7 +1,6 @@
 const User = require("../../Models/User.js")
 const LevelUpEmbed = require("./LevelUpEmbed.js")
 const config = require("../../../config")
-const { hslToRgb } = require("../../utils")
 
 class ReputationManager {
     constructor(client, guild, channel) {
@@ -51,18 +50,20 @@ class ReputationManager {
                 continue
             }
 
-            let color = config.reputationSystem.initialRoleColor
+            role = await this.guild.roles.create({
+                data: {
+                    name,
+                    color: config.reputationSystem.roleColors[i],
+                    hoist: true
+                }
+            })
 
-            /**
-             * Distribute lightness evenly between 1 and .5
-             * For 5 Roles: Role 1 -> lightness .9; Role 2 -> lightness .8
-             */
-            color[2] = 1 - .5 / config.reputationSystem.roles.length * (i + 1)
-            color = hslToRgb(...color)
-
-            role = await this.guild.roles.create({ data: { name, color, hoist: true } })
             this.roles[i] = role
         }
+    }
+
+    async deleteRoles() {
+        await Promise.all(this.roles.map(role => role.delete()))
     }
 
     async changeLevel(member, prevLevel, newLevel) {
@@ -97,8 +98,10 @@ class ReputationManager {
         await this.createRoles()
     }
 
-    delete() {
+    async delete() {
         this.client.removeListener("reputationAdd", this.handleReputationAdd)
+
+        await this.deleteRoles()
     }
 }
 

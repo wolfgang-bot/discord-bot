@@ -5,7 +5,6 @@ const ModuleServiceProvider = require("../../Services/ModuleServiceProvider.js")
 const ActiveChannel = require("./ActiveChannel.js")
 const QuestionEmbed = require("./QuestionEmbed.js")
 const config = require("../../../config")
-const { Socket } = require("dgram")
 
 const CONTENT_DIR = path.join(__dirname, "content")
 
