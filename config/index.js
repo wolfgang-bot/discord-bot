@@ -32,8 +32,6 @@ module.exports = {
         roleColor: "AQUA",
         roles: [
             "Javascript",
-            "HTML",
-            "CSS",
             "Python",
             "React",
             "Vue",
