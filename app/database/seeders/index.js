@@ -3,7 +3,7 @@ const path = require("path")
 
 async function run() {
     // Get all seeders from seed directory
-    const seeders = await glob("*.js", { cwd: __dirname })
+    const seeders = (await glob("*.js", { cwd: __dirname }))
         .filter(filename => /[0-9]+\.\w+.\w+/.test(filename))
         .map(filename => require(path.join(__dirname, filename)))
 
