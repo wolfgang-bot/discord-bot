@@ -10,8 +10,8 @@ module.exports = {
 
     questionChannels: {
         channelName: "❓┃{}",
-        resolveReaction: ":white_check_mark:",
-        resolveReactionName: "✅",
+        resolveReaction: "✅",
+        deleteReaction: "❌",
         acceptReputation: 10,
         messageReputation: 1,
         messageReputationTimeout: 7500,
