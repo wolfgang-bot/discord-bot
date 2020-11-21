@@ -1,7 +1,10 @@
 class ActiveChannel {
     constructor({ channel, message, user }) {
+        // Channel which has been created for the question
         this.channel = channel
+        // Message which contains the question
         this.message = message
+        // User who asked the question
         this.user = user
     }
 
