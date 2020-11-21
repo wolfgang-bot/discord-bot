@@ -31,5 +31,5 @@
 * TODO:
     * Maximal zwei Rollen pro Frage taggen
     * Rollenfarben für Level von Chill Heaven klauen
-    * Counting Spiel
+    * Counting Spiel (🔢┃counting)
     * Rangliste Command
