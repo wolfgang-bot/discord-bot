@@ -1,7 +1,11 @@
 const fs = require("fs")
 const path = require("path")
+const StorageFacade = require("../../Facades/StorageFacade.js")
+const ModuleServiceProvider = require("../../Services/ModuleServiceProvider.js")
+const ActiveChannel = require("./ActiveChannel.js")
 const QuestionEmbed = require("./QuestionEmbed.js")
 const config = require("../../../config")
+const { Socket } = require("dgram")
 
 const CONTENT_DIR = path.join(__dirname, "content")
 
@@ -9,12 +13,14 @@ const content = {
     tooManyQuestions: fs.readFileSync(path.join(CONTENT_DIR, "too-many-questions.md"), "utf-8")
 }
 
+const storageKey = ModuleServiceProvider.storagePrefix + "question-channels"
+
 class ChannelManager {
     constructor(client, channel) {
         this.client = client
         this.channel = channel
 
-        this.activeChannels = {} // Map: channel-id -> creator-id
+        this.activeChannels = {} // Map: channel-id -> ActiveChannel
         this.timeoutUsers = new Set()
 
         this.handleMessage = this.handleMessage.bind(this)
@@ -86,6 +92,7 @@ class ChannelManager {
     async deleteChannel(channel) {
         await channel.delete()
         delete this.activeChannels[channel.id]
+        await this.storeActiveChannels()
     }
 
     async createChannel(message) {
@@ -113,19 +120,52 @@ class ChannelManager {
         const question = await newChannel.send(new QuestionEmbed(message))
         await question.pin()
 
-        this.activeChannels[newChannel.id] = {
+        this.activeChannels[newChannel.id] = new ActiveChannel({
             channel: newChannel,
             user: message.author,
             message: question
+        })
+
+        await this.storeActiveChannels()
+    }
+
+    async storeActiveChannels() {
+        const store = await StorageFacade.getItem(storageKey)
+        store.activeChannels = this.activeChannels
+        await StorageFacade.setItem(storageKey, store)
+    }
+
+    async loadActiveChannels() {
+        const store = await StorageFacade.getItem(storageKey)
+
+        if (!store) {
+            return
+        }
+
+        const { activeChannels } = store
+
+        if (activeChannels) {
+            await Promise.all(Object.entries(activeChannels).map(async ([id, { channelId, messageId, userId }]) => {
+                const channel = await this.client.channels.fetch(channelId)
+                const message = await channel.messages.fetch(messageId)
+                const user = await this.client.users.fetch(userId)
+
+                this.activeChannels[id] = new ActiveChannel({ channel, message, user })
+            }))
         }
     }
     
-    init() {
+    async init() {
+        await this.loadActiveChannels()
+
         this.client.on("message", this.handleMessage)
         this.client.on("messageReactionAdd", this.handleReaction)
     }
     
-    delete() {
+    async delete() {
+        // Delete all active channels
+        await Promise.all(Object.values(this.activeChannels).map(({ channel }) => channel.delete()))
+
         this.client.removeListener("message", this.handleMessage)
         this.client.removeListener("messageReactionAdd", this.handleReaction)
     }
