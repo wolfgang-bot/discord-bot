@@ -5,7 +5,7 @@ class RoleEmbed extends BaseEmbed {
         super()
 
         this.setTitle("Skill Rollen")
-            .setDescription("Klicke auf die Emojis unter dieser Nachricht")
+            .setDescription("Klicke auf ein Emoji unter dieser Nachricht, um die jeweilige Rolle zu erhalten.")
     }
 }
 
