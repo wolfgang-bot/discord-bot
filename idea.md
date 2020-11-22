@@ -33,3 +33,4 @@
     * Rollenfarben für Level von Chill Heaven klauen
     * Counting Spiel (🔢┃counting)
     * Rangliste Command
+    * Command: Modul Konfigurationen ausgeben

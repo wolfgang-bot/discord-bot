@@ -22,7 +22,7 @@ module.exports = {
 
     reputationSystem: {
         roles: ["Bronze", "Silber", "Gold", "Platin", "Diamant"],
-        roleColors: ["ORANGE", "#ffffff", "GOLD", "#607d8b", "BLUE"], // |roleColors| = |roles|
+        roleColors: ["#E67E22", "#ffffff", "#F0C410", "#607d8b", "#3498DB"], // |roleColors| = |roles|
         roleThresholds: [10, 100, 500, 1000, 2500], // n[i] < n[i+1]; |roleThresholds| = |roles|,
         levelUpReactionEmoji: "💯"
     },

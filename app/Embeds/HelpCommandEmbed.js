@@ -11,7 +11,7 @@ class HelpCommandEmbed extends BaseEmbed {
         this.addFields([
             {
                 name: "Benutzung",
-                value: makeCodeblock(`${process.env.DISCORD_BOT_PREFIX}${command.name} ${command.arguments}`)
+                value: makeCodeblock(`${process.env.DISCORD_BOT_PREFIX}${command.name} ${command.arguments || ""}`)
             },
             {
                 name: "Benötigte Rechte",

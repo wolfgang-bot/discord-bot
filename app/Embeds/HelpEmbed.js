@@ -12,7 +12,7 @@ class HelpEmbed extends BaseEmbed {
 
         Object.entries(groups).forEach(([group, commands]) => {
             const commandNames = commands.map(command => command.name).join("\n")
-            this.addField(group, makeCodeblock(commandNames))
+            this.addField(group, makeCodeblock(commandNames), true)
         })
     }
 

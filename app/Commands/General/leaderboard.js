@@ -12,5 +12,4 @@ async function run(args, message) {
 
 module.exports = new Command(run)
     .setDescription("Zeigt die 10 Benutzer mit der meisten Reputation an.")
-    .setArguments("")
     .setAlias(["lb"])
