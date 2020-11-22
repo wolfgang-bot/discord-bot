@@ -10,6 +10,12 @@ class User extends Model {
             },
             ...values
         })
+
+        this.discordUser = null
+    }
+
+    async fetchDiscordUser(client) {
+        this.discordUser = await client.users.fetch(this.id)
     }
 
     toJSON() {

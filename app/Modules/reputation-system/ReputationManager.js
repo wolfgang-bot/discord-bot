@@ -1,6 +1,7 @@
 const User = require("../../Models/User.js")
 const LevelUpEmbed = require("./LevelUpEmbed.js")
 const config = require("../../../config")
+const { getLevel } = require("../../utils")
 
 class ReputationManager {
     constructor(client, guild, channel) {
@@ -76,20 +77,6 @@ class ReputationManager {
     async announceLevelUp(user, newLevel) {
         const message = await this.channel.send(new LevelUpEmbed(user, newLevel))
         await message.react(config.reputationSystem.levelUpReactionEmoji)
-    }
-
-    getLevel(reputation) {
-        let level = -1
-
-        for (let threshold of config.reputationSystem.roleThresholds) {
-            if (reputation >= threshold) {
-                level++
-            } else {
-                return level
-            }
-        }
-
-        return level
     }
 
     async init() {

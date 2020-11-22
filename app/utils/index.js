@@ -1,3 +1,7 @@
+const config = require("../../config")
+
+const BLANK = "\u200B"
+
 function makeCodeblock(str) {
     return "```\n" + str + "```"
 }
@@ -13,4 +17,22 @@ function parseCommand(content) {
     return [command, args]
 }
 
-module.exports = { makeCodeblock, parseCommand }
+function getLevel(reputation) {
+    let level = -1
+
+    for (let threshold of config.reputationSystem.roleThresholds) {
+        if (reputation >= threshold) {
+            level++
+        } else {
+            return level
+        }
+    }
+
+    return level
+}
+
+function space(length) {
+    return (BLANK + " ").repeat(length)
+}
+
+module.exports = { makeCodeblock, parseCommand, getLevel, space }

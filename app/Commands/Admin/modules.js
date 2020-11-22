@@ -106,5 +106,5 @@ async function helpModule(args, message) {
 
 module.exports = new Command(run)
     .setDescription("Zeigt Informationen über die Module an.")
-    .setUsage("modules [start|stop|help] [module]")
+    .setArguments("[start|stop|help] [module]")
     .setPermissions(["MANAGE_GUILD"])
