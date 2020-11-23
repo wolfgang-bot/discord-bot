@@ -14,7 +14,10 @@ async function run(client, member) {
     }
     
     // Store the new user in the database
-    const model = new User({ id: member.user.id })
+    const model = new User({
+        user_id: member.user.id,
+        guild_id: member.guild.id
+    })
     await model.store()
 }
 

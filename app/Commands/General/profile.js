@@ -5,7 +5,12 @@ const User = require("../../Models/User")
 const ProfileCard = require("../../Generators/ProfileCard")
 
 async function run(args, message) {
-    const user = await User.findBy("id", message.author.id)
+    const user = await User.where(`user_id = '${message.author.id}' AND guild_id = '${message.guild.id}'`)
+    
+    if (!user) {
+        return await message.channel.send("Du bist nicht registriert.")
+    }
+
     await user.fetchDiscordUser(message.client)
 
     // Fetch avatar image

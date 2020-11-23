@@ -3,7 +3,7 @@ const User = require("../../Models/User.js")
 const LeaderboardEmbed = require("../../Embeds/LeaderbaordEmbed.js")
 
 async function run(args, message) {
-    const users = await User.where("1 ORDER BY reputation DESC LIMIT 10")
+    const users = await User.whereAll("1 ORDER BY reputation DESC LIMIT 10")
 
     await users.mapAsync(user => user.fetchDiscordUser(message.guild.client))
 

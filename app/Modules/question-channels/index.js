@@ -5,19 +5,19 @@ const HelpEmbed = require("./HelpEmbed.js")
 const globalConfig = require("../../../config")
 
 class QuestionChannelsModule extends Module {
-    static async fromConfig(client, config) {
-        const channel = await client.channels.fetch(config.channelId)
+    static async fromConfig(client, guild, config) {
+        const channel = await guild.channels.cache.get(config.channelId)
         const helpMessage = await channel.messages.fetch(config.helpMessageId)
-        return new QuestionChannelsModule(client, new Configuration({ channel, helpMessage }))
+        return new QuestionChannelsModule(client, guild, new Configuration({ channel, helpMessage }))
     }
 
-    static async fromMessage(message, args) {
+    static async fromMessage(client, guild, message, args) {
         if (!args[0]) {
             await message.channel.send("Kein Textkanal angegeben")
             return
         }
 
-        const channel = await message.guild.channels.cache.get(args[0])
+        const channel = await guild.channels.cache.get(args[0])
 
         if (!channel) {
             await message.channel.send("Der Textkanal existiert nicht")
@@ -26,15 +26,17 @@ class QuestionChannelsModule extends Module {
 
         const config = new Configuration({ channel })
 
-        return new QuestionChannelsModule(message.client, config)
+        return new QuestionChannelsModule(client, guild, config)
     }
 
-    constructor(client, config) {
+    constructor(client, guild, config) {
         super()
 
         this.client = client
+        this.guild = guild
         this.config = config
-        this.channelManager = new ChannelManager(this.client, this.config.channel)
+
+        this.channelManager = new ChannelManager(this.client, this.guild, this.config.channel)
     }
 
     async start() {

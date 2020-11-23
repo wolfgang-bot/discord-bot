@@ -1,5 +1,3 @@
-const config = require("../../../../config")
-
 class ProgressBar {
     constructor(theme, user, width, progress) {
         this.theme = theme

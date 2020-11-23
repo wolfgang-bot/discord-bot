@@ -29,8 +29,6 @@
         * Entferne die letzten n Nachrichten aus dem Kanal
 
 * TODO:
-    * Maximal zwei Rollen pro Frage taggen
-    * Rollenfarben für Level von Chill Heaven klauen
     * Counting Spiel (🔢┃counting)
-    * Rangliste Command
     * Command: Modul Konfigurationen ausgeben
+    * Bot-Konfiguration Guildenabhängig machen

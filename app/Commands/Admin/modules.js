@@ -11,7 +11,7 @@ const modules = ModuleServiceProvider.getModuleNamesSync()
  */
 async function run(args, message) {
     if (args.length === 0) {
-        const loaded = ModuleServiceProvider.getLoadedModules().map(entry => entry.name)
+        const loaded = ModuleServiceProvider.guild(message.guild).getLoadedModules().map(entry => entry.name)
         return await message.channel.send(new ModulesEmbed({ available: modules, loaded }))
     }
 
@@ -44,14 +44,14 @@ async function startModule(args, message) {
         return await message.channel.send("Das Modul existiert nicht")
     }
 
-    if (ModuleServiceProvider.isLoaded(moduleName)) {
+    if (ModuleServiceProvider.guild(message.guild).isLoaded(moduleName)) {
         return await message.channel.send("Das Modul ist bereits gestartet")
     }
 
     // Start the requested module
     let instance
     try {
-        instance = await ModuleServiceProvider.startModuleFromMessage(moduleName, message, args.slice(2))
+        instance = await ModuleServiceProvider.guild(message.guild).startModuleFromMessage(moduleName, message, args.slice(2))
     } catch(error) {
         if (process.env.NODE_ENV === "development") {
             console.error(error)
@@ -61,7 +61,7 @@ async function startModule(args, message) {
     }
 
     // Store the instance's configuration
-    await StorageFacade.setItem(ModuleServiceProvider.storagePrefix + moduleName, instance.getConfig())
+    await StorageFacade.guild(message.guild).setItem(ModuleServiceProvider.storagePrefix + moduleName, instance.getConfig())
 
     await message.channel.send(`Das Modul '${moduleName}' wurde erfolgreich gestartet`)
 }
@@ -76,12 +76,12 @@ async function stopModule(args, message) {
         return await message.channel.send("Kein Modul angegeben")
     }
 
-    if (!ModuleServiceProvider.isLoaded(moduleName)) {
+    if (!ModuleServiceProvider.guild(message.guild).isLoaded(moduleName)) {
         return await message.channel.send("Das Modul ist nicht gestartet")
     }
 
-    await ModuleServiceProvider.stopModule(moduleName)
-    await StorageFacade.deleteItem(ModuleServiceProvider.storagePrefix + moduleName)
+    await ModuleServiceProvider.guild(message.guild).stopModule(moduleName)
+    await StorageFacade.guild(message.guild).deleteItem(ModuleServiceProvider.storagePrefix + moduleName)
 
     await message.channel.send(`Modul '${moduleName}' wurde erfolgreich gestoppt`)
 }
@@ -107,4 +107,5 @@ async function helpModule(args, message) {
 module.exports = new Command(run)
     .setDescription("Zeigt Informationen über die Module an.")
     .setArguments("[start|stop|help] [module]")
+    .setAlias(["module"])
     .setPermissions(["MANAGE_GUILD"])

@@ -5,7 +5,9 @@ const database = require("../database")
 function boot(client) {
     return new Promise(async resolve => {
         client.once("ready", async () => {
-            await ModuleServiceProvider.restoreModules(client)
+            await Promise.all(client.guilds.cache.map(guild => {
+                return ModuleServiceProvider.guild(guild).restoreModules(client)
+            }))
             resolve()
         })
 

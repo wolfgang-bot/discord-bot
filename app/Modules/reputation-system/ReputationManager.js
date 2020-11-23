@@ -15,19 +15,27 @@ class ReputationManager {
     }
 
     async handleReputationAdd(member, amount) {
-        let model = await User.findBy("id", member.user.id)
+        if (member.guild.id !== this.guild.id) {
+            return
+        }
+
+        let model = await User.where(`user_id = '${member.user.id}' AND guild_id = ${member.guild.id}`)
 
         if (!model) {
-            model = new User({ id: member.user.id })
+            model = new User({
+                user_id: member.user.id,
+                guild_id: member.guild.id
+            })
             await model.store()
         }
 
-        const prevLevel = this.getLevel(model.reputation)
+        const prevLevel = getLevel(model.reputation)
 
         model.reputation += amount
+
         await model.update()
 
-        const newLevel = this.getLevel(model.reputation)
+        const newLevel = getLevel(model.reputation)
 
         if (newLevel > prevLevel) {
             await Promise.all([

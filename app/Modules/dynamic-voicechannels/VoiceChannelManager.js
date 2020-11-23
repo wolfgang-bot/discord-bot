@@ -1,21 +1,23 @@
 const config = require("../../../config")
 
 class VoiceChannelManager {
-    constructor(client, parentChannel) {
+    constructor(client, guild, parentChannel) {
         this.client = client
+        this.guild = guild
         this.parentChannel = parentChannel
+
         this.channels = []
 
         this.updateVoiceChannels = this.updateVoiceChannels.bind(this)
     }
 
     getVoiceChannels() {
-        return this.client.channels.cache.array().filter(channel => channel.type === "voice" && channel.parent.id === this.parentChannel.id)
+        return this.guild.channels.cache.array().filter(channel => channel.type === "voice" && channel.parent.id === this.parentChannel.id)
     }
 
     async createVoiceChannel(index) {
         const name = config.dynamicVoicechannels.channelName.replace(/{}/g, index + 1)
-        const channel = await this.parentChannel.guild.channels.create(name, {
+        const channel = await this.guild.channels.create(name, {
             type: "voice",
             parent: this.parentChannel,
             position: index
@@ -56,9 +58,11 @@ class VoiceChannelManager {
 
         this.client.on("voiceStateUpdate", this.updateVoiceChannels)
     }
-
+    
     async delete() {
         await Promise.all(this.channels.map(channel => channel.delete()))
+        
+        this.client.removeListener("voiceStateUpdate", this.updateVoiceChannels)
     }
 }
 

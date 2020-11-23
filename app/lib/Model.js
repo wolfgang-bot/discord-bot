@@ -15,7 +15,7 @@ class Model {
      * Select all matches for the given SQL selector and return a
      * collection containing models for all rows in the query result
      */
-    static async where(selector, options = {}) {
+    static async whereAll(selector, options = {}) {
         // Get matches from database
         const query = `SELECT * FROM ${this.table} WHERE ${selector}`
         const results = await database.all(query)
@@ -35,24 +35,31 @@ class Model {
     }
 
     /**
+     * Executes Model.whereAll with the given arguments and returns the first result
+     */
+    static async where(...args) {
+        return (await Model.whereAll.apply(this, args))[0]
+    }
+
+    /**
      * Create a model from the first match for 'column = value'
      */
     static async findBy(column, value, options) {
-        return (await Model.where.call(this, `${column} = '${value}'`, options))[0]
+        return await Model.where.call(this, `${column} = '${value}'`, options)
     }
 
     /**
      * Create a collection from all matches for 'column = value'
      */
     static async findAllBy(column, value, options) {
-        return await Model.where.call(this, `${column} = '${value}'`, options)
+        return await Model.whereAll.call(this, `${column} = '${value}'`, options)
     }
 
     /**
      * Create a collection from all entries
      */
     static async getAll(options) {
-        return await Model.where.call(this, "1", options)
+        return await Model.whereAll.call(this, "1", options)
     }
 
     /**

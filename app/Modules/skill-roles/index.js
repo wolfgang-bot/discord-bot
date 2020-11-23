@@ -6,20 +6,20 @@ const ReactionManager = require("./ReactionManager.js")
 const RoleEmbed = require("./RoleEmbed.js")
 
 class RoleManagerModule extends Module {
-    static async fromConfig(client, config) {
-        const channel = await client.channels.fetch(config.channelId)
+    static async fromConfig(client, guild, config) {
+        const channel = await guild.channels.cache.get(config.channelId)
         const roleMessage = await channel.messages.fetch(config.roleMessageId)
 
-        return new RoleManagerModule(client, new Configuration({ channel, roleMessage }))
+        return new RoleManagerModule(client, guild, new Configuration({ channel, roleMessage }))
     }
 
-    static async fromMessage(message, args) {
+    static async fromMessage(client, guild, message, args) {
         if (!args[0]) {
             await message.channel.send("Keine Textkanal angegeben")
             return
         }
 
-        const channel = await message.guild.channels.cache.get(args[0])
+        const channel = await guild.channels.cache.get(args[0])
 
         if (!channel) {
             await message.channel.send("Der Textkanal existiert nicht")
@@ -27,17 +27,19 @@ class RoleManagerModule extends Module {
         }
 
         const config = new Configuration({ channel })
-        return new RoleManagerModule(message.client, config)
+        return new RoleManagerModule(client, guild, config)
     }
 
-    constructor(client, config) {
+    constructor(client, guild, config) {
         super()
 
         this.client = client
+        this.guild = guild
         this.config = config
-        this.emojiManager = new EmojiManager(this.config.channel.guild)
-        this.roleManager = new RoleManager(this.config.channel.guild)
-        this.reactionManager = new ReactionManager(this.client, this.emojiManager, this.roleManager, this.config.roleMessage)
+        
+        this.emojiManager = new EmojiManager(this.guild)
+        this.roleManager = new RoleManager(this.guild)
+        this.reactionManager = new ReactionManager(this.client, this.guild, this.emojiManager, this.roleManager, this.config.roleMessage)
     }
 
     async start() {

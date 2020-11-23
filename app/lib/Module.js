@@ -8,6 +8,7 @@ class Module {
      * Meta data (required for the "help" command)
      */
     static meta = {
+        name: "", // THem name of the module
         description: "", // Short description about what the module does
         arguments: "", // Required and / or optional arguments to start the module
         features: [] // All the features of the module
@@ -16,22 +17,25 @@ class Module {
     /**
      * Creates a new instance of the class from a configuration object.
      * 
-     * @param {Discord.Client} client 
-     * @param {Object} config 
+     * @param {Discord.Client} client
+     * @param {Discord.Guid} guild
+     * @param {Object} config
      * 
      * @returns {Module}
      */
-    static async fromConfig(client, config) {}
+    static async fromConfig(client, guild, config) {}
 
     /**
      * Creates a new instance of the class from a discord message.
      *
+     * @param {Discord.Client} client
+     * @param {Discord.Guild} guild
      * @param {Discord.Message} message
      * @param {String[]} args
      *
      * @returns {Module}
      */
-    static async fromMessage(message, args) {}
+    static async fromMessage(client, guild, message, args) {}
 
     /**
      * Starts the module.

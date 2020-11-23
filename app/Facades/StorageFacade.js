@@ -4,33 +4,49 @@ const path = require("path")
 const STORAGE_FILE = path.join(__dirname, "..", "storage.json")
 
 class StorageFacade {
-    static async readStorage() {
-        try {
-            return JSON.parse(await fs.promises.readFile(STORAGE_FILE, "utf-8"))
-        } catch {
-            return {}
-        }
+    static guild(guild) {
+        return new StorageFacade(guild.id)
     }
 
-    static async writeStorage(storage) {
+    constructor(id) {
+        this.id = id
+    }
+
+    async readStorage() {
+        let storage
+
+        try {
+            storage = JSON.parse(await fs.promises.readFile(STORAGE_FILE, "utf-8"))
+        } catch {
+            storage = {}
+        }
+
+        if (!storage[this.id]) {
+            storage[this.id] = {}
+        }
+
+        return storage
+    }
+
+    async writeStorage(storage) {
         return await fs.promises.writeFile(STORAGE_FILE, JSON.stringify(storage), "utf-8")
     }
 
-    static async setItem(key, value) {
-        const storage = await StorageFacade.readStorage()
-        storage[key] = value
-        await StorageFacade.writeStorage(storage)
+    async setItem(key, value) {
+        const storage = await this.readStorage()
+        storage[this.id][key] = value
+        await this.writeStorage(storage)
     }
 
-    static async getItem(key) {
-        const storage = await StorageFacade.readStorage()
-        return storage[key]
+    async getItem(key) {
+        const storage = await this.readStorage()
+        return storage[this.id][key]
     }
 
-    static async deleteItem(key) {
-        const storage = await StorageFacade.readStorage()
-        delete storage[key]
-        await StorageFacade.writeStorage(storage)
+    async deleteItem(key) {
+        const storage = await this.readStorage()
+        delete storage[this.id][key]
+        await this.writeStorage(storage)
     }
 }
 

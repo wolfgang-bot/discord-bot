@@ -1,6 +1,7 @@
 class ReactionManager {
-    constructor(client, emojiManager, roleManager, message) {
+    constructor(client, guild, emojiManager, roleManager, message) {
         this.client = client
+        this.guild = guild
         this.emojiManager = emojiManager
         this.roleManager = roleManager
         this.message = message
@@ -39,8 +40,12 @@ class ReactionManager {
     }
 
     async handleReactionAdd(reaction, user) {
+        if (reaction.message.guild.id !== this.guild.id) {
+            return
+        }
+
         if (reaction.message.id === this.message.id) {
-            const member = await reaction.message.channel.guild.members.fetch(user)
+            const member = await this.guild.members.fetch(user)
             
             const roleName = this.emojiManager.getRoleFromEmoji(reaction.emoji)
             const role = this.roleManager.getRoles()[roleName]
@@ -50,8 +55,12 @@ class ReactionManager {
     }
 
     async handleReactionRemove(reaction, user) {
+        if (reaction.message.guild.id !== this.guild.id) {
+            return
+        }
+
         if (reaction.message.id === this.message.id) {
-            const member = await reaction.message.channel.guild.members.fetch(user)
+            const member = await this.guild.members.fetch(user)
 
             const roleName = this.emojiManager.getRoleFromEmoji(reaction.emoji)
             const role = this.roleManager.getRoles()[roleName]

@@ -15,8 +15,9 @@ const content = {
 const storageKey = ModuleServiceProvider.storagePrefix + "question-channels"
 
 class ChannelManager {
-    constructor(client, channel) {
+    constructor(client, guild, channel) {
         this.client = client
+        this.guild = guild
         this.channel = channel
 
         this.activeChannels = {} // Map: channel-id -> ActiveChannel
@@ -27,6 +28,10 @@ class ChannelManager {
     }
 
     async handleMessage(message) {
+        if (!message.guild || message.guild.id !== this.guild.id) {
+            return
+        }
+
         if (message.author.id !== this.client.user.id) {
             // Create a new question channel
             if (message.channel.id === this.channel.id) {
@@ -52,19 +57,23 @@ class ChannelManager {
     }
 
     async handleReaction(reaction, user) {
+        if (reaction.message.guild.id !== this.guild.id) {
+            return
+        }
+        
         if (!(reaction.message.channel.id in this.activeChannels)) {
             return
         }
-
+        
         const { channel, message, user: owner } = this.activeChannels[reaction.message.channel.id]
         
         if (user.id !== owner.id) {
             return
         }
-
+        
         if (reaction.emoji.name === config.questionChannels.resolveReaction) {
             await this.resolveChannel(channel, reaction, user)
-
+            
         } else if (reaction.message.id === message.id && reaction.emoji.name === config.questionChannels.deleteReaction) {
             await this.deleteChannel(channel)
         }
@@ -129,13 +138,13 @@ class ChannelManager {
     }
 
     async storeActiveChannels() {
-        const store = await StorageFacade.getItem(storageKey)
+        const store = await StorageFacade.guild(this.guild).getItem(storageKey)
         store.activeChannels = this.activeChannels
-        await StorageFacade.setItem(storageKey, store)
+        await StorageFacade.guild(this.guild).setItem(storageKey, store)
     }
 
     async loadActiveChannels() {
-        const store = await StorageFacade.getItem(storageKey)
+        const store = await StorageFacade.guild(this.guild).getItem(storageKey)
 
         if (!store) {
             return
@@ -145,7 +154,7 @@ class ChannelManager {
 
         if (activeChannels) {
             await Promise.all(Object.entries(activeChannels).map(async ([id, { channelId, messageId, userId }]) => {
-                const channel = await this.client.channels.fetch(channelId)
+                const channel = await this.guild.channels.cache.get(channelId)
                 const message = await channel.messages.fetch(messageId)
                 const user = await this.client.users.fetch(userId)
 
