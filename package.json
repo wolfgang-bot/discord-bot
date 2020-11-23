@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon index.js",
-    "format-icons": "node ./scripts/format-icons.js"
+    "format-icons": "node ./scripts/format-icons.js",
+    "install-fonts": "node ./scripts/install-fonts.js"
   },
   "author": "",
   "license": "ISC",

@@ -39,7 +39,7 @@ class ProfileCard {
                 version="1.1"
                 width="${this.width}" 
                 height="{height}" 
-                font-family="Arial, Helvetica, sans-serif"
+                font-family="Roboto, sans-serif"
             >
                 ${new Background(this.theme)}
 
