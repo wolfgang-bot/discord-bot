@@ -31,7 +31,7 @@
             <g transform="translate(80)">
                 
             <text font-size="22" y="22">
-<tspan fill="#3498DB">Tracer</tspan>
+<tspan fill="#E67E22">Tracer</tspan>
 <tspan fill="rgba(255, 255, 255, .5)">#9999</tspan>
             </text>
         
@@ -42,8 +42,8 @@
             <text
                 font-size="16"
                 y="16"
-                fill="#3498DB"
-            >Diamant</text>
+                fill="#E67E22"
+            >Bronze</text>
         
 
             <g transform="translate(288 4)">
@@ -55,7 +55,7 @@
                 font-size="12"
                 y="12"
             >
-                5000/2500
+                70/100
             </text>
         
             </g>
@@ -63,7 +63,7 @@
             <g transform="translate(0 24)">
                 
             <path d="M 3 0 L 285 0 a 1 1 1 0 1 0 4 L 3 4 a 1 1 0 0 1 0 -4" fill="#080D14"/>
-            <path d="M 3 0 L Infinity 0 a 1 1 1 0 1 0 4 L 3 4 a 1 1 0 0 1 0 -4" fill="#5C6FF4"/>
+            <path d="M 3 0 L 189 0 a 1 1 1 0 1 0 4 L 3 4 a 1 1 0 0 1 0 -4" fill="#5C6FF4"/>
         
             </g>
         
