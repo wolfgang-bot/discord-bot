@@ -14,7 +14,7 @@ class ProfileCard {
 
         this.theme = {
             spacing: 16,
-            backgroundColor: "#33373E",
+            backgroundColor: "#202225",
             palette: {
                 primaryVariant: "#f8f9fa",
                 secondary: "rgba(255, 255, 255, .7)",
