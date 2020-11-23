@@ -2,7 +2,7 @@ class Username {
     constructor(theme, user) {
         this.theme = theme
         this.user = user
-        this.fontSize = 24
+        this.fontSize = 22
     }
 
     toString() {

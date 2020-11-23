@@ -1,17 +1,16 @@
 const config = require("../../../../config")
 
 class ProgressBar {
-    constructor(theme, user, progress) {
+    constructor(theme, user, width, progress) {
         this.theme = theme
         this.user = user
+        this.width = width
         this.progress = progress
 
-        this.height = 16
+        this.height = 4
         this.r = this.height / 2
-        this.fill = "#424242"
-        this.fillOverlay = "#2980b9"
-        this.stroke = "rgba(255, 255, 255, 0.12)"
-        this.strokeWidth = 1
+        this.fill = "#080D14"
+        this.fillOverlay = "#5C6FF4"
     }
     
     getHeight() {
@@ -19,9 +18,8 @@ class ProgressBar {
     }
 
     calculatePath(progress) {
-        const { width: maxWidth } = this.theme
         progress = Math.max(0.05, progress) // progress < 5% -> SVG looks odd
-        const width = maxWidth * progress
+        const width = this.width * progress
         
         // Error correction
         const start = this.r + 1
@@ -32,7 +30,7 @@ class ProgressBar {
 
     toString() {
         return `
-            <path d="${this.calculatePath(1)}" fill="${this.fill}" stroke="${this.stroke}" stroke-width="${this.strokeWidth}"/>
+            <path d="${this.calculatePath(1)}" fill="${this.fill}"/>
             <path d="${this.calculatePath(this.progress)}" fill="${this.fillOverlay}"/>
         `
     }

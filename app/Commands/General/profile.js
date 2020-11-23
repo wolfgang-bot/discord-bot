@@ -1,5 +1,6 @@
 const sharp = require("sharp")
 const fetch = require("node-fetch")
+const fs = require("fs")
 const Command = require("../../lib/Command.js")
 const User = require("../../Models/User")
 const ProfileCard = require("../../Generators/ProfileCard")
@@ -16,6 +17,8 @@ async function run(args, message) {
     const buffer = Buffer.from(svg, "utf-8")
 
     const image = await sharp(buffer).png().toBuffer()
+        
+    await fs.promises.writeFile("./user.svg", buffer)
     
     await message.channel.send("", { files: [image] })
 }

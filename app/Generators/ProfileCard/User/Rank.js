@@ -5,7 +5,7 @@ class Rank {
     constructor(theme, user) {
         this.theme = theme
 
-        this.fontSize = 20
+        this.fontSize = 16
 
         const level = getLevel(user.reputation)
         this.rankName = config.reputationSystem.roles[level] || ""

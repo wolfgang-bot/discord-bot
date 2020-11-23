@@ -1,6 +1,5 @@
 const Background = require("./Background.js")
 const User = require("./User/User.js") 
-const LevelProgress = require("./LevelProgress/LevelProgress.js")
 const config = require("../../../config")
 const { getLevel } = require("../../utils")
 
@@ -15,7 +14,7 @@ class ProfileCard {
 
         this.theme = {
             spacing: 16,
-            backgroundColor: "#202225",
+            backgroundColor: "#33373E",
             palette: {
                 primaryVariant: "#f8f9fa",
                 secondary: "rgba(255, 255, 255, .7)",
@@ -30,7 +29,6 @@ class ProfileCard {
 
     toString() {
         const user = new User(this.theme, this.user, this.avatarURI)
-        const levelProgress = new LevelProgress(this.theme, this.user)
 
         const svg = `
             <svg
@@ -45,15 +43,11 @@ class ProfileCard {
 
                 <g transform="translate(${this.theme.spacing} ${this.theme.spacing})">
                     ${user}
-
-                    <g transform="translate(0 ${user.getHeight() + this.theme.spacing})">
-                        ${levelProgress}
-                    </g>
                 </g>
             </svg>
         `
 
-        const height = this.theme.spacing * 3 + user.getHeight() + levelProgress.getHeight()
+        const height = this.theme.spacing * 2 + user.getHeight()
 
         return svg.replace(/{height}/g, height)
     }
