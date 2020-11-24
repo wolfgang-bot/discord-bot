@@ -1,4 +1,5 @@
 const User = require("../Models/User.js")
+const Member = require("../Models/Member.js")
 const Guild = require("../Models/Guild.js")
 
 async function run(client, member) {
@@ -13,9 +14,17 @@ async function run(client, member) {
     } else {
         await member.roles.add(userRole)
     }
+
+    // Create user if not exists
+    let user = await User.findBy("id", member.user.id)
+    if (!user) {
+        user = new User({ id: member.user.id })
+        await user.store()
+    }
+
     
-    // Store the new user in the database
-    const model = new User({
+    // Create member for user
+    const model = new Member({
         user_id: member.user.id,
         guild_id: member.guild.id
     })

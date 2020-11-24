@@ -14,6 +14,10 @@ async function run(database, table) {
         }
     }
 
+    for (let migration of migrations.reverse()) {
+        await database.run(`DROP TABLE IF EXISTS '${migration.table}'`)
+    }
+
     for (let migration of migrations) {
         const query = `
             CREATE TABLE ${migration.table} (

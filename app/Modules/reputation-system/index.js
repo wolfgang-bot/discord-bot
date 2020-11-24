@@ -9,17 +9,15 @@ class ReputationSystemModule extends Module {
         return new ReputationSystemModule(client, guild, new Configuration({ channel }))
     }
 
-    static async fromMessage(client, guild, message, args) {
+    static async fromMessage(client, guild, args) {
         if (!args[0]) {
-            await message.channel.send("Kein Textkanal angegeben")
-            return
+            throw "Kein Textkanal angegeben"
         }
 
         const channel = guild.channels.cache.get(args[0])
 
         if (!channel) {
-            await message.channel.send("Der Textkanal existiert nicht")
-            return
+            throw "Der Textkanal existiert nicht"
         }
 
         const config = new Configuration({ channel })

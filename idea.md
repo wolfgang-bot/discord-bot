@@ -35,3 +35,5 @@
     * Punkte / Commands für Bots unzugänglich machen
     * Guild deletion -> Module stoppen, Konfiguration löschen
     * Modulkonfigurationen in Guild Model verschieben
+    * Model - Database cache
+    * Flow installieren

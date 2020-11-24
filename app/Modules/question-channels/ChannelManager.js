@@ -1,18 +1,16 @@
 const fs = require("fs")
 const path = require("path")
-const StorageFacade = require("../../Facades/StorageFacade.js")
-const ModuleServiceProvider = require("../../Services/ModuleServiceProvider.js")
 const ActiveChannel = require("./ActiveChannel.js")
 const QuestionEmbed = require("./QuestionEmbed.js")
 const Guild = require("../../Models/Guild.js")
+const Module = require("../../Models/Module.js")
+const ModuleInstance = require("../../Models/ModuleInstance.js")
 
 const CONTENT_DIR = path.join(__dirname, "content")
 
 const content = {
     tooManyQuestions: fs.readFileSync(path.join(CONTENT_DIR, "too-many-questions.md"), "utf-8")
 }
-
-const storageKey = ModuleServiceProvider.storagePrefix + "question-channels"
 
 class ChannelManager {
     constructor(client, guild, channel) {
@@ -139,19 +137,17 @@ class ChannelManager {
     }
 
     async storeActiveChannels() {
-        const store = await StorageFacade.guild(this.guild).getItem(storageKey)
-        store.activeChannels = this.activeChannels
-        await StorageFacade.guild(this.guild).setItem(storageKey, store)
+        const instance = await this.fetchInstance()
+
+        instance.data.activeChannels = this.activeChannels
+
+        await instance.update()
     }
 
     async loadActiveChannels() {
-        const store = await StorageFacade.guild(this.guild).getItem(storageKey)
+        const instance = await this.fetchInstance()
 
-        if (!store) {
-            return
-        }
-
-        const { activeChannels } = store
+        const { activeChannels } = instance.data
 
         if (activeChannels) {
             await Promise.all(Object.entries(activeChannels).map(async ([id, { channelId, messageId, userId }]) => {
@@ -163,8 +159,13 @@ class ChannelManager {
             }))
         }
     }
+
+    async fetchInstance() {
+        return await ModuleInstance.where(`module_id = '${this.module.id}' AND guild_id = '${this.guild.id}'`)
+    }
     
     async init() {
+        this.module = await Module.findBy("name", "question-channels")
         this.config = await Guild.config(this.guild)
 
         await this.loadActiveChannels()

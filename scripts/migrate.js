@@ -10,6 +10,6 @@ makeRunnable(async () => {
     await database.connect()
 
     for (let table of tables) {
-        await run(() => migrate(database, table), `Create table: ${table}`)
+        await run(() => migrate(database, table), `Migrate table: ${table}`)
     }
 })()

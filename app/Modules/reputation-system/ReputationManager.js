@@ -1,5 +1,5 @@
-const User = require("../../Models/User.js")
 const LevelUpEmbed = require("./LevelUpEmbed.js")
+const Member = require("../../Models/Member.js")
 const Guild = require("../../Models/Guild.js")
 const { getLevel } = require("../../utils")
 
@@ -19,11 +19,11 @@ class ReputationManager {
         if (member.guild.id !== this.guild.id) {
             return
         }
-
-        let model = await User.where(`user_id = '${member.user.id}' AND guild_id = ${member.guild.id}`)
+        
+        let model = await Member.where(`user_id = '${member.user.id}' AND guild_id = ${member.guild.id}`)
 
         if (!model) {
-            model = new User({
+            model = new Member({
                 user_id: member.user.id,
                 guild_id: member.guild.id
             })

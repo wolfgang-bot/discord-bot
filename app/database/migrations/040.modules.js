@@ -1,8 +1,8 @@
 module.exports = {
-    table: "guilds",
+    table: "modules",
 
     columns: [
         "id varchar(255) PRIMARY KEY",
-        "config TEXT NOT NULL"
+        "name varchar(255) UNIQUE"
     ]
 }

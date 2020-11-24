@@ -7,7 +7,7 @@ const defaultConfig = require(DEFAULT_CONFIG_PATH)
 
 class Guild extends Model {
     static async config(guild) {
-        let model = await Guild.findBy("guild_id", guild.id)
+        let model = await Guild.findBy("id", guild.id)
         
         if (!model) {
             console.trace(`Guild '${guild.id}' - '${guild.name}' ist not available`)
@@ -20,17 +20,21 @@ class Guild extends Model {
     constructor(values) {
         super({
             table: "guilds",
-            columns: ["id", "guild_id", "config"],
+            columns: ["id", "config"],
             defaultValues: {
                 id: uuid,
                 config: defaultConfig
             },
             ...values
         })
+
+        this.discordGuild = null
     }
 
     init() {
-        this.config = JSON.parse(this.config)
+        if (typeof this.config === "string") {
+            this.config = JSON.parse(this.config)
+        }
     }
 }
 

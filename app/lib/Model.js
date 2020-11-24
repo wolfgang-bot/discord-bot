@@ -118,7 +118,7 @@ class Model {
         const values = []
         this.columns.forEach(column => {
             if (typeof this[column] !== "undefined") {
-                if (this[column].constructor.name === "Object") {
+                if (typeof this[column] === "object") {
                     values.push(JSON.stringify(this[column]))
                 } else {
                     values.push(this[column])

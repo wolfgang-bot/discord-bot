@@ -1,15 +1,10 @@
-const { v4: uuid } = require("uuid")
 const Model = require("../lib/Model.js")
 
 class User extends Model {
     constructor(values) {
         super({
             table: "users",
-            columns: ["id", "user_id", "guild_id", "reputation"],
-            defaultValues: {
-                id: uuid,
-                reputation: 0
-            },
+            columns: ["id"],
             ...values
         })
 
@@ -17,7 +12,7 @@ class User extends Model {
     }
 
     async fetchDiscordUser(client) {
-        this.discordUser = await client.users.fetch(this.user_id)
+        this.discordUser = await client.users.fetch(this.id)
     }
 }
 

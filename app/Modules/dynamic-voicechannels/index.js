@@ -8,17 +8,15 @@ class DynamicVoicechannelsModule extends Module {
         return new DynamicVoicechannelsModule(client, guild, new Configuration({ parentChannel }))
     }
 
-    static async fromMessage(client, guild, message, args) {
+    static async fromMessage(client, guild, args) {
         if (!args[0]) {
-            await message.channel.send("Keine Kategorie angegeben")
-            return
+            throw "Keine Kategorie angegeben"
         }
 
         const parentChannel = await guild.channels.cache.get(args[0])
 
         if (!parentChannel || parentChannel.type !== "category") {
-            await message.channel.send("Die Kategorie existiert nicht")
-            return
+            throw "Die Kategorie existiert nicht"
         }
 
         return new DynamicVoicechannelsModule(client, guild, new Configuration({ parentChannel }))
