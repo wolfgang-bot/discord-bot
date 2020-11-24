@@ -1,17 +1,16 @@
 const BaseEmbed = require("./BaseEmbed.js")
-const config = require("../../config")
 const { getLevel, space } = require("../utils")
 
 class LeaderbaordEmbed extends BaseEmbed {
-    constructor(users) {
-        super()
+    constructor(config, users) {
+        super(config)
 
         this.setTitle("Leaderboard")
 
         let desc = ""
 
         users.forEach((user, i) => {
-            const level = getLevel(user.reputation)
+            const level = getLevel(config, user.reputation)
             const nextLevelReputation = config.reputationSystem.roleThresholds[Math.min(level + 1, config.reputationSystem.roleThresholds.length - 1)]
 
             desc += `**# ${i + 1} - ${user.discordUser.username}**\n`

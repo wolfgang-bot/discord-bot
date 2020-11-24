@@ -1,8 +1,8 @@
 const BaseEmbed = require("../../Embeds/BaseEmbed.js")
 
 class RoleEmbed extends BaseEmbed {
-    constructor() {
-        super()
+    constructor(config) {
+        super(config)
 
         this.setTitle("Skill Rollen")
             .setDescription("Klicke auf ein Emoji unter dieser Nachricht, um die jeweilige Rolle zu erhalten.")

@@ -1,10 +1,11 @@
-const config = require("../../../config")
+const Guild = require("../../Models/Guild.js")
 
 class VoiceChannelManager {
     constructor(client, guild, parentChannel) {
         this.client = client
         this.guild = guild
         this.parentChannel = parentChannel
+        this.config = null
 
         this.channels = []
 
@@ -16,7 +17,7 @@ class VoiceChannelManager {
     }
 
     async createVoiceChannel(index) {
-        const name = config.dynamicVoicechannels.channelName.replace(/{}/g, index + 1)
+        const name = this.config.dynamicVoicechannels.channelName.replace(/{}/g, index + 1)
         const channel = await this.guild.channels.create(name, {
             type: "voice",
             parent: this.parentChannel,
@@ -35,7 +36,7 @@ class VoiceChannelManager {
                     return
                 }
 
-                if (index >= config.dynamicVoicechannels.defaultChannels) {
+                if (index >= this.config.dynamicVoicechannels.defaultChannels) {
                     this.channels.splice(index, 1)
                     return channel.delete()
                 }
@@ -49,10 +50,12 @@ class VoiceChannelManager {
     }
 
     async init() {
+        this.config = await Guild.config(this.guild)
+
         this.channels = this.getVoiceChannels()
         
         // Create remaining voice channels
-        for (let i = this.channels.length; i < config.dynamicVoicechannels.defaultChannels; i++) {
+        for (let i = this.channels.length; i < this.config.dynamicVoicechannels.defaultChannels; i++) {
             await this.createVoiceChannel(i)
         }
 

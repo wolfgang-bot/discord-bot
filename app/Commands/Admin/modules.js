@@ -3,28 +3,30 @@ const StorageFacade = require("../../Facades/StorageFacade.js")
 const ModuleServiceProvider = require("../../Services/ModuleServiceProvider.js")
 const ModulesEmbed = require("../../Embeds/ModuleEmbed.js")
 const ModuleHelpEmbed = require("../../Embeds/ModuleHelpEmbed.js")
+const Guild = require("../../Models/Guild.js")
 
 const modules = ModuleServiceProvider.getModuleNamesSync()
 
 /**
  * Run sub-commands, list the modules no sub-command is given
  */
-async function run(args, message) {
+async function run(message, args) {
     if (args.length === 0) {
         const loaded = ModuleServiceProvider.guild(message.guild).getLoadedModules().map(entry => entry.name)
-        return await message.channel.send(new ModulesEmbed({ available: modules, loaded }))
+        const config = await Guild.config(message.guild)
+        return await message.channel.send(new ModulesEmbed(config, { available: modules, loaded }))
     }
 
     if (args[0] === "start") {
-        return await startModule(args, message)
+        return await startModule(message, args)
     } 
 
     if (args[0] === "stop") {
-        return await stopModule(args, message)
+        return await stopModule(message, args)
     }
 
     if (args[0] === "help") {
-        return await helpModule(args, message)
+        return await helpModule(message, args)
     }
 
     await message.channel.send("Unbekannter Command")
@@ -33,7 +35,7 @@ async function run(args, message) {
 /**
  * Start module
  */
-async function startModule(args, message) {
+async function startModule(message, args) {
     const moduleName = args[1]
 
     if (!moduleName) {
@@ -69,7 +71,7 @@ async function startModule(args, message) {
 /**
  * Stop module
  */
-async function stopModule(args, message) {
+async function stopModule(message, args) {
     const moduleName = args[1]
 
     if (!moduleName) {
@@ -89,7 +91,7 @@ async function stopModule(args, message) {
 /**
  * Send module's help message
  */
-async function helpModule(args, message) {
+async function helpModule(message, args) {
     const moduleName = args[1]
 
     if (!moduleName) {
@@ -101,7 +103,8 @@ async function helpModule(args, message) {
     }
 
     const module = ModuleServiceProvider.getModule(moduleName)
-    await message.channel.send(new ModuleHelpEmbed(module))
+    const config = await Guild.config(message.guild)
+    await message.channel.send(config, new ModuleHelpEmbed(config, module))
 }
 
 module.exports = new Command(run)

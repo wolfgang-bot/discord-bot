@@ -1,9 +1,8 @@
 const BaseEmbed = require("../../Embeds/BaseEmbed.js")
-const config = require("../../../config")
 
 class LevelUpEmbed extends BaseEmbed {
-    constructor(user, level) {
-        super()
+    constructor(config, user, level) {
+        super(config)
 
         this.setTitle("Level Up")
             .setDescription(`

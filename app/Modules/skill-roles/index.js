@@ -4,6 +4,7 @@ const EmojiManager = require("./EmojiManager.js")
 const RoleManager = require("./RoleManager.js")
 const ReactionManager = require("./ReactionManager.js")
 const RoleEmbed = require("./RoleEmbed.js")
+const Guild = require("../../Models/Guild.js")
 
 class RoleManagerModule extends Module {
     static async fromConfig(client, guild, config) {
@@ -44,7 +45,8 @@ class RoleManagerModule extends Module {
 
     async start() {
         if (!this.config.roleMessage) {
-            this.config.roleMessage = await this.config.channel.send(new RoleEmbed())
+            const guildConfig = await Guild.config(this.guild)
+            this.config.roleMessage = await this.config.channel.send(new RoleEmbed(guildConfig))
             this.reactionManager.setMessage(this.config.roleMessage)
         }
 
@@ -70,7 +72,7 @@ RoleManagerModule.meta = {
     description: "Erstellt eine Nachricht, über dessen Reaktionen die Skill-Rollen vergeben werden.",
     arguments: "<textkanal_id>",
     features: [
-        "Erstellt die Skill-Rollen sowie jeweils ein Emoji für jede Rolle,",
+        "Erstellt die Skill-Rollen sowie jeweils ein Emoji für jede Rolle.",
         "Sendet eine Nachricht in den angegebenen Textkanal, die jeweils eine Reaktion zur Vergebung der Rollen besitzt."
     ]
 }

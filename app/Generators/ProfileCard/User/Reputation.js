@@ -1,14 +1,14 @@
-const config = require("../../../../config")
 const { getLevel } = require("../../../utils")
 
 class Reputation {
-    constructor(theme, user) {
+    constructor(config, theme, user) {
+        this.config = config
         this.theme = theme
         this.user = user
 
-        const level = getLevel(user.reputation)
-        const nextLevel = Math.min(level + 1, config.reputationSystem.roleThresholds.length - 1)
-        this.nextLevelReputation = config.reputationSystem.roleThresholds[nextLevel]
+        const level = getLevel(this.config, user.reputation)
+        const nextLevel = Math.min(level + 1, this.config.reputationSystem.roleThresholds.length - 1)
+        this.nextLevelReputation = this.config.reputationSystem.roleThresholds[nextLevel]
         
         this.fontSize = 12
         this.opacity = .5

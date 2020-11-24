@@ -1,14 +1,14 @@
 const Background = require("./Background.js")
 const User = require("./User/User.js") 
-const config = require("../../../config")
 const { getLevel } = require("../../utils")
 
 class ProfileCard {
-    constructor(user, avatarURI) {
+    constructor(config, user, avatarURI) {
+        this.config = config
         this.user = user
         this.avatarURI = avatarURI
 
-        this.level = getLevel(this.user.reputation)
+        this.level = getLevel(this.config, this.user.reputation)
         
         this.width = 400
 
@@ -22,13 +22,13 @@ class ProfileCard {
             }
         }
 
-        this.theme.palette.primary = this.level !== -1 ? config.reputationSystem.roleColors[this.level] : this.theme.palette.secondary
-
+        this.theme.palette.primary = this.level !== -1 ? this.config.reputationSystem.roleColors[this.level] : this.theme.palette.secondary
+        
         this.theme.width = this.width - this.theme.spacing * 2
     }
 
     toString() {
-        const user = new User(this.theme, this.user, this.avatarURI)
+        const user = new User(this.config, this.theme, this.user, this.avatarURI)
 
         const svg = `
             <svg
@@ -39,7 +39,7 @@ class ProfileCard {
                 height="{height}" 
                 font-family="Roboto, sans-serif"
             >
-                ${new Background(this.theme)}
+                ${new Background(this.config, this.theme)}
 
                 <g transform="translate(${this.theme.spacing} ${this.theme.spacing})">
                     ${user}

@@ -2,7 +2,7 @@ const Module = require("../../lib/Module.js")
 const Configuration = require("./Configuration.js")
 const ChannelManager = require("./ChannelManager.js")
 const HelpEmbed = require("./HelpEmbed.js")
-const globalConfig = require("../../../config")
+const Guild = require("../../Models/Guild.js")
 
 class QuestionChannelsModule extends Module {
     static async fromConfig(client, guild, config) {
@@ -40,12 +40,14 @@ class QuestionChannelsModule extends Module {
     }
 
     async start() {
+        const guildConfig = await Guild.config(this.guild)
+
         // Send help embed into channel if hasn't already
         if (!this.config.helpMessage) {
-            this.config.helpMessage = await this.config.channel.send(new HelpEmbed())
+            this.config.helpMessage = await this.config.channel.send(new HelpEmbed(guildConfig))
         }
 
-        await this.config.channel.setRateLimitPerUser(globalConfig.questionChannels.askChannelRateLimit)
+        await this.config.channel.setRateLimitPerUser(guildConfig.questionChannels.askChannelRateLimit)
 
         this.channelManager.init()
     }

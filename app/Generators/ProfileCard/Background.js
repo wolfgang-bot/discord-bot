@@ -1,5 +1,5 @@
 class Background {
-    constructor(theme) {
+    constructor(config, theme) {
         this.theme = theme
     }
 

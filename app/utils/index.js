@@ -1,5 +1,3 @@
-const config = require("../../config")
-
 const BLANK = "\u200B"
 
 function makeCodeblock(str) {
@@ -17,7 +15,7 @@ function parseCommand(content) {
     return [command, args]
 }
 
-function getLevel(reputation) {
+function getLevel(config, reputation) {
     let level = -1
 
     for (let threshold of config.reputationSystem.roleThresholds) {

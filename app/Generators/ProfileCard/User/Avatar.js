@@ -1,5 +1,5 @@
 class Avatar {
-    constructor(theme, uri) {
+    constructor(config, theme, uri) {
         this.theme = theme
         this.uri = uri
 

@@ -13,11 +13,7 @@ class Database {
 
     connect() {
         return new Promise((resolve, reject) => {
-            let fileExists = false
-
-            if (fs.existsSync(this.path)) {
-                fileExists = true
-            }
+            let fileExists = fs.existsSync(this.path)
 
             this.db = new sqlite.Database(this.path, async (error) => {
                 if (error) return reject()

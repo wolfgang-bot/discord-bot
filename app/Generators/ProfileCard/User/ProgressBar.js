@@ -1,5 +1,5 @@
 class ProgressBar {
-    constructor(theme, user, width, progress) {
+    constructor(config, theme, user, width, progress) {
         this.theme = theme
         this.user = user
         this.width = width

@@ -1,8 +1,8 @@
 const BaseEmbed = require("./BaseEmbed.js")
 
 class ModuleHelpEmbed extends BaseEmbed {
-    constructor(module) {
-        super()
+    constructor(config, module) {
+        super(config)
 
         this.setTitle(`Modul: ${module.meta.name}`)
             .setDescription(module.meta.description)

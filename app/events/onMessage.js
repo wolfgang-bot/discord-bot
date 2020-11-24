@@ -12,7 +12,7 @@ async function run(client, message) {
 
         const [command, args] = parseCommand(message.content)
 
-        runCommand(command, args, message)
+        runCommand(command, message, args)
     }
 }
 

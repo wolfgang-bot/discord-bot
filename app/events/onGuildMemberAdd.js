@@ -1,8 +1,9 @@
 const User = require("../Models/User.js")
-const config = require("../../config")
+const Guild = require("../Models/Guild.js")
 
 async function run(client, member) {
     // Fetch the user role
+    const config = await Guild.config(member.guild)
     const roles = await member.guild.roles.fetch()
     const userRole = roles.cache.find(role => role.name === config.userRole)
     

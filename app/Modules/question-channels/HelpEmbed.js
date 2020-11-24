@@ -11,8 +11,8 @@ const content = {
 }
 
 class HelpEmbed extends BaseEmbed {
-    constructor() {
-        super()
+    constructor(config) {
+        super(config)
 
         this.setTitle("Fragen-Kanäle")
             .addField("Frage stellen", content.ask)

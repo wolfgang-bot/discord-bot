@@ -3,13 +3,15 @@ const Username = require("./Username.js")
 const LevelProgress = require("./LevelProgress.js")
 
 class User {
-    constructor(theme, user, avatarURI) {
+    constructor(config, theme, user, avatarURI) {
+        this.config = config
         this.theme = theme
         this.user = user
         this.avatarURI = avatarURI
-
-        this.avatar = new Avatar(this.theme, this.avatarURI)
-        this.levelProgress = new LevelProgress(this.theme, this.user, this.theme.width - this.avatar.size - this.theme.spacing)
+        
+        this.avatar = new Avatar(this.config, this.theme, this.avatarURI)
+        const levelProgressWidth = this.theme.width - this.avatar.size - this.theme.spacing
+        this.levelProgress = new LevelProgress(this.config, this.theme, this.user, levelProgressWidth)
     }
 
     getHeight() {
@@ -21,7 +23,7 @@ class User {
             ${this.avatar}
 
             <g transform="translate(${this.avatar.size + this.theme.spacing})">
-                ${new Username(this.theme, this.user)}
+                ${new Username(this.config, this.theme, this.user)}
 
                 <g transform="translate(0 ${this.avatar.size - this.levelProgress.getHeight()})">
                     ${this.levelProgress}

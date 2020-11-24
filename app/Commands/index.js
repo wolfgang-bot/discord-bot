@@ -2,7 +2,7 @@ const DirectoryServiceProvider = require("../Services/DirectoryServiceProvider.j
 
 const commands = DirectoryServiceProvider.getCommandsSync()
 
-function run(name, args, message) {
+function run(name, message, args) {
     // Find the requested command by matching the command name and aliases
     const command = commands.find(cmd => cmd.name === name || (cmd.alias || []).includes(name))
 
@@ -20,7 +20,7 @@ function run(name, args, message) {
         }
     }
 
-    command.run(args, message)
+    command.run(message, args)
 }
 
 module.exports = run

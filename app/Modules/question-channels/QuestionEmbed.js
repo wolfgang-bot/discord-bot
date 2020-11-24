@@ -1,9 +1,8 @@
 const BaseEmbed = require("../../Embeds/BaseEmbed.js")
-const config = require("../../../config")
 
 class QuestionEmbed extends BaseEmbed {
-    constructor(message) {
-        super()
+    constructor(config, message) {
+        super(config)
 
         const lines = message.content.split("\n")
         const title = lines.length > 1 ? lines.shift() : ""

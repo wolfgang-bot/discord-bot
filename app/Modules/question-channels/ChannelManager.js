@@ -4,7 +4,7 @@ const StorageFacade = require("../../Facades/StorageFacade.js")
 const ModuleServiceProvider = require("../../Services/ModuleServiceProvider.js")
 const ActiveChannel = require("./ActiveChannel.js")
 const QuestionEmbed = require("./QuestionEmbed.js")
-const config = require("../../../config")
+const Guild = require("../../Models/Guild.js")
 
 const CONTENT_DIR = path.join(__dirname, "content")
 
@@ -19,6 +19,7 @@ class ChannelManager {
         this.client = client
         this.guild = guild
         this.channel = channel
+        this.config = null
 
         this.activeChannels = {} // Map: channel-id -> ActiveChannel
         this.timeoutUsers = new Set()
@@ -45,13 +46,13 @@ class ChannelManager {
                 message.author.id !== this.activeChannels[message.channel.id].user.id && // User is not the question channel's creator 
                 !this.timeoutUsers.has(message.author.id) // User is not throttled
             ) {
-                this.client.emit("reputationAdd", message.member, config.questionChannels.messageReputation)
+                this.client.emit("reputationAdd", message.member, this.config.questionChannels.messageReputation)
 
                 this.timeoutUsers.add(message.author.id)
 
                 setTimeout(() => {
                     this.timeoutUsers.delete(message.author.id)
-                }, config.questionChannels.messageReputationTimeout)
+                }, this.config.questionChannels.messageReputationTimeout)
             }
         }
     }
@@ -71,10 +72,10 @@ class ChannelManager {
             return
         }
         
-        if (reaction.emoji.name === config.questionChannels.resolveReaction) {
+        if (reaction.emoji.name === this.config.questionChannels.resolveReaction) {
             await this.resolveChannel(channel, reaction, user)
             
-        } else if (reaction.message.id === message.id && reaction.emoji.name === config.questionChannels.deleteReaction) {
+        } else if (reaction.message.id === message.id && reaction.emoji.name === this.config.questionChannels.deleteReaction) {
             await this.deleteChannel(channel)
         }
     }
@@ -92,7 +93,7 @@ class ChannelManager {
             return
         }
 
-        this.client.emit("reputationAdd", reaction.message.member, config.questionChannels.acceptReputation)
+        this.client.emit("reputationAdd", reaction.message.member, this.config.questionChannels.acceptReputation)
 
         await this.deleteChannel(channel)
     }
@@ -115,7 +116,7 @@ class ChannelManager {
         }
         
         // Create new channel for user
-        const channelName = config.questionChannels.channelName.replace(/{}/g, message.author.username)
+        const channelName = this.config.questionChannels.channelName.replace(/{}/g, message.author.username)
         const lines = message.content.split("\n")
         const channelOptions = {
             parent: this.channel.parent.id,
@@ -125,7 +126,7 @@ class ChannelManager {
         const newChannel = await this.channel.guild.channels.create(channelName, channelOptions)
         
         // Send message of user as embed into new channel
-        const question = await newChannel.send(new QuestionEmbed(message))
+        const question = await newChannel.send(new QuestionEmbed(this.config, message))
         await question.pin()
 
         this.activeChannels[newChannel.id] = new ActiveChannel({
@@ -164,6 +165,8 @@ class ChannelManager {
     }
     
     async init() {
+        this.config = await Guild.config(this.guild)
+
         await this.loadActiveChannels()
 
         this.client.on("message", this.handleMessage)

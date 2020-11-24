@@ -1,5 +1,5 @@
 class Username {
-    constructor(theme, user) {
+    constructor(config, theme, user) {
         this.theme = theme
         this.user = user
         this.fontSize = 22

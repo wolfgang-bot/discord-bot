@@ -32,3 +32,6 @@
     * Counting Spiel (🔢┃counting)
     * Command: Modul Konfigurationen ausgeben
     * Bot-Konfiguration Guildenabhängig machen
+    * Punkte / Commands für Bots unzugänglich machen
+    * Guild deletion -> Module stoppen, Konfiguration löschen
+    * Modulkonfigurationen in Guild Model verschieben

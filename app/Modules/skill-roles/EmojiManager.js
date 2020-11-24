@@ -1,6 +1,6 @@
 const glob = require("glob-promise")
 const path = require("path")
-const config = require("../../../config")
+const Guild = require("../../Models/Guild.js")
 
 const APP_DIR = path.join(__dirname, "..", "..")
 const ICONS_DIR = path.join(APP_DIR, "assets", "icons")
@@ -8,6 +8,7 @@ const ICONS_DIR = path.join(APP_DIR, "assets", "icons")
 class EmojiManager {
     constructor(guild) {
         this.guild = guild
+        this.config = null
 
         this.emojis = {}
     }
@@ -27,7 +28,7 @@ class EmojiManager {
     async createEmojis() {
         const icons = await glob("*.png", { cwd: ICONS_DIR })
 
-        await Promise.all(config.skillRoles.roles.map(async name => {
+        await Promise.all(this.config.skillRoles.roles.map(async name => {
             const emojiName = this.makeEmojiName(name)
 
             let emoji = this.guild.emojis.cache.find(emoji => emoji.name === emojiName)
@@ -48,7 +49,7 @@ class EmojiManager {
     }
 
     async deleteEmojis() {
-        await Promise.all(config.skillRoles.roles.map(name => {
+        await Promise.all(this.config.skillRoles.roles.map(name => {
             const emojiName = this.makeEmojiName(name)
             const emoji = this.guild.emojis.cache.find(emoji => emoji.name === emojiName)
 
@@ -59,10 +60,12 @@ class EmojiManager {
     }
 
     makeEmojiName(name) {
-        return config.skillRoles.emojiPrefix + name.toLowerCase()
+        return this.config.skillRoles.emojiPrefix + name.toLowerCase()
     }
 
     async init() {
+        this.config = await Guild.config(this.guild)
+        
         await this.createEmojis()
     }
 

@@ -1,13 +1,13 @@
-const config = require("../../../../config")
 const { getLevel } = require("../../../utils")
 
 class Rank {
-    constructor(theme, user) {
+    constructor(config, theme, user) {
+        this.config = config
         this.theme = theme
 
         this.fontSize = 16
 
-        const level = getLevel(user.reputation)
+        const level = getLevel(this.config, user.reputation)
         this.rankName = config.reputationSystem.roles[level] || ""
     }
     

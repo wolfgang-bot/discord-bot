@@ -2,8 +2,8 @@ const BaseEmbed = require("./BaseEmbed.js")
 const { makeCodeblock } = require("../utils")
 
 class HelpEmbed extends BaseEmbed {
-    constructor(commands) {
-        super()
+    constructor(config, commands) {
+        super(config)
 
         const groups = this.parseGroups(commands)
 

@@ -2,8 +2,8 @@ const BaseEmbed = require("./BaseEmbed.js")
 const { makeCodeblock } = require("../utils")
 
 class HelpCommandEmbed extends BaseEmbed {
-    constructor(command) {
-        super()
+    constructor(config, command) {
+        super(config)
 
         this.setTitle("Hilfe: " + command.name)
             .setDescription(command.description)

@@ -1,8 +1,7 @@
 const Discord = require("discord.js")
-const config = require("../../config")
 
 class BaseEmbed extends Discord.MessageEmbed {
-    constructor() {
+    constructor(config) {
         super()
 
         this.setColor(config.colors.primary)

@@ -2,8 +2,8 @@ const BaseEmbed = require("./BaseEmbed.js")
 const { makeCodeblock } = require("../utils")
 
 class ModuleEmbed extends BaseEmbed {
-    constructor({ available, loaded }) {
-        super()
+    constructor(config, { available, loaded }) {
+        super(config)
 
         this.setTitle("Module")
             .addField("Verfügbar", makeCodeblock(available.join("\n")))
