@@ -1,4 +1,4 @@
-const BaseEmbed = require("../../embeds/BaseEmbed.js")
+const BaseEmbed = require("../../../embeds/BaseEmbed.js")
 
 class QuestionEmbed extends BaseEmbed {
     constructor(config, message) {

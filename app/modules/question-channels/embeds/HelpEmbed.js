@@ -1,8 +1,8 @@
 const fs = require("fs")
 const path = require("path")
-const BaseEmbed = require("../../embeds/BaseEmbed.js")
+const BaseEmbed = require("../../../embeds/BaseEmbed.js")
 
-const CONTENT_DIR = path.join(__dirname, "content")
+const CONTENT_DIR = path.join(__dirname, "..", "content")
 
 const content = {
     ask: fs.readFileSync(path.join(CONTENT_DIR, "ask.md")),

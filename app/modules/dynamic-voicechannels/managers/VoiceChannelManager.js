@@ -1,4 +1,4 @@
-const Guild = require("../../models/Guild.js")
+const Guild = require("../../../models/Guild.js")
 
 class VoiceChannelManager {
     constructor(client, guild, parentChannel) {

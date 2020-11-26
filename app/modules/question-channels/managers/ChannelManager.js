@@ -1,13 +1,13 @@
 const fs = require("fs")
 const path = require("path")
-const ActiveChannel = require("./ActiveChannel.js")
-const QuestionEmbed = require("./QuestionEmbed.js")
-const NotificationEmbed = require("./NotificationEmbed.js")
-const Guild = require("../../models/Guild.js")
-const Module = require("../../models/Module.js")
-const ModuleInstance = require("../../models/ModuleInstance.js")
+const ActiveChannel = require("../ActiveChannel.js")
+const QuestionEmbed = require("../embeds/QuestionEmbed.js")
+const NotificationEmbed = require("../embeds/NotificationEmbed.js")
+const Guild = require("../../../models/Guild.js")
+const Module = require("../../../models/Module.js")
+const ModuleInstance = require("../../../models/ModuleInstance.js")
 
-const CONTENT_DIR = path.join(__dirname, "content")
+const CONTENT_DIR = path.join(__dirname, "..", "content")
 
 const content = {
     tooManyQuestions: fs.readFileSync(path.join(CONTENT_DIR, "too-many-questions.md"), "utf-8")

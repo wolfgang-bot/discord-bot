@@ -1,6 +1,6 @@
 const Module = require("../../lib/Module.js")
 const Configuration = require("./Configuration.js")
-const VoiceChannelManager = require("./VoiceChannelManager.js")
+const VoiceChannelManager = require("./managers/VoiceChannelManager.js")
 
 class DynamicVoicechannelsModule extends Module {
     static async fromConfig(client, guild, config) {

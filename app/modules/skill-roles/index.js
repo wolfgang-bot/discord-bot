@@ -1,9 +1,9 @@
 const Module = require("../../lib/Module.js")
 const Configuration = require("./Configuration.js")
-const EmojiManager = require("./EmojiManager.js")
-const RoleManager = require("./RoleManager.js")
-const ReactionManager = require("./ReactionManager.js")
-const RoleEmbed = require("./RoleEmbed.js")
+const EmojiManager = require("./managers/EmojiManager.js")
+const RoleManager = require("./managers/RoleManager.js")
+const ReactionManager = require("./managers/ReactionManager.js")
+const RoleEmbed = require("./embeds/RoleEmbed.js")
 const Guild = require("../../models/Guild.js")
 
 class RoleManagerModule extends Module {

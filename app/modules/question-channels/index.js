@@ -1,7 +1,7 @@
 const Module = require("../../lib/Module.js")
 const Configuration = require("./Configuration.js")
-const ChannelManager = require("./ChannelManager.js")
-const HelpEmbed = require("./HelpEmbed.js")
+const ChannelManager = require("./managers/ChannelManager.js")
+const HelpEmbed = require("./embeds/HelpEmbed.js")
 const Guild = require("../../models/Guild.js")
 
 class QuestionChannelsModule extends Module {

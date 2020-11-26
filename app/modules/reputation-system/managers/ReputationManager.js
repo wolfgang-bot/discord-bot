@@ -1,7 +1,7 @@
-const LevelUpEmbed = require("./embeds/LevelUpEmbed.js")
-const Member = require("../../models/Member.js")
-const Guild = require("../../models/Guild.js")
-const { getLevel } = require("../../utils")
+const LevelUpEmbed = require("./../embeds/LevelUpEmbed.js")
+const Member = require("../../../models/Member.js")
+const Guild = require("../../../models/Guild.js")
+const { getLevel } = require("../../../utils")
 
 class ReputationManager {
     constructor(client, guild, channel) {

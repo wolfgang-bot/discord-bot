@@ -1,4 +1,4 @@
-const BaseEmbed = require("../../embeds/BaseEmbed.js")
+const BaseEmbed = require("../../../embeds/BaseEmbed.js")
 
 class NotificationEmbed extends BaseEmbed {
     constructor(config, guild) {
