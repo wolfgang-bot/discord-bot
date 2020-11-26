@@ -22,7 +22,6 @@ class Guild extends Model {
             table: "guilds",
             columns: ["id", "config"],
             defaultValues: {
-                id: uuid,
                 config: defaultConfig
             },
             ...values
