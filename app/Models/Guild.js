@@ -1,4 +1,3 @@
-const { v4: uuid } = require("uuid")
 const path = require("path")
 const Model = require("../lib/Model.js")
 
@@ -30,6 +29,18 @@ class Guild extends Model {
         this.discordGuild = null
     }
 
+    async delete() {
+        // Delete members
+        const members = await Member.findAllBy("guild_id", this.id)
+        await members.mapAsync(member => member.delete())
+
+        // Delete module instances
+        const moduleInstances = await ModuleInstance.findAllBy("guild_id", this.id)
+        await moduleInstances.mapAsync(instance => instance.delete())
+
+        super.delete()
+    }
+
     init() {
         if (typeof this.config === "string") {
             this.config = JSON.parse(this.config)
@@ -40,3 +51,6 @@ class Guild extends Model {
 Model.bind(Guild, "guilds")
 
 module.exports = Guild
+
+const Member = require("./Member.js")
+const ModuleInstance = require("./ModuleInstance.js")

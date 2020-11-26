@@ -26,7 +26,6 @@ async function run(client, member) {
         await user.store()
     }
 
-    
     // Create member for user
     const model = new Member({
         user_id: member.user.id,

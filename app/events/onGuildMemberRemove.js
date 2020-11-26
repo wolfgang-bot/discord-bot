@@ -1,4 +1,3 @@
-const User = require("../Models/User.js")
 const Member = require("../Models/Member.js")
 
 async function run(client, member) {
@@ -15,11 +14,8 @@ async function run(client, member) {
     // Delete user from database if he has no members anymore
     const members = await Member.findAllBy("user_id", member.user.id)
     if (members.length === 0) {
-        const user = await User.findBy("id", member.user.id)
-
-        if (user) {
-            await user.delete()
-        }
+        await model.fetchUser()
+        await model.user.delete()
     }
 }
 
