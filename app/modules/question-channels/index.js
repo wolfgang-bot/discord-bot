@@ -39,13 +39,14 @@ class QuestionChannelsModule extends Module {
 
     async start() {
         const guildConfig = await Guild.config(this.guild)
+        const moduleConfig = guildConfig["question-channels"]
 
         // Send help embed into channel if hasn't already
         if (!this.config.helpMessage) {
             this.config.helpMessage = await this.config.channel.send(new HelpEmbed(guildConfig))
         }
 
-        await this.config.channel.setRateLimitPerUser(guildConfig.questionChannels.askChannelRateLimit)
+        await this.config.channel.setRateLimitPerUser(moduleConfig.askChannelRateLimit)
 
         this.channelManager.init()
     }

@@ -2,9 +2,12 @@ const Command = require("../../lib/Command.js")
 const ModuleServiceProvider = require("../../services/ModuleServiceProvider.js")
 const ModulesEmbed = require("../../embeds/ModulesEmbed.js")
 const ModuleHelpEmbed = require("../../embeds/ModuleHelpEmbed.js")
+const ModuleConfigEmbed = require("../../embeds/ModuleConfigEmbed.js")
 const Module = require("../../models/Module.js")
 const ModuleInstance = require("../../models/ModuleInstance.js")
 const Guild = require("../../models/Guild.js")
+const defaultConfig = require("../../config/default.json")
+const { insertIntoDescriptiveObject } = require("../../utils")
 
 /**
  * Run sub-commands, list the modules no sub-command is given
@@ -42,6 +45,10 @@ async function run(message, args) {
 
     if (args[0] === "help") {
         return await helpModule(module, message, args)
+    }
+
+    if (args[0] === "config") {
+        return await getModuleConfig(module, message, args)
     }
 
     await message.channel.send("Unbekannter Command")
@@ -98,8 +105,19 @@ async function helpModule(module, message, args) {
     await message.channel.send(new ModuleHelpEmbed(config, moduleClass))
 }
 
+/**
+ * Get module config 
+ */
+async function getModuleConfig(module, message, args) {
+    const config = await Guild.config(message.guild)
+    const moduleConfig = config[args[1]]
+    const descriptiveConfig = insertIntoDescriptiveObject(moduleConfig, defaultConfig[args[1]].value)
+
+    await message.channel.send(new ModuleConfigEmbed(config, args[1], descriptiveConfig))
+}
+
 module.exports = new Command(run)
     .setDescription("Zeigt Informationen über die Module an.")
-    .setArguments("[start|stop|help] [module]")
+    .setArguments("[start|stop|help|config] [module]")
     .setAlias(["module"])
     .setPermissions(["MANAGE_GUILD"])

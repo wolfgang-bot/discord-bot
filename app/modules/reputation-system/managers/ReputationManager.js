@@ -8,6 +8,7 @@ class ReputationManager {
         this.client = client
         this.guild = guild
         this.channel = channel
+        this.guildConfig = null
         this.config = null
 
         this.roles = []
@@ -30,13 +31,13 @@ class ReputationManager {
             await model.store()
         }
 
-        const prevLevel = getLevel(this.config, model.reputation)
+        const prevLevel = getLevel(this.guildConfig, model.reputation)
 
         model.reputation += amount
 
         await model.update()
 
-        const newLevel = getLevel(this.config, model.reputation)
+        const newLevel = getLevel(this.guildConfig, model.reputation)
 
         if (newLevel > prevLevel) {
             await Promise.all([
@@ -50,8 +51,8 @@ class ReputationManager {
         await this.guild.roles.fetch()
 
         // Loop backwards -> Highest role has the lowest position
-        for (let i = this.config.reputationSystem.roles.length - 1; i >= 0; i--) {
-            const name = this.config.reputationSystem.roles[i]
+        for (let i = this.config.roles.length - 1; i >= 0; i--) {
+            const name = this.config.roles[i]
 
             // Skip the role, if there already is a role with the same name
             let role = this.guild.roles.cache.find(role => role.name === name)
@@ -63,7 +64,7 @@ class ReputationManager {
             role = await this.guild.roles.create({
                 data: {
                     name,
-                    color: this.config.reputationSystem.roleColors[i],
+                    color: this.config.roleColors[i],
                     hoist: true
                 }
             })
@@ -84,12 +85,13 @@ class ReputationManager {
     }
 
     async announceLevelUp(user, newLevel) {
-        const message = await this.channel.send(new LevelUpEmbed(this.config, user, newLevel))
-        await message.react(this.config.reputationSystem.levelUpReactionEmoji)
+        const message = await this.channel.send(new LevelUpEmbed(this.guildConfig, user, newLevel))
+        await message.react(this.config.levelUpReactionEmoji)
     }
 
     async init() {
-        this.config = await Guild.config(this.guild)
+        this.guildConfig = await Guild.config(this.guild)
+        this.config = this.guildConfig["reputation-system"]
 
         await this.createRoles()
         

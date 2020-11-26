@@ -33,4 +33,29 @@ function space(length) {
     return (BLANK + " ").repeat(length)
 }
 
-module.exports = { makeCodeblock, parseCommand, getLevel, space }
+function formatDescriptiveObject(object) {
+    const parsed = {}
+
+    for (let key in object) {
+        if (typeof object[key].value === "object" && !Array.isArray(object[key].value)) {
+            parsed[key] = formatDescriptiveObject(object[key].value)
+        } else {
+            parsed[key] = object[key].value
+        }
+    }
+
+    return parsed
+}
+
+function insertIntoDescriptiveObject(source, dest) {
+    const result = {}
+
+    for (let key in source) {
+        result[key] = dest[key]
+        result[key].value = source[key]
+    }
+
+    return result
+}
+
+module.exports = { makeCodeblock, parseCommand, getLevel, space, formatDescriptiveObject, insertIntoDescriptiveObject }

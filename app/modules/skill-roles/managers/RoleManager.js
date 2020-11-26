@@ -13,14 +13,14 @@ class RoleManagaer {
     }
 
     async createRoles() {
-        await Promise.all(this.config.skillRoles.roles.map(async name => {
+        await Promise.all(this.config.roles.map(async name => {
             let role = this.guild.roles.cache.find(role => role.name === name)
 
             if (!role) {
                 role = await this.guild.roles.create({
                     data: {
                         name,
-                        color: this.config.skillRoles.roleColor
+                        color: this.config.roleColor
                     }
                 })
             }
@@ -30,7 +30,7 @@ class RoleManagaer {
     }
     
     async deleteRoles() {
-        await Promise.all(this.config.skillRoles.roles.map(name => {
+        await Promise.all(this.config.roles.map(name => {
             const role = this.guild.roles.cache.find(role => role.name === name)
 
             if (role) {
@@ -40,7 +40,7 @@ class RoleManagaer {
     }
 
     async init() {
-        this.config = await Guild.config(this.guild)
+        this.config = (await Guild.config(this.guild))["skill-roles"]
 
         await this.createRoles()
     }

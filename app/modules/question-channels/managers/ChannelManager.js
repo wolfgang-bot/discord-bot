@@ -18,6 +18,7 @@ class ChannelManager {
         this.client = client
         this.guild = guild
         this.channel = channel
+        this.guildConfig = null
         this.config = null
 
         this.activeChannels = {} // Map: channel-id -> ActiveChannel
@@ -46,19 +47,19 @@ class ChannelManager {
                 message.author.id !== activeChannel.user.id && // User is not the question channel's creator 
                 !this.timeoutUsers.has(message.author.id) // User is not throttled
             ) {
-                this.client.emit("reputationAdd", message.member, this.config.questionChannels.messageReputation)
+                this.client.emit("reputationAdd", message.member, this.config.messageReputation)
     
                 this.timeoutUsers.add(message.author.id)
     
                 setTimeout(() => {
                     this.timeoutUsers.delete(message.author.id)
-                }, this.config.questionChannels.messageReputationTimeout)
+                }, this.config.messageReputationTimeout)
             }
     
             // Delete channel
             if (
                 message.author.id === activeChannel.user.id && // User is the question channel's creator
-                message.content.trim() === this.config.questionChannels.deleteReaction
+                message.content.trim() === this.config.deleteReaction
             ) {
                 await this.deleteChannel(activeChannel.channel)
             }
@@ -81,7 +82,7 @@ class ChannelManager {
             return
         }
         
-        if (reaction.emoji.name === this.config.questionChannels.resolveReaction) {
+        if (reaction.emoji.name === this.config.resolveReaction) {
             await this.resolveChannel(activeChannel.channel, reaction, user)
         }
     }
@@ -99,7 +100,7 @@ class ChannelManager {
             return
         }
 
-        this.client.emit("reputationAdd", reaction.message.member, this.config.questionChannels.acceptReputation)
+        this.client.emit("reputationAdd", reaction.message.member, this.config.acceptReputation)
 
         await this.deleteChannel(channel)
     }
@@ -122,7 +123,7 @@ class ChannelManager {
         }
         
         // Create new channel for user
-        const channelName = this.config.questionChannels.channelName.replace(/{}/g, message.author.username)
+        const channelName = this.config.channelName.replace(/{}/g, message.author.username)
         const lines = message.content.split("\n")
         const channelOptions = {
             parent: this.channel.parent.id,
@@ -132,11 +133,11 @@ class ChannelManager {
         const newChannel = await this.channel.guild.channels.create(channelName, channelOptions)
         
         // Send message of user as embed into new channel
-        const question = await newChannel.send(new QuestionEmbed(this.config, message))
+        const question = await newChannel.send(new QuestionEmbed(this.guildConfig, message))
         await question.pin()
 
         // Send user a notification
-        await dm.send(new NotificationEmbed(this.config, this.guild))
+        await dm.send(new NotificationEmbed(this.guildConfig, this.guild))
 
         this.activeChannels[newChannel.id] = new ActiveChannel({
             channel: newChannel,
@@ -177,7 +178,8 @@ class ChannelManager {
     
     async init() {
         this.module = await Module.findBy("name", "question-channels")
-        this.config = await Guild.config(this.guild)
+        this.guildConfig = await Guild.config(this.guild)
+        this.config = this.guildConfig["question-channels"]
 
         await this.loadActiveChannels()
 

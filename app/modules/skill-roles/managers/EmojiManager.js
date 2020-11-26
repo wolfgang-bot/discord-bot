@@ -28,7 +28,7 @@ class EmojiManager {
     async createEmojis() {
         const icons = await glob("*.png", { cwd: ICONS_DIR })
 
-        await Promise.all(this.config.skillRoles.roles.map(async name => {
+        await Promise.all(this.config.roles.map(async name => {
             const emojiName = this.makeEmojiName(name)
 
             let emoji = this.guild.emojis.cache.find(emoji => emoji.name === emojiName)
@@ -49,7 +49,7 @@ class EmojiManager {
     }
 
     async deleteEmojis() {
-        await Promise.all(this.config.skillRoles.roles.map(name => {
+        await Promise.all(this.config.roles.map(name => {
             const emojiName = this.makeEmojiName(name)
             const emoji = this.guild.emojis.cache.find(emoji => emoji.name === emojiName)
 
@@ -60,11 +60,11 @@ class EmojiManager {
     }
 
     makeEmojiName(name) {
-        return this.config.skillRoles.emojiPrefix + name.toLowerCase()
+        return this.config.emojiPrefix + name.toLowerCase()
     }
 
     async init() {
-        this.config = await Guild.config(this.guild)
+        this.config = (await Guild.config(this.guild))["skill-roles"]
         
         await this.createEmojis()
     }
