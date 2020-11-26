@@ -127,7 +127,7 @@ class ModuleServiceProvider {
 
         const Module = ModuleServiceProvider.getModule(model)
 
-        const instance = await Module.fromMessage(client, this.guild, args)
+        const instance = await Module.fromArguments(client, this.guild, args)
 
         if (!instance) {
             throw new Error("Illegal invocation")

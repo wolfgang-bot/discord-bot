@@ -14,7 +14,7 @@ class RoleManagerModule extends Module {
         return new RoleManagerModule(client, guild, new Configuration({ channel, roleMessage }))
     }
 
-    static async fromMessage(client, guild, args) {
+    static async fromArguments(client, guild, args) {
         if (!args[0]) {
             throw "Kein Textkanal angegeben"
         }

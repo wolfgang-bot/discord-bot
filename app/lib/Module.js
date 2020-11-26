@@ -26,16 +26,15 @@ class Module {
     static async fromConfig(client, guild, config) {}
 
     /**
-     * Creates a new instance of the class from a discord message.
+     * Creates a new instance of the class from an arguments array.
      *
      * @param {Discord.Client} client
      * @param {Discord.Guild} guild
-     * @param {Discord.Message} message
-     * @param {String[]} args
+     * @param {Array<String>} args
      *
      * @returns {Module}
      */
-    static async fromMessage(client, guild, message, args) {}
+    static async fromArguments(client, guild, args) {}
 
     /**
      * Starts the module.

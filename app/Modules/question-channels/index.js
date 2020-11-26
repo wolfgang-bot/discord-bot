@@ -11,7 +11,7 @@ class QuestionChannelsModule extends Module {
         return new QuestionChannelsModule(client, guild, new Configuration({ channel, helpMessage }))
     }
 
-    static async fromMessage(client, guild, args) {
+    static async fromArguments(client, guild, args) {
         if (!args[0]) {
             throw "Kein Textkanal angegeben"
         }

@@ -8,7 +8,7 @@ class DynamicVoicechannelsModule extends Module {
         return new DynamicVoicechannelsModule(client, guild, new Configuration({ parentChannel }))
     }
 
-    static async fromMessage(client, guild, args) {
+    static async fromArguments(client, guild, args) {
         if (!args[0]) {
             throw "Keine Kategorie angegeben"
         }

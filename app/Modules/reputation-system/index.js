@@ -15,7 +15,7 @@ class ReputationSystemModule extends Module {
         return new ReputationSystemModule(client, guild, new Configuration({ channel }))
     }
 
-    static async fromMessage(client, guild, args) {
+    static async fromArguments(client, guild, args) {
         if (!args[0]) {
             throw "Kein Textkanal angegeben"
         }
