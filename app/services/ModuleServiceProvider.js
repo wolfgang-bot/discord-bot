@@ -3,7 +3,7 @@ const path = require("path")
 const Module = require("../models/Module.js")
 const ModuleInstance = require("../models/ModuleInstance.js")
 
-const MODULES_DIR = path.join(__dirname, "..", "Modules")
+const MODULES_DIR = path.join(__dirname, "..", "modules")
 
 class ModuleServiceProvider {
     static instances = {}
