@@ -40,7 +40,7 @@ class ReactionManager {
     }
 
     async handleReactionAdd(reaction, user) {
-        if (reaction.message.guild.id !== this.guild.id) {
+        if (user.bot || reaction.message.guild.id !== this.guild.id) {
             return
         }
 
@@ -55,7 +55,7 @@ class ReactionManager {
     }
 
     async handleReactionRemove(reaction, user) {
-        if (reaction.message.guild.id !== this.guild.id) {
+        if (user.bot || reaction.message.guild.id !== this.guild.id) {
             return
         }
 

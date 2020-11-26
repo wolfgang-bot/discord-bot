@@ -16,7 +16,7 @@ class ReputationManager {
     }
 
     async handleReputationAdd(member, amount) {
-        if (member.guild.id !== this.guild.id) {
+        if (member.user.bot || member.guild.id !== this.guild.id) {
             return
         }
         

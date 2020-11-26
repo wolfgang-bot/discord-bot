@@ -19,21 +19,6 @@
 
     * Skill-Rollen:
         * Zuweisung über Reaktionen
-        * Hinweis in Fragenachricht, dass bis zu zwei Skill Rollen getagged werden können.
 
 * Hinzugefügte Events (name: [arg] [...])
     * reputationAdd: member: Discord.GuildMember, amount: Number
-
-* Commands
-    * sweep <n>
-        * Entferne die letzten n Nachrichten aus dem Kanal
-
-* TODO:
-    * Counting Spiel (🔢┃counting)
-    * Command: Modul Konfigurationen ausgeben
-    * Bot-Konfiguration Guildenabhängig machen
-    * Punkte / Commands für Bots unzugänglich machen
-    * Guild deletion -> Module stoppen, Konfiguration löschen
-    * Modulkonfigurationen in Guild Model verschieben
-    * Model - Database cache
-    * Flow installieren

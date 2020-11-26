@@ -27,40 +27,38 @@ class ChannelManager {
     }
 
     async handleMessage(message) {
-        if (!message.guild || message.guild.id !== this.guild.id) {
+        if (message.author.bot || !message.guild || message.guild.id !== this.guild.id) {
             return
         }
 
-        if (message.author.id !== this.client.user.id) {
-            // Create a new question channel
-            if (message.channel.id === this.channel.id) {
-                await this.createChannel(message)
-                return
-            }
+        // Create a new question channel
+        if (message.channel.id === this.channel.id) {
+            await this.createChannel(message)
+            return
+        }
 
-            // Add reputation to author
-            if (
-                this.activeChannels[message.channel.id] && // Channel is one of the question channels
-                message.author.id !== this.activeChannels[message.channel.id].user.id && // User is not the question channel's creator 
-                !this.timeoutUsers.has(message.author.id) // User is not throttled
-            ) {
-                this.client.emit("reputationAdd", message.member, this.config.questionChannels.messageReputation)
+        // Add reputation to author
+        if (
+            this.activeChannels[message.channel.id] && // Channel is one of the question channels
+            message.author.id !== this.activeChannels[message.channel.id].user.id && // User is not the question channel's creator 
+            !this.timeoutUsers.has(message.author.id) // User is not throttled
+        ) {
+            this.client.emit("reputationAdd", message.member, this.config.questionChannels.messageReputation)
 
-                this.timeoutUsers.add(message.author.id)
+            this.timeoutUsers.add(message.author.id)
 
-                setTimeout(() => {
-                    this.timeoutUsers.delete(message.author.id)
-                }, this.config.questionChannels.messageReputationTimeout)
-            }
+            setTimeout(() => {
+                this.timeoutUsers.delete(message.author.id)
+            }, this.config.questionChannels.messageReputationTimeout)
         }
     }
 
     async handleReaction(reaction, user) {
-        if (reaction.message.guild.id !== this.guild.id) {
-            return
-        }
-        
-        if (!(reaction.message.channel.id in this.activeChannels)) {
+        if (
+            user.bot ||
+            reaction.message.guild.id !== this.guild.id ||
+            !(reaction.message.channel.id in this.activeChannels)
+        ) {
             return
         }
         

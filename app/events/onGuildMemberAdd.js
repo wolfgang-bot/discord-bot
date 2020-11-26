@@ -3,6 +3,10 @@ const Member = require("../Models/Member.js")
 const Guild = require("../Models/Guild.js")
 
 async function run(client, member) {
+    if (member.user.bot) {
+        return
+    }
+
     // Fetch the user role
     const config = await Guild.config(member.guild)
     const roles = await member.guild.roles.fetch()
