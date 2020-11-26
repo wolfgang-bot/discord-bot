@@ -1,10 +1,7 @@
-const DirectoryServiceProvider = require("../Services/DirectoryServiceProvider.js")
-
-const commands = DirectoryServiceProvider.getCommandsSync()
+const CommandRegistry = require("../Services/CommandRegistry.js")
 
 function run(name, message, args) {
-    // Find the requested command by matching the command name and aliases
-    const command = commands.find(cmd => cmd.name === name || (cmd.alias || []).includes(name))
+    const command = CommandRegistry.get(name)
 
     if (!command) {
         return message.channel.send("Unbekannter Command")

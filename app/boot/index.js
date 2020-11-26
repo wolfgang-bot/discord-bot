@@ -1,6 +1,7 @@
 const attachEvents = require("../events")
 const ModuleServiceProvider = require("../Services/ModuleServiceProvider.js")
 const database = require("../database")
+const registerCommands = require("./registerCommands.js")
 
 function boot(client) {
     return new Promise(async resolve => {
@@ -13,6 +14,8 @@ function boot(client) {
 
         await database.connect()
 
+        await registerCommands()
+        
         attachEvents(client)
 
         await client.login(process.env.DISCORD_BOT_TOKEN)
