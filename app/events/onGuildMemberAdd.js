@@ -1,6 +1,6 @@
-const User = require("../Models/User.js")
-const Member = require("../Models/Member.js")
-const Guild = require("../Models/Guild.js")
+const User = require("../models/User.js")
+const Member = require("../models/Member.js")
+const Guild = require("../models/Guild.js")
 
 async function run(client, member) {
     if (member.user.bot) {

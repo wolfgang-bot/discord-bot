@@ -1,5 +1,5 @@
 const attachEvents = require("../events")
-const ModuleServiceProvider = require("../Services/ModuleServiceProvider.js")
+const ModuleServiceProvider = require("../services/ModuleServiceProvider.js")
 const database = require("../database")
 const registerCommands = require("./registerCommands.js")
 

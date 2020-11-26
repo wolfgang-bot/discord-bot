@@ -1,5 +1,5 @@
 const { parseCommand } = require("../utils")
-const runCommand = require("../Commands")
+const runCommand = require("../commands")
 
 /**
  * Parse the message's content and execute the requested command

@@ -1,8 +1,8 @@
 const glob = require("glob-promise")
 const path = require("path")
-const CommandRegistry = require("../Services/CommandRegistry.js")
+const CommandRegistry = require("../services/CommandRegistry.js")
 
-const COMMANDS_DIR = path.join(__dirname, "..", "Commands")
+const COMMANDS_DIR = path.join(__dirname, "..", "commands")
 
 async function registerCommands() {
     const commands = await getCommands()

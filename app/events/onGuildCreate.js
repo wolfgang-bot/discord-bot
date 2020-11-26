@@ -1,6 +1,6 @@
-const Guild = require("../Models/Guild.js")
-const User = require("../Models/User.js")
-const Member = require("../Models/Member.js")
+const Guild = require("../models/Guild.js")
+const User = require("../models/User.js")
+const Member = require("../models/Member.js")
 
 async function run(client, guild) {
     const model = new Guild({ id: guild.id })

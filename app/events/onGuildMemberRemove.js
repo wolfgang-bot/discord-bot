@@ -1,4 +1,4 @@
-const Member = require("../Models/Member.js")
+const Member = require("../models/Member.js")
 
 async function run(client, member) {
     if (member.user.bot) {

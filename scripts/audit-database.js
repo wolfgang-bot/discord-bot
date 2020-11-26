@@ -6,9 +6,9 @@ const { makeRunnable, run } = require("@m.moelter/task-runner")
 require("dotenv").config({ path: path.join(__dirname, "..", ".env")})
 
 const database = require("../app/database")
-const Guild = require("../app/Models/Guild.js")
-const User = require("../app/Models/User.js")
-const Member = require("../app/Models/Member.js")
+const Guild = require("../app/models/Guild.js")
+const User = require("../app/models/User.js")
+const Member = require("../app/models/Member.js")
 
 const rl = readline.createInterface({
     input: process.stdin,

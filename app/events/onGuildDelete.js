@@ -1,4 +1,4 @@
-const Guild = require("../Models/Guild.js")
+const Guild = require("../models/Guild.js")
 
 async function run(client, guild) {
     const model = await Guild.findBy("id", guild.id)
