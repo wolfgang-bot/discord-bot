@@ -42,7 +42,7 @@ makeRunnable(async () => {
     logIssues()
 
     if (issues.length > 0) {
-        const answer = await question("Do you want to fix the issues? (y,n)")
+        const answer = await question("Do you want to fix the issues? (y,n): ")
         
         if (answer === "y") {
             // Run fixes
