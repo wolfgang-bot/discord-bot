@@ -12,8 +12,6 @@ class QuestionEmbed extends BaseEmbed {
             .setDescription(content)
             .setAuthor(message.author.username, message.author.displayAvatarURL())
             .setTimestamp()
-            .addField(`Problem gelöst?`, `Super! Reagiere mit ${config.questionChannels.resolveReaction} auf die Nachricht die dein Problem gelöst hat und wir entfernen diesen Kanal wieder.`)
-            .addField(`Frage nicht mehr relevant?`, `Reagiere mit ${config.questionChannels.deleteReaction} auf diese Nachricht, um diesen Kanal zu entfernen.`)
     }
 }
 

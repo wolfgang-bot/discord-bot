@@ -2,6 +2,7 @@ const fs = require("fs")
 const path = require("path")
 const ActiveChannel = require("./ActiveChannel.js")
 const QuestionEmbed = require("./QuestionEmbed.js")
+const NotificationEmbed = require("./NotificationEmbed.js")
 const Guild = require("../../Models/Guild.js")
 const Module = require("../../Models/Module.js")
 const ModuleInstance = require("../../Models/ModuleInstance.js")
@@ -37,20 +38,32 @@ class ChannelManager {
             return
         }
 
-        // Add reputation to author
-        if (
-            this.activeChannels[message.channel.id] && // Channel is one of the question channels
-            message.author.id !== this.activeChannels[message.channel.id].user.id && // User is not the question channel's creator 
-            !this.timeoutUsers.has(message.author.id) // User is not throttled
-        ) {
-            this.client.emit("reputationAdd", message.member, this.config.questionChannels.messageReputation)
+        const activeChannel = this.activeChannels[message.channel.id]
 
-            this.timeoutUsers.add(message.author.id)
-
-            setTimeout(() => {
-                this.timeoutUsers.delete(message.author.id)
-            }, this.config.questionChannels.messageReputationTimeout)
+        if (activeChannel) {
+            // Add reputation to author
+            if (
+                message.author.id !== activeChannel.user.id && // User is not the question channel's creator 
+                !this.timeoutUsers.has(message.author.id) // User is not throttled
+            ) {
+                this.client.emit("reputationAdd", message.member, this.config.questionChannels.messageReputation)
+    
+                this.timeoutUsers.add(message.author.id)
+    
+                setTimeout(() => {
+                    this.timeoutUsers.delete(message.author.id)
+                }, this.config.questionChannels.messageReputationTimeout)
+            }
+    
+            // Delete channel
+            if (
+                message.author.id === activeChannel.user.id && // User is the question channel's creator
+                message.content.trim() === this.config.questionChannels.deleteReaction
+            ) {
+                await this.deleteChannel(activeChannel.channel)
+            }
         }
+        
     }
 
     async handleReaction(reaction, user) {
@@ -62,17 +75,14 @@ class ChannelManager {
             return
         }
         
-        const { channel, message, user: owner } = this.activeChannels[reaction.message.channel.id]
+        const activeChannel = this.activeChannels[reaction.message.channel.id]
         
-        if (user.id !== owner.id) {
+        if (user.id !== activeChannel.user.id) {
             return
         }
         
         if (reaction.emoji.name === this.config.questionChannels.resolveReaction) {
-            await this.resolveChannel(channel, reaction, user)
-            
-        } else if (reaction.message.id === message.id && reaction.emoji.name === this.config.questionChannels.deleteReaction) {
-            await this.deleteChannel(channel)
+            await this.resolveChannel(activeChannel.channel, reaction, user)
         }
     }
 
@@ -105,9 +115,9 @@ class ChannelManager {
         await message.delete()
 
         // Check if user already has an active channel
+        const dm = await message.author.createDM()
         if (Object.values(this.activeChannels).some(({ user }) => user.id === message.author.id)) {
-            const channel = await message.author.createDM()
-            await channel.send(content.tooManyQuestions.replace(/{}/g, message.content))
+            await dm.send(content.tooManyQuestions.replace(/{}/g, message.content))
             return
         }
         
@@ -124,6 +134,9 @@ class ChannelManager {
         // Send message of user as embed into new channel
         const question = await newChannel.send(new QuestionEmbed(this.config, message))
         await question.pin()
+
+        // Send user a notification
+        await dm.send(new NotificationEmbed(this.config, this.guild))
 
         this.activeChannels[newChannel.id] = new ActiveChannel({
             channel: newChannel,
