@@ -16,7 +16,7 @@ class CommandRegistry {
      * @param {Command} command 
      */
     static unregister(command) {
-        this.commands[command.name]
+        delete this.commands[command.name]
     }
 
     /**

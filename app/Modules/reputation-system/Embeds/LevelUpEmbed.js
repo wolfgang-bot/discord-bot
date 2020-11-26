@@ -1,4 +1,4 @@
-const BaseEmbed = require("../../Embeds/BaseEmbed.js")
+const BaseEmbed = require("../../../Embeds/BaseEmbed.js")
 
 class LevelUpEmbed extends BaseEmbed {
     constructor(config, user, level) {

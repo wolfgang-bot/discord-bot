@@ -1,9 +1,9 @@
 const sharp = require("sharp")
 const fetch = require("node-fetch")
-const Command = require("../../lib/Command.js")
-const ProfileCard = require("../../Generators/ProfileCard")
-const Member = require("../../Models/Member.js")
-const Guild = require("../../Models/Guild.js")
+const Command = require("../../../lib/Command.js")
+const ProfileCard = require("../../../Generators/ProfileCard")
+const Member = require("../../../Models/Member.js")
+const Guild = require("../../../Models/Guild.js")
 
 async function run(message, args) {
     const member = await Member.where(`user_id = '${message.author.id}' AND guild_id = '${message.guild.id}'`)
@@ -29,5 +29,7 @@ async function run(message, args) {
 }
 
 module.exports = new Command(run)
+    .setName("profile")
+    .setGroup("General")
     .setDescription("Zeigt dein individuelles Profil an.")
     .setAlias(["me", "rank"])

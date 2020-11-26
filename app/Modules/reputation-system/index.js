@@ -1,6 +1,12 @@
 const Module = require("../../lib/Module.js")
+const CommandRegistry = require("../../Services/CommandRegistry.js")
 const Configuration = require("./Configuration.js")
 const ReputationManager = require("./ReputationManager.js")
+
+const commands = [
+    require("./commands/leaderboard.js"),
+    require("./commands/profile.js")
+]
 
 class ReputationSystemModule extends Module {
     static async fromConfig(client, guild, config) {
@@ -35,10 +41,14 @@ class ReputationSystemModule extends Module {
     }
 
     async start() {
+        commands.forEach(command => CommandRegistry.register(command))
+        
         this.reputationManager.init()
     }
-
+    
     async stop() {
+        commands.forEach(command => CommandRegistry.unregister(command))
+
         this.reputationManager.delete()
     }
 
@@ -53,7 +63,8 @@ ReputationSystemModule.meta = {
     features: [
         "Erstellt für jedes Level eine neue Rolle mit einer individuellen Farbe.",
         "Erstellt ein neues Discord Event, das von anderen Modulen verwendet werden kann, um Benutzern Punkte zu geben.",
-        "Sendet eine Nachricht in den Benachrichtigungskanal, wenn ein Benutzer ein neues Level erreicht."
+        "Sendet eine Nachricht in den Benachrichtigungskanal, wenn ein Benutzer ein neues Level erreicht.",
+        "Erstellt die Commands: 'leaderboard' und 'profile'."
     ]
 }
 

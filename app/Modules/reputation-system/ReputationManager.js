@@ -1,4 +1,4 @@
-const LevelUpEmbed = require("./LevelUpEmbed.js")
+const LevelUpEmbed = require("./Embeds/LevelUpEmbed.js")
 const Member = require("../../Models/Member.js")
 const Guild = require("../../Models/Guild.js")
 const { getLevel } = require("../../utils")

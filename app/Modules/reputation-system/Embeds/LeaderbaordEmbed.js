@@ -1,5 +1,5 @@
-const BaseEmbed = require("./BaseEmbed.js")
-const { getLevel, space } = require("../utils")
+const BaseEmbed = require("../../../Embeds/BaseEmbed.js")
+const { getLevel, space } = require("../../../utils")
 
 class LeaderbaordEmbed extends BaseEmbed {
     constructor(config, users) {
