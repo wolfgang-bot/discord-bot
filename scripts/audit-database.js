@@ -15,6 +15,10 @@ const rl = readline.createInterface({
     output: process.stdout
 })
 
+const opts = {
+    discardStdin: false
+}
+
 /**
  * Await user input from the console (promise-based)
  */
@@ -35,10 +39,10 @@ makeRunnable(async () => {
     await run(() => Promise.all([
         database.connect(),
         client.login(process.env.DISCORD_BOT_TOKEN)
-    ]), "Setup")
+    ]), "Setup", opts)
 
     // Audit database
-    await run(audit, "Audit")
+    await run(audit, "Audit", opts)
     logIssues()
 
     if (issues.length > 0) {
