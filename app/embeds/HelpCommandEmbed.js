@@ -17,7 +17,7 @@ class HelpCommandEmbed extends BaseEmbed {
             },
             {
                 name: "Benötigte Rechte",
-                value: makeCodeblock(command.permissions.join("\n") || " ")
+                value: makeCodeblock(command.getPermissions().join("\n") || " ")
             },
             {
                 name: "Alias",

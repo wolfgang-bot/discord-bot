@@ -4,39 +4,84 @@ class Command {
 
         this.name = null
         this.group = null
+        this.parent = null
         this.description = null
         this.arguments = null
         this.alias = []
         this.permissions = []
     }
 
-    setName(value) {
-        this.name = value
-        return this
+    /**
+     * Determine the required permissions to run this command by traversing
+     * the command tree.
+     * 
+     * @returns {Array<String>}
+     */
+    getPermissions() {
+        const permissions = []
+
+        let command = this
+        while (command) {
+            permissions.push(...command.permissions)
+            command = command.parent
+        }
+        
+        return permissions
     }
 
-    setGroup(value) {
-        this.group = value
+    /**
+     * @param {String} name
+     */
+    setName(name) {
+        this.name = name
         return this
     }
-
-    setDescription(value) {
-        this.description = value
+    
+    /**
+     * @param {String} group
+     */
+    setGroup(group) {
+        this.group = group
         return this
     }
-
-    setArguments(value) {
-        this.arguments = value
+    
+    /**
+    * @param {Command} parent
+     */
+    setParent(parent) {
+        this.parent = parent
         return this
     }
-
-    setAlias(value) {
-        this.alias = value
+    
+    /**
+    * @param {String} description
+     */
+    setDescription(description) {
+        this.description = description
         return this
     }
-
-    setPermissions(value) {
-        this.permissions = value
+    
+    /**
+    * @param {Array<String>} args
+     */
+    setArguments(args) {
+        this.arguments = args
+        return this
+    }
+    
+    /**
+    * @param {Array<String>} alias
+     */
+    setAlias(alias) {
+        this.alias = alias
+        return this
+    }
+    
+    /**
+    * @param {Array<String>} permissions
+     */
+    setPermissions(permissions) {
+        this.permissions = permissions
         return this
     }
 }

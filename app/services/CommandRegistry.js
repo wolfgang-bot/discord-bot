@@ -60,6 +60,7 @@ class CommandRegistry extends Command {
      * @param {Command} command 
      */
     register(command) {
+        command.setParent(this)
         this.commands[command.name] = command
     }
 
