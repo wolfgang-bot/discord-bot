@@ -10,10 +10,12 @@ class LevelProgress {
         this.user = user
         this.width = width
 
+        const moduleConfig = this.config["reputation-system"]
+
         const level = getLevel(this.config, this.user.reputation)
-        const nextLevel = Math.min(level + 1, this.config.reputationSystem.roles.length - 1)
-        const lastReputation = this.config.reputationSystem.roleThresholds[level] || 0
-        const progress = (this.user.reputation - lastReputation) / (this.config.reputationSystem.roleThresholds[nextLevel] - lastReputation)
+        const nextLevel = Math.min(level + 1, moduleConfig.roles.length - 1)
+        const lastReputation = moduleConfig.roleThresholds[level] || 0
+        const progress = (this.user.reputation - lastReputation) / (moduleConfig.roleThresholds[nextLevel] - lastReputation)
 
         this.progressBar = new ProgressBar(this.config, this.theme, this.user, this.width, progress)
         this.rank = new Rank(this.config, this.theme, this.user)

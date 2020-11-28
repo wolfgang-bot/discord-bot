@@ -15,11 +15,11 @@ class HelpCommandEmbed extends BaseEmbed {
             },
             {
                 name: "Benötigte Rechte",
-                value: makeCodeblock((command.permissions || []).join("\n"))
+                value: makeCodeblock(command.permissions.join("\n") || " ")
             },
             {
                 name: "Alias",
-                value: makeCodeblock((command.alias || []).join("\n"))
+                value: makeCodeblock(command.alias.join("\n") || " ")
             }
         ])
     }

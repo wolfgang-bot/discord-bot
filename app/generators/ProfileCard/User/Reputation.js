@@ -6,9 +6,11 @@ class Reputation {
         this.theme = theme
         this.user = user
 
+        const moduleConfig = config["reputation-system"]
+
         const level = getLevel(this.config, user.reputation)
-        const nextLevel = Math.min(level + 1, this.config.reputationSystem.roleThresholds.length - 1)
-        this.nextLevelReputation = this.config.reputationSystem.roleThresholds[nextLevel]
+        const nextLevel = Math.min(level + 1, moduleConfig.roleThresholds.length - 1)
+        this.nextLevelReputation = moduleConfig.roleThresholds[nextLevel]
         
         this.fontSize = 12
         this.opacity = .5

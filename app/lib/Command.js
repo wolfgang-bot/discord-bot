@@ -6,8 +6,8 @@ class Command {
         this.group = null
         this.description = null
         this.arguments = null
-        this.alias = null
-        this.permissions = null
+        this.alias = []
+        this.permissions = []
     }
 
     setName(value) {

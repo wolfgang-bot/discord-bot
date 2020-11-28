@@ -1,12 +1,65 @@
-class CommandRegistry {
-    static commands = {} // name: String -> command: Command Map
+const Command = require("../lib/Command.js")
+const { parseArguments } = require("../utils")
+
+class CommandRegistry extends Command {
+    /**
+     * Root registry -> May have child registries
+     * 
+     * @type {CommandRegistry}
+     */
+    static root = null
+
+    constructor(commands = []) {
+        super()
+
+        // The super constructor overrides the "run" method
+        this.run = this._run
+
+        /**
+         * @type {Map<String, Command>}
+         */
+        this.commands = {}
+
+        commands.forEach(this.register.bind(this))
+    }
+
+    /**
+     * Run a command by parsing the message's content
+     * 
+     * @param {Discord.Message} message
+     */
+    async _run(message, args) {
+        if (!message.guild) {
+            throw "Commands sind nur auf Servern verfügbar."
+        }
+
+        // Parse the arguments and get command
+        if (!args) {
+            args = parseArguments(message.content)
+        }
+        const command = this.get(args.shift())
+
+        if (!command) {
+            throw "Unbekannter Command"
+        }
+
+        // Check if the user has all permissions to run this command
+        for (let permission of command.permissions) {
+            if (!message.member.hasPermission(permission)) {
+                const requiredPerms = command.permissions.map(perm => `'${perm}'`).join(", ")
+                throw `Unzureichende Rechte. Der Command benötigt: ${requiredPerms}.`
+            }
+        }
+
+        await command.run(message, args)
+    }
 
     /**
      * Add a command
      * 
      * @param {Command} command 
      */
-    static register(command) {
+    register(command) {
         this.commands[command.name] = command
     }
 
@@ -15,7 +68,7 @@ class CommandRegistry {
      * 
      * @param {Command} command 
      */
-    static unregister(command) {
+    unregister(command) {
         delete this.commands[command.name]
     }
 
@@ -25,21 +78,19 @@ class CommandRegistry {
      * @param {String} name
      * @returns {Command}
      */
-    static get(name) {
+    get(name) {
         if (this.commands[name]) {
             return this.commands[name]
         }
-
-        return Object.values(this.commands).find(cmd => (cmd.alias || []).includes(name))
-    }
-
-    /**
-     * Get all commands as an array
-     * 
-     * @returns {Array<Command>}
-     */
-    static getAll() {
-        return Object.values(this.commands)
+        
+        return Object.values(this.commands).find(cmd => {
+            try {
+                return cmd.alias.includes(name)
+            } catch(error) {
+                console.error(error)
+                console.log(this.commands, cmd)
+            }
+        })
     }
 
     /**
@@ -47,7 +98,7 @@ class CommandRegistry {
      * 
      * @returns {Object}
      */
-    static getGroups() {
+    getGroups() {
         const groups = {}
 
         Object.values(this.commands).forEach(command => {

@@ -4,21 +4,17 @@ function makeCodeblock(str) {
     return "```\n" + str + "```"
 }
 
-function parseCommand(content) {
-    const args = content
+function parseArguments(content) {
+    return content
         .replace(process.env.DISCORD_BOT_PREFIX, "")
         .replace(/\s+/g, " ")
         .split(" ")
-
-    const command = args.shift()
-
-    return [command, args]
 }
 
 function getLevel(config, reputation) {
     let level = -1
 
-    for (let threshold of config.reputationSystem.roleThresholds) {
+    for (let threshold of config["reputation-system"].roleThresholds) {
         if (reputation >= threshold) {
             level++
         } else {
@@ -58,4 +54,4 @@ function insertIntoDescriptiveObject(source, dest) {
     return result
 }
 
-module.exports = { makeCodeblock, parseCommand, getLevel, space, formatDescriptiveObject, insertIntoDescriptiveObject }
+module.exports = { makeCodeblock, parseArguments, getLevel, space, formatDescriptiveObject, insertIntoDescriptiveObject }

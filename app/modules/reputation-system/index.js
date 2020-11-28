@@ -41,13 +41,13 @@ class ReputationSystemModule extends Module {
     }
 
     async start() {
-        commands.forEach(command => CommandRegistry.register(command))
+        commands.forEach(command => CommandRegistry.root.register(command))
         
         this.reputationManager.init()
     }
     
     async stop() {
-        commands.forEach(command => CommandRegistry.unregister(command))
+        commands.forEach(command => CommandRegistry.root.unregister(command))
 
         this.reputationManager.delete()
     }

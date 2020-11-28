@@ -7,13 +7,11 @@ const COMMANDS_DIR = path.join(__dirname, "..", "commands")
 async function registerCommands() {
     const commands = await getCommands()
 
-    commands.forEach(command => {
-        CommandRegistry.register(command)
-    })
+    CommandRegistry.root = new CommandRegistry(commands)
 }
 
 async function getCommands() {
-    const paths = await glob("?*/*.js", { cwd: COMMANDS_DIR })
+    const paths = await glob("?*/*", { cwd: COMMANDS_DIR })
 
     return paths.map(filepath => {
         const [group, filename] = filepath.split("/")

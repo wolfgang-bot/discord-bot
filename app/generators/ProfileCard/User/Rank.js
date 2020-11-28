@@ -8,7 +8,7 @@ class Rank {
         this.fontSize = 16
 
         const level = getLevel(this.config, user.reputation)
-        this.rankName = config.reputationSystem.roles[level] || ""
+        this.rankName = config["reputation-system"].roles[level] || ""
     }
     
     getHeight() {
