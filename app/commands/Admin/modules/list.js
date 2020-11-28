@@ -19,4 +19,3 @@ async function run(message) {
 module.exports = new Command(run)
     .setName("list")
     .setDescription("Zeigt eine Liste der verfügbaren sowie der aktiven Module an.")
-    .setPermissions(["MANAGE_GUILD"])
