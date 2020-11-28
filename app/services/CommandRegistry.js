@@ -94,6 +94,15 @@ class CommandRegistry extends Command {
     }
 
     /**
+     * Get all commands
+     * 
+     * @returns {Map<String, Command>}
+     */
+    getCommands() {
+        return this.commands
+    }
+
+    /**
      * Get the commands in the form: group: String -> commands: Array<Command>
      * 
      * @returns {Object}

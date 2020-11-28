@@ -39,4 +39,4 @@ async function run(message, args) {
 module.exports = new Command(run)
     .setName("start")
     .setDescription("Startet ein Modul.")
-    .setArguments("<module> [paramter, ...]")
+    .setArguments("<module> [parameter, ...]")

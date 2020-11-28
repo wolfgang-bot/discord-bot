@@ -8,10 +8,12 @@ class HelpCommandEmbed extends BaseEmbed {
         this.setTitle("Hilfe: " + command.name)
             .setDescription(command.description)
 
+        const subCommands = command.getCommands ? `[${Object.keys(command.getCommands()).join("|")}]` : null
+
         this.addFields([
             {
                 name: "Benutzung",
-                value: makeCodeblock(`${process.env.DISCORD_BOT_PREFIX}${command.name} ${command.arguments || ""}`)
+                value: makeCodeblock(`${process.env.DISCORD_BOT_PREFIX}${command.name} ${command.arguments || subCommands || ""}`)
             },
             {
                 name: "Benötigte Rechte",

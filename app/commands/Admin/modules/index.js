@@ -11,5 +11,4 @@ const commands = [
 module.exports = new CommandRegistry(commands)
     .setName("modules")
     .setDescription("Verwaltet die Module.")
-    .setArguments("[config|help|list|start|stop]")
     .setPermissions(["MANAGE_GUILD"])
