@@ -13,7 +13,7 @@ class HelpCommandEmbed extends BaseEmbed {
         this.addFields([
             {
                 name: "Benutzung",
-                value: makeCodeblock(`${process.env.DISCORD_BOT_PREFIX}${command.name} ${command.arguments || subCommands || ""}`)
+                value: makeCodeblock(`${process.env.DISCORD_BOT_PREFIX}${command.getCallableName()} ${command.arguments || subCommands || ""}`)
             },
             {
                 name: "Benötigte Rechte",

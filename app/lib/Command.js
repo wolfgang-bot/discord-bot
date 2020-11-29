@@ -12,6 +12,26 @@ class Command {
     }
 
     /**
+     * Get the command required to call this command by traversing the command
+     * tree and concatenating the command names.
+     * 
+     * @returns {String}
+     */
+    getCallableName() {
+        const names = []
+
+        let command = this
+        while (command) {
+            if (command.name) {
+                names.unshift(command.name)
+            }
+            command = command.parent
+        }
+
+        return names.join(" ")
+    }
+
+    /**
      * Determine the required permissions to run this command by traversing
      * the command tree.
      * 
