@@ -43,7 +43,7 @@ async function run(message, args) {
         formattedValue = convertDatatype(value, defaultValue.constructor.name)
     } catch(error) {
         if (process.env.NODE_ENV === "development") {
-            console.log(error)
+            console.error(error)
         }
 
         const errorMessage = typeof error === "string" ? error : "Serverfehler"

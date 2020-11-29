@@ -7,7 +7,9 @@
     "start": "nodemon index.js",
     "format-icons": "node ./scripts/format-icons.js",
     "install-fonts": "node ./scripts/install-fonts.js",
-    "audit-database": "node ./scripts/audit-database.js"
+    "audit-database": "node ./scripts/audit-database.js",
+    "jwt-secret": "node ./scripts/jwt-secret.js",
+    "start-server": "node ./scripts/start-server.js"
   },
   "author": "",
   "license": "ISC",
@@ -17,6 +19,8 @@
     "change-case": "^4.1.1",
     "discord.js": "^12.4.1",
     "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-handlebars": "^5.2.0",
     "glob-promise": "^3.4.0",
     "node-fetch": "^2.6.1",
     "sharp": "^0.26.3",

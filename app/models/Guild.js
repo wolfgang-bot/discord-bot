@@ -30,6 +30,10 @@ class Guild extends Model {
         this.discordGuild = null
     }
 
+    async fetchDiscordGuild(client) {
+        this.discordGuild = await client.guilds.fetch(this.id)
+    }
+
     async delete() {
         // Delete members
         const members = await Member.findAllBy("guild_id", this.id)
