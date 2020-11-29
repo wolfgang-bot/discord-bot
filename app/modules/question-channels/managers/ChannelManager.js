@@ -59,7 +59,7 @@ class ChannelManager {
             // Delete channel
             if (
                 message.author.id === activeChannel.user.id && // User is the question channel's creator
-                message.content.trim() === this.config.deleteReaction
+                message.content.trim() === this.config.deleteMessage
             ) {
                 await this.deleteChannel(activeChannel.channel)
             }

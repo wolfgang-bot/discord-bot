@@ -16,7 +16,7 @@ async function run(message, args) {
     const isLoaded = await ModuleServiceProvider.guild(message.guild).isLoaded(module)
 
     if (!isLoaded) {
-        await message.channel.send("Das Modul ist nicht gestartet")
+        return await message.channel.send("Das Modul ist nicht gestartet")
     }
 
     await ModuleServiceProvider.guild(message.guild).stopModule(module)

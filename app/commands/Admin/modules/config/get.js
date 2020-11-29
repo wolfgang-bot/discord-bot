@@ -1,9 +1,9 @@
-const Command = require("../../../lib/Command.js")
-const ModuleConfigEmbed = require("../../../embeds/ModuleConfigEmbed.js")
-const Guild = require("../../../models/Guild.js")
-const defaultConfig = require("../../../config/default.json")
-const { insertIntoDescriptiveObject } = require("../../../utils")
-const Module = require("../../../models/Module.js")
+const Command = require("../../../../lib/Command.js")
+const ModuleConfigEmbed = require("../../../../embeds/ModuleConfigEmbed.js")
+const Guild = require("../../../../models/Guild.js")
+const Module = require("../../../../models/Module.js")
+const defaultConfig = require("../../../../config/default.json")
+const { insertIntoDescriptiveObject } = require("../../../../utils")
 
 async function run(message, args) {
     if (!args[0]) {
@@ -24,6 +24,7 @@ async function run(message, args) {
 }
 
 module.exports = new Command(run)
-    .setName("config")
+    .setName("get")
     .setDescription("Zeigt die Konfiguration eines Moduls an.")
     .setArguments("<modul>")
+    .setAlias(["show"])

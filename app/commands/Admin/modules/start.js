@@ -22,7 +22,7 @@ async function run(message, args) {
     // Start the requested module
     let instance
     try {
-        instance = await ModuleServiceProvider.guild(message.guild).startModule(message.client, module, args.slice(2))
+        instance = await ModuleServiceProvider.guild(message.guild).startModule(message.client, module, args.slice(1))
     } catch (error) {
         if (process.env.NODE_ENV === "development") {
             console.error(error)
@@ -39,4 +39,4 @@ async function run(message, args) {
 module.exports = new Command(run)
     .setName("start")
     .setDescription("Startet ein Modul.")
-    .setArguments("<module> [parameter, ...]")
+    .setArguments("<modul> [parameter, ...]")

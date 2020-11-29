@@ -13,7 +13,7 @@ class ModuleConfigEmbed extends BaseEmbed {
             this.addField(capitalKey, `
                 *Key: ${key}
                 ${description}*
-                \`\`\`${Array.isArray(value) ? value.join("\n") : value}\`\`\`
+                \`\`\`\n${Array.isArray(value) ? value.join("\n") : value}\`\`\`
             `)
         })
     }

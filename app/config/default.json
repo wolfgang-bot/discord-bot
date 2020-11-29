@@ -38,8 +38,8 @@
                 "description": "Name of the reaction a question's author has to give the to the answer in order to resolve the channel",
                 "value": "✅"
             },
-            "deleteReaction": {
-                "description": "Name of the reaction a question's author has to sent into the question channel to delete it",
+            "deleteMessage": {
+                "description": "Content of the message a question's author has to sent into the question channel to delete it",
                 "value": "❌"
             },
             "acceptReputation": {

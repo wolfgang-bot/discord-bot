@@ -1,7 +1,7 @@
 const CommandRegistry = require("../../../services/CommandRegistry.js")
 
 const commands = [
-    require("./config.js"),
+    require("./config"),
     require("./help.js"),
     require("./list.js"),
     require("./start.js"),

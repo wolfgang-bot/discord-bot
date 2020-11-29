@@ -6,7 +6,7 @@ class NotificationEmbed extends BaseEmbed {
 
         this.setTitle(`Du hast eine Frage auf '${guild.name}' gestellt`)
             .addField(`Problem gelöst?`, `Super! Reagiere mit ${config["question-channels"].resolveReaction} auf die Nachricht die dein Problem gelöst hat und wir entfernen deinen Fragenkanal wieder.`)
-            .addField(`Frage nicht mehr relevant?`, `Sende ${config["question-channels"].deleteReaction} in deinen Fragenkanal um ihn selbstständig zu entfernen.`)
+            .addField(`Frage nicht mehr relevant?`, `Sende ${config["question-channels"].deleteMessage} in deinen Fragenkanal um ihn selbstständig zu entfernen.`)
     }
 }
 
