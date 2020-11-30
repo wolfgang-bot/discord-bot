@@ -1,0 +1,10 @@
+node_modules/
+*.pem
+*.log
+package-lock.json
+
+temp/*
+
+bucket*/
+
+.env

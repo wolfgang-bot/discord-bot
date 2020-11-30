@@ -197,4 +197,84 @@ function convertDatatype(input, datatype) {
     }
 }
 
-module.exports = { makeCodeblock, parseArguments, getLevel, space, formatDescriptiveObject, insertIntoDescriptiveObject, existsInObject, convertDatatype }
+/**
+ * Check recursively if two objects have the same keys and every value is
+ * of the same data-type.
+ * 
+ * @param {Object} object1
+ * @param {Object} object2
+ * @returns {Boolean} Whether the two objects have an identical structure.
+ */
+function compareStructure(object1, object2) {
+    // Collect keys from both objects
+    const keys = new Set(Object.keys(object1).concat(Object.keys(object2)))
+
+    for (let key of keys) {
+        // Verify existance
+        if (!(key in object1) || !(key in object2)) {
+            return false
+        }
+
+        // Verify data-type
+        if (object1[key].constructor.name !== object2[key].constructor.name) {
+            return false
+        }
+
+        // Verify recursively if the sub-objects have the same structure
+        if (object1[key].constructor.name === "Object" && !compareStructure(object1[key], object2[key])) {
+            return false
+        }
+    }
+
+    return true
+}
+
+/**
+ * Run constraint methods of a descriptive object
+ * 
+ * @param {Object} source
+ * @param {Object} dest Descriptive Object
+ * @returns {Object} An object with the same structure as the source object and the errors as values
+ */
+function verifyConstraints(source, dest) {
+    const errors = {}
+    let hasErrors = false
+
+    function verify(source, dest, errors) {
+        for (let key in source) {
+            const value = source[key]
+            const descriptor = dest[key]
+
+            // Run the "verifyContraints" method
+            if (descriptor.verifyConstraints && !descriptor.verifyConstraints(value, source)) {
+                errors[key] = descriptor.constraints
+                hasErrors = true
+            }
+
+            // Recursively verify sub-objects
+            if (value.constructor.name === "Object") {
+                errors[key] = {}
+                verify(value, descriptor.value, errors[key])
+            }
+        }
+    }
+
+    verify(source, dest, errors)
+
+    if (hasErrors) {
+        return errors
+    }
+}
+
+module.exports = {
+    makeCodeblock,
+    parseArguments,
+    getLevel,
+    space,
+    formatDescriptiveObject,
+    insertIntoDescriptiveObject,
+    existsInObject,
+    convertDatatype,
+    compareStructure,
+    verifyConstraints
+}

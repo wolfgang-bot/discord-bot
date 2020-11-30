@@ -1,26 +1,6 @@
-const { capitalCase } = require("change-case")
 const Guild = require("../../models/Guild.js")
-
-/**
- * Extract all keys and their depth recursively out of an object
- * 
- * @param {Object} object 
- * @param {int} depth 
- * @returns {Array<{ key: String, depth: int }>} All keys and their depth
- */
-function getKeysRecursive(object, depth = 0) {
-    const keys = []
-
-    for (let key in object) {
-        keys.push({ key, depth })
-
-        if (object[key].constructor.name === "Object") {
-            keys.push(...getKeysRecursive(object[key], depth + 1))
-        }
-    }
-
-    return keys
-}
+const { compareStructure, verifyConstraints } = require("../../utils")
+const defaultConfig = require("../../config/default.js")
 
 class ConfigController {
     /**
@@ -31,31 +11,53 @@ class ConfigController {
     static setDiscordClient(client) {
         ConfigController.client = client
     }
-
+    
     /**
-     * Render the "config" view with the config of the requested guild
+     * Get a guild's configuration object
      */
-    static async get(req, res) {
+    static async getOne(req, res) {
         const guild = await Guild.findBy("id", req.params.guildId)
-        
+
         if (!guild) {
-            return res.render("404")
+            return res.status(404).end()
         }
 
         await guild.fetchDiscordGuild(ConfigController.client)
 
-        const keys = getKeysRecursive(guild.config)
-        
-        res.render("config", {
-            guild,
-            keys,
+        res.send(guild.config)
+    }
 
-            helpers: {
-                capitalCase,
-                getMargin: n => n * 2,
-                getFont: n => n === 0 ? "font-bold" : ""
-            }
-        })
+    /**
+     * Update a guild's configuration
+     */
+    static async update(req, res) {
+        const guild = await Guild.findBy("id", req.params.guildId)
+
+        if (!guild) {
+            return res.status(404).end()
+        }
+
+        /**
+         * Check if the given object has the same structure as the existing
+         * configuration object
+         */
+        if (!compareStructure(guild.config, req.body)) {
+            return res.status(400).end()
+        }
+
+        /**
+         * Check if the given object matches all constraints
+         */
+        const errors = verifyConstraints(req.body, defaultConfig)
+        
+        if (errors) {
+            return res.status(400).send(errors)
+        }
+
+        guild.config = req.body
+        await guild.update()
+
+        res.status(200).send()
     }
 }
 

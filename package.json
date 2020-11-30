@@ -4,24 +4,28 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js",
+    "start": "concurrently -n server,client -c yellow,blue npm:start-server npm:start-client",
     "format-icons": "node ./scripts/format-icons.js",
     "install-fonts": "node ./scripts/install-fonts.js",
     "audit-database": "node ./scripts/audit-database.js",
     "jwt-secret": "node ./scripts/jwt-secret.js",
-    "start-server": "node ./scripts/start-server.js"
+    "start-server": "nodemon index.js",
+    "start-client": "cd app/www/client && npm start"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@m.moelter/task-runner": "^1.0.3",
+    "bcrypt": "^5.0.0",
     "chalk": "^4.1.0",
     "change-case": "^4.1.1",
+    "cors": "^2.8.5",
     "discord.js": "^12.4.1",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
-    "express-handlebars": "^5.2.0",
     "glob-promise": "^3.4.0",
+    "http-proxy-middleware": "^1.0.6",
+    "jsonwebtoken": "^8.5.1",
     "node-fetch": "^2.6.1",
     "sharp": "^0.26.3",
     "sqlite3": "^5.0.0",
@@ -29,7 +33,12 @@
   },
   "nodemonConfig": {
     "ignore": [
-      "storage.json"
+      "storage.json",
+      "app/www/client/*"
     ]
+  },
+  "devDependencies": {
+    "concurrently": "^5.3.0",
+    "nodemon": "^2.0.6"
   }
 }

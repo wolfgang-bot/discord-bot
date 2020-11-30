@@ -2,7 +2,7 @@ const Command = require("../../../../lib/Command.js")
 const ModuleConfigEmbed = require("../../../../embeds/ModuleConfigEmbed.js")
 const Guild = require("../../../../models/Guild.js")
 const Module = require("../../../../models/Module.js")
-const defaultConfig = require("../../../../config/default.json")
+const defaultConfig = require("../../../../config/default.js")
 const { insertIntoDescriptiveObject } = require("../../../../utils")
 
 async function run(message, args) {

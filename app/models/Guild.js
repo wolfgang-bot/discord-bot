@@ -2,7 +2,7 @@ const path = require("path")
 const Model = require("../lib/Model.js")
 const { formatDescriptiveObject } = require("../utils")
 
-const DEFAULT_CONFIG_PATH = path.join(__dirname, "..", "config", "default.json")
+const DEFAULT_CONFIG_PATH = path.join(__dirname, "..", "config", "default.js")
 const defaultConfig = formatDescriptiveObject(require(DEFAULT_CONFIG_PATH))
 
 class Guild extends Model {

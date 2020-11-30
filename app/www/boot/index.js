@@ -1,29 +1,24 @@
-const path = require("path")
 const glob = require("glob-promise")
+const path = require("path")
 const express = require("express")
-const handlebars = require("express-handlebars")
+const cors = require("cors")
 const routes = require("../routes")
 
 const ROOT_DIR = path.join(__dirname, "..")
 
 async function boot(app, client) {
-    setupExpress(app, client)
+    setupExpress(app)
     await injectClient(client)
 }
 
 function setupExpress(app) {
-    // Set handlebars as the view engine
-    app.engine("hbs", handlebars({
-        extname: ".hbs"
-    }))
-    app.set("view engine", "hbs")
-
-    // Set views directory
-    app.set("views", path.join(__dirname, "..", "views"))
+    if (process.env.NODE_ENV === "development") {
+        app.use(cors())
+    }
 
     // Support json
     app.use(express.json())
-
+    
     // Support form data
     app.use(express.urlencoded({
         extended: true

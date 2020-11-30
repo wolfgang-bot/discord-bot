@@ -1,4 +1,6 @@
+require("dotenv").config()
 const express = require("express")
+
 const boot = require("./boot")
 
 const app = express()
