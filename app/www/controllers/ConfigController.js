@@ -1,5 +1,5 @@
 const Guild = require("../../models/Guild.js")
-const { compareStructure, verifyConstraints } = require("../../utils")
+const { compareStructure, verifyConstraints, insertIntoDescriptiveObject } = require("../../utils")
 const defaultConfig = require("../../config/default.js")
 
 class ConfigController {
@@ -25,6 +25,23 @@ class ConfigController {
         await guild.fetchDiscordGuild(ConfigController.client)
 
         res.send(guild.config)
+    }
+
+    /**
+     * Get a guild's configuration as a descriptive object
+     */
+    static async getOneDescriptive(req, res) {
+        const guild = await Guild.findBy("id", req.params.guildId)
+
+        if (!guild) {
+            return res.status(404).end()
+        }
+
+        await guild.fetchDiscordGuild(ConfigController.client)
+
+        const result = insertIntoDescriptiveObject(guild.config, defaultConfig)
+
+        res.send(result)
     }
 
     /**

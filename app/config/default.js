@@ -19,7 +19,6 @@ module.exports = {
     },
 
     "dynamic-voicechannels": {
-        description: "Configuration of the 'dynamic-voicechannels' module",
         value: {
             defaultChannels: {
                 description: "Amount of persistant channels",
@@ -34,7 +33,6 @@ module.exports = {
     },
 
     "question-channels": {
-        description: "Configuration of the 'question-channels' module",
         value: {
             channelName: {
                 description: "Template for the question channel names ('{}' will be replaced by the author's username)",
@@ -42,7 +40,7 @@ module.exports = {
             },
 
             resolveReaction: {
-                description: "Name of the reaction a question's author has to give the to the answer in order to resolve the channel",
+                description: "Name of the reaction a question's author has to give the to an answer to resolve the channel",
                 value: "✅",
                 constraints: "Must be a unicode emoji",
                 verifyConstraints: (value) => EMOJI_REGEX.test(value)
@@ -76,7 +74,6 @@ module.exports = {
     },
 
     "reputation-system": {
-        description: "Configuration of the 'reputation-system' module",
         value: {
             roles: {
                 description: "Level Roles which are assigned to a user who reaches the level",
@@ -118,7 +115,6 @@ module.exports = {
     },
 
     "skill-roles": {
-        description: "Configuration of the 'skill-roles' module",
         value: {
             emojiPrefix: {
                 description: "Prefix of the role names",

@@ -139,7 +139,12 @@ function insertIntoDescriptiveObject(source, dest) {
 
     for (let key in source) {
         result[key] = dest[key]
-        result[key].value = source[key]
+
+        if (source[key].constructor.name === "Object") {
+            result[key].value = insertIntoDescriptiveObject(source[key], result[key].value)
+        } else {
+            result[key].value = source[key]
+        }
     }
 
     return result

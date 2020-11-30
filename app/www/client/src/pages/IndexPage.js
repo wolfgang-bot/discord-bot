@@ -1,18 +1,12 @@
 import React from "react"
-import { makeStyles } from "@material-ui/core/styles"
 
-const useStyles = makeStyles(theme => ({
-    
-}))
+import Layout from "../components/Layout/Layout.js"
 
-function AuthPage() {
-    const classes = useStyles()
-    
+function IndexPage() {
     return (
-        <div>
-
-        </div>
+        <Layout>
+        </Layout>
     )
 }
 
-export default AuthPage
+export default IndexPage
