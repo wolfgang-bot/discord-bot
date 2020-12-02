@@ -1,8 +1,21 @@
+const glob = require("glob-promise")
+const path = require("path")
+
 // Match unicode emojis
 const EMOJI_REGEX = /([\ud800-\udbff])/
 // Match hex colors and discord color names
 const COLOR_REGEX = /^((#([0-9a-fA-F]{3}){1,2})|(DEFAULT|WHITE|AQUA|GREEN|BLUE|YELLOW|PURPLE|LUMINOUS_VIVID_PINK|GOLD|ORANGE|RED|GREY|DARKER_GREY|NAVY|DARK_AQUA|DARK_GREEN|DARK_BLUE|DARK_PURPLE|DARK_VIVID_PINK|DARK_GOLD|DARK_ORANGE|DARK_RED|DARK_GREY|LIGHT_GREY|DARK_NAVY|BLURPLE|GREYPLE|DARK_BUT_NOT_BLACK|NOT_QUITE_BLACK|RANDOM))$/
 
+const APP_DIR = path.join(__dirname, "..")
+const ICONS_DIR = path.join(APP_DIR, "assets", "icons")
+
+// Get available icons from icons directory
+const icons = glob.sync("*.png", { cwd: ICONS_DIR }).map(filename => filename.replace(".png", ""))
+
+/**
+ * Key names cannot contain the character: "#"
+ * -> This is used in the frontend to create a flat object hirarchie
+ */
 module.exports = {
     userRole: {
         description: "Role each user receives when joining the guild",
@@ -80,6 +93,7 @@ module.exports = {
                 value: ["Bronze", "Silber", "Gold", "Platin", "Diamant"],
                 constraints: "Must have the same amount of items as 'Role Colors' and 'Role Thresholds'",
                 verifyConstraints: (value, config) => (
+                    value.length > 0 &&
                     value.length === config.roleColors.length &&
                     value.length === config.roleThresholds.length
                 )
@@ -90,6 +104,7 @@ module.exports = {
                 value: ["#E67E22", "#ffffff", "#F0C410", "#607d8b", "#3498DB"],
                 constraints: "Must have the same amount of items as 'Roles' and 'Role Thresholds'",
                 verifyConstraints: (value, config) => (
+                    value.length > 0 &&
                     value.length === config.roles.length &&
                     value.length === config.roleThresholds.length
                 )
@@ -100,6 +115,7 @@ module.exports = {
                 value: [10, 100, 500, 1000, 2500],
                 constraints: "Must have the same amount of items as 'Roles' and 'Role Colors'",
                 verifyConstraints: (value, config) => (
+                    value.length > 0 &&
                     value.length === config.roles.length &&
                     value.length === config.roleColors.length
                 )
@@ -139,7 +155,12 @@ module.exports = {
                     "Linux",
                     "Java",
                     "Cpp"
-                ]
+                ],
+                constraints: `Available roles: ${icons.map(e => `'${e}'`).join(", ")}`,
+                verifyConstraints: (value) => (
+                    value.length > 0 &&
+                    value.every(name => icons.includes(name.toLowerCase()))
+                )
             }
         }
     }

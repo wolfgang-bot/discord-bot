@@ -225,6 +225,15 @@ function compareStructure(object1, object2) {
             return false
         }
 
+        // Verify array element's datatype
+        if (object1[key].constructor.name === "Array") {
+            for (let value of object1[key]) {
+                if (value.constructor.name !== object2[key][0].constructor.name) {
+                    return false
+                }
+            }
+        }
+
         // Verify recursively if the sub-objects have the same structure
         if (object1[key].constructor.name === "Object" && !compareStructure(object1[key], object2[key])) {
             return false

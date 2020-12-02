@@ -1,10 +1,25 @@
 import React from "react"
-import { TextField } from "@material-ui/core"
 
-function DynamicInput({ value, className }) {
+import ArrayInput from "./ArrayInput.js"
+import NumberInput from "./NumberInput.js"
+import StringInput from "./StringInput.js"
+
+const inputMap = {
+    "Array": ArrayInput,
+    "Number": NumberInput,
+    "String": StringInput
+}
+
+function DynamicInput({ value, className, name, onChange }) {
+    const Input = inputMap[value.constructor.name]
+
+    if (!Input) {
+        throw new Error(`No input component found for data type '${value.constructor.name}'`)
+    }
+
     return (
         <div className={className}>
-            <TextField value={value} fullWidth variant="outlined"/>
+            <Input name={name} onChange={onChange}/>
         </div>
     )
 }

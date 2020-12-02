@@ -20,7 +20,7 @@ function ConfigPage() {
 
     return (
         <Layout>
-            <ConfigForm data={data} onUpdate={() => console.log("Update")}/>
+            <ConfigForm guildId={guildId} data={data} onUpdate={() => console.log("Update")}/>
         </Layout>
     )
 }
