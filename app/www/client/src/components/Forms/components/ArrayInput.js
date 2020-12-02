@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react"
 import { useFormContext, useForm, FormProvider, useWatch } from "react-hook-form"
-import { Grid, IconButton, Button } from "@material-ui/core"
+import { Grid, IconButton, Button, Typography } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import DeleteIcon from "@material-ui/icons/Close"
 import AddIcon from "@material-ui/icons/Add"
@@ -10,13 +10,18 @@ import DynamicInput from "./DynamicInput.js"
 const useStyles = makeStyles(theme => ({
     inputWrapper: {
         marginBottom: theme.spacing(1)
+    },
+    
+    error: {
+        display: "block",
+        marginTop: theme.spacing(1)
     }
 }))
 
 function ArrayInput(props) {
     const classes = useStyles()
 
-    const { register, setValue, control } = useFormContext()
+    const { register, setValue, control, errors } = useFormContext()
 
     const values = useWatch({ control, name: props.name })
 
@@ -53,6 +58,8 @@ function ArrayInput(props) {
         register(props.name)
     }, [])
 
+    const hasError = props.name in errors
+
     return (
         <FormProvider {...form}>
             { inputIds.map((id) => (
@@ -75,9 +82,17 @@ function ArrayInput(props) {
                 </Grid>
             )) }
 
-            <Button onClick={handleAdd} startIcon={<AddIcon />} variant="outlined">
-                Add
-            </Button>
+            <Grid container>
+                <Button onClick={handleAdd} startIcon={<AddIcon />} variant="outlined">
+                    Add
+                </Button>
+            </Grid>
+
+            { hasError && (
+                <Typography variant="caption" color="error" className={classes.error}>
+                    { errors[props.name].message}
+                </Typography>
+            )}
         </FormProvider>
     )
 }

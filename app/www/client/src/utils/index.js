@@ -89,3 +89,45 @@ export function createNestedObject(values) {
 
     return result
 }
+
+/**
+ * Flatten an object by combining keys with the delimitter constant.
+ * 
+ * @param {Object} input
+ * @returns {Object} Flattened object
+ */
+export function flattenObject(input) {
+    const result = {}
+
+    function _flatten(input, keyCarry = "") {
+        for (let key in input) {
+            const backtraceKey = keyCarry + key
+
+            if (input[key].constructor.name === "Object") {
+                _flatten(input[key], backtraceKey + KEY_DELIMITER)
+            } else {
+                result[backtraceKey] = input[key]
+            }
+        }
+    }
+
+    _flatten(input)
+
+    return result
+}
+
+/**
+ * Attach the listeners to the event target and return a function which removes them.
+ * 
+ * @param {EventTarget|Emittable} target 
+ * @param {Array<[String, Function]>} events 
+ */
+export function createListeners(target, events) {
+    events.forEach(([name, fn]) => {
+        target.addEventListener(name, fn, false)
+    })
+
+    return () => events.forEach(([name, fn]) => {
+        target.removeEventListener(name, fn, false)
+    })
+}

@@ -3,7 +3,7 @@ import { useFormContext } from "react-hook-form"
 import { TextField } from "@material-ui/core"
 
 function NumberInput({ onChange, ...props }) {
-    const { register, setValue, watch } = useFormContext()
+    const { register, setValue, watch, errors } = useFormContext()
 
     const handleChange = (event) => {
         const newValue = parseInt(event.target.value)
@@ -17,6 +17,8 @@ function NumberInput({ onChange, ...props }) {
     useEffect(() => {
         register(props.name)
     }, [])
+    
+    const hasError = props.name in errors
 
     return (
         <TextField
@@ -25,6 +27,8 @@ function NumberInput({ onChange, ...props }) {
             type="number"
             onChange={handleChange}
             value={watch(props.name)}
+            error={hasError}
+            helperText={hasError && errors[props.name].message}
             {...props}
         />
     )

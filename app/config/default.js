@@ -3,6 +3,8 @@ const path = require("path")
 
 // Match unicode emojis
 const EMOJI_REGEX = /([\ud800-\udbff])/
+// Math hex colors
+const HEX_COLOR_REGEX = /^#([0-9a-fA-F]{3}){1,2}$/
 // Match hex colors and discord color names
 const COLOR_REGEX = /^((#([0-9a-fA-F]{3}){1,2})|(DEFAULT|WHITE|AQUA|GREEN|BLUE|YELLOW|PURPLE|LUMINOUS_VIVID_PINK|GOLD|ORANGE|RED|GREY|DARKER_GREY|NAVY|DARK_AQUA|DARK_GREEN|DARK_BLUE|DARK_PURPLE|DARK_VIVID_PINK|DARK_GOLD|DARK_ORANGE|DARK_RED|DARK_GREY|LIGHT_GREY|DARK_NAVY|BLURPLE|GREYPLE|DARK_BUT_NOT_BLACK|NOT_QUITE_BLACK|RANDOM))$/
 
@@ -11,6 +13,14 @@ const ICONS_DIR = path.join(APP_DIR, "assets", "icons")
 
 // Get available icons from icons directory
 const icons = glob.sync("*.png", { cwd: ICONS_DIR }).map(filename => filename.replace(".png", ""))
+
+/**
+ * Constraint templates
+ */
+const emojiConstraint = {
+    constraints: "Must be a unicode emoji",
+    verifyConstraints: (value) => EMOJI_REGEX.test(value) 
+}
 
 /**
  * Key names cannot contain the character: "#"
@@ -26,7 +36,9 @@ module.exports = {
         description: "Color theme of the bot (e.g. embeds)",
         value: {
             primary: {
-                value: "#3f51b5"
+                value: "#3f51b5",
+                constraints: "Must be a valid hexadecimal color-code",
+                verifyConstraints: (value) => HEX_COLOR_REGEX.test(value)
             }
         }
     },
@@ -55,8 +67,7 @@ module.exports = {
             resolveReaction: {
                 description: "Name of the reaction a question's author has to give the to an answer to resolve the channel",
                 value: "✅",
-                constraints: "Must be a unicode emoji",
-                verifyConstraints: (value) => EMOJI_REGEX.test(value)
+                ...emojiConstraint
             },
 
             deleteMessage: {
@@ -124,8 +135,7 @@ module.exports = {
             levelUpReactionEmoji: {
                 description: "Emoji of the reaction which is added to the 'level up' announcements",
                 value: "💯",
-                constraints: "Must be a unicode emoji",
-                verifyConstraints: (value) => EMOJI_REGEX.test(value) 
+                ...emojiConstraint
             }
         }
     },
@@ -138,7 +148,7 @@ module.exports = {
             },
 
             roleColor: {
-                description: "Color of the roles (Discord Colornames allowed)",
+                description: "Color of the roles (Discord color names allowed)",
                 value: "AQUA",
                 constraints: "Must be a valid color",
                 verifyConstraints: (value) => COLOR_REGEX.test(value)
