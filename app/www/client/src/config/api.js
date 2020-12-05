@@ -18,3 +18,6 @@ function url(path) {
 export const getConfig = (id) => axios.get(url("/config/" + id))
 export const getConfigDescriptive = (id) => axios.get(url("/config/descriptive/" + id))
 export const setConfig = (id, data) => axios.post(url("/config/" + id), data)
+
+export const getProfile = () => axios.get(url("/oauth/discord/profile"))
+export const getGuilds = () => axios.get(url("/oauth/discord/guilds"))

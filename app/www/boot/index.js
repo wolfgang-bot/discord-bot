@@ -16,6 +16,10 @@ function setupExpress(app) {
         app.use(cors())
     }
 
+    // Set pug as template engine
+    app.set("view engine", "pug")
+    app.set("views", path.join(__dirname, "..", "views"))
+
     // Support json
     app.use(express.json())
     
@@ -32,11 +36,14 @@ function setupExpress(app) {
  * Inject client into dependants
  */
 async function injectClient(client) {
-    const files = await glob("controllers/*.js", { cwd: ROOT_DIR })
+    const files = await glob("{controllers,middleware}/*.js", { cwd: ROOT_DIR })
 
     files.forEach(filepath => {
         const module = require(path.join(ROOT_DIR, filepath))
-        module.setDiscordClient(client)
+
+        if (module.setDiscordClient) {
+            module.setDiscordClient(client)
+        }
     })
 }
 

@@ -4,7 +4,7 @@ class User extends Model {
     constructor(values) {
         super({
             table: "users",
-            columns: ["id"],
+            columns: ["id", "access_token", "refresh_token"],
             ...values
         })
 
@@ -13,6 +13,14 @@ class User extends Model {
 
     async fetchDiscordUser(client) {
         this.discordUser = await client.users.fetch(this.id)
+    }
+
+    toJSON() {
+        return {
+            id: this.id,
+            username: this.username,
+            avatar: this.avatar
+        }
     }
 }
 

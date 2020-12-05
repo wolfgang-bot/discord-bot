@@ -96,6 +96,8 @@ function ConfigForm({ guildId, data, onUpdate }) {
                 </Paper>
             )
         })
+
+        // eslint-disable-next-line
     }, [data])
 
     const form = useForm({

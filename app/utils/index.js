@@ -280,6 +280,16 @@ function verifyConstraints(source, dest) {
     }
 }
 
+/**
+ * Create a URL from a path with respect to the env variables.
+ * 
+ * @param {String} path 
+ * @returns {String} URL
+ */
+function makeURL(path) {
+    return `${process.env.PROTOCOL}://${process.env.HOST}${process.env.PUBLIC_PORT ? ":" + process.env.PUBLIC_PORT : ""}${path}`
+}
+
 module.exports = {
     makeCodeblock,
     parseArguments,
@@ -290,5 +300,6 @@ module.exports = {
     existsInObject,
     convertDatatype,
     compareStructure,
-    verifyConstraints
+    verifyConstraints,
+    makeURL
 }

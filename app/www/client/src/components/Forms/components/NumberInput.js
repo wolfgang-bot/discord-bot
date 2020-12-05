@@ -16,6 +16,8 @@ function NumberInput({ onChange, ...props }) {
     
     useEffect(() => {
         register(props.name)
+
+        // eslint-disable-next-line
     }, [])
     
     const hasError = props.name in errors
