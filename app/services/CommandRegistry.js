@@ -19,6 +19,7 @@ class CommandRegistry extends Command {
          * @type {Map<String, Command>}
          */
         this.commands = {}
+        this.commandNames = new Set()
 
         commands.forEach(this.register.bind(this))
     }
@@ -59,7 +60,11 @@ class CommandRegistry extends Command {
      */
     register(command) {
         command.setParent(this)
+
         this.commands[command.name] = command
+        command.alias.forEach(alias => this.commands[alias] = command)
+
+        this.commandNames.add(command.name)
     }
 
     /**
@@ -69,36 +74,28 @@ class CommandRegistry extends Command {
      */
     unregister(command) {
         delete this.commands[command.name]
+        command.alias.forEach(alias => delete this.commands[alias])
+
+        this.commandNames.delete(command.name)
     }
 
     /**
-     * Get a command by matching the name and aliases
+     * Get a command by name or alias
      * 
      * @param {String} name
      * @returns {Command}
      */
-    get(name) {
-        if (this.commands[name]) {
-            return this.commands[name]
-        }
-        
-        return Object.values(this.commands).find(cmd => {
-            try {
-                return cmd.alias.includes(name)
-            } catch(error) {
-                console.error(error)
-                console.log(this.commands, cmd)
-            }
-        })
+    get(key) {
+        return this.commands[key]
     }
 
     /**
-     * Get all commands
+     * Get all command names
      * 
-     * @returns {Map<String, Command>}
+     * @returns {Set<String>}
      */
-    getCommands() {
-        return this.commands
+    getCommandNames() {
+        return this.commandNames
     }
 
     /**
@@ -109,7 +106,9 @@ class CommandRegistry extends Command {
     getGroups() {
         const groups = {}
 
-        Object.values(this.commands).forEach(command => {
+        this.commandNames.forEach(name => {
+            const command = this.commands[name]
+            
             if (!groups[command.group]) {
                 groups[command.group] = []
             }

@@ -8,7 +8,7 @@ class HelpCommandEmbed extends BaseEmbed {
         this.setTitle("Hilfe: " + command.name)
             .setDescription(command.description)
 
-        const subCommands = command.getCommands ? `[${Object.keys(command.getCommands()).join("|")}]` : null
+        const subCommands = command.getCommandNames ? `[${Array.from(command.getCommandNames()).join("|")}]` : null
 
         this.addFields([
             {
