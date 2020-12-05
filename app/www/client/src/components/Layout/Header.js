@@ -8,21 +8,31 @@ import { logout } from "../../store/actions.js"
 import DiscordOAuth from "../OAuth/DiscordOAuth.js"
 import Avatar from "../User/Avatar.js"
 
-const useStyles = makeStyles(theme => ({
-    appBar: {
-        backgroundColor: theme.palette.background.default,
-        boxShadow: "none"
-    },
+const useStyles = makeStyles(theme => {
+    const height = theme.spacing(10)
 
-    user: {
-        display: "flex",
-        alignContent: "center"
-    },
-    
-    spacingRight: {
-        marginRight: theme.spacing(2)
+    return {
+        header: {
+            backgroundColor: theme.palette.background.default,
+            boxShadow: "none",
+            marginBottom: theme.spacing(2),
+            height
+        },
+
+        toolbar: {
+            height
+        },
+
+        user: {
+            display: "flex",
+            alignContent: "center"
+        },
+
+        spacingRight: {
+            marginRight: theme.spacing(2)
+        }
     }
-}))
+})
 
 function Header({ title = "Javacript Bot" }) {
     const classes = useStyles()
@@ -39,8 +49,8 @@ function Header({ title = "Javacript Bot" }) {
     }
 
     return (
-        <AppBar className={classes.appBar} position="static">
-            <Toolbar disableGutters>
+        <AppBar className={classes.header} position="static">
+            <Toolbar disableGutters className={classes.toolbar}>
                 <Grid container justify="space-between">
                     <Link to="/">
                         <Typography color="textPrimary" variant="h6">{ title }</Typography>

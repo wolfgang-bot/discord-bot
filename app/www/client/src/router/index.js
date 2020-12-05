@@ -5,6 +5,7 @@ import ProtectedRoute from "./ProtectedRoute.js"
 import IndexPage from "../pages/IndexPage.js"
 import ConfigPage from "../pages/ConfigPage.js"
 import LoginPage from "../pages/LoginPage.js"
+import ProfilePage from "../pages/ProfilePage.js"
 
 function Router() {
     return (
@@ -12,6 +13,10 @@ function Router() {
             <Switch>
                 <ProtectedRoute path="/config/:guildId">
                     <ConfigPage/>
+                </ProtectedRoute>
+
+                <ProtectedRoute path="/profile">
+                    <ProfilePage/>
                 </ProtectedRoute>
 
                 <Route path="/login">

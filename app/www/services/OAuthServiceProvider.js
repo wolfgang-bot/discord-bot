@@ -52,6 +52,7 @@ class OAuthServiceProvider {
             })
                 .then(res => {
                     if (res.status !== 200) {
+                        console.log(res)
                         return reject(res)
                     }
 
@@ -62,22 +63,22 @@ class OAuthServiceProvider {
     }
 
     /**
-     * Get the profile of a discord user
+     * Fetch the profile of a discord user
      * 
      * @param {String} token OAuth token 
      * @returns {Promise<Object>} Discord User
      */
-    static getProfile(token) {
+    static fetchProfile(token) {
         return OAuthServiceProvider.apiRequest(token, "/users/@me")
     }
 
     /**
-     * Get the guilds of a discord user
+     * Fetch the guilds of a discord user
      * 
      * @param {String} token
      * @returns {Promise<Object>} User's Guilds
      */
-    static getGuilds(token) {
+    static fetchGuilds(token) {
         return OAuthServiceProvider.apiRequest(token, "/users/@me/guilds")
     }
 

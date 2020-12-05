@@ -8,7 +8,8 @@ import ComponentOpener from "../ComponentOpener/ComponentOpener.js"
 const useStyles = makeStyles(theme => ({
     body: {
         display: props => props.center && "flex",
-        justifyContent: props => props.center && "center",
+        flexDirection: props => props.center && "column",
+        alignItems: props => props.center && "center",
         marginBottom: theme.spacing(8)
     }
 }))

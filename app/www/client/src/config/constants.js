@@ -4,3 +4,5 @@ export const DISCORD_OAUTH_URL = `https://discord.com/api/oauth2/authorize?clien
 export const DISCORD_CDN_BASE_URL = "https://cdn.discordapp.com"
 
 export const DEFAULT_AVATAR_URL = "https://cdn.discordapp.com/embed/avatars/{}.png"
+
+export const DISCORD_BOT_INVITE_URL = `https://discord.com/oauth2/authorize?client_id=${process.env.REACT_APP_DISCORD_BOT_CLIENT_ID}&scope=bot&permissions=1342318608`

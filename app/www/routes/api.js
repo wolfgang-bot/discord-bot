@@ -14,5 +14,6 @@ router.post("/config/:guildId", ProtectMiddleware.required, ConfigController.upd
 router.get("/oauth/discord", OAuthController.oauthDiscord)
 router.get("/oauth/discord/profile", ProtectMiddleware.required, OAuthController.getProfile)
 router.get("/oauth/discord/guilds", ProtectMiddleware.required, OAuthController.getGuilds)
+router.get("/oauth/discord/guild/:id", ProtectMiddleware.required, OAuthController.getGuild)
 
 module.exports = router
