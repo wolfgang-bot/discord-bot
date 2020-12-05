@@ -44,11 +44,9 @@ class CommandRegistry extends Command {
         }
 
         // Check if the user has all permissions to run this command
-        for (let permission of command.permissions) {
-            if (!message.member.hasPermission(permission)) {
-                const requiredPerms = command.permissions.map(perm => `'${perm}'`).join(", ")
-                throw `Unzureichende Rechte. Der Command benötigt: ${requiredPerms}.`
-            }
+        if (!message.member.hasPermission(command.permissions)) {
+            const requiredPerms = command.permissions.map(perm => `'${perm}'`).join(", ")
+            throw `Unzureichende Rechte. Der Command benötigt: ${requiredPerms}.`
         }
 
         await command.run(message, args)

@@ -7,7 +7,7 @@ import { DISCORD_OAUTH_URL } from "../../config/constants.js"
 import formatAPI, { USER } from "../../config/formatAPI.js"
 import { login } from "../../store/actions.js"
 
-function OAuthDiscord({ onSuccess }) {
+function OAuthDiscord({ children }) {
     const dispatch = useDispatch()
 
     const popup = useRef()
@@ -34,10 +34,6 @@ function OAuthDiscord({ onSuccess }) {
                         user: event.data.payload.user,
                         token: event.data.payload.token
                     }))
-
-                    if (onSuccess) {
-                        onSuccess()
-                    }
                 }
             }
         }
@@ -48,7 +44,7 @@ function OAuthDiscord({ onSuccess }) {
     })
 
     return (
-        <Button variant="contained" onClick={handleClick}>Login With Discord</Button>
+        <Button variant="contained" onClick={handleClick}>{ children }</Button>
     )
 }
 

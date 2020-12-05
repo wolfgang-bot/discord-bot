@@ -19,6 +19,7 @@ class User extends Model {
         return {
             id: this.id,
             username: this.username,
+            discriminator: this.discriminator,
             avatar: this.avatar
         }
     }

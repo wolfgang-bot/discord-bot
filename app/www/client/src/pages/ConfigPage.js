@@ -1,5 +1,5 @@
 import React from "react"
-import { useParams } from "react-router-dom"
+import { useParams, Redirect } from "react-router-dom"
 import { CircularProgress } from "@material-ui/core"
 
 import Layout from "../components/Layout/Layout.js"
@@ -9,13 +9,17 @@ import useAPIData from "../utils/useAPIData.js"
 function ConfigPage() {
     const { guildId } = useParams()
 
-    const { isLoading, data } = useAPIData({
+    const { isLoading, data, error } = useAPIData({
         method: "getConfigDescriptive",
         data: guildId
     })
 
     if (isLoading) {
         return <Layout><CircularProgress/></Layout>
+    }
+
+    if (error?.response.status === 403) {
+        return <Redirect to="/"/>
     }
 
     return (

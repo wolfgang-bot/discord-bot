@@ -11,6 +11,19 @@ class ConfigController {
     static setDiscordClient(client) {
         ConfigController.client = client
     }
+
+    /**
+     * Check if a guild member has all permissions
+     * 
+     * @param {Discord.Guild} guild 
+     * @param {Discord.User} user 
+     * @param {Array<String>} permissions 
+     */
+    static async checkPermissions(guild, user, permissions) {
+        await guild.fetchDiscordGuild(ConfigController.client)
+        const member = await guild.discordGuild.members.fetch(user.id)
+        return member.hasPermission(permissions)
+    }
     
     /**
      * Get a guild's configuration object
@@ -23,6 +36,10 @@ class ConfigController {
         }
 
         await guild.fetchDiscordGuild(ConfigController.client)
+
+        if (!await ConfigController.checkPermissions(guild, req.user, ["MANAGE_GUILD"])) {
+            return res.status(403).end()
+        }
 
         res.send(guild.config)
     }
@@ -39,6 +56,11 @@ class ConfigController {
 
         await guild.fetchDiscordGuild(ConfigController.client)
 
+        if (!await ConfigController.checkPermissions(guild, req.user, ["MANAGE_GUILD"])) {
+            return res.status(403).end()
+        }
+
+
         const result = insertIntoDescriptiveObject(guild.config, defaultConfig)
 
         res.send(result)
@@ -52,6 +74,10 @@ class ConfigController {
 
         if (!guild) {
             return res.status(404).end()
+        }
+
+        if (!await ConfigController.checkPermissions(guild, req.user, ["MANAGE_GUILD"])) {
+            return res.status(403).end()
         }
 
         /**

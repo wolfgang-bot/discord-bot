@@ -25,7 +25,7 @@ class Member extends Model {
     async fetchGuild() {
         this.guild = await Guild.findBy("id", this.guild_id)
     }
-
+    
     async fetchDiscordUser(client) {
         this.discordUser = await client.users.fetch(this.user_id)
     }

@@ -7,12 +7,14 @@ import ComponentOpener from "../ComponentOpener/ComponentOpener.js"
 
 const useStyles = makeStyles(theme => ({
     body: {
+        display: props => props.center && "flex",
+        justifyContent: props => props.center && "center",
         marginBottom: theme.spacing(8)
     }
 }))
 
-function Layout({ headerProps = {}, children }) {
-    const classes = useStyles()
+function Layout({ headerProps = {}, children, center = false }) {
+    const classes = useStyles({ center })
 
     return (
         <Container>

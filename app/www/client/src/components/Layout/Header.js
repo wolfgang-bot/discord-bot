@@ -1,23 +1,42 @@
 import React from "react"
-import { useSelector } from "react-redux"
-import { Link } from "react-router-dom"
-import { AppBar, Toolbar, Typography, Grid } from "@material-ui/core"
+import { useSelector, useDispatch } from "react-redux"
+import { Link, useHistory } from "react-router-dom"
+import { AppBar, Toolbar, Typography, Grid, Button } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 
+import { logout } from "../../store/actions.js"
 import DiscordOAuth from "../OAuth/DiscordOAuth.js"
+import Avatar from "../User/Avatar.js"
 
 const useStyles = makeStyles(theme => ({
     appBar: {
         backgroundColor: theme.palette.background.default,
         boxShadow: "none"
+    },
+
+    user: {
+        display: "flex",
+        alignContent: "center"
+    },
+    
+    spacingRight: {
+        marginRight: theme.spacing(2)
     }
 }))
 
 function Header({ title = "Javacript Bot" }) {
     const classes = useStyles()
 
+    const history = useHistory()
+    
+    const dispatch = useDispatch()
+
     const isLoggedIn = useSelector(store => store.auth.isLoggedIn)
-    const user = useSelector(store => store.auth.user)
+
+    const handleLogout = () => {
+        history.push("/")
+        dispatch(logout())
+    }
 
     return (
         <AppBar className={classes.appBar} position="static">
@@ -27,12 +46,15 @@ function Header({ title = "Javacript Bot" }) {
                         <Typography color="textPrimary" variant="h6">{ title }</Typography>
                     </Link>
 
-
                     { !isLoggedIn ? (
-                        <DiscordOAuth />
+                        <DiscordOAuth>Login</DiscordOAuth>
                     ) : (
-                        <Typography color="textPrimary" variant="subtitle1">{ user.username }</Typography>
-                    )}
+                        <div className={classes.user}>
+                            <Button onClick={handleLogout} variant="text" className={classes.spacingRight}>Logout</Button>
+
+                            <Avatar/>
+                        </div>
+                    ) }
                 </Grid>
             </Toolbar>
         </AppBar>
