@@ -11,7 +11,9 @@
     "install-fonts": "node ./scripts/install-fonts.js",
     "audit-database": "node ./scripts/audit-database.js",
     "jwt-secret": "node ./scripts/jwt-secret.js",
-    "update-configs": "node ./scripts/update-configs.js"
+    "update-configs": "node ./scripts/update-configs.js",
+    "migrate": "node ./scripts/migrate.js",
+    "create-module": "node ./scripts/create-module.js"
   },
   "author": "",
   "license": "ISC",
@@ -24,6 +26,7 @@
     "discord.js": "^12.4.1",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "fs-extra": "^9.0.1",
     "glob-promise": "^3.4.0",
     "http-proxy-middleware": "^1.0.6",
     "jsonwebtoken": "^8.5.1",
