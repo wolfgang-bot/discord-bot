@@ -8,12 +8,13 @@ async function run(message) {
     const modules = await Module.getAll()
     const moduleInstances = await ModuleInstance.findAllBy("guild_id", message.guild.id)
     const config = await Guild.config(message.guild)
+    const guild = await Guild.findBy("id", message.guild.id)
 
     moduleInstances.forEach(instance => {
         instance.module = modules.find(module => module.id === instance.module_id)
     })
 
-    return await message.channel.send(new ModulesEmbed(config, { modules, moduleInstances }))
+    return await message.channel.send(new ModulesEmbed(config, { guild, modules, moduleInstances }))
 }
 
 module.exports = new Command(run)
