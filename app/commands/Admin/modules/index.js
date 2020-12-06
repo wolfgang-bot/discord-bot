@@ -9,6 +9,7 @@ const commands = [
 ]
 
 module.exports = new CommandRegistry(commands)
+    .setBaseCommand(require("./list.js"))
     .setName("modules")
     .setDescription("Verwaltet die Module.")
     .setPermissions(["MANAGE_GUILD"])

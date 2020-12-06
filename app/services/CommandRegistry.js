@@ -12,6 +12,8 @@ class CommandRegistry extends Command {
     constructor(commands = []) {
         super()
 
+        this.baseCommand = null
+
         // The super constructor overrides the "run" method
         this.run = this._run
 
@@ -22,6 +24,17 @@ class CommandRegistry extends Command {
         this.commandNames = new Set()
 
         commands.forEach(this.register.bind(this))
+    }
+
+    /**
+     * Set the command which will be executed when no sub-command is specified
+     * 
+     * @param {Command} command 
+     * @returns {CommandRegistry} Enable method chaining
+     */
+    setBaseCommand(command) {
+        this.baseCommand = command
+        return this
     }
 
     /**
@@ -38,7 +51,7 @@ class CommandRegistry extends Command {
         if (!args) {
             args = parseArguments(message.content)
         }
-        const command = this.get(args.shift())
+        const command = args.length > 0 ? this.get(args.shift()) : this.baseCommand
 
         if (!command) {
             throw "Unbekannter Command"
