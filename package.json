@@ -5,12 +5,13 @@
   "main": "index.js",
   "scripts": {
     "start": "concurrently -n server,client -c yellow,blue npm:start-server npm:start-client",
+    "start-server": "nodemon index.js",
+    "start-client": "cd app/www/client && npm start",
     "format-icons": "node ./scripts/format-icons.js",
     "install-fonts": "node ./scripts/install-fonts.js",
     "audit-database": "node ./scripts/audit-database.js",
     "jwt-secret": "node ./scripts/jwt-secret.js",
-    "start-server": "nodemon index.js",
-    "start-client": "cd app/www/client && npm start"
+    "update-configs": "node ./scripts/update-configs.js"
   },
   "author": "",
   "license": "ISC",

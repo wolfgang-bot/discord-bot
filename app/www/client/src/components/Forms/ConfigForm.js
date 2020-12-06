@@ -46,12 +46,14 @@ function Title({ _key, desc }) {
 
     const { errors } = useFormContext()
 
+    const label = _key.split(KEY_DELIMITER).pop()
+    
     const hasError = Object.keys(errors).some(key => key.startsWith(_key))
     const textColor = hasError ? "error" : undefined
 
     return (
         <div className={classes.titleWrapper}>
-            <Typography variant="h5" color={textColor}>{capitalCase(_key)}</Typography>
+            <Typography variant="h5" color={textColor}>{ capitalCase(label) }</Typography>
 
             { desc && (
                 <Typography variant="subtitle1" color={textColor}>{ desc }</Typography>

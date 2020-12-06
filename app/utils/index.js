@@ -1,3 +1,4 @@
+// Blank character which is not the "whitespace" character (used in discord embeds to make indents)
 const BLANK = "\u200B"
 
 /**
@@ -290,6 +291,49 @@ function makeURL(path) {
     return `${process.env.PROTOCOL}://${process.env.HOST}${process.env.PUBLIC_PORT ? ":" + process.env.PUBLIC_PORT : ""}${path}`
 }
 
+/**
+ * Recursively transfer the values from one object to another object.
+ * 
+ * Example:
+ *
+ * from = {
+ *     a: "abc",
+ *     b: {
+ *     },
+ *     d: 789
+ * }
+ *
+ *
+ * to = {
+ *     a: "xyz", // Set to "abc"
+ *     b: {
+ *         c: 456 // Do nothing
+ *     }
+ * }
+ * 
+ * @param {Object} from
+ * @param {Object} to
+ * @returns {Object} Transformed object
+ */
+function transferValues(from, to) {
+    const result = {}
+
+    function _transfer(from = {}, to, result) {
+        Object.keys(to).forEach(key => {
+            if (to[key].constructor.name === "Object") {
+                result[key] = {}
+                _transfer(from[key], to[key], result[key])
+            } else {
+                result[key] = typeof from[key] !== "undefined" ? from[key] : to[key]
+            }
+        })
+    }
+
+    _transfer(from, to, result)
+
+    return result
+}
+
 module.exports = {
     makeCodeblock,
     parseArguments,
@@ -301,5 +345,6 @@ module.exports = {
     convertDatatype,
     compareStructure,
     verifyConstraints,
-    makeURL
+    makeURL,
+    transferValues
 }
