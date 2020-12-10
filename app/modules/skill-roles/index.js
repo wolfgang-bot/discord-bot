@@ -1,4 +1,5 @@
 const Module = require("../../lib/Module.js")
+const LocaleServiceProvider = require("../../services/LocaleServiceProvider.js")
 const Configuration = require("./Configuration.js")
 const EmojiManager = require("./managers/EmojiManager.js")
 const RoleManager = require("./managers/RoleManager.js")
@@ -15,14 +16,16 @@ class RoleManagerModule extends Module {
     }
 
     static async fromArguments(client, guild, args) {
+        const locale = await LocaleServiceProvider.guild(guild)
+
         if (!args[0]) {
-            throw "Kein Textkanal angegeben"
+            throw locale.translate("error_missing_argument", "notifications_channel")
         }
 
         const channel = await guild.channels.cache.get(args[0])
 
         if (!channel) {
-            throw "Der Textkanal existiert nicht"
+            throw locale.translate("module_skill_roles_error_textchannel_does_not_exist")
         }
 
         const config = new Configuration({ channel })
@@ -44,7 +47,9 @@ class RoleManagerModule extends Module {
     async start() {
         if (!this.config.roleMessage) {
             const guildConfig = await Guild.config(this.guild)
-            this.config.roleMessage = await this.config.channel.send(new RoleEmbed(guildConfig))
+            const locale = await LocaleServiceProvider.guild(this.guild)
+
+            this.config.roleMessage = await this.config.channel.send(new RoleEmbed(guildConfig, locale))
             this.reactionManager.setMessage(this.config.roleMessage)
         }
 
@@ -67,12 +72,9 @@ class RoleManagerModule extends Module {
 }
 
 RoleManagerModule.meta = {
-    description: "Erstellt eine Nachricht, über dessen Reaktionen die Skill-Rollen vergeben werden.",
-    arguments: "<textkanal_id>",
-    features: [
-        "Erstellt die Skill-Rollen sowie jeweils ein Emoji für jede Rolle.",
-        "Sendet eine Nachricht in den angegebenen Textkanal, die jeweils eine Reaktion zur Vergebung der Rollen besitzt."
-    ]
+    description: "module_skill_roles_desc",
+    arguments: "module_skill_roles_args",
+    features: "module_skill_roles_features"
 }
 
 module.exports = RoleManagerModule

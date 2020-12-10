@@ -1,22 +1,19 @@
 const Command = require("../../../lib/Command.js")
-const Module = require("../../../models/Module.js")
 const ModuleServiceProvider = require("../../../services/ModuleServiceProvider.js")
+const LocaleServiceProvider = require("../../../services/LocaleServiceProvider.js")
+const Module = require("../../../models/Module.js")
 
 async function run(message, args) {
+    const locale = await LocaleServiceProvider.guild(message.guild)
+
     if (!args[0]) {
-        return await message.channel.send("Kein Modul angegeben")
+        return await message.channel.send(locale.translate("error_missing_argument", "module"))
     }
 
     const module = await Module.findBy("name", args[0])
 
     if (!module) {
-        return await message.channel.send("Das Modul existiert nicht")
-    }
-    
-    const isLoaded = await ModuleServiceProvider.guild(message.guild).isLoaded(module)
-
-    if (isLoaded) {
-        return message.channel.send("Das Modul ist bereits gestartet")
+        return await message.channel.send(locale.translate("error_module_does_not_exist", args[0]))
     }
 
     // Start the requested module
@@ -28,15 +25,15 @@ async function run(message, args) {
             console.error(error)
         }
 
-        const errorMessage = typeof error === "string" ? error : "Serverfehler"
+        const errorMessage = typeof error === "string" ? error : locale.translate("server_error")
 
-        return message.channel.send(`Das Modul konnte nicht gestartet werden\n${errorMessage}`)
+        return message.channel.send(locale.translate("failed", errorMessage))
     }
 
-    await message.channel.send(`Das Modul '${module.name}' wurde erfolgreich gestartet`)
+    await message.channel.send(locale.translate("success"))
 }
 
 module.exports = new Command(run)
     .setName("start")
-    .setDescription("Startet ein Modul.")
-    .setArguments("<modul> [parameter, ...]")
+    .setDescription("command_modules_start_desc")
+    .setArguments("command_modules_start_args")

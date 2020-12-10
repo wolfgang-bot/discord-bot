@@ -1,26 +1,29 @@
 const Command = require("../../../lib/Command.js")
 const ModuleServiceProvider = require("../../../services/ModuleServiceProvider.js")
+const LocaleServiceProvider = require("../../../services/LocaleServiceProvider.js")
 const ModuleHelpEmbed = require("../../../embeds/ModuleHelpEmbed.js")
 const Module = require("../../../models/Module.js")
 const Guild = require("../../../models/Guild.js")
 
 async function run(message, args) {
+    const locale = await LocaleServiceProvider.guild(message.guild)
+
     if (!args[0]) {
-        return await message.channel.send("Kein Modul angegeben")
+        return await message.channel.send(locale.translate("error_missing_argument", "module"))
     }
 
     const module = await Module.findBy("name", args[0])
 
     if (!module) {
-        return await message.channel.send("Das Modul existiert nicht")
+        return await message.channel.send(locale.translate("error_module_does_not_exist", args[0]))
     }
 
     const moduleClass = ModuleServiceProvider.getModule(module)
     const config = await Guild.config(message.guild)
-    await message.channel.send(new ModuleHelpEmbed(config, moduleClass))
+    await message.channel.send(new ModuleHelpEmbed(config, locale, moduleClass))
 }
 
 module.exports = new Command(run)
     .setName("help")
-    .setDescription("Zeigt Informationen über ein Module an.")
-    .setArguments("<modul>")
+    .setDescription("command_modules_help_desc")
+    .setArguments("command_modules_help_args")

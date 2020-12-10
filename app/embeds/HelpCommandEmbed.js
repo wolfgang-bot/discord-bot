@@ -2,25 +2,30 @@ const BaseEmbed = require("./BaseEmbed.js")
 const { makeCodeblock } = require("../utils")
 
 class HelpCommandEmbed extends BaseEmbed {
-    constructor(config, command) {
+    constructor(config, locale, command) {
         super(config)
 
-        this.setTitle("Hilfe: " + command.name)
-            .setDescription(command.description)
+        this.setTitle(locale.translate("embed_help_command_title", command.name))
+
+        if (command.description) {
+            this.setDescription(locale.translate(command.description))
+        }
 
         const subCommands = command.getCommandNames ? `[${Array.from(command.getCommandNames()).join("|")}]` : null
 
+        const args = command.arguments && locale.translate(command.arguments)
+
         this.addFields([
             {
-                name: "Benutzung",
-                value: makeCodeblock(`${process.env.DISCORD_BOT_PREFIX}${command.getCallableName()} ${command.arguments || subCommands || ""}`)
+                name: locale.translate("embed_help_command_usage"),
+                value: makeCodeblock(`${process.env.DISCORD_BOT_PREFIX}${command.getCallableName()} ${args || subCommands || ""}`)
             },
             {
-                name: "Benötigte Rechte",
+                name: locale.translate("embed_help_command_permissions"),
                 value: makeCodeblock(command.getPermissions().join("\n") || " ")
             },
             {
-                name: "Alias",
+                name: locale.translate("embed_help_command_alias"),
                 value: makeCodeblock(command.alias.join("\n") || " ")
             }
         ])

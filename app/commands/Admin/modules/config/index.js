@@ -7,4 +7,4 @@ const commands = [
 
 module.exports = new CommandRegistry(commands)
     .setName("config")
-    .setDescription("Vewaltet die Modul-Konfigurationen.")
+    .setDescription("command_modules_config_desc")

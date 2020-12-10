@@ -2,6 +2,7 @@ const attachEvents = require("../events")
 const ModuleServiceProvider = require("../services/ModuleServiceProvider.js")
 const database = require("../database")
 const registerCommands = require("./registerCommands.js")
+const loadLocales = require("./loadLocales.js")
 const startServer = require("../www/server.js")
 
 function boot(client) {
@@ -15,13 +16,17 @@ function boot(client) {
             resolve()
         })
 
-        await database.connect()
+        await Promise.all([
+            database.connect(),
+            
+            attachEvents(client),
 
-        await registerCommands()
-        
-        attachEvents(client)
+            registerCommands(),
 
-        await client.login(process.env.DISCORD_BOT_TOKEN)
+            loadLocales(),
+
+            client.login(process.env.DISCORD_BOT_TOKEN)
+        ])
     })
 }
 

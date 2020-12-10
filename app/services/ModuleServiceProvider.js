@@ -2,6 +2,7 @@ const glob = require("glob-promise")
 const path = require("path")
 const Module = require("../models/Module.js")
 const ModuleInstance = require("../models/ModuleInstance.js")
+const LocaleServiceProvider = require("./LocaleServiceProvider.js")
 
 const MODULES_DIR = path.join(__dirname, "..", "modules")
 
@@ -121,8 +122,10 @@ class ModuleServiceProvider {
      * @return {Object} Runtime module instance
      */
     async startModule(client, model, args) {
+        const locale = await LocaleServiceProvider.guild(this.guild)
+
         if (await this.isLoaded(model)) {
-            throw new Error("Module already loaded")
+            throw locale.translate("error_module_running")
         }
 
         const Module = ModuleServiceProvider.getModule(model)
@@ -130,7 +133,7 @@ class ModuleServiceProvider {
         const instance = await Module.fromArguments(client, this.guild, args)
 
         if (!instance) {
-            throw new Error("Illegal invocation")
+            throw locale.translate("error_illegal_invocation")
         }
 
         await instance.start()

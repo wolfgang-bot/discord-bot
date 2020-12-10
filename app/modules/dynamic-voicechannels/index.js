@@ -1,4 +1,5 @@
 const Module = require("../../lib/Module.js")
+const LocaleServiceProvider = require("../../services/LocaleServiceProvider.js")
 const Configuration = require("./Configuration.js")
 const VoiceChannelManager = require("./managers/VoiceChannelManager.js")
 
@@ -9,14 +10,16 @@ class DynamicVoicechannelsModule extends Module {
     }
 
     static async fromArguments(client, guild, args) {
+        const locale = await LocaleServiceProvider.guild(guild)
+
         if (!args[0]) {
-            throw "Keine Kategorie angegeben"
+            throw locale.translate("error_missing_argument", "category")
         }
 
         const parentChannel = await guild.channels.cache.get(args[0])
 
         if (!parentChannel || parentChannel.type !== "category") {
-            throw "Die Kategorie existiert nicht"
+            throw locale.translate("module_dynamic_voicechannels_error_category_does_not_exist")
         }
 
         return new DynamicVoicechannelsModule(client, guild, new Configuration({ parentChannel }))
@@ -46,13 +49,9 @@ class DynamicVoicechannelsModule extends Module {
 }
 
 DynamicVoicechannelsModule.meta = {
-    description: "Sorgt dafür, dass es immer mindestens einen freien Kanal gibt.",
-    arguments: "<kategorie_id>",
-    features: [
-        "Erstellt eine vorher definierte Anzahl an Sprachkanälen in der angegeben Kategorie, die immer existieren.",
-        "Erstellt einen neuen Sprachkanal, wenn sich in allen Sprachkanälen mindestens ein Benutzer befindet.",
-        "Entfernt die dynamisch erstellten Sprachkanäle wieder, wenn diese nicht mehr benötigt werden."
-    ]
+    description: "module_dynamic_voicechannels_desc",
+    arguments: "module_dynamic_voicechannels_arguments",
+    features: "module_dynamic_voicechannels_features"
 }
 
 module.exports = DynamicVoicechannelsModule

@@ -1,4 +1,5 @@
 const Module = require("../../lib/Module.js")
+const LocaleServiceProvider = require("../../services/LocaleServiceProvider.js")
 const CommandRegistry = require("../../services/CommandRegistry.js")
 const Configuration = require("./Configuration.js")
 const ReputationManager = require("./managers/ReputationManager.js")
@@ -16,14 +17,16 @@ class ReputationSystemModule extends Module {
     }
 
     static async fromArguments(client, guild, args) {
+        const locale = await LocaleServiceProvider.guild(guild)
+
         if (!args[0]) {
-            throw "Kein Textkanal angegeben"
+            throw locale.translate("error_missing_argument", "textchannel")
         }
 
         const channel = guild.channels.cache.get(args[0])
 
         if (!channel) {
-            throw "Der Textkanal existiert nicht"
+            throw locale.translate("module_reputation_system_error_textchannel_does_not_exist")
         }
 
         const config = new Configuration({ channel })
@@ -58,14 +61,9 @@ class ReputationSystemModule extends Module {
 }
 
 ReputationSystemModule.meta = {
-    description: "Verwaltet die Punkte sowie die Level-Rollen der Benutzer.",
-    arguments: "<benachrichtigungskanal_id>",
-    features: [
-        "Erstellt für jedes Level eine neue Rolle mit einer individuellen Farbe.",
-        "Erstellt ein neues Discord Event, das von anderen Modulen verwendet werden kann, um Benutzern Punkte zu geben.",
-        "Sendet eine Nachricht in den Benachrichtigungskanal, wenn ein Benutzer ein neues Level erreicht.",
-        "Erstellt die Commands: 'leaderboard' und 'profile'."
-    ]
+    description: "module_reputation_system_desc",
+    arguments: "module_reputation_system_args",
+    features: "module_reputation_system_features"
 }
 
 module.exports = ReputationSystemModule

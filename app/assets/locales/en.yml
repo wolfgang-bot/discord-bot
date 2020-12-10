@@ -1,0 +1,89 @@
+# Errors
+
+error_command_does_not_exist: The command '{0}' does not exist
+error_missing_argument: "Missing argument: '{0}'"
+error_module_does_not_exist: The module '{0}' does not exist
+error_module_running: The module is already running
+error_module_not_running: The module is not running
+error_key_does_not_exist: The key '{0}' does not exist
+error_insufficient_permissions: "Insufficient permissions. The command requires: {0}."
+error_illegal_invocation: Illegal invocation
+
+# Misc
+
+failed: |
+    Failed
+    {0}
+success: Success
+server_error: Internal Server Error
+
+#
+# Commands
+#
+
+# help
+command_help_desc: Shows information about the available commands
+command_help_args: "[command, [sub-command, [...]]]"
+
+# modules
+command_modules_desc: Manages the modules
+
+# modules help
+command_modules_help_desc: Shows information about a module
+command_modules_help_args: "<module>"
+
+# modules list
+command_modules_list_desc: Shows the available and the active modules
+
+# modules start
+command_modules_start_desc: Starts a module
+command_modules_start_args: "<module> [parameter, ...]"
+
+# modules stop
+command_modules_stop_desc: Stops a module
+command_modules_stop_args: <module>
+
+# modules config
+command_modules_config_desc: Manages the module configurations
+
+# modules config get
+command_modules_config_get_desc: Shows the configuration of a module
+command_modules_config_get_args: <module>
+
+# modules config get
+command_modules_config_set_desc: Changes the configuration of a module
+command_modules_config_set_args: <module> <key> <value>
+
+#
+# Embeds
+#
+
+# Help
+embed_help_title: Help
+embed_help_desc: Send ``{0}help <command>`` to to get more information about a single command.
+
+# Help Command
+embed_help_command_title: "Help: {0}"
+embed_help_command_usage: Usage
+embed_help_command_permissions: Required Permissions
+embed_help_command_alias: Alias
+
+# Module Config
+embed_module_config_title: "Configuration for: {0}"
+embed_module_config_field: |
+    *Key: {0}*
+    *{1}*
+    ```
+    {2}
+    ```
+
+# Module Help
+embed_module_help_title: "Module: {0}"
+embed_module_help_start: Start
+embed_module_help_features: Features
+
+# Modules List
+embed_modules_list_title: Modules
+embed_modules_list_webinterface: Webinterface
+embed_modules_list_available: Available
+embed_modules_list_active: Active

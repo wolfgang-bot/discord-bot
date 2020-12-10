@@ -1,0 +1,58 @@
+# Errors
+
+module_question_channels_error_textchannel_does_not_exist: The textchannel does not exist
+module_question_channels_error_too_many_questions: >
+    Bevor du eine neue Frage stellen kannst, muss deine Vorherige geschlossen werden.
+    Hier deine Frage, falls du sie später noch einmal stellen möchtest:
+    ```
+    {0}
+    ```
+module_question_channels_error_message_from_bot: You cannot mark a message of a bot as the answer.
+module_question_channels_error_own_message: You cannot mark your own message as the answer.
+
+# Meta
+
+module_question_channels_desc: Manages textchannels used for answering questions.
+module_question_channels_args: <question_channel_id>
+module_question_channels_features:
+    - Creates a textchannel for a user when he asks a question in the question channel.
+    - Removes a textchannel when the creator marks a message as the answer or the question as irrelevant.
+    - Integrates with the 'reputation-system' module.
+
+#
+# Embeds
+#
+
+# Help Embed
+module_question_channels_embed_help_title: Question Channels
+
+module_question_channels_embed_help_field_ask_title: Ask
+module_question_channels_embed_help_field_ask_content: >
+    Post your question into this channel and we will create a new one with your question at the top.
+
+module_question_channels_embed_help_field_format_title: Format
+module_question_channels_embed_help_field_format_content: >
+    When your question uses multiple lines, the first one will be used as the **headline**. Note that **attachments** like images and other files **will be lost**. Send them into your new channel seperately.
+
+module_question_channels_embed_help_field_how_to_ask_title: How to ask a question
+module_question_channels_embed_help_field_how_to_ask_content: |
+    **No Background Knowledge**
+    Your question should not require any background knowledge about your project. Make sure that all information necessary to answer your question are included in your message.
+
+    **Generality**
+    State your question as general as possible. This is best explained by an example:
+    :x: ``How to give a player 10 points?``
+    :white_check_mark: ``How to increment the value of a variable in Javascript by 10?``
+    In the first case the helper must deal with the context to answer the rather simple question. Hence the reduction to the essentials safes everyone time and effort.
+
+    **Codeblocks**
+    To make a question more comprehensible it makes sense to use [codeblocks](https://bit.ly/35OUUQ8). Large codeblocks (50+ Lines) should be uploaded to websites like [Codepen](https://codepen.io/) or [Pastebin](https://pastebin.com/) to keep the message readable.
+
+# Notification Embed
+module_question_channels_embed_notification_title: You have asked a question on '{0}'
+
+module_question_channels_embed_notification_field_solved_title: Problem solved?
+module_question_channels_embed_notification_field_solved_content: Great! React with {0} to the message which solved your problem and we will remove the question channel.
+
+module_question_channels_embed_notification_field_irrelevant_title: Question irrelevant?
+module_question_channels_embed_notification_field_irrelevant_content: Send {0} into your question channel to remove it yourself.

@@ -1,4 +1,5 @@
 const Module = require("../../lib/Module.js")
+const LocaleServiceProvider = require("../../services/LocaleServiceProvider.js")
 const Configuration = require("./Configuration.js")
 const ChannelManager = require("./managers/ChannelManager.js")
 const HelpEmbed = require("./embeds/HelpEmbed.js")
@@ -12,14 +13,16 @@ class QuestionChannelsModule extends Module {
     }
 
     static async fromArguments(client, guild, args) {
+        const locale = await LocaleServiceProvider.guild(guild)
+
         if (!args[0]) {
-            throw "Kein Textkanal angegeben"
+            throw locale.translate("error_missing_argument", "question_channel")
         }
 
         const channel = await guild.channels.cache.get(args[0])
 
         if (!channel) {
-            throw "Der Textkanal existiert nicht"
+            throw locale.translate("module_question_channels_error_textchannel_does_not_exist")
         }
 
         const config = new Configuration({ channel })
@@ -40,10 +43,11 @@ class QuestionChannelsModule extends Module {
     async start() {
         const guildConfig = await Guild.config(this.guild)
         const moduleConfig = guildConfig["question-channels"]
+        const locale = await LocaleServiceProvider.guild(this.guild)
 
         // Send help embed into channel if hasn't already
         if (!this.config.helpMessage) {
-            this.config.helpMessage = await this.config.channel.send(new HelpEmbed(guildConfig))
+            this.config.helpMessage = await this.config.channel.send(new HelpEmbed(guildConfig, locale))
         }
 
         await this.config.channel.setRateLimitPerUser(moduleConfig.askChannelRateLimit)
@@ -65,13 +69,9 @@ class QuestionChannelsModule extends Module {
 }
 
 QuestionChannelsModule.meta = {
-    description: "Erstellt einen neuen Textkanal für jeden Benutzer, der eine Frage stellt.",
-    arguments: "<fragenkanal_id>",
-    features: [
-        "Erstellt einen neuen Textkanal für einen Benutzer, wenn dieser eine Frage im Fragenkanal stellt.",
-        "Löscht den Kanal wieder, wenn der Benutzer einen Nachricht als Antwort, oder die Frage als irrelevant markiert.",
-        "Integriert das 'reputation-system' Modul."
-    ]
+    description: "module_question_channels_desc",
+    arguments: "module_question_channels_args",
+    features: "module_question_channels_features"
 }
 
 module.exports = QuestionChannelsModule

@@ -1,3 +1,4 @@
+const LocaleServiceProvider = require("../../../services/LocaleServiceProvider.js")
 const LevelUpEmbed = require("./../embeds/LevelUpEmbed.js")
 const Member = require("../../../models/Member.js")
 const Guild = require("../../../models/Guild.js")
@@ -85,7 +86,10 @@ class ReputationManager {
     }
 
     async announceLevelUp(user, newLevel) {
-        const message = await this.channel.send(new LevelUpEmbed(this.guildConfig, user, newLevel))
+        const locale = await LocaleServiceProvider.guild(this.guild)
+
+        const message = await this.channel.send(new LevelUpEmbed(this.guildConfig, locale, user, newLevel))
+        
         await message.react(this.config.levelUpReactionEmoji)
     }
 

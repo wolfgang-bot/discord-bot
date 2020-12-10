@@ -1,14 +1,11 @@
 const BaseEmbed = require("../../../embeds/BaseEmbed.js")
 
 class LevelUpEmbed extends BaseEmbed {
-    constructor(config, user, level) {
+    constructor(config, locale, user, level) {
         super(config)
 
-        this.setTitle("Level Up")
-            .setDescription(`
-                ${user} hat ${config.reputationSystem.roles[level]} erreicht! :partying_face:
-                Herzlichen Dank für dein Engagement!
-            `)
+        this.setTitle(locale.translate("module_reputation_system_embed_levelup_title"))
+            .setDescription(locale.translate("module_reputation_system_embed_levelup_desc", user, config["reputation-system"].roles[level]))
             .setThumbnail(user.displayAvatarURL({ dynamic: true }))
     }
 }

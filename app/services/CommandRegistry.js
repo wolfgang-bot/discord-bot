@@ -1,4 +1,5 @@
 const Command = require("../lib/Command.js")
+const LocaleServiceProvider = require("./LocaleServiceProvider.js")
 const { parseArguments } = require("../utils")
 
 class CommandRegistry extends Command {
@@ -44,23 +45,27 @@ class CommandRegistry extends Command {
      */
     async _run(message, args) {
         if (!message.guild) {
-            throw "Commands sind nur auf Servern verfügbar."
+            throw "Commands are only available on servers"
         }
+        
+        const locale = await LocaleServiceProvider.guild(message.guild)
 
         // Parse the arguments and get command
         if (!args) {
             args = parseArguments(message.content)
         }
-        const command = args.length > 0 ? this.get(args.shift()) : this.baseCommand
+
+        const commandName = args.shift()
+        const command = commandName ? this.get(commandName) : this.baseCommand
 
         if (!command) {
-            throw "Unbekannter Command"
+            throw locale.translate("error_command_does_not_exist", commandName)
         }
 
         // Check if the user has all permissions to run this command
         if (!message.member.hasPermission(command.permissions)) {
             const requiredPerms = command.permissions.map(perm => `'${perm}'`).join(", ")
-            throw `Unzureichende Rechte. Der Command benötigt: ${requiredPerms}.`
+            throw locale.translate("error_insufficient_permissions", requiredPerms)
         }
 
         await command.run(message, args)

@@ -1,17 +1,10 @@
-const fs = require("fs")
-const path = require("path")
+const LocaleServiceProvider = require("../../../services/LocaleServiceProvider.js")
 const ActiveChannel = require("../ActiveChannel.js")
 const QuestionEmbed = require("../embeds/QuestionEmbed.js")
 const NotificationEmbed = require("../embeds/NotificationEmbed.js")
 const Guild = require("../../../models/Guild.js")
 const Module = require("../../../models/Module.js")
 const ModuleInstance = require("../../../models/ModuleInstance.js")
-
-const CONTENT_DIR = path.join(__dirname, "..", "content")
-
-const content = {
-    tooManyQuestions: fs.readFileSync(path.join(CONTENT_DIR, "too-many-questions.md"), "utf-8")
-}
 
 class ChannelManager {
     constructor(client, guild, channel) {
@@ -88,15 +81,17 @@ class ChannelManager {
     }
 
     async resolveChannel(channel, reaction, user) {
+        const locale = await LocaleServiceProvider.guild(this.guild)
+
         if (reaction.message.author.bot) {
             await reaction.remove()
-            await reaction.message.channel.send("Du kannst nicht die Nachricht eines Bots als Antwort akzeptieren")
+            await reaction.message.channel.send(locale.translate("module_question_channels_error_message_from_bot"))
             return
         }
 
         if (reaction.message.author.id === user.id) {
             await reaction.remove()
-            await reaction.message.channel.send("Du kannst nicht deine eigene Antwort akzeptieren")
+            await reaction.message.channel.send(locale.translate("module_question_channels_error_own_message"))
             return
         }
 
@@ -112,13 +107,15 @@ class ChannelManager {
     }
 
     async createChannel(message) {
+        const locale = await LocaleServiceProvider.guild(this.guild)
+
         // Delete original message of user
         await message.delete()
 
         // Check if user already has an active channel
         const dm = await message.author.createDM()
         if (Object.values(this.activeChannels).some(({ user }) => user.id === message.author.id)) {
-            await dm.send(content.tooManyQuestions.replace(/{}/g, message.content))
+            await dm.send(locale.translate("module_question_channels_error_too_many_questions", message.content))
             return
         }
         
@@ -133,11 +130,11 @@ class ChannelManager {
         const newChannel = await this.channel.guild.channels.create(channelName, channelOptions)
         
         // Send message of user as embed into new channel
-        const question = await newChannel.send(new QuestionEmbed(this.guildConfig, message))
+        const question = await newChannel.send(new QuestionEmbed(this.guildConfig, locale, message))
         await question.pin()
 
         // Send user a notification
-        await dm.send(new NotificationEmbed(this.guildConfig, this.guild))
+        await dm.send(new NotificationEmbed(this.guildConfig, locale, this.guild))
 
         this.activeChannels[newChannel.id] = new ActiveChannel({
             channel: newChannel,

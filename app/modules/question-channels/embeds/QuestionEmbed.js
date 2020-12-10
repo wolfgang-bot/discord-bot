@@ -1,7 +1,7 @@
 const BaseEmbed = require("../../../embeds/BaseEmbed.js")
 
 class QuestionEmbed extends BaseEmbed {
-    constructor(config, message) {
+    constructor(config, locale, message) {
         super(config)
 
         const lines = message.content.split("\n")

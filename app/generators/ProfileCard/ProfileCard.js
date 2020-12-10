@@ -22,7 +22,7 @@ class ProfileCard {
             }
         }
 
-        this.theme.palette.primary = this.level !== -1 ? this.config.reputationSystem.roleColors[this.level] : this.theme.palette.secondary
+        this.theme.palette.primary = this.level !== -1 ? this.config["reputation-system"].roleColors[this.level] : this.theme.palette.secondary
         
         this.theme.width = this.width - this.theme.spacing * 2
     }

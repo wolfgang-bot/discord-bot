@@ -1,23 +1,24 @@
-const fs = require("fs")
-const path = require("path")
 const BaseEmbed = require("../../../embeds/BaseEmbed.js")
 
-const CONTENT_DIR = path.join(__dirname, "..", "content")
-
-const content = {
-    ask: fs.readFileSync(path.join(CONTENT_DIR, "ask.md")),
-    format: fs.readFileSync(path.join(CONTENT_DIR, "format.md")),
-    howToAskAQuestion: fs.readFileSync(path.join(CONTENT_DIR, "how-to-ask-a-question.md"))
-}
-
 class HelpEmbed extends BaseEmbed {
-    constructor(config) {
+    constructor(config, locale) {
         super(config)
 
-        this.setTitle("Fragen-Kanäle")
-            .addField("Frage stellen", content.ask)
-            .addField("Format", content.format)
-            .addField("Wie stelle ich eine Frage", content.howToAskAQuestion)
+        this.setTitle(locale.translate("module_question_channels_embed_help_title"))
+            .addFields([
+                {
+                    name: locale.translate("module_question_channels_embed_help_field_ask_title"),
+                    value: locale.translate("module_question_channels_embed_help_field_ask_content")
+                },
+                {
+                    name: locale.translate("module_question_channels_embed_help_field_format_title"),
+                    value: locale.translate("module_question_channels_embed_help_field_format_content")
+                },
+                {
+                    name: locale.translate("module_question_channels_embed_help_field_how_to_ask_title"),
+                    value: locale.translate("module_question_channels_embed_help_field_how_to_ask_content")
+                },
+            ])
     }
 }
 

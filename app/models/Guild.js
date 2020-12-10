@@ -20,8 +20,9 @@ class Guild extends Model {
     constructor(values) {
         super({
             table: "guilds",
-            columns: ["id", "config"],
+            columns: ["id", "locale", "config"],
             defaultValues: {
+                locale: LocaleServiceProvider.defaultLocale,
                 config: defaultConfig
             },
             ...values
@@ -59,3 +60,4 @@ module.exports = Guild
 
 const Member = require("./Member.js")
 const ModuleInstance = require("./ModuleInstance.js")
+const LocaleServiceProvider = require("../services/LocaleServiceProvider.js")

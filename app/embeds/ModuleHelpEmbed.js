@@ -1,13 +1,13 @@
 const BaseEmbed = require("./BaseEmbed.js")
 
 class ModuleHelpEmbed extends BaseEmbed {
-    constructor(config, module) {
+    constructor(config, locale, module) {
         super(config)
 
-        this.setTitle(`Modul: ${module.meta.name}`)
-            .setDescription(module.meta.description)
-            .addField("Starten", `\`\`${process.env.DISCORD_BOT_PREFIX}modules start ${module.meta.name} ${module.meta.arguments}\`\``)
-            .addField("Dieses Modul...", module.meta.features.map(e => "• " + e).join("\n"))
+        this.setTitle(locale.translate("embed_module_help_title", module.meta.name))
+            .setDescription(locale.translate(module.meta.description))
+            .addField(locale.translate("embed_module_help_start"), `\`\`${process.env.DISCORD_BOT_PREFIX}modules start ${module.meta.name} ${locale.translate(module.meta.arguments)}\`\``)
+            .addField(locale.translate("embed_module_help_features"), locale.translate(module.meta.features).map(e => "• " + e).join("\n"))
     }
 }
 

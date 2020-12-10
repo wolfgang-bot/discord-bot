@@ -2,11 +2,11 @@ const BaseEmbed = require("./BaseEmbed.js")
 const { makeCodeblock } = require("../utils")
 
 class HelpEmbed extends BaseEmbed {
-    constructor(config, groups) {
+    constructor(config, locale, groups) {
         super(config)
 
-        this.setTitle("Hilfe")
-            .setDescription(`Sende \`\`${process.env.DISCORD_BOT_PREFIX}help <command>\`\` um mehr Informationen über einen Command zu erhalten.`)
+        this.setTitle(locale.translate("embed_help_title"))
+            .setDescription(locale.translate("embed_help_desc", process.env.DISCORD_BOT_PREFIX))
 
         Object.entries(groups).forEach(([group, commands]) => {
             const commandNames = commands.map(command => command.name).join("\n")
