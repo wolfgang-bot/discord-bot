@@ -87,11 +87,16 @@ class LocaleServiceProvider {
      * @returns {String} Translation
      */
     translate(key, ...args) {
-        if (!(key in this.translations)) {
-            throw new Error(`Key '${key}' does not exist`)
+        let value = this.translations[key]
+        
+        // Fallback to default locale
+        if (!value) {
+            value = LocaleServiceProvider.locales[LocaleServiceProvider.defaultLocale][key]
         }
 
-        let value = this.translations[key]
+        if (!value) {
+            throw new Error(`Key '${key}' does not exist`)
+        }
 
         /**
          * Replace placeholders with variables

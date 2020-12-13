@@ -1,11 +1,12 @@
 # Errors
 
 error_command_does_not_exist: The command '{0}' does not exist
-error_missing_argument: "Missing argument: '{0}'"
 error_module_does_not_exist: The module '{0}' does not exist
+error_key_does_not_exist: The key '{0}' does not exist
+error_locale_does_not_exist: The locale '{0}' does not exist
+error_missing_argument: "Missing argument: '{0}'"
 error_module_running: The module is already running
 error_module_not_running: The module is not running
-error_key_does_not_exist: The key '{0}' does not exist
 error_insufficient_permissions: "Insufficient permissions. The command requires: {0}."
 error_illegal_invocation: Illegal invocation
 
@@ -54,6 +55,16 @@ command_modules_config_get_args: <module>
 command_modules_config_set_desc: Changes the configuration of a module
 command_modules_config_set_args: <module> <key> <value>
 
+# locale
+command_locale_desc: Manages the locale
+
+# locale get
+command_locale_get_desc: Get the locale
+
+# locale set
+command_locale_set_desc: Set the locale
+command_locale_set_args: <locale_code>
+
 #
 # Embeds
 #
@@ -87,3 +98,13 @@ embed_modules_list_title: Modules
 embed_modules_list_webinterface: Webinterface
 embed_modules_list_available: Available
 embed_modules_list_active: Active
+
+# Locale
+embed_locale_title: Locale
+embed_locale_desc: "**Active:** *{0}*"
+
+embed_locale_field_available_title: Available
+embed_locale_field_available_content: |
+    ```
+    {0}
+    ```
