@@ -1,8 +1,7 @@
 const glob = require("glob-promise")
 const path = require("path")
+const emojiRegex = require("emoji-regex/RGI_Emoji.js")
 
-// Match unicode emojis
-const EMOJI_REGEX = /([\ud800-\udbff])/
 // Math hex colors
 const HEX_COLOR_REGEX = /^#([0-9a-fA-F]{3}){1,2}$/
 // Match hex colors and discord color names
@@ -18,8 +17,8 @@ const icons = glob.sync("*.png", { cwd: ICONS_DIR }).map(filename => filename.re
  * Constraint templates
  */
 const emojiConstraint = {
-    constraints: "Must be a unicode emoji",
-    verifyConstraints: (value) => EMOJI_REGEX.test(value) 
+    constraints: "Must be one unicode emoji",
+    verifyConstraints: (value) => emojiRegex().test(value) && value.match(emojiRegex()).length === 1
 }
 
 /**
