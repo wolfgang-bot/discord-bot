@@ -1,8 +1,8 @@
-module_dynamic_voicechannels_error_category_does_not_exist: The category does not exist
-
-module_dynamic_voicechannels_desc: Ensures that there always is an empty voicechannel.
-module_dynamic_voicechannels_arguments: <category_id>
-module_dynamic_voicechannels_features:
+desc: Ensures that there always is an empty voicechannel.
+args: <category_id>
+features:
     - Creates a predefined amount of persistant voicechannels in the given category.
     - Creates a new voicechannels if there is at least one member in every other voicechannel.
     - Removes the dynamically created voicechannels if they are not needed anymore.
+
+error_category_does_not_exist: The category does not exist

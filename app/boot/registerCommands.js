@@ -1,6 +1,7 @@
 const glob = require("glob-promise")
 const path = require("path")
 const CommandRegistry = require("../services/CommandRegistry.js")
+const LocaleServiceProvider = require("../services/LocaleServiceProvider.js")
 
 const COMMANDS_DIR = path.join(__dirname, "..", "commands")
 
@@ -20,6 +21,7 @@ async function getCommands() {
 
         command.setGroup(group)
         command.setName(filename.replace(".js", ""))
+        command.setModule(LocaleServiceProvider.defaultScope)
 
         return command
     })

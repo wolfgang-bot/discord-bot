@@ -5,15 +5,17 @@ class HelpCommandEmbed extends BaseEmbed {
     constructor(config, locale, command) {
         super(config)
 
+        const moduleLocale = locale.scope(command.module)
+
         this.setTitle(locale.translate("embed_help_command_title", command.name))
 
         if (command.description) {
-            this.setDescription(locale.translate(command.description))
+            this.setDescription(moduleLocale.translate(command.description))
         }
 
         const subCommands = command.getCommandNames ? `[${Array.from(command.getCommandNames()).join("|")}]` : null
 
-        const args = command.arguments && locale.translate(command.arguments)
+        const args = command.arguments && moduleLocale.translate(command.arguments)
 
         this.addFields([
             {

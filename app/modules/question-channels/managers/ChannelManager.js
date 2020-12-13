@@ -81,17 +81,17 @@ class ChannelManager {
     }
 
     async resolveChannel(channel, reaction, user) {
-        const locale = await LocaleServiceProvider.guild(this.guild)
+        const locale = (await LocaleServiceProvider.guild(this.guild)).scope("question-channels")
 
         if (reaction.message.author.bot) {
             await reaction.remove()
-            await reaction.message.channel.send(locale.translate("module_question_channels_error_message_from_bot"))
+            await reaction.message.channel.send(locale.translate("error_message_from_bot"))
             return
         }
 
         if (reaction.message.author.id === user.id) {
             await reaction.remove()
-            await reaction.message.channel.send(locale.translate("module_question_channels_error_own_message"))
+            await reaction.message.channel.send(locale.translate("error_own_message"))
             return
         }
 
@@ -107,7 +107,7 @@ class ChannelManager {
     }
 
     async createChannel(message) {
-        const locale = await LocaleServiceProvider.guild(this.guild)
+        const locale = (await LocaleServiceProvider.guild(this.guild)).scope("question-channels")
 
         // Delete original message of user
         await message.delete()
@@ -115,7 +115,7 @@ class ChannelManager {
         // Check if user already has an active channel
         const dm = await message.author.createDM()
         if (Object.values(this.activeChannels).some(({ user }) => user.id === message.author.id)) {
-            await dm.send(locale.translate("module_question_channels_error_too_many_questions", message.content))
+            await dm.send(locale.translate("error_too_many_questions", message.content))
             return
         }
         

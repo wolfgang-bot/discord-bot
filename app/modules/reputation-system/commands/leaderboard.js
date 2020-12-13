@@ -5,7 +5,7 @@ const LeaderboardEmbed = require("../embeds/LeaderboardEmbed.js")
 const Guild = require("../../../models/Guild.js")
 
 async function run(message, args) {
-    const locale = await LocaleServiceProvider.guild(message.guild)
+    const locale = (await LocaleServiceProvider.guild(message.guild)).scope("reputation-system")
 
     const users = await Member.whereAll(`guild_id = '${message.guild.id}' ORDER BY reputation DESC LIMIT 10`)
 
@@ -19,5 +19,5 @@ async function run(message, args) {
 module.exports = new Command(run)
     .setName("leaderboard")
     .setGroup("General")
-    .setDescription("module_reputation_system_command_leaderboard_desc")
+    .setDescription("command_leaderboard_desc")
     .setAlias(["lb"])

@@ -7,7 +7,7 @@ class LeaderbaordEmbed extends BaseEmbed {
         
         const moduleConfig = config["reputation-system"]
 
-        this.setTitle(locale.translate("module_reputation_system_embed_leaderboard_title"))
+        this.setTitle(locale.translate("embed_leaderboard_title"))
 
         let desc = ""
 
@@ -17,10 +17,10 @@ class LeaderbaordEmbed extends BaseEmbed {
 
             desc += `**# ${i + 1} - ${user.discordUser.username}**\n`
 
-            desc += `${space(9)} ${locale.translate("module_reputation_system_embed_leaderboard_reputation")} ${space(1)} \`\`${user.reputation}/${nextLevelReputation}\`\`\n`
+            desc += `${space(9)} ${locale.translate("embed_leaderboard_reputation")} ${space(1)} \`\`${user.reputation}/${nextLevelReputation}\`\`\n`
 
             if (level !== -1) {
-                desc += `${space(9)} ${locale.translate("module_reputation_system_embed_leaderboard_rank")} ${space(12)} \`\`${moduleConfig.roles[level] || ""}\`\`\n`
+                desc += `${space(9)} ${locale.translate("embed_leaderboard_rank")} ${space(12)} \`\`${moduleConfig.roles[level] || ""}\`\`\n`
             }
 
             desc += "\n"

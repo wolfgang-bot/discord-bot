@@ -17,6 +17,7 @@ class RoleManagerModule extends Module {
 
     static async fromArguments(client, guild, args) {
         const locale = await LocaleServiceProvider.guild(guild)
+        const moduleLocale = locale.scope("skill-roles")
 
         if (!args[0]) {
             throw locale.translate("error_missing_argument", "notifications_channel")
@@ -25,7 +26,7 @@ class RoleManagerModule extends Module {
         const channel = await guild.channels.cache.get(args[0])
 
         if (!channel) {
-            throw locale.translate("module_skill_roles_error_textchannel_does_not_exist")
+            throw moduleLocale.translate("error_textchannel_does_not_exist")
         }
 
         const config = new Configuration({ channel })
@@ -47,7 +48,7 @@ class RoleManagerModule extends Module {
     async start() {
         if (!this.config.roleMessage) {
             const guildConfig = await Guild.config(this.guild)
-            const locale = await LocaleServiceProvider.guild(this.guild)
+            const locale = (await LocaleServiceProvider.guild(this.guild)).scope("skill-roles")
 
             this.config.roleMessage = await this.config.channel.send(new RoleEmbed(guildConfig, locale))
             this.reactionManager.setMessage(this.config.roleMessage)
@@ -72,9 +73,9 @@ class RoleManagerModule extends Module {
 }
 
 RoleManagerModule.meta = {
-    description: "module_skill_roles_desc",
-    arguments: "module_skill_roles_args",
-    features: "module_skill_roles_features"
+    description: "desc",
+    arguments: "args",
+    features: "features"
 }
 
 module.exports = RoleManagerModule

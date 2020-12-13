@@ -1,37 +1,37 @@
-# Errors
-module_reputation_system_error_textchannel_does_not_exist: The textchannel does not exist
-
 # Meta
 
-module_reputation_system_desc: Manages the reputation and the level roles of the users.
-module_reputation_system_args: <notifications_channel_id>
-module_reputation_system_features:
+desc: Manages the reputation and the level roles of the users.
+args: <notifications_channel_id>
+features:
     - Creates a new role for every level with a unique color.
     - Allows other modules to give reputation to specific users.
     - Sends a message into the notifications channel when a user reaches the next level.
     - "Creates the commands: 'leaderboard' and 'profile'"
+
+# Errors
+error_textchannel_does_not_exist: The textchannel does not exist
 
 #
 # Commands
 #
 
 # leaderboard
-module_reputation_system_command_leaderboard_desc: Shows the 10 users with the most reputation.
+command_leaderboard_desc: Shows the 10 users with the most reputation.
 
 # profile
-module_reputation_system_command_profile_desc: Shows your individual profile.
+command_profile_desc: Shows your individual profile.
 
 #
 # Embeds
 #
 
 # Leaderboard
-module_reputation_system_embed_leaderboard_title: Leaderboard
-module_reputation_system_embed_leaderboard_reputation: Reputation
-module_reputation_system_embed_leaderboard_rank: Rank
+embed_leaderboard_title: Leaderboard
+embed_leaderboard_reputation: Reputation
+embed_leaderboard_rank: Rank
 
 # Level Up
-module_reputation_system_embed_levelup_title: Level Up
-module_reputation_system_embed_levelup_desc: |
+embed_levelup_title: Level Up
+embed_levelup_desc: |
     {0} has reached {1}! :partying_face:
     Thank you for your commitment!

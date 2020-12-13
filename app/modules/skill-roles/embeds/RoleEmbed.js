@@ -4,8 +4,8 @@ class RoleEmbed extends BaseEmbed {
     constructor(config, locale) {
         super(config)
 
-        this.setTitle(locale.translate("module_skill_roles_embed_role_title"))
-            .setDescription(locale.translate("module_skill_roles_embed_role_desc"))
+        this.setTitle(locale.translate("embed_role_title"))
+            .setDescription(locale.translate("embed_role_desc"))
     }
 }
 

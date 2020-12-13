@@ -11,6 +11,7 @@ class DynamicVoicechannelsModule extends Module {
 
     static async fromArguments(client, guild, args) {
         const locale = await LocaleServiceProvider.guild(guild)
+        const moduleLocale = locale.scope("dynamic-voicechannels")
 
         if (!args[0]) {
             throw locale.translate("error_missing_argument", "category")
@@ -19,7 +20,7 @@ class DynamicVoicechannelsModule extends Module {
         const parentChannel = await guild.channels.cache.get(args[0])
 
         if (!parentChannel || parentChannel.type !== "category") {
-            throw locale.translate("module_dynamic_voicechannels_error_category_does_not_exist")
+            throw moduleLocale.translate("error_category_does_not_exist")
         }
 
         return new DynamicVoicechannelsModule(client, guild, new Configuration({ parentChannel }))
@@ -49,9 +50,9 @@ class DynamicVoicechannelsModule extends Module {
 }
 
 DynamicVoicechannelsModule.meta = {
-    description: "module_dynamic_voicechannels_desc",
-    arguments: "module_dynamic_voicechannels_arguments",
-    features: "module_dynamic_voicechannels_features"
+    description: "desc",
+    arguments: "args",
+    features: "features"
 }
 
 module.exports = DynamicVoicechannelsModule

@@ -1,19 +1,19 @@
-# Errors
-
-module_skill_roles_error_textchannel_does_not_exist: The textchannels does not exist
-
 # Meta
 
-module_skill_roles_desc: Creates a message whose reactions are used to assign the skill-roles.
-module_skill_roles_args: <roles_channel_id>
-module_skill_roles_features:
+desc: Creates a message whose reactions are used to assign the skill-roles.
+args: <roles_channel_id>
+features:
     - Creates the skill-roles and one emoji per role.
     - Sends a messages into the roles channel which has one reaction per role used to assign it.
+
+# Errors
+
+error_textchannel_does_not_exist: The textchannels does not exist
 
 #
 # Embeds
 #
 
 # Role Embed
-module_skill_roles_embed_role_title: Skill Roles
-module_skill_roles_embed_role_desc: Click on the emojis underneath this message to receive the associated roles.
+embed_role_title: Skill Roles
+embed_role_desc: Click on the emojis underneath this message to receive the associated roles.

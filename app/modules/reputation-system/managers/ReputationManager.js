@@ -86,7 +86,7 @@ class ReputationManager {
     }
 
     async announceLevelUp(user, newLevel) {
-        const locale = await LocaleServiceProvider.guild(this.guild)
+        const locale = (await LocaleServiceProvider.guild(this.guild)).scope("reputation-system")
 
         const message = await this.channel.send(new LevelUpEmbed(this.guildConfig, locale, user, newLevel))
         

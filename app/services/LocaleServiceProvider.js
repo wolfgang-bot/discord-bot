@@ -6,15 +6,22 @@ const Guild = require("../models/Guild.js")
 
 class LocaleServiceProvider {
     static defaultLocale = "en"
+    static defaultScope = "main"
 
-    static locales = {}
+    /**
+     * Translations are encapsulated into scopes
+     */
+    static scopes = {
+        [LocaleServiceProvider.defaultScope]: {}    
+    }
 
     /**
      * Load locale files into LocaleServiceProvider.locales
      * 
      * @param {String} dir
+     * @param {String} scope
      */
-    static async loadLocales(dir) {
+    static async loadLocales(dir, scope) {
         const files = await glob("*.yml", { cwd: dir })
 
         // Check for existence of default locale
@@ -28,29 +35,34 @@ class LocaleServiceProvider {
             const content = await fs.promises.readFile(path.join(dir, filename), "utf-8")
             const locales = yaml.parse(content)
             
-            LocaleServiceProvider.addLocales(localeCode, locales)
+            LocaleServiceProvider.addLocales(localeCode, locales, scope)
         }))
     }
 
     /**
-     * Add locales to global locales object
+     * Add locales to the locale object of a given scope
      * 
      * @param {String} localeCode 
      * @param {Object} locales 
+     * @param {String} scope
      */
-    static addLocales(localeCode, locales) {
-        if (!LocaleServiceProvider.locales[localeCode]) {
-            LocaleServiceProvider.locales[localeCode] = {}
+    static addLocales(localeCode, locales, scope = LocaleServiceProvider.defaultScope) {
+        if (!LocaleServiceProvider.scopes[scope]) {
+            LocaleServiceProvider.scopes[scope] = {}
+        }
+
+        if (!LocaleServiceProvider.scopes[scope][localeCode]) {
+            LocaleServiceProvider.scopes[scope][localeCode] = {}
         }
 
         // Check for duplicate keys
         for (let key in locales) {
-            if (key in LocaleServiceProvider.locales[localeCode]) {
+            if (key in LocaleServiceProvider.scopes[scope][localeCode]) {
                 throw new Error(`Key '${key}' already exists`)
             }
         }
 
-        Object.assign(LocaleServiceProvider.locales[localeCode], locales)
+        Object.assign(LocaleServiceProvider.scopes[scope][localeCode], locales)
     }
 
     /**
@@ -70,13 +82,32 @@ class LocaleServiceProvider {
         return new LocaleServiceProvider(model.locale)
     }
 
-    constructor(locale) {
+    constructor(locale, scope = LocaleServiceProvider.defaultScope) {
         this.locale = locale
-        this.translations = LocaleServiceProvider.locales[this.locale]
+        this.scopeName = scope
+
+        // Name has to have the underscore, since "scope" is used for method chaining
+        this._scope = LocaleServiceProvider.scopes[this.scopeName]
+        
+        if (!this._scope) {
+            throw new Error(`Scope '${this.scopeName}' does not exist`)
+        }
+
+        this.translations = this._scope[locale]
 
         if (!this.translations) {
-            throw new Error(`Locale '${locale}' does not exist`)
+            throw new Error(`Locale '${locale}' does not exist in scope '${this.scopeName}'`)
         }
+    }
+
+    /**
+     * Create a new instance of this class with a new scope
+     * 
+     * @param {String} scope
+     * @returns {LocaleServiceProvider}
+     */
+    scope(scope) {
+        return new LocaleServiceProvider(this.locale, scope)
     }
 
     /**
@@ -91,11 +122,11 @@ class LocaleServiceProvider {
         
         // Fallback to default locale
         if (!value) {
-            value = LocaleServiceProvider.locales[LocaleServiceProvider.defaultLocale][key]
+            value = this._scope[LocaleServiceProvider.defaultLocale][key]
         }
 
         if (!value) {
-            throw new Error(`Key '${key}' does not exist`)
+            throw new Error(`Key '${key}' does not exist in scope '${this.scopeName}'`)
         }
 
         /**

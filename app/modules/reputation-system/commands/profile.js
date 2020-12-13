@@ -31,5 +31,5 @@ async function run(message, args) {
 module.exports = new Command(run)
     .setName("profile")
     .setGroup("General")
-    .setDescription("module_reputation_system_command_profile_desc")
+    .setDescription("command_profile_desc")
     .setAlias(["me", "rank"])

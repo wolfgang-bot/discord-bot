@@ -7,6 +7,7 @@ class Command {
         this.parent = null
         this.description = null
         this.arguments = null
+        this.module = null
         this.alias = []
         this.permissions = []
     }
@@ -103,6 +104,13 @@ class Command {
     setPermissions(permissions) {
         this.permissions = permissions
         return this
+    }
+
+    /**
+     * @param {String} module
+     */
+    setModule(module) {
+        this.module = module
     }
 }
 

@@ -14,6 +14,7 @@ class QuestionChannelsModule extends Module {
 
     static async fromArguments(client, guild, args) {
         const locale = await LocaleServiceProvider.guild(guild)
+        const moduleLocale = locale.scope("question-channels")
 
         if (!args[0]) {
             throw locale.translate("error_missing_argument", "question_channel")
@@ -22,7 +23,7 @@ class QuestionChannelsModule extends Module {
         const channel = await guild.channels.cache.get(args[0])
 
         if (!channel) {
-            throw locale.translate("module_question_channels_error_textchannel_does_not_exist")
+            throw moduleLocale.translate("error_textchannel_does_not_exist")
         }
 
         const config = new Configuration({ channel })
@@ -43,7 +44,7 @@ class QuestionChannelsModule extends Module {
     async start() {
         const guildConfig = await Guild.config(this.guild)
         const moduleConfig = guildConfig["question-channels"]
-        const locale = await LocaleServiceProvider.guild(this.guild)
+        const locale = (await LocaleServiceProvider.guild(this.guild)).scope("question-channels")
 
         // Send help embed into channel if hasn't already
         if (!this.config.helpMessage) {
@@ -69,9 +70,9 @@ class QuestionChannelsModule extends Module {
 }
 
 QuestionChannelsModule.meta = {
-    description: "module_question_channels_desc",
-    arguments: "module_question_channels_args",
-    features: "module_question_channels_features"
+    description: "desc",
+    arguments: "args",
+    features: "features"
 }
 
 module.exports = QuestionChannelsModule

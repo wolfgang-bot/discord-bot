@@ -9,6 +9,8 @@ const commands = [
     require("./commands/profile.js")
 ]
 
+commands.forEach(command => command.setModule("reputation-system"))
+
 class ReputationSystemModule extends Module {
     static async fromConfig(client, guild, config) {
         const channel = await guild.channels.cache.get(config.channelId)
@@ -18,6 +20,7 @@ class ReputationSystemModule extends Module {
 
     static async fromArguments(client, guild, args) {
         const locale = await LocaleServiceProvider.guild(guild)
+        const moduleLocale = locale.scope("reputation-system")
 
         if (!args[0]) {
             throw locale.translate("error_missing_argument", "textchannel")
@@ -26,7 +29,7 @@ class ReputationSystemModule extends Module {
         const channel = guild.channels.cache.get(args[0])
 
         if (!channel) {
-            throw locale.translate("module_reputation_system_error_textchannel_does_not_exist")
+            throw moduleLocale.translate("error_textchannel_does_not_exist")
         }
 
         const config = new Configuration({ channel })
@@ -61,9 +64,9 @@ class ReputationSystemModule extends Module {
 }
 
 ReputationSystemModule.meta = {
-    description: "module_reputation_system_desc",
-    arguments: "module_reputation_system_args",
-    features: "module_reputation_system_features"
+    description: "desc",
+    arguments: "args",
+    features: "features"
 }
 
 module.exports = ReputationSystemModule
