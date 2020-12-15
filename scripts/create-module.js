@@ -9,10 +9,10 @@ if (!name) {
     throw new Error("Missing name")
 }
 
-const APP_DIR = path.join(__dirname, "..", "app")
-const TEMPLATE_DIR = path.join(APP_DIR, "assets", "templates", "module")
-const NEW_DIR = path.join(APP_DIR, "modules", name)
-const CONFIG_PATH = path.join(APP_DIR, "config", "default.js")
+const SRC_DIR = path.join(__dirname, "..", "src")
+const TEMPLATE_DIR = path.join(SRC_DIR, "assets", "templates", "module")
+const NEW_DIR = path.join(SRC_DIR, "modules", name)
+const CONFIG_PATH = path.join(SRC_DIR, "config", "default.js")
 
 const CONFIG_TEMPLATE = `
     "{MODULE_NAME}": {

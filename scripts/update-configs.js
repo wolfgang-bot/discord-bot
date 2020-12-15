@@ -3,10 +3,10 @@ const Discord = require("discord.js")
 const { makeRunnable, run } = require("@m.moelter/task-runner")
 require("dotenv").config({ path: path.join(__dirname, "..", ".env") })
 
-const database = require("../app/database")
-const Guild = require("../app/models/Guild.js")
-const defaultConfigRaw = require("../app/config/default.js")
-const { formatDescriptiveObject, transferValues } = require("../app/utils")
+const database = require("../src/database")
+const Guild = require("../src/models/Guild.js")
+const defaultConfigRaw = require("../src/config/default.js")
+const { formatDescriptiveObject, transferValues } = require("../src/utils")
 
 const defaultConfig = formatDescriptiveObject(defaultConfigRaw)
 

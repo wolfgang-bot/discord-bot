@@ -6,7 +6,7 @@
   "scripts": {
     "start": "concurrently -n server,client -c yellow,blue npm:start-server npm:start-client",
     "start-server": "nodemon index.js",
-    "start-client": "cd app/www/client && npm start",
+    "start-client": "cd src/www/client && npm start",
     "format-icons": "node ./scripts/format-icons.js",
     "install-fonts": "node ./scripts/install-fonts.js",
     "audit-database": "node ./scripts/audit-database.js",
@@ -42,7 +42,7 @@
   "nodemonConfig": {
     "ignore": [
       "storage.json",
-      "app/www/client/*"
+      "src/www/client/*"
     ]
   },
   "devDependencies": {

@@ -5,7 +5,7 @@ const chalk = require("chalk")
 const exec = util.promisify(require("child_process").exec)
 const { makeRunnable, run } = require("@m.moelter/task-runner")
 
-const FONTS_DIR = path.join(__dirname, "..", "app", "assets", "fonts")
+const FONTS_DIR = path.join(__dirname, "..", "src", "assets", "fonts")
 const SYSTEM_FONTS_DIR = "/usr/share/fonts/truetype"
 
 const installed = []
