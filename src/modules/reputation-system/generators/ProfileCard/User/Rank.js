@@ -1,4 +1,4 @@
-const { getLevel } = require("../../../utils")
+const { getLevel } = require("../../../../../utils")
 
 class Rank {
     constructor(config, theme, user) {

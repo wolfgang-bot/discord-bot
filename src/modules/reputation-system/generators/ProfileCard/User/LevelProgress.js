@@ -1,7 +1,7 @@
 const ProgressBar = require("./ProgressBar.js")
 const Rank = require("./Rank.js")
 const Reputation = require("./Reputation.js")
-const { getLevel } = require("../../../utils")
+const { getLevel } = require("../../../../../utils")
 
 class LevelProgress {
     constructor(config, theme, user, width) {

@@ -7,7 +7,7 @@ class ModulesEmbed extends BaseEmbed {
         super(config)
 
         const modules = ModuleServiceProvider.modules.filter(module => !module.isGlobal)
-        const moduleInstances = Object.values(ModuleServiceProvider.instances[guild.id])
+        const moduleInstances = Object.values(ModuleServiceProvider.instances[guild.id] || {})
 
         this.setTitle(locale.translate("embed_modules_list_title"))
             .setDescription(`[${locale.translate("embed_modules_list_webinterface")}](${makeURL("/config/" + guild.id)})`)

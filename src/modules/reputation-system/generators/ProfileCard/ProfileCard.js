@@ -1,6 +1,6 @@
 const Background = require("./Background.js")
 const User = require("./User/User.js") 
-const { getLevel } = require("../../utils")
+const { getLevel } = require("../../../../utils")
 
 class ProfileCard {
     constructor(config, user, avatarURI) {

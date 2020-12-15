@@ -1,4 +1,4 @@
-const { getLevel } = require("../../../utils")
+const { getLevel } = require("../../../../../utils")
 
 class Reputation {
     constructor(config, theme, user) {
