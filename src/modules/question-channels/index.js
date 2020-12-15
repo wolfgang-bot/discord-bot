@@ -1,5 +1,5 @@
 const LocaleServiceProvider = require("../../services/LocaleServiceProvider.js")
-const Configuration = require("./Configuration.js")
+const Configuration = require("./models/Configuration.js")
 const ChannelManager = require("./managers/ChannelManager.js")
 const HelpEmbed = require("./embeds/HelpEmbed.js")
 const Guild = require("../../models/Guild.js")

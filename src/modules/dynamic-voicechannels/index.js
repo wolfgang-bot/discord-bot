@@ -1,5 +1,5 @@
 const LocaleServiceProvider = require("../../services/LocaleServiceProvider.js")
-const Configuration = require("./Configuration.js")
+const Configuration = require("./models/Configuration.js")
 const VoiceChannelManager = require("./managers/VoiceChannelManager.js")
 
 class DynamicVoicechannelsModule {

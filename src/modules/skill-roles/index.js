@@ -1,5 +1,5 @@
 const LocaleServiceProvider = require("../../services/LocaleServiceProvider.js")
-const Configuration = require("./Configuration.js")
+const Configuration = require("./models/Configuration.js")
 const EmojiManager = require("./managers/EmojiManager.js")
 const RoleManager = require("./managers/RoleManager.js")
 const ReactionManager = require("./managers/ReactionManager.js")

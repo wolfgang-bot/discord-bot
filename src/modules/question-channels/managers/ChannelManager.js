@@ -1,5 +1,5 @@
 const LocaleServiceProvider = require("../../../services/LocaleServiceProvider.js")
-const ActiveChannel = require("../ActiveChannel.js")
+const ActiveChannel = require("../models/ActiveChannel.js")
 const QuestionEmbed = require("../embeds/QuestionEmbed.js")
 const NotificationEmbed = require("../embeds/NotificationEmbed.js")
 const Guild = require("../../../models/Guild.js")

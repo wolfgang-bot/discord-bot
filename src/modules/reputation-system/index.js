@@ -1,6 +1,6 @@
 const LocaleServiceProvider = require("../../services/LocaleServiceProvider.js")
 const CommandRegistry = require("../../services/CommandRegistry.js")
-const Configuration = require("./Configuration.js")
+const Configuration = require("./models/Configuration.js")
 const ReputationManager = require("./managers/ReputationManager.js")
 
 const commands = [
