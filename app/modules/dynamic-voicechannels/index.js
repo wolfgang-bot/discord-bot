@@ -1,9 +1,8 @@
-const Module = require("../../lib/Module.js")
 const LocaleServiceProvider = require("../../services/LocaleServiceProvider.js")
 const Configuration = require("./Configuration.js")
 const VoiceChannelManager = require("./managers/VoiceChannelManager.js")
 
-class DynamicVoicechannelsModule extends Module {
+class DynamicVoicechannelsModule {
     static async fromConfig(client, guild, config) {
         const parentChannel = await guild.channels.cache.get(config.parentChannelId)
         return new DynamicVoicechannelsModule(client, guild, new Configuration({ parentChannel }))
@@ -14,7 +13,7 @@ class DynamicVoicechannelsModule extends Module {
         const moduleLocale = locale.scope("dynamic-voicechannels")
 
         if (!args[0]) {
-            throw locale.translate("error_missing_argument", "category")
+            throw locale.translate("error_missing_argument", moduleLocale.translate("arg_category_channel_name"))
         }
 
         const parentChannel = await guild.channels.cache.get(args[0])
@@ -27,8 +26,6 @@ class DynamicVoicechannelsModule extends Module {
     }
 
     constructor(client, guild, config) {
-        super()
-
         this.client = client
         this.guild = guild
         this.config = config
@@ -47,12 +44,6 @@ class DynamicVoicechannelsModule extends Module {
     getConfig() {
         return this.config
     }
-}
-
-DynamicVoicechannelsModule.meta = {
-    description: "desc",
-    arguments: "args",
-    features: "features"
 }
 
 module.exports = DynamicVoicechannelsModule

@@ -1,8 +1,24 @@
-desc: Ensures that there always is an empty voicechannel.
-args: <category_id>
-features:
+#
+# Meta
+#
+
+meta_desc: Ensures that there always is an empty voicechannel.
+meta_features:
     - Creates a predefined amount of persistant voicechannels in the given category.
     - Creates a new voicechannels if there is at least one member in every other voicechannel.
     - Removes the dynamically created voicechannels if they are not needed anymore.
+
+#
+# Arguments
+#
+
+# Category
+arg_category_channel_name: category_id
+arg_category_channel_display_name: Category
+arg_category_channel_desc: The category in which the voicechannels will be created
+
+#
+# Errors
+#
 
 error_category_does_not_exist: The category does not exist

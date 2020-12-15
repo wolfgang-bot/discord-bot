@@ -9,6 +9,7 @@ function boot(client) {
     return new Promise(async resolve => {
         client.once("ready", async () => {
             await ModuleServiceProvider.loadModules()
+            await ModuleServiceProvider.loadModulesToDB()
             await ModuleServiceProvider.restoreInstances(client)
             
             await startServer(client)

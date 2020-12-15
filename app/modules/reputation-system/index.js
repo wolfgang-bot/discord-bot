@@ -1,4 +1,3 @@
-const Module = require("../../lib/Module.js")
 const LocaleServiceProvider = require("../../services/LocaleServiceProvider.js")
 const CommandRegistry = require("../../services/CommandRegistry.js")
 const Configuration = require("./Configuration.js")
@@ -11,7 +10,7 @@ const commands = [
 
 commands.forEach(command => command.setModule("reputation-system"))
 
-class ReputationSystemModule extends Module {
+class ReputationSystemModule {
     static async fromConfig(client, guild, config) {
         const channel = await guild.channels.cache.get(config.channelId)
 
@@ -23,7 +22,7 @@ class ReputationSystemModule extends Module {
         const moduleLocale = locale.scope("reputation-system")
 
         if (!args[0]) {
-            throw locale.translate("error_missing_argument", "textchannel")
+            throw locale.translate("error_missing_argument", moduleLocale.translate("arg_notifications_channel_name"))
         }
 
         const channel = guild.channels.cache.get(args[0])
@@ -37,8 +36,6 @@ class ReputationSystemModule extends Module {
     }
 
     constructor(client, guild, config) {
-        super()
-
         this.client = client
         this.guild = guild
         this.config = config
@@ -61,12 +58,6 @@ class ReputationSystemModule extends Module {
     getConfig() {
         return this.config
     }
-}
-
-ReputationSystemModule.meta = {
-    description: "desc",
-    arguments: "args",
-    features: "features"
 }
 
 module.exports = ReputationSystemModule

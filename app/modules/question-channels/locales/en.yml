@@ -1,29 +1,27 @@
+#
 # Meta
+#
 
-desc: Manages textchannels used for answering questions.
-args: <question_channel_id>
-features:
+meta_desc: Manages textchannels used for answering questions.
+meta_features:
     - Creates a textchannel for a user when he asks a question in the question channel.
     - Removes a textchannel when the creator marks a message as the answer or the question as irrelevant.
     - Integrates with the 'reputation-system' module.
 
-# Errors
+#
+# Arguments
+#
 
-error_textchannel_does_not_exist: The textchannel does not exist
-error_too_many_questions: |
-    Before you can ask a new question, the previous one must be closed.
-    Here is your question, in case you want to ask it again later:
-    ```
-    {0}
-    ```
-error_message_from_bot: You cannot mark a message of a bot as the answer.
-error_own_message: You cannot mark your own message as the answer.
+# Question Channel
+arg_question_channel_name: question_channel_id
+arg_question_channel_display_name: Question Channel
+arg_question_channel_desc: The channel in which questions can be asked.
 
 #
 # Embeds
 #
 
-# Help Embed
+# Help
 embed_help_title: Question Channels
 
 embed_help_field_ask_title: Ask
@@ -48,7 +46,7 @@ embed_help_field_how_to_ask_content: |
     **Codeblocks**
     To make a question more comprehensible it makes sense to use [codeblocks](https://bit.ly/35OUUQ8). Large codeblocks (50+ Lines) should be uploaded to websites like [Codepen](https://codepen.io/) or [Pastebin](https://pastebin.com/) to keep the message readable.
 
-# Notification Embed
+# Notification
 embed_notification_title: You have asked a question on '{0}'
 
 embed_notification_field_solved_title: Problem solved?
@@ -56,3 +54,17 @@ embed_notification_field_solved_content: Great! React with {0} to the message wh
 
 embed_notification_field_irrelevant_title: Question irrelevant?
 embed_notification_field_irrelevant_content: Send {0} into your question channel to remove it yourself.
+
+#
+# Errors
+#
+
+error_textchannel_does_not_exist: The textchannel does not exist
+error_too_many_questions: |
+    Before you can ask a new question, the previous one must be closed.
+    Here is your question, in case you want to ask it again later:
+    ```
+    {0}
+    ```
+error_message_from_bot: You cannot mark a message of a bot as the answer.
+error_own_message: You cannot mark your own message as the answer.

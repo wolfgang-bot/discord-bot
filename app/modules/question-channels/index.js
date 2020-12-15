@@ -1,11 +1,10 @@
-const Module = require("../../lib/Module.js")
 const LocaleServiceProvider = require("../../services/LocaleServiceProvider.js")
 const Configuration = require("./Configuration.js")
 const ChannelManager = require("./managers/ChannelManager.js")
 const HelpEmbed = require("./embeds/HelpEmbed.js")
 const Guild = require("../../models/Guild.js")
 
-class QuestionChannelsModule extends Module {
+class QuestionChannelsModule {
     static async fromConfig(client, guild, config) {
         const channel = await guild.channels.cache.get(config.channelId)
         const helpMessage = await channel.messages.fetch(config.helpMessageId)
@@ -17,7 +16,7 @@ class QuestionChannelsModule extends Module {
         const moduleLocale = locale.scope("question-channels")
 
         if (!args[0]) {
-            throw locale.translate("error_missing_argument", "question_channel")
+            throw locale.translate("error_missing_argument", moduleLocale.translate("arg_question_channel_name"))
         }
 
         const channel = await guild.channels.cache.get(args[0])
@@ -32,8 +31,6 @@ class QuestionChannelsModule extends Module {
     }
 
     constructor(client, guild, config) {
-        super()
-
         this.client = client
         this.guild = guild
         this.config = config
@@ -67,12 +64,6 @@ class QuestionChannelsModule extends Module {
     getConfig() {
         return this.config
     }
-}
-
-QuestionChannelsModule.meta = {
-    description: "desc",
-    arguments: "args",
-    features: "features"
 }
 
 module.exports = QuestionChannelsModule

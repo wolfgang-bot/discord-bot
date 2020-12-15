@@ -1,55 +1,45 @@
-const CommandRegistry = require("../../services/CommandRegistry.js")
-const Configuration = require("./Configuration.js")
-const Manager = require("./managers/Manager.js")
+class Module {
+    /**
+     * Creates a new instance of the class from a configuration object.
+     * 
+     * @param {Discord.Client} client
+     * @param {Discord.Guid} guild
+     * @param {Object} config
+     * 
+     * @returns {Module}
+     */
+    static async fromConfig(client, guild, config) { }
 
-const commands = [
-    require("./commands/command.js")
-]
+    /**
+     * Creates a new instance of the class from an arguments array.
+     *
+     * @param {Discord.Client} client
+     * @param {Discord.Guild} guild
+     * @param {Array<String>} args
+     *
+     * @returns {Module}
+     */
+    static async fromArguments(client, guild, args) { }
 
-class ReputationSystemModule extends Module {
-    static async fromConfig(client, guild, config) {
-        return new ReputationSystemModule(client, guild, new Configuration({  }))
-    }
+    /**
+     * Starts the module.
+     * Code which needs to be run whenever the module is loaded should go here.
+     */
+    async start() { }
 
-    static async fromArguments(client, guild, args) {
-        const config = new Configuration({  })
-        return new ReputationSystemModule(client, guild, config)
-    }
+    /**
+     * Stops the module.
+     * Code which reverts the actions done in module.start should go here.
+     */
+    async stop() { }
 
-    constructor(client, guild, config) {
-        super()
-
-        this.client = client
-        this.guild = guild
-        this.config = config
-
-        this.manager = new Manager(this.client, this.guild)
-    }
-
-    async start() {
-        commands.forEach(command => CommandRegistry.root.register(command))
-
-        this.reputationManager.init()
-    }
-
-    async stop() {
-        commands.forEach(command => CommandRegistry.root.unregister(command))
-
-        this.reputationManager.delete()
-    }
-
-    getConfig() {
-        return this.config
-    }
+    /**
+     * Get the configuration object of the module from which the module can be
+     * restored via the Module.fromConfig method.
+     * 
+     * @returns {Object} 
+     */
+    getConfig() { }
 }
 
-ReputationSystemModule.meta = {
-    description: "Desribe in one, short sentence, what the module does.",
-    arguments: "<argument_1> <argument_2> ...",
-    features: [
-        "Write a list of all the amazing features",
-        "Which you have implemented into the module"
-    ]
-}
-
-module.exports = ReputationSystemModule
+module.exports = Module

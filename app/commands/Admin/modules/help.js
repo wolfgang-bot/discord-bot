@@ -12,15 +12,15 @@ async function run(message, args) {
         return await message.channel.send(locale.translate("error_missing_argument", "module"))
     }
 
-    const module = await Module.findBy("name", args[0])
+    const model = await Module.findBy("name", args[0])
 
-    if (!module) {
+    if (!model) {
         return await message.channel.send(locale.translate("error_module_does_not_exist", args[0]))
     }
 
-    const moduleClass = ModuleServiceProvider.getModule(module)
+    const module = ModuleServiceProvider.getModule(model)
     const config = await Guild.config(message.guild)
-    await message.channel.send(new ModuleHelpEmbed(config, locale, moduleClass))
+    await message.channel.send(new ModuleHelpEmbed(config, locale, module))
 }
 
 module.exports = new Command(run)

@@ -1,0 +1,12 @@
+<module
+    name="skill-roles"
+    desc="meta_desc"
+    features="meta_features"
+>
+    <argument
+        type="text_channel"
+        name="arg_roles_channel_name"
+        display-name="arg_roles_channel_display_name"
+        desc="arg_roles_channel_desc"
+    />
+</module>

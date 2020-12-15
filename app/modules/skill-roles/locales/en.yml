@@ -1,19 +1,32 @@
+#
 # Meta
+#
 
-desc: Creates a message whose reactions are used to assign the skill-roles.
-args: <roles_channel_id>
-features:
+meta_desc: Creates a message whose reactions are used to assign the skill-roles.
+meta_args: <roles_channel_id>
+meta_features:
     - Creates the skill-roles and one emoji per role.
     - Sends a messages into the roles channel which has one reaction per role used to assign it.
 
-# Errors
+#
+# Arguments
+#
 
-error_textchannel_does_not_exist: The textchannels does not exist
+# Roles Channel
+arg_roles_channel_name: roles_channel_id
+arg_roles_channel_display_name: Roles Channel
+arg_roles_channel_desc: The channel in which the reaction-roles message will be sent.
 
 #
 # Embeds
 #
 
-# Role Embed
+# Roles
 embed_role_title: Skill Roles
 embed_role_desc: Click on the emojis underneath this message to receive the associated roles.
+
+#
+# Errors
+#
+
+error_textchannel_does_not_exist: The textchannels does not exist

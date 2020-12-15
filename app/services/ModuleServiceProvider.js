@@ -1,33 +1,47 @@
 const glob = require("glob-promise")
 const path = require("path")
-const Module = require("../models/Module.js")
-const ModuleInstance = require("../models/ModuleInstance.js")
+const ModuleDAO = require("../models/Module.js")
+const ModuleInstanceDAO = require("../models/ModuleInstance.js")
+const Module = require("../lib/Module.js")
 const LocaleServiceProvider = require("./LocaleServiceProvider.js")
 
 const MODULES_DIR = path.join(__dirname, "..", "modules")
 
 class ModuleServiceProvider {
+    /**
+     * Array<Module>
+     */
+    static modules = []
+
+    /**
+     * Map<GuildID, Map<InstanceId, ModuleInstance>>
+     */
     static instances = {}
 
     /**
-     * Get module names ("../Modules/*" folder names)
-     * 
-     * @return {Array<String>}
+     * Load modules from all "/modules/.../modules.xml" files into the
+     * "modules" array.
      */
-    static getModuleNamesSync() {
-        return glob.sync("?*/", { cwd: MODULES_DIR }).map(name => name.replace("/", ""))
+    static async loadModules() {
+        const files = await glob("?*/module.xml", { cwd: MODULES_DIR })
+
+        await Promise.all(files.map(async filepath => {
+            const module = await Module.fromXMLFile(path.join(MODULES_DIR, filepath))
+
+            module.mainClass = require(path.join(MODULES_DIR, filepath, "..", "index.js"))
+
+            ModuleServiceProvider.modules.push(module)
+        }))
     }
 
     /**
-     * Get a module class from module
+     * Get a module from ModuleServiceProvider.modules from a module model.
      * 
-     * @param {Models.Module} model
-     * @return {Object}
+     * @param {ModuleDAO} model
+     * @return {Module}
      */
     static getModule(model) {
-        const Module = require(path.join(MODULES_DIR, model.name))
-        Module.meta.name = model.name
-        return Module
+        return ModuleServiceProvider.modules.find(module => module.name === model.name)
     }
 
     /**
@@ -41,29 +55,31 @@ class ModuleServiceProvider {
     }
 
     /**
-     * Load modules into database
+     * Load missing modules into database
      */
-    static async loadModules() {
-        const models = await Module.getAll()
+    static async loadModulesToDB() {
+        const models = await ModuleDAO.getAll()
 
-        await Promise.all(modules.map(async name => {
-            const isInDatabase = models.some(model => model.name === name)
+        await Promise.all(ModuleServiceProvider.modules.map(async module => {
+            const isInDatabase = models.some(model => model.name === module.name)
 
             if (!isInDatabase) {
-                const model = new Module({ name })
+                const model = new ModuleDAO({
+                    name: module.name
+                })
                 await model.store()
             }
         }))
     }
 
     /**
-     * Restore all module instances (e.g. after restart)
+     * Restore all module instances (e.g. after restart of the bot)
      * 
      * @param {Discord.Client} client
      */
     static async restoreInstances(client) {
         await Promise.all(client.guilds.cache.map(async guild => {
-            const models = await ModuleInstance.findAllBy("guild_id", guild.id)
+            const models = await ModuleInstanceDAO.findAllBy("guild_id", guild.id)
 
             await Promise.all(models.map(model => {
                 return ModuleServiceProvider.guild(guild).startModuleFromModel(client, model)
@@ -91,21 +107,21 @@ class ModuleServiceProvider {
     /**
      * Check if a module is loaded for this guild
      * 
-     * @param {Models.Module} model
+     * @param {ModuleDAO} model
      * @return {Boolean}
      */
     async isLoaded(model) {
-        const moduleInstance = await ModuleInstance.where(`module_id = '${model.id}' AND guild_id = '${this.guild.id}'`)
+        const moduleInstance = await ModuleInstanceDAO.where(`module_id = '${model.id}' AND guild_id = '${this.guild.id}'`)
         return !!moduleInstance
     }
 
     /**
      * Stop the module's instance from this guild
      * 
-     * @param {Models.Module} model
+     * @param {ModuleDAO} model
      */
     async stopModule(model) {
-        const moduleInstance = await ModuleInstance.where(`module_id = '${model.id}' AND guild_id = ${this.guild.id}`)
+        const moduleInstance = await ModuleInstanceDAO.where(`module_id = '${model.id}' AND guild_id = ${this.guild.id}`)
 
         await this.instances[moduleInstance.id].stop()
         delete this.instances[moduleInstance.id]
@@ -117,7 +133,7 @@ class ModuleServiceProvider {
      * Start a module from arguments
      * 
      * @param {Discord.Client} client
-     * @param {Models.Module} model
+     * @param {ModuleDAO} model
      * @param {Array<String>} args
      * @return {Object} Runtime module instance
      */
@@ -128,9 +144,9 @@ class ModuleServiceProvider {
             throw locale.translate("error_module_running")
         }
 
-        const Module = ModuleServiceProvider.getModule(model)
+        const module = ModuleServiceProvider.getModule(model)
 
-        const instance = await Module.fromArguments(client, this.guild, args)
+        const instance = await module.mainClass.fromArguments(client, this.guild, args)
 
         if (!instance) {
             throw locale.translate("error_illegal_invocation")
@@ -138,7 +154,7 @@ class ModuleServiceProvider {
 
         await instance.start()
 
-        const moduleInstance = new ModuleInstance({
+        const moduleInstance = new ModuleInstanceDAO({
             module_id: model.id,
             guild_id: this.guild.id,
             config: instance.getConfig()
@@ -155,13 +171,14 @@ class ModuleServiceProvider {
      * Start a module from instance model
      * 
      * @param {Discord.Client} client
-     * @param {Models.ModuleInstance} model
+     * @param {ModuleInstanceDAO} model
      */
     async startModuleFromModel(client, model) {
         await model.fetchModule()
 
-        const Module = ModuleServiceProvider.getModule(model.module)
-        const instance = await Module.fromConfig(client, this.guild, model.config)
+        const module = ModuleServiceProvider.getModule(model.module)
+
+        const instance = await module.mainClass.fromConfig(client, this.guild, model.config)
 
         await instance.start()
 
@@ -170,7 +187,5 @@ class ModuleServiceProvider {
         return instance
     }
 }
-
-const modules = ModuleServiceProvider.getModuleNamesSync()
 
 module.exports = ModuleServiceProvider

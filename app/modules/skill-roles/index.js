@@ -1,4 +1,3 @@
-const Module = require("../../lib/Module.js")
 const LocaleServiceProvider = require("../../services/LocaleServiceProvider.js")
 const Configuration = require("./Configuration.js")
 const EmojiManager = require("./managers/EmojiManager.js")
@@ -7,7 +6,7 @@ const ReactionManager = require("./managers/ReactionManager.js")
 const RoleEmbed = require("./embeds/RoleEmbed.js")
 const Guild = require("../../models/Guild.js")
 
-class RoleManagerModule extends Module {
+class RoleManagerModule {
     static async fromConfig(client, guild, config) {
         const channel = await guild.channels.cache.get(config.channelId)
         const roleMessage = await channel.messages.fetch(config.roleMessageId)
@@ -20,7 +19,7 @@ class RoleManagerModule extends Module {
         const moduleLocale = locale.scope("skill-roles")
 
         if (!args[0]) {
-            throw locale.translate("error_missing_argument", "notifications_channel")
+            throw locale.translate("error_missing_argument", moduleLocale.translate("arg_roles_channel_name"))
         }
 
         const channel = await guild.channels.cache.get(args[0])
@@ -34,8 +33,6 @@ class RoleManagerModule extends Module {
     }
 
     constructor(client, guild, config) {
-        super()
-
         this.client = client
         this.guild = guild
         this.config = config
@@ -70,12 +67,6 @@ class RoleManagerModule extends Module {
     getConfig() {
         return this.config
     }
-}
-
-RoleManagerModule.meta = {
-    description: "desc",
-    arguments: "args",
-    features: "features"
 }
 
 module.exports = RoleManagerModule

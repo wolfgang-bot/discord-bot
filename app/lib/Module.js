@@ -1,60 +1,54 @@
+const fs = require("fs")
+const parseXML = require("xml2js").parseStringPromise
+
+const Argument = require("./Argument.js")
+
 /**
- * The interface for the main class of a module
- * 
- * @interface
+ * Represents a module, e.g. from app/modules/...
  */
 class Module {
     /**
-     * Meta data (required for the "help" command)
+     * Create an instance from a "module.xml" file
+     * 
+     * @param {String} path
+     * @returns {Module}
      */
-    static meta = {
-        name: "", // THem name of the module
-        description: "", // Short description about what the module does
-        arguments: "", // Required and / or optional arguments to start the module
-        features: [] // All the features of the module
+    static async fromXMLFile(path) {
+        const { module: data } = await parseXML(await fs.promises.readFile(path))
+
+        return new Module({
+            name: data.$.name,
+            desc: data.$.desc,
+            features: data.$.features,
+
+            args: data.argument.map(arg => new Argument({
+                type: arg.$.type,
+                name: arg.$.name,
+                displayName: arg.$["display-name"],
+                desc: arg.$.desc
+            }))
+        })
     }
 
-    /**
-     * Creates a new instance of the class from a configuration object.
-     * 
-     * @param {Discord.Client} client
-     * @param {Discord.Guid} guild
-     * @param {Object} config
-     * 
-     * @returns {Module}
-     */
-    static async fromConfig(client, guild, config) {}
-
-    /**
-     * Creates a new instance of the class from an arguments array.
-     *
-     * @param {Discord.Client} client
-     * @param {Discord.Guild} guild
-     * @param {Array<String>} args
-     *
-     * @returns {Module}
-     */
-    static async fromArguments(client, guild, args) {}
-
-    /**
-     * Starts the module.
-     * Code which needs to be run whenever the module is loaded should go here.
-     */
-    async start() {}
-
-    /**
-     * Stops the module.
-     * Code which reverts the actions done in module.start should go here.
-     */
-    async stop() {}
-
-    /**
-     * Get the configuration object of the module from which the module can be
-     * restored via the Module.fromConfig method.
-     * 
-     * @returns {Object} 
-     */
-    getConfig() {}
+    constructor({
+        name,
+        desc,
+        features,
+        isGlobal = false,
+        isPrivate = false,
+        args = [],
+        guildIds = null,
+        mainClass = null
+    }) {
+        this.name = name
+        this.desc = desc
+        this.features = features
+        this.isGlobal = isGlobal
+        this.isPrivate = isPrivate
+        this.args = args
+        this.guildIds = guildIds
+        this.mainClass = mainClass
+    }
 }
 
 module.exports = Module
