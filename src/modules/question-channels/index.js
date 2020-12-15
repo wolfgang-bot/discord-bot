@@ -5,13 +5,13 @@ const HelpEmbed = require("./embeds/HelpEmbed.js")
 const Guild = require("../../models/Guild.js")
 
 class QuestionChannelsModule {
-    static async fromConfig(client, guild, config) {
+    static async fromConfig(client, module, guild, config) {
         const channel = await guild.channels.cache.get(config.channelId)
         const helpMessage = await channel.messages.fetch(config.helpMessageId)
-        return new QuestionChannelsModule(client, guild, new Configuration({ channel, helpMessage }))
+        return new QuestionChannelsModule(client, module, guild, new Configuration({ channel, helpMessage }))
     }
 
-    static async fromArguments(client, guild, args) {
+    static async fromArguments(client, module, guild, args) {
         const locale = await LocaleServiceProvider.guild(guild)
         const moduleLocale = locale.scope("question-channels")
 
@@ -27,11 +27,12 @@ class QuestionChannelsModule {
 
         const config = new Configuration({ channel })
 
-        return new QuestionChannelsModule(client, guild, config)
+        return new QuestionChannelsModule(client, module, guild, config)
     }
 
-    constructor(client, guild, config) {
+    constructor(client, module, guild, config) {
         this.client = client
+        this.module = module
         this.guild = guild
         this.config = config
 

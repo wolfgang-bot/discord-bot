@@ -9,17 +9,28 @@ const MODULES_DIR = path.join(__dirname, "..", "modules")
 
 class ModuleServiceProvider {
     /**
-     * Array<Module>
+     * All modules from the "src/modules" directory.
+     * 
+     * @type {Array<Module>}
      */
     static modules = []
 
     /**
-     * Map<GuildID, Map<InstanceId, ModuleInstance>>
+     * Module instances mapped by the guild's id which initialized it.
+     * 
+     * @type {Object<GuildID, Object<InstanceId, ModuleInstance>>}
      */
     static instances = {}
 
     /**
-     * Load modules from all "/modules/.../modules.xml" files into the
+     * Global module instances.
+     * 
+     * @type {Array<ModuleName, Module>}
+     */
+    static globalInstances = {}
+
+    /**
+     * Load modules from all "src/modules/.../modules.xml" files into the
      * "modules" array.
      */
     static async loadModules() {
@@ -78,6 +89,12 @@ class ModuleServiceProvider {
      * @param {Discord.Client} client
      */
     static async restoreInstances(client) {
+        // Start global modules independent from guilds
+        const globalModules = ModuleServiceProvider.modules.filter(module => module.isGlobal)
+
+        await Promise.all(globalModules.map(module => ModuleServiceProvider.startGlobalModule(client, module)))
+
+        // Start each guild's individual instances
         await Promise.all(client.guilds.cache.map(async guild => {
             const models = await ModuleInstanceDAO.findAllBy("guild_id", guild.id)
 
@@ -88,8 +105,27 @@ class ModuleServiceProvider {
     }
 
     /**
-     * Constructor
+     * Start a global module independent from guilds.
      * 
+     * @param {Discord.Client} client
+     * @param {Module} module
+     */
+    static async startGlobalModule(client, module) {
+        if (!module.isGlobal) {
+            throw new Error(`The module '${module.name}' is not global`)
+        }
+
+        if (module.name in ModuleServiceProvider.globalInstances) {
+            throw new Error(`The module '${module.name}' is already running`)
+        }
+
+        const instance = new module.mainClass({ client, module })
+        await instance.start()
+
+        ModuleServiceProvider.globalInstances[module.name] = instance
+    }
+
+    /**
      * @param {Discord.Guild} guild
      */
     constructor(guild) {
@@ -146,7 +182,11 @@ class ModuleServiceProvider {
 
         const module = ModuleServiceProvider.getModule(model)
 
-        const instance = await module.mainClass.fromArguments(client, this.guild, args)
+        if (module.isGlobal) {
+            throw locale.translate("error_illegal_invocation")
+        }
+
+        const instance = await module.mainClass.fromArguments(client, module, this.guild, args)
 
         if (!instance) {
             throw locale.translate("error_illegal_invocation")
@@ -178,7 +218,7 @@ class ModuleServiceProvider {
 
         const module = ModuleServiceProvider.getModule(model.module)
 
-        const instance = await module.mainClass.fromConfig(client, this.guild, model.config)
+        const instance = await module.mainClass.fromConfig(client, module, this.guild, model.config)
 
         await instance.start()
 

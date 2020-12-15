@@ -51,6 +51,19 @@ class Command {
     }
 
     /**
+     * Get the module this command demands by traversing the command tree.
+     * 
+     * @returns {String}
+     */
+    getModule() {
+        if (this.module) {
+            return this.module
+        }
+
+        return this.parent.getModule()
+    }
+
+    /**
      * @param {String} name
      */
     setName(name) {

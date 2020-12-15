@@ -26,11 +26,6 @@ const emojiConstraint = {
  * -> This is used in the frontend to create a flat object hirarchie
  */
 module.exports = {
-    userRole: {
-        description: "Role each user receives when joining the guild",
-        value: "User"
-    },
-
     colors: {
         description: "Color theme of the bot (e.g. embeds)",
         value: {
@@ -38,6 +33,15 @@ module.exports = {
                 value: "#3f51b5",
                 constraints: "Must be a valid hexadecimal color-code",
                 verifyConstraints: (value) => HEX_COLOR_REGEX.test(value)
+            }
+        }
+    },
+    
+    "main": {
+        value: {
+            userRole: {
+                description: "Role each user receives when joining the guild",
+                value: "User"
             }
         }
     },

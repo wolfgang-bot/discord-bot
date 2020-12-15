@@ -3,12 +3,12 @@ const Configuration = require("./models/Configuration.js")
 const VoiceChannelManager = require("./managers/VoiceChannelManager.js")
 
 class DynamicVoicechannelsModule {
-    static async fromConfig(client, guild, config) {
+    static async fromConfig(client, module, guild, config) {
         const parentChannel = await guild.channels.cache.get(config.parentChannelId)
-        return new DynamicVoicechannelsModule(client, guild, new Configuration({ parentChannel }))
+        return new DynamicVoicechannelsModule(client, module, guild, new Configuration({ parentChannel }))
     }
 
-    static async fromArguments(client, guild, args) {
+    static async fromArguments(client, module, guild, args) {
         const locale = await LocaleServiceProvider.guild(guild)
         const moduleLocale = locale.scope("dynamic-voicechannels")
 
@@ -22,11 +22,12 @@ class DynamicVoicechannelsModule {
             throw moduleLocale.translate("error_category_does_not_exist")
         }
 
-        return new DynamicVoicechannelsModule(client, guild, new Configuration({ parentChannel }))
+        return new DynamicVoicechannelsModule(client, module, guild, new Configuration({ parentChannel }))
     }
 
-    constructor(client, guild, config) {
+    constructor(client, module, guild, config) {
         this.client = client
+        this.module = module
         this.guild = guild
         this.config = config
 

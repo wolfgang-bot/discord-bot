@@ -11,13 +11,13 @@ const commands = [
 commands.forEach(command => command.setModule("reputation-system"))
 
 class ReputationSystemModule {
-    static async fromConfig(client, guild, config) {
+    static async fromConfig(client, module, guild, config) {
         const channel = await guild.channels.cache.get(config.channelId)
 
-        return new ReputationSystemModule(client, guild, new Configuration({ channel }))
+        return new ReputationSystemModule(client, module, guild, new Configuration({ channel }))
     }
 
-    static async fromArguments(client, guild, args) {
+    static async fromArguments(client, module, guild, args) {
         const locale = await LocaleServiceProvider.guild(guild)
         const moduleLocale = locale.scope("reputation-system")
 
@@ -32,11 +32,12 @@ class ReputationSystemModule {
         }
 
         const config = new Configuration({ channel })
-        return new ReputationSystemModule(client, guild, config)
+        return new ReputationSystemModule(client, module, guild, config)
     }
 
-    constructor(client, guild, config) {
+    constructor(client, module, guild, config) {
         this.client = client
+        this.module = module
         this.guild = guild
         this.config = config
 

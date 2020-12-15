@@ -1,4 +1,4 @@
-const BaseEmbed = require("../../../embeds/BaseEmbed.js")
+const BaseEmbed = require("../../../lib/BaseEmbed.js")
 
 class RoleEmbed extends BaseEmbed {
     constructor(config, locale) {

@@ -20,8 +20,10 @@ class Module {
             name: data.$.name,
             desc: data.$.desc,
             features: data.$.features,
+            isGlobal: data.$.global === "true",
+            isPrivate: data.$.private === "true",
 
-            args: data.argument.map(arg => new Argument({
+            args: (data.argument || []).map(arg => new Argument({
                 type: arg.$.type,
                 name: arg.$.name,
                 displayName: arg.$["display-name"],

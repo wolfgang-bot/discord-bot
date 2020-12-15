@@ -7,14 +7,14 @@ const RoleEmbed = require("./embeds/RoleEmbed.js")
 const Guild = require("../../models/Guild.js")
 
 class RoleManagerModule {
-    static async fromConfig(client, guild, config) {
+    static async fromConfig(client, module, guild, config) {
         const channel = await guild.channels.cache.get(config.channelId)
         const roleMessage = await channel.messages.fetch(config.roleMessageId)
 
-        return new RoleManagerModule(client, guild, new Configuration({ channel, roleMessage }))
+        return new RoleManagerModule(client, module, guild, new Configuration({ channel, roleMessage }))
     }
 
-    static async fromArguments(client, guild, args) {
+    static async fromArguments(client, module, guild, args) {
         const locale = await LocaleServiceProvider.guild(guild)
         const moduleLocale = locale.scope("skill-roles")
 
@@ -29,11 +29,12 @@ class RoleManagerModule {
         }
 
         const config = new Configuration({ channel })
-        return new RoleManagerModule(client, guild, config)
+        return new RoleManagerModule(client, module, guild, config)
     }
 
-    constructor(client, guild, config) {
+    constructor(client, module, guild, config) {
         this.client = client
+        this.module = module
         this.guild = guild
         this.config = config
         
