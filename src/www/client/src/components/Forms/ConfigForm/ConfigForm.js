@@ -43,7 +43,7 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-function ConfigForm({ guildId, data }) {
+function ConfigForm({ guild, data }) {
     const classes = useStyles()
 
     const [children, keys] = useMemo(() => {
@@ -72,7 +72,7 @@ function ConfigForm({ guildId, data }) {
 
         setIsSubmitting(true)
 
-        setConfig(guildId, data)
+        setConfig(guild.id, data)
             .then(() => {
                 opener.openSnackbar("Success!")
             })
@@ -106,10 +106,10 @@ function ConfigForm({ guildId, data }) {
     )
 }
 
-function ConfigFormWrapper({ guildId }) {
+function ConfigFormWrapper({ guild }) {
     const { data, isLoading, error } = useAPIData({
         method: "getConfigDescriptive",
-        data: guildId
+        data: guild.id
     })
 
     if (isLoading) {
@@ -120,7 +120,7 @@ function ConfigFormWrapper({ guildId }) {
         return <Redirect to="/not-found"/>
     }
 
-    return <ConfigForm guildId={guildId} data={data}/>
+    return <ConfigForm guild={guild} data={data}/>
 }
 
 export default ConfigFormWrapper

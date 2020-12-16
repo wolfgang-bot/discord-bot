@@ -1,22 +1,12 @@
 import React, { useState } from "react"
 import { useHistory } from "react-router-dom"
 import { ListItem, ListItemText, ListItemIcon } from "@material-ui/core"
-import { makeStyles } from "@material-ui/core/styles"
 
-import GuildIcon from "./GuildIcon.js"
+import GuildIcon from "../Discord/GuildIcon.js"
 import { DISCORD_BOT_INVITE_URL } from "../../config/constants.js"
 
-const useStyles = makeStyles(theme => ({
-    guild: {
-        padding: theme.spacing(2),
-        maxWidth: 600,
-        width: "100%"
-    }
-}))
 
-function Guild({ guild }) {
-    const classes = useStyles()
-
+function Guild({ guild, active = false }) {
     const history = useHistory()
 
     const [isMouseOver, setIsMouseOver] = useState(false)
@@ -35,6 +25,7 @@ function Guild({ guild }) {
             onMouseLeave={() => setIsMouseOver(false)}
             button
             onClick={handleClick}
+            selected={active}
         >
             <ListItemIcon><GuildIcon guild={guild} animated={isMouseOver}/></ListItemIcon>
 

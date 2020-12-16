@@ -82,7 +82,7 @@ class LocaleServiceProvider {
         return new LocaleServiceProvider(model.locale)
     }
 
-    constructor(locale, scope = LocaleServiceProvider.defaultScope) {
+    constructor(locale = LocaleServiceProvider.defaultLocale, scope = LocaleServiceProvider.defaultScope) {
         this.locale = locale
         this.scopeName = scope
 

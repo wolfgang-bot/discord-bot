@@ -1,6 +1,7 @@
 const Guild = require("../../models/Guild.js")
 const { compareStructure, verifyConstraints, insertIntoDescriptiveObject } = require("../../utils")
 const defaultConfig = require("../../config/default.js")
+const { checkPermissions } = require("../utils")
 
 class ConfigController {
     /**
@@ -10,19 +11,6 @@ class ConfigController {
 
     static setDiscordClient(client) {
         ConfigController.client = client
-    }
-
-    /**
-     * Check if a guild member has all permissions
-     * 
-     * @param {Discord.Guild} guild 
-     * @param {Discord.User} user 
-     * @param {Array<String>} permissions 
-     */
-    static async checkPermissions(guild, user, permissions) {
-        await guild.fetchDiscordGuild(ConfigController.client)
-        const member = await guild.discordGuild.members.fetch(user.id)
-        return member.hasPermission(permissions)
     }
     
     /**
@@ -37,7 +25,7 @@ class ConfigController {
 
         await guild.fetchDiscordGuild(ConfigController.client)
 
-        if (!await ConfigController.checkPermissions(guild, req.user, ["MANAGE_GUILD"])) {
+        if (!await checkPermissions(guild.discordGuild, req.user, ["MANAGE_GUILD"])) {
             return res.status(403).end()
         }
 
@@ -56,7 +44,7 @@ class ConfigController {
 
         await guild.fetchDiscordGuild(ConfigController.client)
 
-        if (!await ConfigController.checkPermissions(guild, req.user, ["MANAGE_GUILD"])) {
+        if (!await checkPermissions(guild.discordGuild, req.user, ["MANAGE_GUILD"])) {
             return res.status(403).end()
         }
 
@@ -76,7 +64,9 @@ class ConfigController {
             return res.status(404).end()
         }
 
-        if (!await ConfigController.checkPermissions(guild, req.user, ["MANAGE_GUILD"])) {
+        await guild.fetchDiscordGuild(ConfigController.client)
+
+        if (!await checkPermissions(guild.discordGuild, req.user, ["MANAGE_GUILD"])) {
             return res.status(403).end()
         }
 

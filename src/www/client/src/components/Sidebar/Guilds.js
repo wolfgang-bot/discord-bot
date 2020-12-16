@@ -4,7 +4,7 @@ import { CircularProgress } from "@material-ui/core"
 import useAPIData from "../../utils/useAPIData.js"
 import Guild from "./Guild.js"
 
-function Guilds() {
+function Guilds({ activeGuild }) {
     const { isLoading, data } = useAPIData("getGuilds")
 
     if (isLoading) {
@@ -12,7 +12,7 @@ function Guilds() {
     }
 
     return data.map(guild => (
-        <Guild guild={guild} key={guild.id} />
+        <Guild guild={guild} key={guild.id} active={activeGuild && activeGuild === guild.id}/>
     ))
 }
 

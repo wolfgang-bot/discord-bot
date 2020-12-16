@@ -24,14 +24,14 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-function Layout({ headerProps = {}, children, center = false }) {
+function Layout({ headerProps = {}, sidebarProps = {}, children, center = false }) {
     const classes = useStyles({ center })
 
     return (
         <div className={classes.layout}>
             <Header {...headerProps}/>
 
-            <Sidebar/>
+            <Sidebar {...sidebarProps}/>
 
             <div className={classes.body}>
                 <Container className={classes.content}>

@@ -1,4 +1,4 @@
-import { useState, useEffect, useReducer } from "react"
+import { useState, useEffect, useReducer, useRef } from "react"
 
 import * as API from "../config/api.js"
 
@@ -42,6 +42,8 @@ function useAPIData(props) {
 
     const method = API[props.method].bind(null, props.data)
 
+    const isFirstRender = useRef(true)
+
     const [isLoading, setIsLoading] = useState(!(props.defaultValue || (props.useCache && cache.get(key)) || !props.initialRequest))
     const [error, setError] = useState()
 
@@ -52,6 +54,9 @@ function useAPIData(props) {
 
     const [version, reload] = useReducer((key) => key + 1, 0)
 
+    /**
+     * Load data initially and everytime the version changes
+     */
     useEffect(() => {
         if ((data || !props.initialRequest) && version === 0) {
             return
@@ -80,9 +85,21 @@ function useAPIData(props) {
         // eslint-disable-next-line
     }, [version])
 
+    /**
+     * Reload when the key has changed
+     */
     // useEffect(() => {
-    //     console.log("Reload", key)
-    //     reload()
+    //     if (!isFirstRender.current) {
+    //         const data = cache.get(key)
+
+    //         if (!data) {
+    //             reload()
+    //         } else {
+    //             setData(data)
+    //         }
+    //     } else {
+    //         isFirstRender.current = false
+    //     }
     // }, [key])
 
     return {

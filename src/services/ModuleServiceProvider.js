@@ -12,21 +12,21 @@ const MODULES_DIR = path.join(__dirname, "..", "modules")
 
 class ModuleServiceProvider {
     /**
-     * All modules from the "src/modules" directory.
+     * All modules from the "src/modules" directory
      * 
      * @type {Array<Module>}
      */
     static modules = []
 
     /**
-     * Module instances mapped by the guild's id which initialized it.
+     * Module instances mapped by the guild's id which initialized it
      * 
-     * @type {Object<GuildID, Object<InstanceId, ModuleInstance>>}
+     * @type {Object<GuildID, Object<InstanceId, Module>>}
      */
     static instances = {}
 
     /**
-     * Global module instances.
+     * Global module instances
      * 
      * @type {Array<ModuleName, Module>}
      */
@@ -34,7 +34,7 @@ class ModuleServiceProvider {
 
     /**
      * Load modules from all "src/modules/.../modules.xml" files into the
-     * "modules" array.
+     * "modules" array
      */
     static async loadModules() {
         const files = await glob("?*/module.xml", { cwd: MODULES_DIR })
@@ -49,7 +49,7 @@ class ModuleServiceProvider {
     }
 
     /**
-     * Get a module from ModuleServiceProvider.modules from a module model.
+     * Get a module from ModuleServiceProvider.modules from a module model
      * 
      * @param {ModuleDAO} model
      * @return {Module}
@@ -129,6 +129,27 @@ class ModuleServiceProvider {
     }
 
     /**
+     * Replace all translation keys of a module with their respective translations.
+     * This method does not return a new module but modifies the attributes of the given one.
+     * 
+     * @param {Module} module
+     */
+    static insertTranslations(module) {
+        const moduleLocale = new LocaleServiceProvider().scope(module.name)
+
+        console.log(module)
+
+        module.desc = moduleLocale.translate(module.desc)
+        module.features = moduleLocale.translate(module.features)
+        module.args = module.args.map(arg => ({
+            ...arg,
+            name: moduleLocale.translate(arg.name),
+            displayName: moduleLocale.translate(arg.displayName),
+            desc: moduleLocale.translate(arg.desc)
+        }))
+    }
+
+    /**
      * @param {Discord.Guild} guild
      */
     constructor(guild) {
@@ -152,20 +173,6 @@ class ModuleServiceProvider {
     async isLoaded(model) {
         const moduleInstance = await ModuleInstanceDAO.where(`module_id = '${model.id}' AND guild_id = '${this.guild.id}'`)
         return !!moduleInstance
-    }
-
-    /**
-     * Stop the module's instance from this guild
-     * 
-     * @param {ModuleDAO} model
-     */
-    async stopModule(model) {
-        const moduleInstance = await ModuleInstanceDAO.where(`module_id = '${model.id}' AND guild_id = ${this.guild.id}`)
-
-        await this.instances[moduleInstance.id].stop()
-        delete this.instances[moduleInstance.id]
-
-        await moduleInstance.delete()
     }
 
     /**
@@ -215,9 +222,9 @@ class ModuleServiceProvider {
         if (!instance) {
             throw locale.translate("error_illegal_invocation")
         }
-
+        
         await instance.start()
-
+        
         /**
          * Store the instance
          */
@@ -235,12 +242,37 @@ class ModuleServiceProvider {
     }
 
     /**
+     * Stop the module's instance from this guild
+     * 
+     * @param {ModuleDAO} model
+     */
+    async stopModule(model) {
+        const moduleInstance = await ModuleInstanceDAO.where(`module_id = '${model.id}' AND guild_id = ${this.guild.id}`)
+
+        if (!moduleInstance) {
+            const locale = await LocaleServiceProvider.guild(this.guild)
+            throw locale.translate("error_module_not_running")
+        }
+
+        await this.instances[moduleInstance.id].stop()
+        delete this.instances[moduleInstance.id]
+
+        await moduleInstance.delete()
+    }
+
+    /**
      * Restart a module's instance
      * 
      * @param {ModuleDAO} module
      */
     async restartModule(module) {
         const model = await ModuleInstanceDAO.where(`module_id = '${module.id}' AND guild_id = '${this.guild.id}'`)
+
+        if (!model) {
+            const locale = await LocaleServiceProvider.guild(this.guild)
+            throw locale.translate("error_module_not_running")
+        }
+
         const instance = this.instances[model.id]
 
         await instance.stop()

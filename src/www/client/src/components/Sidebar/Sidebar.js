@@ -33,7 +33,7 @@ const useStyles = makeStyles(theme => {
     }
 })
 
-function Sidebar() {
+function Sidebar({ activeGuild }) {
     const classes = useStyles()
 
     const isLoggedIn = useSelector(store => store.auth.isLoggedIn)
@@ -55,7 +55,7 @@ function Sidebar() {
             <Divider/>
 
             <List className={classes.nav}>
-                { isLoggedIn && <Guilds/> }
+                { isLoggedIn && <Guilds activeGuild={activeGuild}/> }
             </List>
         </Drawer>
     )
