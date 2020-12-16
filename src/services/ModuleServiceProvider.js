@@ -129,24 +129,27 @@ class ModuleServiceProvider {
     }
 
     /**
-     * Replace all translation keys of a module with their respective translations.
-     * This method does not return a new module but modifies the attributes of the given one.
+     * Create a new module which contains the replaced translations instead of the raw keys
      * 
      * @param {Module} module
      */
-    static insertTranslations(module) {
+    static translate(module) {
         const moduleLocale = new LocaleServiceProvider().scope(module.name)
 
-        console.log(module)
+        const newModule = new Module({
+            ...module,
+            name: module.name,
+            desc: moduleLocale.translate(module.desc),
+            features: moduleLocale.translate(module.features),
+            args: module.args.map(arg => ({
+                ...arg,
+                name: moduleLocale.translate(arg.name),
+                displayName: moduleLocale.translate(arg.displayName),
+                desc: moduleLocale.translate(arg.desc)
+            }))
+        })
 
-        module.desc = moduleLocale.translate(module.desc)
-        module.features = moduleLocale.translate(module.features)
-        module.args = module.args.map(arg => ({
-            ...arg,
-            name: moduleLocale.translate(arg.name),
-            displayName: moduleLocale.translate(arg.displayName),
-            desc: moduleLocale.translate(arg.desc)
-        }))
+        return newModule
     }
 
     /**
