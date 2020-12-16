@@ -32,6 +32,17 @@ class Module {
         })
     }
 
+    /**
+     * @param {Object} data 
+     * @param {String} data.name
+     * @param {String} data.desc A translation key
+     * @param {String} data.features A translation key
+     * @param {Boolean} [data.isGlobal=false]
+     * @param {Boolean} [data.isPrivate=false]
+     * @param {Array<Argument>} [data.args=[]]
+     * @param {Array<String>} [data.guildIds=null]
+     * @param {Module} [data.mainClass=null]
+     */
     constructor({
         name,
         desc,

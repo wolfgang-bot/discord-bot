@@ -1,9 +1,12 @@
 const glob = require("glob-promise")
 const path = require("path")
+
+const Module = require("../lib/Module.js")
+const Context = require("../lib/Context.js")
 const ModuleDAO = require("../models/Module.js")
 const ModuleInstanceDAO = require("../models/ModuleInstance.js")
-const Module = require("../lib/Module.js")
 const LocaleServiceProvider = require("./LocaleServiceProvider.js")
+const ArgumentServiceProvider = require("./ArgumentServiceProvider.js")
 
 const MODULES_DIR = path.join(__dirname, "..", "modules")
 
@@ -174,7 +177,11 @@ class ModuleServiceProvider {
      * @return {Object} Runtime module instance
      */
     async startModule(client, model, args) {
+        /**
+         * Validate invocation
+         */
         const locale = await LocaleServiceProvider.guild(this.guild)
+        const moduleLocale = locale.scope(model.name)
 
         if (await this.isLoaded(model)) {
             throw locale.translate("error_module_running")
@@ -186,7 +193,24 @@ class ModuleServiceProvider {
             throw locale.translate("error_illegal_invocation")
         }
 
-        const instance = await module.mainClass.fromArguments(client, module, this.guild, args)
+        /**
+         * Convert arguments to objects (e.g. text channel id -> text channel)
+         */
+        args = await Promise.all(module.args.map((argument, i) => {
+            if (!args[i]) {
+                throw locale.translate("error_missing_argument", moduleLocale.translate(argument.name))
+            }
+
+            return ArgumentServiceProvider.guild(this.guild).convertArgument(argument, args[i])
+        }))
+
+
+        /**
+         * Create the instance
+         */
+        const context = new Context({ client, guild: this.guild, module })
+        const config = module.mainClass.makeConfigFromArgs(args)
+        const instance = new module.mainClass(context, config)
 
         if (!instance) {
             throw locale.translate("error_illegal_invocation")
@@ -194,6 +218,9 @@ class ModuleServiceProvider {
 
         await instance.start()
 
+        /**
+         * Store the instance
+         */
         const moduleInstance = new ModuleInstanceDAO({
             module_id: model.id,
             guild_id: this.guild.id,
@@ -214,14 +241,19 @@ class ModuleServiceProvider {
      * @param {ModuleInstanceDAO} model
      */
     async startModuleFromModel(client, model) {
+        // Get module
         await model.fetchModule()
-
         const module = ModuleServiceProvider.getModule(model.module)
 
-        const instance = await module.mainClass.fromConfig(client, module, this.guild, model.config)
+        // Create instance
+        const context = new Context({ client, guild: this.guild, module })
+        const config = await module.mainClass.makeConfigFromJSON(context, model.config)
+        const instance = new module.mainClass(context, config)
 
+        // Start instance
         await instance.start()
 
+        // Store instance
         this.instances[model.id] = instance
         
         return instance

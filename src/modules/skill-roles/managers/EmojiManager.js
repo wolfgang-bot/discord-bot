@@ -6,8 +6,8 @@ const SRC_DIR = path.join(__dirname, "..", "..", "..")
 const ICONS_DIR = path.join(SRC_DIR, "assets", "icons")
 
 class EmojiManager {
-    constructor(guild) {
-        this.guild = guild
+    constructor(context) {
+        this.guild = context.guild
         this.config = null
 
         this.emojis = {}

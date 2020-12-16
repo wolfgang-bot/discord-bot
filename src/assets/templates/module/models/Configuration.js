@@ -1,5 +1,16 @@
 class Configuration {
-    constructor({  }) {
+    static fromArgs(args) {
+        return new Configuration({ })
+    }
+
+    static async fromJSON(context, object) {
+        return new Configuration({ })
+    }
+
+    /**
+     * @param {Object} data
+     */
+    constructor({ }) {
     }
 
     toJSON() {

@@ -1,25 +1,14 @@
+const Configuration = require("./models/Configuration.js")
+
 class Module {
-    /**
-     * Creates a new instance of the class from a configuration object.
-     * 
-     * @param {Discord.Client} client
-     * @param {Discord.Guid} guild
-     * @param {Object} config
-     * 
-     * @returns {Module}
-     */
-    static async fromConfig(client, guild, config) { }
+    static makeConfigFromArgs = Configuration.fromArgs
+    static makeConfigFromJSON = Configuration.fromJSON
 
     /**
-     * Creates a new instance of the class from an arguments array.
-     *
-     * @param {Discord.Client} client
-     * @param {Discord.Guild} guild
-     * @param {Array<String>} args
-     *
-     * @returns {Module}
+     * @param {Context} context 
+     * @param {Configuration} config 
      */
-    static async fromArguments(client, guild, args) { }
+    constructor(context, config) { }
 
     /**
      * Starts the module.
@@ -34,10 +23,9 @@ class Module {
     async stop() { }
 
     /**
-     * Get the configuration object of the module from which the module can be
-     * restored via the Module.fromConfig method.
+     * Get the configuration object of the module from which the module can be restored.
      * 
-     * @returns {Object} 
+     * @returns {Configuration} 
      */
     getConfig() { }
 }

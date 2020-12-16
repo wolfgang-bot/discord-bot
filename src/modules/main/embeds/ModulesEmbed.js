@@ -12,7 +12,7 @@ class ModulesEmbed extends BaseEmbed {
         this.setTitle(locale.translate("embed_modules_list_title"))
             .setDescription(`[${locale.translate("embed_modules_list_webinterface")}](${makeURL("/config/" + guild.id)})`)
             .addField(locale.translate("embed_modules_list_available"), makeCodeblock(modules.map(module => module.name).join("\n")), true)
-            .addField(locale.translate("embed_modules_list_active"), makeCodeblock(moduleInstances.map(({ module }) => module.name).join("\n")), true)
+            .addField(locale.translate("embed_modules_list_active"), makeCodeblock(moduleInstances.map(instance => instance.context.module.name).join("\n")), true)
     }
 }
 

@@ -1,4 +1,3 @@
-const LocaleServiceProvider = require("../../services/LocaleServiceProvider.js")
 const CommandRegistry = require("../../services/CommandRegistry.js")
 const Configuration = require("./models/Configuration.js")
 const ReputationManager = require("./managers/ReputationManager.js")
@@ -11,37 +10,14 @@ const commands = [
 commands.forEach(command => command.setModule("reputation-system"))
 
 class ReputationSystemModule {
-    static async fromConfig(client, module, guild, config) {
-        const channel = await guild.channels.cache.get(config.channelId)
+    static makeConfigFromArgs = Configuration.fromArgs
+    static makeConfigFromJSON = Configuration.fromJSON
 
-        return new ReputationSystemModule(client, module, guild, new Configuration({ channel }))
-    }
-
-    static async fromArguments(client, module, guild, args) {
-        const locale = await LocaleServiceProvider.guild(guild)
-        const moduleLocale = locale.scope("reputation-system")
-
-        if (!args[0]) {
-            throw locale.translate("error_missing_argument", moduleLocale.translate("arg_notifications_channel_name"))
-        }
-
-        const channel = guild.channels.cache.get(args[0])
-
-        if (!channel) {
-            throw moduleLocale.translate("error_textchannel_does_not_exist")
-        }
-
-        const config = new Configuration({ channel })
-        return new ReputationSystemModule(client, module, guild, config)
-    }
-
-    constructor(client, module, guild, config) {
-        this.client = client
-        this.module = module
-        this.guild = guild
+    constructor(context, config) {
+        this.context = context
         this.config = config
 
-        this.reputationManager = new ReputationManager(this.client, this.guild, this.config.channel)
+        this.reputationManager = new ReputationManager(this.context, this.config.channel)
     }
 
     async start() {

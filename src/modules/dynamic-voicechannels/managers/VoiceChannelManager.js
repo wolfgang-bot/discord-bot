@@ -1,9 +1,8 @@
 const Guild = require("../../../models/Guild.js")
 
 class VoiceChannelManager {
-    constructor(client, guild, parentChannel) {
-        this.client = client
-        this.guild = guild
+    constructor(context, parentChannel) {
+        this.context = context
         this.parentChannel = parentChannel
         this.config = null
 
@@ -13,12 +12,18 @@ class VoiceChannelManager {
     }
 
     getVoiceChannels() {
-        return this.guild.channels.cache.array().filter(channel => channel.type === "voice" && channel.parent.id === this.parentChannel.id)
+        return this.context.guild.channels.cache
+            .array()
+            .filter(channel => (
+                channel.type === "voice" &&
+                channel.parent &&
+                channel.parent.id === this.parentChannel.id
+            ))
     }
 
     async createVoiceChannel(index) {
         const name = this.config.channelName.replace(/{}/g, index + 1)
-        const channel = await this.guild.channels.create(name, {
+        const channel = await this.context.guild.channels.create(name, {
             type: "voice",
             parent: this.parentChannel,
             position: index
@@ -50,7 +55,7 @@ class VoiceChannelManager {
     }
 
     async init() {
-        this.config = (await Guild.config(this.guild))["dynamic-voicechannels"]
+        this.config = (await Guild.config(this.context.guild))["dynamic-voicechannels"]
 
         this.channels = this.getVoiceChannels()
         
@@ -59,13 +64,13 @@ class VoiceChannelManager {
             await this.createVoiceChannel(i)
         }
 
-        this.client.on("voiceStateUpdate", this.updateVoiceChannels)
+        this.context.client.on("voiceStateUpdate", this.updateVoiceChannels)
     }
     
     async delete() {
         await Promise.all(this.channels.map(channel => channel.delete()))
         
-        this.client.removeListener("voiceStateUpdate", this.updateVoiceChannels)
+        this.context.client.removeListener("voiceStateUpdate", this.updateVoiceChannels)
     }
 }
 

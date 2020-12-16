@@ -5,44 +5,20 @@ const HelpEmbed = require("./embeds/HelpEmbed.js")
 const Guild = require("../../models/Guild.js")
 
 class QuestionChannelsModule {
-    static async fromConfig(client, module, guild, config) {
-        const channel = await guild.channels.cache.get(config.channelId)
-        const helpMessage = await channel.messages.fetch(config.helpMessageId)
-        return new QuestionChannelsModule(client, module, guild, new Configuration({ channel, helpMessage }))
-    }
+    static makeConfigFromArgs = Configuration.fromArgs
+    static makeConfigFromJSON = Configuration.fromJSON
 
-    static async fromArguments(client, module, guild, args) {
-        const locale = await LocaleServiceProvider.guild(guild)
-        const moduleLocale = locale.scope("question-channels")
-
-        if (!args[0]) {
-            throw locale.translate("error_missing_argument", moduleLocale.translate("arg_question_channel_name"))
-        }
-
-        const channel = await guild.channels.cache.get(args[0])
-
-        if (!channel) {
-            throw moduleLocale.translate("error_textchannel_does_not_exist")
-        }
-
-        const config = new Configuration({ channel })
-
-        return new QuestionChannelsModule(client, module, guild, config)
-    }
-
-    constructor(client, module, guild, config) {
-        this.client = client
-        this.module = module
-        this.guild = guild
+    constructor(context, config) {
+        this.context = context
         this.config = config
 
-        this.channelManager = new ChannelManager(this.client, this.guild, this.config.channel)
+        this.channelManager = new ChannelManager(this.context, this.config.channel)
     }
 
     async start() {
-        const guildConfig = await Guild.config(this.guild)
+        const guildConfig = await Guild.config(this.context.guild)
         const moduleConfig = guildConfig["question-channels"]
-        const locale = (await LocaleServiceProvider.guild(this.guild)).scope("question-channels")
+        const locale = (await LocaleServiceProvider.guild(this.context.guild)).scope("question-channels")
 
         // Send help embed into channel if hasn't already
         if (!this.config.helpMessage) {

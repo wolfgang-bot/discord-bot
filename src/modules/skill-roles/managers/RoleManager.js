@@ -1,8 +1,8 @@
 const Guild = require("../../../models/Guild.js")
 
 class RoleManagaer {
-    constructor(guild) {
-        this.guild = guild
+    constructor(context) {
+        this.guild = context.guild
         this.config = null
 
         this.roles = {}

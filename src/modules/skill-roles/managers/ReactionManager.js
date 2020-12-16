@@ -1,10 +1,9 @@
 class ReactionManager {
-    constructor(client, guild, emojiManager, roleManager, message) {
-        this.client = client
-        this.guild = guild
+    constructor(context, message, emojiManager, roleManager) {
+        this.context = context
+        this.message = message
         this.emojiManager = emojiManager
         this.roleManager = roleManager
-        this.message = message
 
         this.reactions = {}
 
@@ -40,12 +39,12 @@ class ReactionManager {
     }
 
     async handleReactionAdd(reaction, user) {
-        if (user.bot || reaction.message.guild.id !== this.guild.id) {
+        if (user.bot || reaction.message.guild.id !== this.context.guild.id) {
             return
         }
 
         if (reaction.message.id === this.message.id) {
-            const member = await this.guild.members.fetch(user)
+            const member = await this.context.guild.members.fetch(user)
             
             const roleName = this.emojiManager.getRoleFromEmoji(reaction.emoji)
             const role = this.roleManager.getRoles()[roleName]
@@ -55,12 +54,12 @@ class ReactionManager {
     }
 
     async handleReactionRemove(reaction, user) {
-        if (user.bot || reaction.message.guild.id !== this.guild.id) {
+        if (user.bot || reaction.message.guild.id !== this.context.guild.id) {
             return
         }
 
         if (reaction.message.id === this.message.id) {
-            const member = await this.guild.members.fetch(user)
+            const member = await this.context.guild.members.fetch(user)
 
             const roleName = this.emojiManager.getRoleFromEmoji(reaction.emoji)
             const role = this.roleManager.getRoles()[roleName]
@@ -72,13 +71,13 @@ class ReactionManager {
     async init() {
         await this.createReactions()
 
-        this.client.on("messageReactionAdd", this.handleReactionAdd)
-        this.client.on("messageReactionRemove", this.handleReactionRemove)
+        this.context.client.on("messageReactionAdd", this.handleReactionAdd)
+        this.context.client.on("messageReactionRemove", this.handleReactionRemove)
     }
 
     async delete() {
-        this.client.removeListener("messageReactionAdd", this.handleReactionAdd)
-        this.client.removeListener("messageReactionRemove", this.handleReactionRemove)
+        this.context.client.removeListener("messageReactionAdd", this.handleReactionAdd)
+        this.context.client.removeListener("messageReactionRemove", this.handleReactionRemove)
     }
 }
 

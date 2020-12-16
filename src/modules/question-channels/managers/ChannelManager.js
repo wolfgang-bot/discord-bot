@@ -1,4 +1,5 @@
 const LocaleServiceProvider = require("../../../services/LocaleServiceProvider.js")
+const ModuleServiceProvider = require("../../../services/ModuleServiceProvider.js")
 const ActiveChannel = require("../models/ActiveChannel.js")
 const QuestionEmbed = require("../embeds/QuestionEmbed.js")
 const NotificationEmbed = require("../embeds/NotificationEmbed.js")
@@ -7,9 +8,8 @@ const Module = require("../../../models/Module.js")
 const ModuleInstance = require("../../../models/ModuleInstance.js")
 
 class ChannelManager {
-    constructor(client, guild, channel) {
-        this.client = client
-        this.guild = guild
+    constructor(context, channel) {
+        this.context = context
         this.channel = channel
         this.guildConfig = null
         this.config = null
@@ -22,7 +22,7 @@ class ChannelManager {
     }
 
     async handleMessage(message) {
-        if (message.author.bot || !message.guild || message.guild.id !== this.guild.id) {
+        if (message.author.bot || !message.guild || message.guild.id !== this.context.guild.id) {
             return
         }
 
@@ -40,7 +40,7 @@ class ChannelManager {
                 message.author.id !== activeChannel.user.id && // User is not the question channel's creator 
                 !this.timeoutUsers.has(message.author.id) // User is not throttled
             ) {
-                this.client.emit("reputationAdd", message.member, this.config.messageReputation)
+                this.context.client.emit("reputationAdd", message.member, this.config.messageReputation)
     
                 this.timeoutUsers.add(message.author.id)
     
@@ -63,7 +63,7 @@ class ChannelManager {
     async handleReaction(reaction, user) {
         if (
             user.bot ||
-            reaction.message.guild.id !== this.guild.id ||
+            reaction.message.guild.id !== this.context.guild.id ||
             !(reaction.message.channel.id in this.activeChannels)
         ) {
             return
@@ -81,7 +81,7 @@ class ChannelManager {
     }
 
     async resolveChannel(channel, reaction, user) {
-        const locale = (await LocaleServiceProvider.guild(this.guild)).scope("question-channels")
+        const locale = (await LocaleServiceProvider.guild(this.context.guild)).scope("question-channels")
 
         if (reaction.message.author.bot) {
             await reaction.remove()
@@ -95,7 +95,7 @@ class ChannelManager {
             return
         }
 
-        this.client.emit("reputationAdd", reaction.message.member, this.config.acceptReputation)
+        this.context.client.emit("reputationAdd", reaction.message.member, this.config.acceptReputation)
 
         await this.deleteChannel(channel)
     }
@@ -107,7 +107,7 @@ class ChannelManager {
     }
 
     async createChannel(message) {
-        const locale = (await LocaleServiceProvider.guild(this.guild)).scope("question-channels")
+        const locale = (await LocaleServiceProvider.guild(this.context.guild)).scope("question-channels")
 
         // Delete original message of user
         await message.delete()
@@ -134,7 +134,7 @@ class ChannelManager {
         await question.pin()
 
         // Send user a notification
-        await dm.send(new NotificationEmbed(this.guildConfig, locale, this.guild))
+        await dm.send(new NotificationEmbed(this.guildConfig, locale, this.context.guild))
 
         this.activeChannels[newChannel.id] = new ActiveChannel({
             channel: newChannel,
@@ -160,9 +160,9 @@ class ChannelManager {
 
         if (activeChannels) {
             await Promise.all(Object.entries(activeChannels).map(async ([id, { channelId, messageId, userId }]) => {
-                const channel = await this.guild.channels.cache.get(channelId)
+                const channel = await this.context.guild.channels.cache.get(channelId)
                 const message = await channel.messages.fetch(messageId)
-                const user = await this.client.users.fetch(userId)
+                const user = await this.context.client.users.fetch(userId)
 
                 this.activeChannels[id] = new ActiveChannel({ channel, message, user })
             }))
@@ -170,26 +170,26 @@ class ChannelManager {
     }
 
     async fetchInstance() {
-        return await ModuleInstance.where(`module_id = '${this.module.id}' AND guild_id = '${this.guild.id}'`)
+        const module = await Module.findBy("name", this.context.module.name)
+        return await ModuleInstance.where(`module_id = '${module.id}' AND guild_id = '${this.context.guild.id}'`)
     }
     
     async init() {
-        this.module = await Module.findBy("name", "question-channels")
-        this.guildConfig = await Guild.config(this.guild)
+        this.guildConfig = await Guild.config(this.context.guild)
         this.config = this.guildConfig["question-channels"]
 
         await this.loadActiveChannels()
 
-        this.client.on("message", this.handleMessage)
-        this.client.on("messageReactionAdd", this.handleReaction)
+        this.context.client.on("message", this.handleMessage)
+        this.context.client.on("messageReactionAdd", this.handleReaction)
     }
     
     async delete() {
         // Delete all active channels
         await Promise.all(Object.values(this.activeChannels).map(({ channel }) => channel.delete()))
 
-        this.client.removeListener("message", this.handleMessage)
-        this.client.removeListener("messageReactionAdd", this.handleReaction)
+        this.context.client.removeListener("message", this.handleMessage)
+        this.context.client.removeListener("messageReactionAdd", this.handleReaction)
     }
 }
 

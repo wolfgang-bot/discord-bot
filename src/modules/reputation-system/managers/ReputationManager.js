@@ -5,9 +5,8 @@ const Guild = require("../../../models/Guild.js")
 const { getLevel } = require("../../../utils")
 
 class ReputationManager {
-    constructor(client, guild, channel) {
-        this.client = client
-        this.guild = guild
+    constructor(context, channel) {
+        this.context = context
         this.channel = channel
         this.guildConfig = null
         this.config = null
@@ -18,7 +17,7 @@ class ReputationManager {
     }
 
     async handleReputationAdd(member, amount) {
-        if (member.user.bot || member.guild.id !== this.guild.id) {
+        if (member.user.bot || member.guild.id !== this.context.guild.id) {
             return
         }
         
@@ -49,20 +48,20 @@ class ReputationManager {
     }
 
     async createRoles() {
-        await this.guild.roles.fetch()
+        await this.context.guild.roles.fetch()
 
         // Loop backwards -> Highest role has the lowest position
         for (let i = this.config.roles.length - 1; i >= 0; i--) {
             const name = this.config.roles[i]
 
             // Skip the role, if there already is a role with the same name
-            let role = this.guild.roles.cache.find(role => role.name === name)
+            let role = this.context.guild.roles.cache.find(role => role.name === name)
             if (role) {
                 this.roles[i] = role
                 continue
             }
 
-            role = await this.guild.roles.create({
+            role = await this.context.guild.roles.create({
                 data: {
                     name,
                     color: this.config.roleColors[i],
@@ -86,7 +85,7 @@ class ReputationManager {
     }
 
     async announceLevelUp(user, newLevel) {
-        const locale = (await LocaleServiceProvider.guild(this.guild)).scope("reputation-system")
+        const locale = (await LocaleServiceProvider.guild(this.context.guild)).scope("reputation-system")
 
         const message = await this.channel.send(new LevelUpEmbed(this.guildConfig, locale, user, newLevel))
         
@@ -94,18 +93,18 @@ class ReputationManager {
     }
 
     async init() {
-        this.guildConfig = await Guild.config(this.guild)
+        this.guildConfig = await Guild.config(this.context.guild)
         this.config = this.guildConfig["reputation-system"]
 
         await this.createRoles()
         
-        this.client.on("reputationAdd", this.handleReputationAdd)
+        this.context.client.on("reputationAdd", this.handleReputationAdd)
     }
 
     async delete() {
         await this.deleteRoles()
         
-        this.client.removeListener("reputationAdd", this.handleReputationAdd)
+        this.context.client.removeListener("reputationAdd", this.handleReputationAdd)
     }
 }
 
