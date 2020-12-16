@@ -1,10 +1,11 @@
 import React from "react"
 import { Link } from "react-router-dom"
+import { useSelector } from "react-redux"
 import { CircularProgress, Drawer, Divider, Typography, List } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 
 import useAPIData from "../../utils/useAPIData.js"
-import Guild from "./Guild.js"
+import Guilds from "./Guilds.js"
 
 const useStyles = makeStyles(theme => {
     const width = 250
@@ -35,7 +36,7 @@ const useStyles = makeStyles(theme => {
 function Sidebar() {
     const classes = useStyles()
 
-    const { isLoading, data } = useAPIData("getGuilds")
+    const isLoggedIn = useSelector(store => store.auth.isLoggedIn)
 
     return (
         <Drawer
@@ -54,9 +55,7 @@ function Sidebar() {
             <Divider/>
 
             <List className={classes.nav}>
-                { isLoading ? <CircularProgress/> : data.map(guild => (
-                    <Guild guild={guild} key={guild.id}/>
-                )) }
+                { isLoggedIn && <Guilds/> }
             </List>
         </Drawer>
     )

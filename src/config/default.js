@@ -7,8 +7,7 @@ const HEX_COLOR_REGEX = /^#([0-9a-fA-F]{3}){1,2}$/
 // Match hex colors and discord color names
 const COLOR_REGEX = /^((#([0-9a-fA-F]{3}){1,2})|(DEFAULT|WHITE|AQUA|GREEN|BLUE|YELLOW|PURPLE|LUMINOUS_VIVID_PINK|GOLD|ORANGE|RED|GREY|DARKER_GREY|NAVY|DARK_AQUA|DARK_GREEN|DARK_BLUE|DARK_PURPLE|DARK_VIVID_PINK|DARK_GOLD|DARK_ORANGE|DARK_RED|DARK_GREY|LIGHT_GREY|DARK_NAVY|BLURPLE|GREYPLE|DARK_BUT_NOT_BLACK|NOT_QUITE_BLACK|RANDOM))$/
 
-const SRC_DIR = path.join(__dirname, "..")
-const ICONS_DIR = path.join(SRC_DIR, "assets", "icons")
+const ICONS_DIR = path.join(__dirname, "..", "modules", "skill-roles", "assets", "icons")
 
 // Get available icons from icons directory
 const icons = glob.sync("*.png", { cwd: ICONS_DIR }).map(filename => filename.replace(".png", ""))

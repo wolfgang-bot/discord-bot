@@ -1,17 +1,17 @@
 import React from "react"
-import { BrowserRouter, Switch, Route } from "react-router-dom"
+import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom"
 
 import ProtectedRoute from "./ProtectedRoute.js"
-import Layout from "../components/Layout/Layout.js"
 import IndexPage from "../pages/IndexPage.js"
 import LoginPage from "../pages/LoginPage.js"
 import GuildPage from "../pages/GuildPage.js"
+import NotFoundPage from "../pages/NotFoundPage.js"
 
 function Router() {
     return (
         <BrowserRouter>
             <Switch>
-                <ProtectedRoute path="/guild/:id?">
+                <ProtectedRoute path="/guild/:id">
                     <GuildPage/>
                 </ProtectedRoute>
 
@@ -23,8 +23,12 @@ function Router() {
                     <IndexPage/>
                 </Route>
 
+                <Route path="/not-found">
+                    <NotFoundPage/>
+                </Route>
+
                 <Route>
-                    <Layout>404</Layout>
+                    <Redirect to="/not-found"/>
                 </Route>
             </Switch>
         </BrowserRouter>

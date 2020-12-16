@@ -42,7 +42,7 @@ function App() {
 
 
     return (
-        <div>
+        <>
             <CssBaseline/>
 
             { isLoading ? (
@@ -53,7 +53,7 @@ function App() {
             ) : (
                 <Router />
             )}
-        </div>
+        </>
     )
 }
 

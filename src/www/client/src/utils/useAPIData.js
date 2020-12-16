@@ -11,7 +11,7 @@ function createKey(props) {
 /**
  * Fetch data from given endpoint
  * 
- * @param {String | Object} props - Name of the API function to use of configuration object
+ * @param {String|Object} props - Name of the API function to use of configuration object
  * @param {String} props.method - Name of the API function to use
  * @param {Any} props.data - Arguments to be passed to the API function
  * @param {Boolean} props.useCache - Whether or not to cache requests and use a cached response as the initial data
@@ -79,6 +79,11 @@ function useAPIData(props) {
             })
         // eslint-disable-next-line
     }, [version])
+
+    // useEffect(() => {
+    //     console.log("Reload", key)
+    //     reload()
+    // }, [key])
 
     return {
         isLoading,

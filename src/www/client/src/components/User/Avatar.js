@@ -20,7 +20,7 @@ function Avatar({ size }) {
     const user = useSelector(store => store.auth.user)
 
     const handleClick = () => {
-        history.push("/guild")
+        history.push("/")
     }
 
     return (

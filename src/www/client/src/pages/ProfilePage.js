@@ -5,7 +5,7 @@ import { Redirect } from "react-router-dom"
 import Layout from "../components/Layout/Layout.js"
 import Guilds from "../components/User/Guilds.js"
 
-function LoginPage() {
+function ProfilePage() {
     const isLoggedIn = useSelector(store => store.auth.isLoggedIn)
 
     if (!isLoggedIn) {
@@ -19,4 +19,4 @@ function LoginPage() {
     )
 }
 
-export default LoginPage
+export default ProfilePage

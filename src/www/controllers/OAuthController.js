@@ -77,17 +77,25 @@ class OAuthController {
      * Get guild by id
      */
     static async getGuild(req, res) {
-        const guild = await OAuthController.client.guilds.fetch(req.params.id)
+        try {
+            const guild = await OAuthController.client.guilds.fetch(req.params.id)
+    
+            if (!guild) {
+                return res.status(404).end()
+            }
+    
+            res.send({
+                id: guild.id,
+                name: guild.name,
+                icon: guild.icon
+            })
+        } catch(error) {
+            if (process.env.NODE_ENV === "development") {
+                console.error(error)
+            }
 
-        if (!guild) {
             return res.status(404).end()
         }
-
-        res.send({
-            id: guild.id,
-            name: guild.name,
-            icon: guild.icon
-        })
     }
 }
 

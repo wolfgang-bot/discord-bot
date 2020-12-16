@@ -4,6 +4,7 @@ import { ListItem, ListItemText, ListItemIcon } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 
 import GuildIcon from "./GuildIcon.js"
+import { DISCORD_BOT_INVITE_URL } from "../../config/constants.js"
 
 const useStyles = makeStyles(theme => ({
     guild: {
@@ -21,7 +22,11 @@ function Guild({ guild }) {
     const [isMouseOver, setIsMouseOver] = useState(false)
 
     const handleClick = () => {
-        history.push("/guild/" + guild.id)
+        if (!guild.active) {
+            window.open(DISCORD_BOT_INVITE_URL + "&guild_id=" + guild.id, "_blank", "noopener,noreferrer")
+        } else {
+            history.push("/guild/" + guild.id)
+        }
     }
 
     return (
