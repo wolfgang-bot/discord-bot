@@ -6,7 +6,7 @@ const { makeRunnable, run } = require("@m.moelter/task-runner")
 
 const FORMAT_SIZE = 128
 
-const ASSETS_DIR = path.join(__dirname, "..", "src", "assets")
+const ASSETS_DIR = path.join(__dirname, "..", "src", "modules", "skill-roles", "assets")
 const ICONS_RAW_DIR = path.join(ASSETS_DIR, "icons-raw")
 const ICONS_DIR = path.join(ASSETS_DIR, "icons")
 

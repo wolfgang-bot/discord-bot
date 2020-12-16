@@ -2,8 +2,7 @@ const glob = require("glob-promise")
 const path = require("path")
 const Guild = require("../../../models/Guild.js")
 
-const SRC_DIR = path.join(__dirname, "..", "..", "..")
-const ICONS_DIR = path.join(SRC_DIR, "assets", "icons")
+const ICONS_DIR = path.join(__dirname, "..", "assets", "icons")
 
 class EmojiManager {
     constructor(context) {
