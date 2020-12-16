@@ -16,20 +16,20 @@ class ReputationSystemModule {
     constructor(context, config) {
         this.context = context
         this.config = config
-
-        this.reputationManager = new ReputationManager(this.context, this.config.channel)
     }
-
+    
     async start() {
+        this.reputationManager = new ReputationManager(this.context, this.config.channel)
+
         commands.forEach(command => CommandRegistry.root.register(command))
         
-        this.reputationManager.init()
+        await this.reputationManager.init()
     }
     
     async stop() {
         commands.forEach(command => CommandRegistry.root.unregister(command))
 
-        this.reputationManager.delete()
+        await this.reputationManager.delete()
     }
 
     getConfig() {

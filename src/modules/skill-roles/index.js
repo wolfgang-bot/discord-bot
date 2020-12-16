@@ -13,13 +13,13 @@ class RoleManagerModule {
     constructor(context, config) {
         this.context = context
         this.config = config
-        
+    }
+    
+    async start() {
         this.emojiManager = new EmojiManager(this.context)
         this.roleManager = new RoleManager(this.context)
         this.reactionManager = new ReactionManager(this.context, this.config.roleMessage, this.emojiManager, this.roleManager)
-    }
 
-    async start() {
         if (!this.config.roleMessage) {
             const guildConfig = await Guild.config(this.context.guild)
             const locale = (await LocaleServiceProvider.guild(this.context.guild)).scope("skill-roles")
@@ -28,17 +28,23 @@ class RoleManagerModule {
             this.reactionManager.setMessage(this.config.roleMessage)
         }
 
-        await this.emojiManager.init()
-        await this.roleManager.init()
+        await Promise.all([
+            this.emojiManager.init(),
+            this.roleManager.init()
+        ])
+
         await this.reactionManager.init()
     }
 
     async stop() {
-        await this.config.roleMessage.delete()
+        await Promise.all([
+            this.config.roleMessage.delete(),
+            this.emojiManager.delete(),
+            this.roleManager.delete(),
+            this.reactionManager.delete()
+        ])
         
-        await this.emojiManager.delete()
-        await this.roleManager.delete()
-        await this.reactionManager.delete()
+        delete this.config.roleMessage
     }
 
     getConfig() {

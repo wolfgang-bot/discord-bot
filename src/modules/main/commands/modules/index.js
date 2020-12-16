@@ -6,6 +6,7 @@ const commands = [
     require("./list.js"),
     require("./start.js"),
     require("./stop.js"),
+    require("./restart.js")
 ]
 
 module.exports = new CommandRegistry(commands)

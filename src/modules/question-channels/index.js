@@ -11,11 +11,11 @@ class QuestionChannelsModule {
     constructor(context, config) {
         this.context = context
         this.config = config
-
-        this.channelManager = new ChannelManager(this.context, this.config.channel)
     }
 
     async start() {
+        this.channelManager = new ChannelManager(this.context, this.config.channel)
+
         const guildConfig = await Guild.config(this.context.guild)
         const moduleConfig = guildConfig["question-channels"]
         const locale = (await LocaleServiceProvider.guild(this.context.guild)).scope("question-channels")
@@ -33,9 +33,11 @@ class QuestionChannelsModule {
     async stop() {
         await Promise.all([
             this.config.helpMessage.delete(),
-            this.config.channel.setRateLimitPerUser(0)
+            this.config.channel.setRateLimitPerUser(0),
+            this.channelManager.delete()
         ])
-        this.channelManager.delete()
+
+        delete this.config.helpMessage
     }
 
     getConfig() {

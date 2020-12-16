@@ -235,6 +235,26 @@ class ModuleServiceProvider {
     }
 
     /**
+     * Restart a module's instance
+     * 
+     * @param {ModuleDAO} module
+     */
+    async restartModule(module) {
+        const model = await ModuleInstanceDAO.where(`module_id = '${module.id}' AND guild_id = '${this.guild.id}'`)
+        const instance = this.instances[model.id]
+
+        await instance.stop()
+
+        model.data = {}
+        await model.update()
+        
+        await instance.start()
+
+        model.config = instance.getConfig()
+        await model.update()
+    }
+
+    /**
      * Start a module from instance model
      * 
      * @param {Discord.Client} client

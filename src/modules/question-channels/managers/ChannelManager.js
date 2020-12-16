@@ -1,5 +1,4 @@
 const LocaleServiceProvider = require("../../../services/LocaleServiceProvider.js")
-const ModuleServiceProvider = require("../../../services/ModuleServiceProvider.js")
 const ActiveChannel = require("../models/ActiveChannel.js")
 const QuestionEmbed = require("../embeds/QuestionEmbed.js")
 const NotificationEmbed = require("../embeds/NotificationEmbed.js")

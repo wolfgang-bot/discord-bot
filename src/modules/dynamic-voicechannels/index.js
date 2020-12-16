@@ -8,11 +8,11 @@ class DynamicVoicechannelsModule {
     constructor(context, config) {
         this.context = context
         this.config = config
-
-        this.voiceChannelManager = new VoiceChannelManager(this.context, this.config.parentChannel)
     }
 
     async start() {
+        this.voiceChannelManager = new VoiceChannelManager(this.context, this.config.parentChannel)
+
         await this.voiceChannelManager.init()
     }
 

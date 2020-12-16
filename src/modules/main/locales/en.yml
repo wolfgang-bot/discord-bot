@@ -24,6 +24,10 @@ command_modules_start_args: "<module> [parameter, ...]"
 command_modules_stop_desc: Stops a module
 command_modules_stop_args: <module>
 
+# modules restart
+command_modules_restart_desc: Restarts a module
+command_modules_restart_args: <module>
+
 # modules config
 command_modules_config_desc: Manages the module configurations
 
