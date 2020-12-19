@@ -18,12 +18,9 @@ class ModulesController {
      */
     static getAll(req, res) {
         const modules = ModuleServiceProvider.modules.filter(module => !module.isPrivate && !module.isGlobal)
+        const translated = modules.map(module => ModuleServiceProvider.translate(module))
 
-        modules.forEach(module => {
-            ModuleServiceProvider.insertTranslations(module)
-        })
-
-        res.send(modules)
+        res.send(translated)
     }
 
     /**
