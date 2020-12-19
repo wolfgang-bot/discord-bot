@@ -1,8 +1,8 @@
 const glob = require("glob-promise")
 const path = require("path")
 
-const Module = require("../lib/Module.js")
-const Context = require("../lib/Context.js")
+const Module = require("../structures/Module.js")
+const Context = require("../structures/Context.js")
 const ModuleDAO = require("../models/Module.js")
 const ModuleInstanceDAO = require("../models/ModuleInstance.js")
 const LocaleServiceProvider = require("./LocaleServiceProvider.js")

@@ -1,4 +1,4 @@
-const Command = require("../../../lib/Command.js")
+const Command = require("../../../structures/Command.js")
 
 async function run(message, args) {
     await message.channel.send("Hello World!")

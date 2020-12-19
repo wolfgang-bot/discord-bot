@@ -1,4 +1,4 @@
-const Command = require("../../../../lib/Command.js")
+const Command = require("../../../../structures/Command.js")
 const LocaleServiceProvider = require("../../../../services/LocaleServiceProvider.js")
 const Guild = require("../../../../models/Guild.js")
 const LocaleEmbed = require("../../embeds/LocaleEmbed.js")

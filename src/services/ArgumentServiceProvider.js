@@ -1,4 +1,4 @@
-const Argument = require("../lib/Argument.js")
+const Argument = require("../structures/Argument.js")
 const LocaleServiceProvider = require("./LocaleServiceProvider.js")
 
 class ArgumentServiceProvider {

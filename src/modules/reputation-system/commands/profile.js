@@ -1,6 +1,6 @@
 const sharp = require("sharp")
 const fetch = require("node-fetch")
-const Command = require("../../../lib/Command.js")
+const Command = require("../../../structures/Command.js")
 const ProfileCard = require("../generators/ProfileCard")
 const Member = require("../../../models/Member.js")
 const Guild = require("../../../models/Guild.js")

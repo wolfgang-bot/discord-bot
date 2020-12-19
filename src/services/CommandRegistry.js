@@ -1,4 +1,4 @@
-const Command = require("../lib/Command.js")
+const Command = require("../structures/Command.js")
 const LocaleServiceProvider = require("./LocaleServiceProvider.js")
 const { parseArguments } = require("../utils")
 

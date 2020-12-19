@@ -1,6 +1,6 @@
 const ModuleServiceProvider = require("../../../../services/ModuleServiceProvider.js")
 const LocaleServiceProvider = require("../../../../services/LocaleServiceProvider.js")
-const Command = require("../../../../lib/Command.js")
+const Command = require("../../../../structures/Command.js")
 const Module = require("../../../../models/Module.js")
 
 async function run(message, args) {
