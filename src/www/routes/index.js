@@ -25,7 +25,7 @@ if (process.env.NODE_ENV === "development") {
     // Proxy react dev-server
     rootRouter.use("/", createProxyMiddleware({
         target: "http://localhost:3000/",
-        ws: true
+        // ws: true -> Crashes the dev-server when reloading via nodemon in combination with socket.io websocket
     }))
 } else {
     rootRouter.get("/*", (req, res) => res.sendFile(path.resolve(ROOT_DIR, "public", "index.html")))

@@ -2,15 +2,21 @@ const glob = require("glob-promise")
 const path = require("path")
 const express = require("express")
 const cors = require("cors")
+
 const routes = require("../routes")
+const SocketManager = require("../websocket/SocketManager.js")
 
 const ROOT_DIR = path.join(__dirname, "..")
 
-async function boot(app, client) {
+async function boot({ app, websocket, client }) {
     setupExpress(app)
+    setupWebSocket(websocket, client)
     await injectClient(client)
 }
 
+/**
+ * Setup express related components
+ */
 function setupExpress(app) {
     if (process.env.NODE_ENV === "development") {
         app.use(cors())
@@ -30,6 +36,14 @@ function setupExpress(app) {
 
     // Use Routes
     app.use("/", routes)
+}
+
+/**
+ * Setup WebSocket server
+ */
+function setupWebSocket(websocket, client) {
+    const manager = new SocketManager(websocket, client)
+    manager.init()
 }
 
 /**

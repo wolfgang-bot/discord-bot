@@ -6,6 +6,7 @@ import { makeStyles } from "@material-ui/core/styles"
 import Router from "./router/index.js"
 import { login } from "./store/actions.js"
 import { getProfile } from "./config/api.js"
+import WebSocketAPI from "./api/WebSocketAPI.js"
 
 const useStyles = makeStyles({
     "@global": {
@@ -40,6 +41,11 @@ function App() {
         // eslint-disable-next-line
     }, [])
 
+    useEffect(() => {
+        (async () => {
+            await WebSocketAPI.login(localStorage.getItem("token"))
+        })()
+    }, [])
 
     return (
         <>
