@@ -1,4 +1,5 @@
 const HttpOAuthController = require("../../controllers/OAuthController.js")
+const { success } = require("../responses.js")
 
 class GuildController {
     /**
@@ -15,7 +16,9 @@ class GuildController {
      * @param {Function} send
      */
     async getGuilds(socket, send) {
-        HttpOAuthController.getGuilds(socket, { send })
+        HttpOAuthController.getGuilds(socket, {
+            send: data => send(success(data))
+        })
     }
 }
 

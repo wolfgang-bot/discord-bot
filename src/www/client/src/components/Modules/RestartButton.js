@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import RestartIcon from "@material-ui/icons/Replay"
 
 import LoadingIconButton from "../Styled/LoadingIconButton.js"
-import { restartModuleInstance } from "../../config/api.js"
+import WebSocketAPI from "../../api/websocket/WebSocketAPI.js"
 
 function RestartButton({ module, guild, onUpdate, ...props }) {
     const [isLoading, setIsLoading] = useState(false)
@@ -10,7 +10,7 @@ function RestartButton({ module, guild, onUpdate, ...props }) {
     const handleClick = () => {
         setIsLoading(true)
 
-        restartModuleInstance(guild.id, module.name)
+        WebSocketAPI.restartModuleInstance(guild.id, module.name)
             .finally(() => {
                 setIsLoading(false)
                 onUpdate()

@@ -40,6 +40,8 @@ class ModuleServiceProvider {
         const files = await glob("?*/module.xml", { cwd: MODULES_DIR })
 
         await Promise.all(files.map(async filepath => {
+            if (filepath.indexOf("dynamic-voicechannels") === -1) return
+
             const module = await Module.fromXMLFile(path.join(MODULES_DIR, filepath))
 
             module.mainClass = require(path.join(MODULES_DIR, filepath, "..", "index.js"))
@@ -75,6 +77,8 @@ class ModuleServiceProvider {
         const models = await ModuleDAO.getAll()
 
         await Promise.all(ModuleServiceProvider.modules.map(async module => {
+            if (module.name !== "dynamic-voicechannels") return
+
             const isInDatabase = models.some(model => model.name === module.name)
 
             if (!isInDatabase) {
@@ -123,7 +127,7 @@ class ModuleServiceProvider {
         }
 
         const instance = new module.mainClass({ client, module })
-        await instance.start()
+        await instance._start()
 
         ModuleServiceProvider.globalInstances[module.name] = instance
     }
@@ -226,7 +230,7 @@ class ModuleServiceProvider {
             throw locale.translate("error_illegal_invocation")
         }
         
-        await instance.start()
+        await instance._start()
         
         /**
          * Store the instance
@@ -257,7 +261,7 @@ class ModuleServiceProvider {
             throw locale.translate("error_module_not_running")
         }
 
-        await this.instances[moduleInstance.id].stop()
+        await this.instances[moduleInstance.id]._stop()
         delete this.instances[moduleInstance.id]
 
         await moduleInstance.delete()
@@ -278,12 +282,12 @@ class ModuleServiceProvider {
 
         const instance = this.instances[model.id]
 
-        await instance.stop()
+        await instance._stop()
 
         model.data = {}
         await model.update()
         
-        await instance.start()
+        await instance._start()
 
         model.config = instance.getConfig()
         await model.update()
@@ -306,7 +310,7 @@ class ModuleServiceProvider {
         const instance = new module.mainClass(context, config)
 
         // Start instance
-        await instance.start()
+        await instance._start()
 
         // Store instance
         this.instances[model.id] = instance

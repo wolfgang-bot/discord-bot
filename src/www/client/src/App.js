@@ -6,7 +6,7 @@ import { makeStyles } from "@material-ui/core/styles"
 import Router from "./router/index.js"
 import { login } from "./store/actions.js"
 import { getProfile } from "./config/api.js"
-import WebSocketAPI from "./api/WebSocketAPI.js"
+import WebSocketAPI from "./api/websocket/WebSocketAPI.js"
 
 const useStyles = makeStyles({
     "@global": {
@@ -26,25 +26,28 @@ function App() {
     const [isLoading, setIsLoading] = useState(shouldLogin)
 
     useEffect(() => {
-        if (shouldLogin) {
-            getProfile()
-                .then(res => dispatch(login({
-                    token: localStorage.getItem("token"),
-                    user: res.data
-                })))
-                .catch(() => {
+        (async () => {
+            if (shouldLogin) {
+                try {
+                    await WebSocketAPI.init(localStorage.getItem("token"))
+                } catch {
                     localStorage.removeItem("token")
-                })
-                .finally(() => setIsLoading(false))
-        }
+                    setIsLoading(false)
+                    return
+                }
+                
+                const { data: user } = await getProfile()
+
+                dispatch(login({
+                    token: localStorage.getItem("token"),
+                    user
+                }))
+
+                setIsLoading(false)
+            }
+        })()
 
         // eslint-disable-next-line
-    }, [])
-
-    useEffect(() => {
-        (async () => {
-            await WebSocketAPI.login(localStorage.getItem("token"))
-        })()
     }, [])
 
     return (

@@ -1,11 +1,11 @@
 import React from "react"
 import { CircularProgress } from "@material-ui/core"
 
-import useAPIData from "../../utils/useAPIData.js"
 import Guild from "./Guild.js"
+import useWSAPIData from "../../utils/useWSAPIData.js"
 
 function Guilds({ activeGuild }) {
-    const { isLoading, data } = useAPIData("getGuilds")
+    const { isLoading, data } = useWSAPIData("getGuilds")
 
     if (isLoading) {
         return <CircularProgress/>

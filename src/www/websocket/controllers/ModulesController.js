@@ -1,6 +1,7 @@
 const HttpModulesController = require("../../controllers/ModulesController.js")
 const ModuleServiceProvider = require("../../../services/ModuleServiceProvider.js")
 const Guild = require("../../../models/Guild.js")
+const Module = require("../../../models/Module.js")
 const { error, success } = require("../responses.js")
 const { checkPermissions } = require("../../utils")
 
@@ -48,11 +49,10 @@ class ModulesController {
             return send(error(403))
         }
 
-        // Get active instances' module names
-        const instances = ModuleServiceProvider.guild(guild.discordGuild).instances
-        const moduleNames = Object.values(instances).map(instance => instance.context.module.name)
+        // Get active instances
+        const instances = Object.values(ModuleServiceProvider.guild(guild.discordGuild).instances)
 
-        send(success(moduleNames))
+        send(success(instances))
     }
 
     /**
@@ -97,19 +97,19 @@ class ModulesController {
          */
         try {
             await ModuleServiceProvider.guild(guild.discordGuild).startModule(this.client, module, args)
-        } catch (error) {
+        } catch (err) {
             if (process.env.NODE_ENV === "development") {
-                console.error(error)
+                console.error(err)
             }
 
-            if (typeof error !== "string") {
+            if (typeof err !== "string") {
                 return send(error(500))
             } else {
-                return send(error(400, error))
+                return send(error(400, err))
             }
         }
 
-        socket.sendModuleInstances()
+        socket.sendModuleInstances(guildId)
     }
 
     /**
@@ -149,19 +149,19 @@ class ModulesController {
          */
         try {
             await ModuleServiceProvider.guild(guild.discordGuild).stopModule(module)
-        } catch (error) {
+        } catch (err) {
             if (process.env.NODE_ENV === "development") {
-                console.error(error)
+                console.error(err)
             }
 
-            if (typeof error !== "string") {
+            if (typeof err !== "string") {
                 return send(error(500))
             } else {
-                return send(error(400, error))
+                return send(error(400, err))
             }
         }
 
-        socket.sendModuleIntsances()
+        socket.sendModuleInstances(guildId)
     }
 
     /**
@@ -203,19 +203,19 @@ class ModulesController {
          */
         try {
             await ModuleServiceProvider.guild(guild.discordGuild).restartModule(module)
-        } catch (error) {
+        } catch (err) {
             if (process.env.NODE_ENV === "development") {
-                console.error(error)
+                console.error(err)
             }
 
-            if (typeof error !== "string") {
+            if (typeof err !== "string") {
                 return send(error(500))
             } else {
-                return send(error(400, error))
+                return send(error(400, err))
             }
         }
 
-        socket.sendModuleInstances()
+        socket.sendModuleInstances(guildId)
     }
 
     /**
@@ -225,7 +225,9 @@ class ModulesController {
      * @param {String} guildId 
      */
     async sendModuleInstances(socket, guildId) {
-        this.getInstances(socket, guildId, ({ data }) => socket.emit("set:module-instances", data))
+        this.getInstances(socket, guildId, (res) => {
+            socket.emit("set:module-instances", res.data)
+        })
     }
 }
 

@@ -30,9 +30,9 @@ class SocketManager {
 
         // Define handler for new connections
         this.socket.on("connection", (socket) => {
-            console.log("Connection", socket.id)
-
-            socket.on("ping", (...args) => socket.emit("pong", ...args))
+            if (process.env.NODE_ENV === "development") {
+                console.log("Connection", socket.id)
+            }
 
             // Attach event controllers
             this.attachEvents(socket, [
@@ -48,7 +48,7 @@ class SocketManager {
 
             // Attach sender controllers
             this.attachMethods(socket, [
-                ["sendModuleInstances", this.modulesController, "getInstances"]
+                ["sendModuleInstances", this.modulesController, "sendModuleInstances"]
             ])
         })
     }
@@ -95,11 +95,7 @@ class SocketManager {
      */
     async authorize(socket, next) {
         if (!socket.handshake.auth || !socket.handshake.auth.token) {
-            socket.handshake.auth = {
-                token: "eyJhbGciOiJIUzI1NiJ9.MjI0OTA4MjEyMjEyNTk2NzM2.wcbkny9bQqeYDcRrpddV3RZNjGNhx47KH_Pbc-gG3sQ"
-            }
-
-            // return next(new Error("Unauthorized"))
+            return next(new Error("Unauthorized"))
         }
 
         const { token } = socket.handshake.auth
