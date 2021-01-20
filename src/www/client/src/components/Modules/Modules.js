@@ -2,14 +2,11 @@ import React from "react"
 import { CircularProgress, Grid } from "@material-ui/core"
 
 import ModuleCard from "./ModuleCard.js"
-import useAPIData from "../../utils/useAPIData.js"
+import useWSAPIData from "../../utils/useWSAPIData.js"
 
 function Modules({ guild }) {
-    const modules = useAPIData("getModules")
-    const instances = useAPIData({
-        method: "getModuleInstances",
-        data: guild.id
-    })
+    const modules = useWSAPIData("getModules")
+    const instances = useWSAPIData("getModuleInstances", guild.id)
 
     if (modules.isLoading || instances.isLoading) {
         return <CircularProgress/>
@@ -29,7 +26,7 @@ function Modules({ guild }) {
                         active={instances.data.includes(module.name)}
                     />
                 </Grid>
-            ))}
+            )) }
         </Grid>
     )
 }

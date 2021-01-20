@@ -226,7 +226,9 @@ class ModulesController {
      */
     async sendModuleInstances(socket, guildId) {
         this.getInstances(socket, guildId, (res) => {
-            socket.emit("set:module-instances", res.data)
+            socket.emit("set:module-instances", {
+                guildId: res.data
+            })
         })
     }
 }

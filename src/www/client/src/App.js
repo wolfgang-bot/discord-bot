@@ -30,7 +30,8 @@ function App() {
             if (shouldLogin) {
                 try {
                     await WebSocketAPI.init(localStorage.getItem("token"))
-                } catch {
+                } catch(error) {
+                    console.error(error)
                     localStorage.removeItem("token")
                     setIsLoading(false)
                     return

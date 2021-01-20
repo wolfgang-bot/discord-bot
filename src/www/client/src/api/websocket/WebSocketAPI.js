@@ -1,5 +1,6 @@
 import { io } from "socket.io-client"
 
+import EventHandlers from "./EventHandlers.js"
 import format, { GUILDS } from "../format.js"
 
 class WebSocketAPI {
@@ -7,14 +8,16 @@ class WebSocketAPI {
     static socket = null
 
     /**
-     * Initialize API handlers
+     * Initialize websocket api
      * 
      * @param {String} token 
      */
-    static async init(token) {
-        await this.login(token)
+    static init(token) {
+        // Log into API
+        this.websocket.login(token)
 
-        this.socket.on("set:module-instances", console.log)
+        // Attach event listeners
+        this.socket.on("set:module-instances", EventHandlers.setModuleInstances)
     }
 
     /**
@@ -118,7 +121,6 @@ class WebSocketAPI {
     static stopModuleInstance(guildId, moduleName) {
         return this.fetch("post:module-instances/stop", guildId, moduleName)
     }
-
     
     /**
      * @fires post.module-instances/restart
