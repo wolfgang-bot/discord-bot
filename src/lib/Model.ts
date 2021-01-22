@@ -1,8 +1,22 @@
-const Collection = require("./Collection.js")
-const database = require("../database")
+import { RowDataPacket } from "mysql2"
+import Collection from "./Collection"
+import database from "../database"
 
-const requiredProps = ["table", "columns"]
-const commonProps = ["table", "columns", "defaultValues"]
+export type ModelProps = {
+    table: string
+    columns: string[]
+    defaultValues: object
+    values: object
+}
+
+type ModelContext = {
+    model: new (values: object) => Model
+    table: string
+}
+
+type QueryOptions = {
+    initArgs?: boolean
+}
 
 /**
  * Class representing a Model. Strictly bound to the database.
@@ -10,74 +24,76 @@ const commonProps = ["table", "columns", "defaultValues"]
  * @attribute {String} table - The name of the table bound to the model
  * @attribute {String[]} columns - The column names of the table in the correct order
  */
-class Model {
+export default abstract class Model {
+    public table: string
+    public columns: string[]
+    public id: string
+
     /**
      * Select all matches for the given SQL selector and return a
      * collection containing models for all rows in the query result
      */
-    static async whereAll(selector, options = {}) {
+    static async whereAll(this: ModelContext, selector: string, options: QueryOptions = {}): Promise<Collection<Model>> {
         // Get matches from database
         const query = `SELECT * FROM ${this.table} WHERE ${selector}`
-        const results = await database.all(query)
+        const results: RowDataPacket[] = await database.all(query)
 
         // Create models from results
         const models = await Promise.all(results.map(async row => {
             const model = new this.model(row)
 
-            if(model.init) {
-                await model.init(options.initArgs)
-            }
+            await model.init(options.initArgs)
 
             return model
         }))
 
-        return new Collection(models)
+        return new Collection<Model>(...models)
     }
 
     /**
      * Executes Model.whereAll with the given arguments and returns the first result
      */
-    static async where(...args) {
+    static async where(...args: Parameters<typeof Model.whereAll>): Promise<Model> {
         return (await Model.whereAll.apply(this, args))[0]
     }
 
     /**
      * Create a model from the first match for 'column = value'
      */
-    static async findBy(column, value, options) {
+    static async findBy(column: string, value: string, options: QueryOptions): ReturnType<typeof Model.where> {
         return await Model.where.call(this, `${column} = '${value}'`, options)
     }
 
     /**
      * Create a collection from all matches for 'column = value'
      */
-    static async findAllBy(column, value, options) {
+    static async findAllBy(column: string, value: string, options: QueryOptions): ReturnType<typeof Model.whereAll> {
         return await Model.whereAll.call(this, `${column} = '${value}'`, options)
     }
 
     /**
      * Create a collection from all entries
      */
-    static async getAll(options) {
+    static async getAll(options: QueryOptions): ReturnType<typeof Model.whereAll> {
         return await Model.whereAll.call(this, "1", options)
     }
 
     /**
      * Create models from database results
      */
-    static fromRows(rows) {
-        return new Collection(rows.map(row => new this.model(row)))
+    static fromRows(this: ModelContext, rows: RowDataPacket[]) {
+        return new Collection<Model>(...rows.map(row => new this.model(row)))
     }
 
     /**
-     * Pass all static methods from Model to the given class
+     * Pass all static methods from "Model" to the given class
      */
-    static bind(cls, table) {
-        cls.table = table
+    static bind(cls: new (values: object) => Model, table: string) {
+        const context: ModelContext = { model: cls, table }
 
         Object.getOwnPropertyNames(Model)
             .filter(prop => typeof Model[prop] === "function")
-            .forEach(prop => cls[prop] = Model[prop].bind({ model: cls, table }))
+            .forEach(prop => cls[prop] = Model[prop].bind(context))
     }
 
     /**
@@ -105,14 +121,12 @@ class Model {
     }
 
     /**
-     * Create a new instance of the model and pass all attributes of this
+     * Initialize model-specific properties (e.g. relations)
      */
-    clone() {
-        return new this.constructor(this)
-    }
+    async init(...args: any) {}
 
     /**
-     * Create a column map ($column_name: value)
+     * Make an array which contains the column's values
      */
     getColumns() {
         const values = []
@@ -131,31 +145,26 @@ class Model {
     /**
      * Create a model
      */
-    constructor(props) {
-        // Check if the required attributes are defined
-        requiredProps.forEach(attribute => {
-            if (!props[attribute]) {
-                throw new Error(`The attribute '${attribute}' is missing in model "${this.constructor.name}"`)
-            }
-        })
-
-        // Assign props to this
-        for(let key in props) {
-            if (commonProps.includes(key)) {
-                this[key] = props[key]
-            } else if (props.columns.includes(key)) {
-                this[key] = props[key]
-            }
+    constructor(props: ModelProps) {
+        if (!props.columns.includes("id")) {
+            throw new Error("Every model must have a column: 'id'")
         }
 
+        this.table = props.table
+        this.columns = props.columns
+
+        Object.keys(props.columns).forEach(key => {
+            this[key] = props.values[key]
+        })
+
         // Fill empty values with default values
-        for (let key in this.defaultValues) {
+        for (let key in props.defaultValues) {
             if (!this.columns.includes(key)) {
-                console.error(`Unknown key '${key}'. Default values are ment to fill empty columns`)
+                console.error(`Unknown column '${key}'. Default values are ment to fill empty columns`)
             }
 
             if (!this[key]) {
-                const getter = this.defaultValues[key]
+                const getter = props.defaultValues[key]
 
                 if (typeof getter === "function") {
                     this[key] = getter()
@@ -166,5 +175,3 @@ class Model {
         }
     }
 }
-
-module.exports = Model

@@ -3,3 +3,4 @@ node_modules/
 storage.json
 *.sqlite3
 .idea/
+dist/

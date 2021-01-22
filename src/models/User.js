@@ -5,7 +5,7 @@ class User extends Model {
         super({
             table: "users",
             columns: ["id", "access_token", "refresh_token"],
-            ...values
+            values
         })
 
         this.discordUser = null

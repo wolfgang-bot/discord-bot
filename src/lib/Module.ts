@@ -1,25 +1,31 @@
-const { EventEmitter } = require("events")
+import { EventEmitter } from "events"
+import Configuration from "./Configuration"
 
-class Module extends EventEmitter {
-    static STATES = {
-        "ACTIVE": "active",
-        "INACTIVE": "inactive",
-        "STARTING": "starting",
-        "STOPPING": "stopping"
-    }
+enum STATES {
+    ACTIVE = "active",
+    INACTIVE = "inactive",
+    STARTING = "starting",
+    STOPPING = "stopping"
+}
+
+export default abstract class Module extends EventEmitter {
+    static STATES = STATES
+    static makeConfigFromArgs: Function
+    static makeConfigFromJSON: Function
+
+    context: any
+    config: Configuration
+    state: STATES
 
     /**
-     * Create static config generator methods for the given class
-     * 
-     * @param {Function<Module>} module 
-     * @param {Function} config 
+     * Assign generator methods to module class
      */
-    static bindConfig(module, config) {
+    static bindConfig(module: typeof Module, config: typeof Configuration) {
         module.makeConfigFromArgs = config.fromArgs
         module.makeConfigFromJSON = config.fromJSON
     }
 
-    constructor(context, config) {
+    constructor(context: any, config: Configuration) {
         super()
 
         this.context = context
@@ -36,6 +42,8 @@ class Module extends EventEmitter {
         this.setState(Module.STATES["ACTIVE"])
     }
 
+    async start() {}
+
     /**
      * Stop the module
      */
@@ -45,12 +53,12 @@ class Module extends EventEmitter {
         this.setState(Module.STATES["INACTIVE"])
     }
 
+    async stop() {}
+
     /**
      * Set the module's state
-     * 
-     * @param {Module.State} newState 
      */
-    setState(newState) {
+    setState(newState: STATES) {
         this.state = newState
         this.emit("update")
     }
@@ -59,12 +67,10 @@ class Module extends EventEmitter {
         return this.config
     }
 
-    toJSON() {
+    toJSON(): object {
         return {
             moduleName: this.context.module.name,
             state: this.state
         }
     }
 }
-
-module.exports = Module
