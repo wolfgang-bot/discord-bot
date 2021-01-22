@@ -1,27 +1,26 @@
 class Command {
-    constructor(run) {
-        this.run = run
+    run: Function
+    name: string
+    group: string
+    parent: Command
+    description: string
+    arguments: string[] = []
+    module: string
+    alias: string[] = []
+    permissions: string[] = []
 
-        this.name = null
-        this.group = null
-        this.parent = null
-        this.description = null
-        this.arguments = null
-        this.module = null
-        this.alias = []
-        this.permissions = []
+    constructor(run: Function) {
+        this.run = run
     }
 
     /**
      * Get the command required to call this command by traversing the command
      * tree and concatenating the command names.
-     * 
-     * @returns {String}
      */
-    getCallableName() {
-        const names = []
+    getCallableName(): string {
+        const names: string[] = []
 
-        let command = this
+        let command: Command = this
         while (command) {
             if (command.name) {
                 names.unshift(command.name)
@@ -35,13 +34,11 @@ class Command {
     /**
      * Determine the required permissions to run this command by traversing
      * the command tree.
-     * 
-     * @returns {Array<String>}
      */
-    getPermissions() {
-        const permissions = []
+    getPermissions(): string[] {
+        const permissions: string[] = []
 
-        let command = this
+        let command: Command = this
         while (command) {
             permissions.push(...command.permissions)
             command = command.parent
@@ -52,10 +49,8 @@ class Command {
 
     /**
      * Get the module this command demands by traversing the command tree.
-     * 
-     * @returns {String}
      */
-    getModule() {
+    getModule(): string {
         if (this.module) {
             return this.module
         }
@@ -63,68 +58,44 @@ class Command {
         return this.parent.getModule()
     }
 
-    /**
-     * @param {String} name
-     */
-    setName(name) {
+    setName(name: string) {
         this.name = name
         return this
     }
     
-    /**
-     * @param {String} group
-     */
-    setGroup(group) {
+    setGroup(group: string) {
         this.group = group
         return this
     }
     
-    /**
-    * @param {Command} parent
-     */
-    setParent(parent) {
+    setParent(parent: Command) {
         this.parent = parent
         return this
     }
     
-    /**
-    * @param {String} description
-     */
-    setDescription(description) {
+    setDescription(description: string) {
         this.description = description
         return this
     }
     
-    /**
-    * @param {Array<String>} args
-     */
-    setArguments(args) {
+    setArguments(args: string[]) {
         this.arguments = args
         return this
     }
     
-    /**
-    * @param {Array<String>} alias
-     */
-    setAlias(alias) {
+    setAlias(alias: string[]) {
         this.alias = alias
         return this
     }
     
-    /**
-    * @param {Array<String>} permissions
-     */
-    setPermissions(permissions) {
+    setPermissions(permissions: string[]) {
         this.permissions = permissions
         return this
     }
 
-    /**
-     * @param {String} module
-     */
-    setModule(module) {
+    setModule(module: string) {
         this.module = module
     }
 }
 
-module.exports = Command
+export default Command
