@@ -1,8 +1,10 @@
-const glob = require("glob-promise")
-const path = require("path")
+import glob from "glob-promise"
+import path from "path"
+import Database from "../Database"
+import { Migration } from "../index"
 
-async function run(database, table) {
-    let migrations = (await glob("*.js", { cwd: __dirname }))
+async function run(database: Database, table?: string) {
+    let migrations: Migration[] = (await glob("*.js", { cwd: __dirname }))
         .filter(filename => /[0-9]+\.\w+.\w+/.test(filename))
         .map(filename => require(path.join(__dirname, filename)))
 
@@ -29,4 +31,4 @@ async function run(database, table) {
     }
 }
 
-module.exports = run
+export default run

@@ -1,4 +1,6 @@
-module.exports = {
+import { Migration } from "../index"
+
+const migrate: Migration = {
     table: "guilds",
 
     columns: [
@@ -7,3 +9,5 @@ module.exports = {
         "config TEXT NOT NULL"
     ]
 }
+
+export default migrate

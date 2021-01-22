@@ -1,6 +1,8 @@
-module.exports = {
+import { Migration } from "../index"
+
+const migration: Migration = {
     table: "members",
-    
+
     columns: [
         "id varchar(255) PRIMARY KEY",
         "user_id varchar(255) NOT NULL REFERENCES users(id)",
@@ -8,3 +10,5 @@ module.exports = {
         "reputation int NOT NULL"
     ]
 }
+
+export default migration

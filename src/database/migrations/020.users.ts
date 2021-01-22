@@ -1,4 +1,6 @@
-module.exports = {
+import { Migration } from "../index"
+
+const migration: Migration = {
     table: "users",
 
     columns: [
@@ -7,3 +9,5 @@ module.exports = {
         "refresh_token varchar(255)",
     ]
 }
+
+export default migration

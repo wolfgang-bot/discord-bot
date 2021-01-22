@@ -1,17 +1,19 @@
-const fs = require("fs")
-const sqlite = require("sqlite3").verbose()
+import fs from "fs"
+import sqlite from "sqlite3"
+import migrate from "./migrations"
+import seed from "./seeders"
 
-const migrate = require("./migrations")
-const seed = require("./seeders")
+sqlite.verbose()
 
 class Database {
-    constructor(path) {
-        this.path = path
+    path: string
+    db: sqlite.Database
 
-        this.db = null
+    constructor(path: string) {
+        this.path = path
     }
 
-    connect() {
+    connect(): Promise<void> {
         return new Promise((resolve, reject) => {
             let fileExists = fs.existsSync(this.path)
 
@@ -19,7 +21,7 @@ class Database {
                 if (error) return reject()
 
                 if (!fileExists) {
-                    await migrate(this.db)
+                    await migrate(this)
 
                     if (process.env.NODE_ENV === "development") {
                         await seed()
@@ -31,7 +33,7 @@ class Database {
         })
     }
 
-    run(query, config) {
+    run(query: string, config?: any): Promise<void> {
         return new Promise((resolve, reject) => {
             this.db.run(query, config, (error) => {
                 if (error) reject(error)
@@ -40,7 +42,7 @@ class Database {
         })
     }
 
-    all(query, config) {
+    all(query: string, config?: any): Promise<any[]> {
         return new Promise((resolve, reject) => {
             this.db.all(query, config, (error, results) => {
                 if (error) reject(error)
@@ -50,4 +52,4 @@ class Database {
     }
 }
 
-module.exports = Database
+export default Database

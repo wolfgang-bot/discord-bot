@@ -1,4 +1,6 @@
-module.exports = {
+import { Migration } from "../index"
+
+const migration: Migration = {
     table: "modules",
 
     columns: [
@@ -6,3 +8,5 @@ module.exports = {
         "name varchar(255) UNIQUE"
     ]
 }
+
+export default migration

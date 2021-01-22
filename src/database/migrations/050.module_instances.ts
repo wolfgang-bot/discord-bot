@@ -1,4 +1,6 @@
-module.exports = {
+import { Migration } from "../index"
+
+const migration: Migration = {
     table: "module_instances",
 
     columns: [
@@ -9,3 +11,5 @@ module.exports = {
         "data TEXT NOT NULL"
     ]
 }
+
+export default migration
