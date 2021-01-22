@@ -1,23 +1,37 @@
-const path = require("path")
-const Model = require("../lib/Model.js")
-const { formatDescriptiveObject } = require("../utils")
+import path from "path"
+import * as Discord from "discord.js"
+import Model from "../lib/Model"
+import Member from "./Member"
+import ModuleInstance from "./ModuleInstance"
+import { formatDescriptiveObject } from "../utils"
+import LocaleServiceProvider from "../services/LocaleServiceProvider"
+
+export type GuildModelValues = {
+    id: string
+    locale: string
+    config: object
+}
 
 const DEFAULT_CONFIG_PATH = path.join(__dirname, "..", "config", "default.js")
 const defaultConfig = formatDescriptiveObject(require(DEFAULT_CONFIG_PATH))
 
-class Guild extends Model {
-    static async config(guild) {
-        let model = await Guild.findBy("id", guild.id)
+class Guild extends Model implements GuildModelValues {
+    locale: string
+    config: object
+    discordGuild: Discord.Guild
+
+    static async config(guild: Discord.Guild) {
+        let model = await Guild.findBy("id", guild.id) as Guild
         
         if (!model) {
-            console.trace(`Guild '${guild.id}' - '${guild.name}' ist not available`)
+            console.trace(`Guild '${guild.id}' - '${guild.name}' is not available`)
             return defaultConfig
         }
 
         return model.config
     }
 
-    constructor(values) {
+    constructor(values: GuildModelValues) {
         super({
             table: "guilds",
             columns: ["id", "locale", "config"],
@@ -25,13 +39,13 @@ class Guild extends Model {
                 locale: LocaleServiceProvider.defaultLocale,
                 config: defaultConfig
             },
-            ...values
+            values
         })
 
         this.discordGuild = null
     }
 
-    async fetchDiscordGuild(client) {
+    async fetchDiscordGuild(client: Discord.Client) {
         this.discordGuild = await client.guilds.fetch(this.id)
     }
 
@@ -56,8 +70,4 @@ class Guild extends Model {
 
 Model.bind(Guild, "guilds")
 
-module.exports = Guild
-
-const Member = require("./Member.js")
-const ModuleInstance = require("./ModuleInstance.js")
-const LocaleServiceProvider = require("../services/LocaleServiceProvider.js")
+export default Guild

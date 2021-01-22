@@ -5,8 +5,8 @@ import database from "../database"
 export type ModelProps = {
     table: string
     columns: string[]
-    defaultValues: object
     values: object
+    defaultValues?: object
 }
 
 type ModelContext = {
@@ -20,11 +20,8 @@ type QueryOptions = {
 
 /**
  * Class representing a Model. Strictly bound to the database.
- * 
- * @attribute {String} table - The name of the table bound to the model
- * @attribute {String[]} columns - The column names of the table in the correct order
  */
-export default abstract class Model {
+abstract class Model {
     public table: string
     public columns: string[]
     public id: string
@@ -60,21 +57,21 @@ export default abstract class Model {
     /**
      * Create a model from the first match for 'column = value'
      */
-    static async findBy(column: string, value: string, options: QueryOptions): ReturnType<typeof Model.where> {
+    static async findBy(column: string, value: string, options?: QueryOptions): ReturnType<typeof Model.where> {
         return await Model.where.call(this, `${column} = '${value}'`, options)
     }
 
     /**
      * Create a collection from all matches for 'column = value'
      */
-    static async findAllBy(column: string, value: string, options: QueryOptions): ReturnType<typeof Model.whereAll> {
+    static async findAllBy(column: string, value: string, options?: QueryOptions): ReturnType<typeof Model.whereAll> {
         return await Model.whereAll.call(this, `${column} = '${value}'`, options)
     }
 
     /**
      * Create a collection from all entries
      */
-    static async getAll(options: QueryOptions): ReturnType<typeof Model.whereAll> {
+    static async getAll(options?: QueryOptions): ReturnType<typeof Model.whereAll> {
         return await Model.whereAll.call(this, "1", options)
     }
 
@@ -123,7 +120,7 @@ export default abstract class Model {
     /**
      * Initialize model-specific properties (e.g. relations)
      */
-    async init(...args: any) {}
+    init(...args: any): any {}
 
     /**
      * Make an array which contains the column's values
@@ -175,3 +172,5 @@ export default abstract class Model {
         }
     }
 }
+
+export default Model

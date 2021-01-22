@@ -8,7 +8,7 @@ enum STATES {
     STOPPING = "stopping"
 }
 
-export default abstract class Module extends EventEmitter {
+abstract class Module extends EventEmitter {
     static STATES = STATES
     static makeConfigFromArgs: Function
     static makeConfigFromJSON: Function
@@ -74,3 +74,5 @@ export default abstract class Module extends EventEmitter {
         }
     }
 }
+
+export default Module

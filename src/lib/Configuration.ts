@@ -1,4 +1,4 @@
-export default class Configuration {
+class Configuration {
     static fromArgs(args: string[]): Configuration {
         return new Configuration({})
     }
@@ -13,3 +13,5 @@ export default class Configuration {
         return {}
     }
 }
+
+export default Configuration

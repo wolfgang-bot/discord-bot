@@ -1,4 +1,4 @@
-export default class Collection<T> extends Array<T> {
+class Collection<T> extends Array<T> {
     public isSorted: boolean = false
 
     /**
@@ -8,3 +8,5 @@ export default class Collection<T> extends Array<T> {
         return Promise.all(this.map(fn))
     }
 }
+
+export default Collection
