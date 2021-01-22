@@ -1,13 +1,12 @@
+import DescriptiveObject from "../structures/DescriptiveObject"
+
 // Blank character which is not the "whitespace" character (used in discord embeds to make indents)
 const BLANK = "\u200B"
 
 /**
  * Make a Markdown Codeblock
- * 
- * @param {String} str
- * @returns {String} The string inserted into a markdown codeblock
  */
-function makeCodeblock(str) {
+export function makeCodeblock(str: string) {
     return "```\n" + str + "```"
 }
 
@@ -17,22 +16,19 @@ function makeCodeblock(str) {
  * > 'arg1 "arg 2" arg3'
  * will be parsed to
  * > ["arg1", "arg 2", "arg3"]
- * It works like a DEA
- *  
- * @param {String} content 
- * @returns {Array<String>} Parsed arguments
+ * It works like a PDA
  */
-function parseArguments(content) {
+export function parseArguments(content: string) {
     // Sanitize input
     content = content
         .replace(process.env.DISCORD_BOT_PREFIX, "")
         .trim()
         .replace(/\s+/g, " ")
 
-    const args = []
+    const args: string[] = []
 
     let currentArg = ""
-    let stack = []
+    let stack: string[] = []
 
     for (let char of content) {
         let top = stack.pop()
@@ -67,16 +63,12 @@ function parseArguments(content) {
 }
 
 /**
- * Get the corresponding level to a amount of reputation
- * 
- * @param {Object} config
- * @param {Number} reputation
- * @returns {Number} Level for the amount of reputation
+ * Get the corresponding level to an amount of reputation
  */
-function getLevel(config, reputation) {
+export function getLevel(config, reputation: number) {
     let level = -1
 
-    for (let threshold of config["reputation-system"].roleThresholds) {
+    for (let threshold of config["reputation-system"].roleThresholds as number[]) {
         if (reputation >= threshold) {
             level++
         } else {
@@ -88,32 +80,21 @@ function getLevel(config, reputation) {
 }
 
 /**
- * Generates an empty string which has a given length
- * 
- * @param {Number} length 
- * @returns {String} As many blanks as requested
+ * Generates an empty string which has a given length (used for markdown)
  */
-function space(length) {
+export function space(length: number) {
     return (BLANK + " ").repeat(length)
 }
 
 /**
- * Formats an object of the form
- * {
- *     "description": String,
- *     "value": Any
- * }
- * recursively into an object which only contains the values
- * 
- * @param {Object} object 
- * @returns {Object} Formatted object
+ * Formats a descriptive object recursively into an object which only contains the values
  */
-function formatDescriptiveObject(object) {
+export function formatDescriptiveObject(object: DescriptiveObject): {} {
     const formatted = {}
 
     for (let key in object) {
-        if (typeof object[key].value === "object" && !Array.isArray(object[key].value)) {
-            formatted[key] = formatDescriptiveObject(object[key].value)
+        if (object[key].value.constructor.name === "Object") {
+            formatted[key] = formatDescriptiveObject(object[key].value as DescriptiveObject)
         } else {
             formatted[key] = object[key].value
         }
@@ -124,25 +105,16 @@ function formatDescriptiveObject(object) {
 
 /**
  * Inserts the values of the source object into the values of
- * the dest object, where the dest object is descriptive.
- * A descriptive object has the format:
- * {
- *     "description": String,
- *     "value": Any
- * }
- * 
- * @param {Object} source 
- * @param {Object} dest 
- * @returns {Object} Dest object with the values from source
+ * the dest object, where the dest object is a descriptive object.
  */
-function insertIntoDescriptiveObject(source, dest) {
-    const result = {}
+export function insertIntoDescriptiveObject(source: object, dest: DescriptiveObject) {
+    const result: DescriptiveObject = {}
 
     for (let key in source) {
         result[key] = dest[key]
 
         if (source[key].constructor.name === "Object") {
-            result[key].value = insertIntoDescriptiveObject(source[key], result[key].value)
+            result[key].value = insertIntoDescriptiveObject(source[key], result[key].value as DescriptiveObject)
         } else {
             result[key].value = source[key]
         }
@@ -153,18 +125,14 @@ function insertIntoDescriptiveObject(source, dest) {
 
 /**
  * Check recursively if a key exists in an object
- * 
- * @param {Object} object
- * @param {String} key
- * @returns {Boolean} Whether the key exists in the object
  */
-function existsInObject(object, key) {
+export function existsInObject(object: object, key: string) {
     for (let _key in object) {
         if (_key === key) {
             return true
         }
 
-        if (typeof object[_key] === "object" && existsInObject(object[_key], key)) {
+        if (object[_key].constructor.name === "Object" && existsInObject(object[_key], key)) {
             return true
         }
     }
@@ -175,43 +143,34 @@ function existsInObject(object, key) {
 /**
  * Convert a string to the requested data-type
  * Supported data-types: String, Number, Array
- * 
- * @param {String} input
- * @param {String} datatype
- * @returns {Any} The input formatted to match the data-type of the target
  */
-function convertDatatype(input, datatype) {
-    // Convert to string
+export function convertDatatype(input: string, datatype: "String" | "Number" | "Array") {
     if (datatype === "String") {
         return input
     }
 
-    // Convert to number
     if (datatype === "Number") {
         const number = parseFloat(input)
 
         if (isNaN(number)) {
-            throw "Ungültiger Zahlenwert"
+            throw "Not a number"
         }
 
         return number
     }
 
-    // Convert to array
     if (datatype === "Array") {
         return input.split(" ")
     }
+
+    throw new Error(`Unsupported datatype: "${datatype}"`)
 }
 
 /**
- * Check recursively if two objects have the same keys and every value is
- * of the same data-type.
- * 
- * @param {Object} object1
- * @param {Object} object2
- * @returns {Boolean} Whether the two objects have an identical structure.
+ * Check recursively if two objects have the same keys and every value has
+ * the same type.
  */
-function compareStructure(object1, object2) {
+export function compareStructure(object1: object, object2: Object) {
     // Collect keys from both objects
     const keys = new Set(Object.keys(object1).concat(Object.keys(object2)))
 
@@ -246,16 +205,12 @@ function compareStructure(object1, object2) {
 
 /**
  * Run constraint methods of a descriptive object
- * 
- * @param {Object} source
- * @param {Object} dest Descriptive Object
- * @returns {Object} An object with the same structure as the source object and the errors as values
  */
-function verifyConstraints(source, dest) {
+export function verifyConstraints(source: object, dest: DescriptiveObject): object {
     const errors = {}
     let hasErrors = false
 
-    function verify(source, dest, errors) {
+    function verify(source: object, dest: DescriptiveObject, errors: object) {
         for (let key in source) {
             const value = source[key]
             const descriptor = dest[key]
@@ -269,7 +224,7 @@ function verifyConstraints(source, dest) {
             // Recursively verify sub-objects
             if (value.constructor.name === "Object") {
                 errors[key] = {}
-                verify(value, descriptor.value, errors[key])
+                verify(value, descriptor.value as DescriptiveObject, errors[key])
             }
         }
     }
@@ -279,15 +234,14 @@ function verifyConstraints(source, dest) {
     if (hasErrors) {
         return errors
     }
+
+    return null
 }
 
 /**
- * Create a URL from a path with respect to the env variables.
- * 
- * @param {String} path 
- * @returns {String} URL
+ * Create a URL from a path with respect to the env variables
  */
-function makeURL(path) {
+export function makeURL(path: string) {
     return `${process.env.PROTOCOL}://${process.env.HOST}${process.env.PUBLIC_PORT ? ":" + process.env.PUBLIC_PORT : ""}${path}`
 }
 
@@ -310,15 +264,11 @@ function makeURL(path) {
  *         c: 456 // Do nothing
  *     }
  * }
- * 
- * @param {Object} from
- * @param {Object} to
- * @returns {Object} Transformed object
  */
-function transferValues(from, to) {
+export function transferValues(from: object, to: object): object {
     const result = {}
 
-    function _transfer(from = {}, to, result) {
+    function _transfer(from: object = {}, to: object, result: object) {
         Object.keys(to).forEach(key => {
             if (to[key].constructor.name === "Object") {
                 result[key] = {}
@@ -332,19 +282,4 @@ function transferValues(from, to) {
     _transfer(from, to, result)
 
     return result
-}
-
-module.exports = {
-    makeCodeblock,
-    parseArguments,
-    getLevel,
-    space,
-    formatDescriptiveObject,
-    insertIntoDescriptiveObject,
-    existsInObject,
-    convertDatatype,
-    compareStructure,
-    verifyConstraints,
-    makeURL,
-    transferValues
 }
