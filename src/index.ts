@@ -1,8 +1,9 @@
-const Discord = require("discord.js")
-const chalk = require("chalk")
-require("dotenv").config()
+import * as Discord from "discord.js"
+import chalk from "chalk"
+import dotenv from "dotenv"
+import boot from "./boot"
 
-const boot = require("./src/boot")
+dotenv.config()
 
 const client = new Discord.Client()
 

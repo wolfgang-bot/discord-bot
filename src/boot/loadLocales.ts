@@ -1,13 +1,12 @@
-const path = require("path")
-const glob = require("glob-promise")
-const fs = require("fs")
-const LocaleServiceProvider = require("../services/LocaleServiceProvider.js")
+import path from "path"
+import fs from "fs"
+import LocaleServiceProvider from "../services/LocaleServiceProvider"
 
 const SRC_DIR = path.join(__dirname, "..")
 const MODULES_DIR = path.join(SRC_DIR, "modules")
 
 async function loadLocales() {
-    function load(dir, scope) {
+    function load(dir: string, scope: string): Promise<void> {
         return LocaleServiceProvider.loadLocales(path.join(dir, "locales"), scope)
     }
     
@@ -18,4 +17,4 @@ async function loadLocales() {
     }))
 }
 
-module.exports = loadLocales
+export default loadLocales

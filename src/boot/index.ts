@@ -1,9 +1,10 @@
-const ModuleServiceProvider = require("../services/ModuleServiceProvider.js")
-const database = require("../database")
-const loadLocales = require("./loadLocales.js")
-const startServer = require("../www/server.js")
+import * as Discord from "discord.js"
+import ModuleServiceProvider from "../services/ModuleServiceProvider"
+import database from "../database"
+import loadLocales from "./loadLocales"
+import startServer from "../www/server"
 
-function boot(client) {
+function boot(client: Discord.Client): Promise<void> {
     return new Promise(async resolve => {
         client.once("ready", async () => {
             await ModuleServiceProvider.loadModules()
@@ -25,4 +26,4 @@ function boot(client) {
     })
 }
 
-module.exports = boot
+export default boot
