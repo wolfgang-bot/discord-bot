@@ -1,8 +1,9 @@
-const glob = require("glob-promise")
-const path = require("path")
-const emojiRegex = require("emoji-regex/RGI_Emoji.js")
+import glob from "glob-promise"
+import path from "path"
+import emojiRegex from "emoji-regex/RGI_Emoji.js"
+import DescriptiveObject from "../structures/DescriptiveObject"
 
-// Math hex colors
+// Match hex colors
 const HEX_COLOR_REGEX = /^#([0-9a-fA-F]{3}){1,2}$/
 // Match hex colors and discord color names
 const COLOR_REGEX = /^((#([0-9a-fA-F]{3}){1,2})|(DEFAULT|WHITE|AQUA|GREEN|BLUE|YELLOW|PURPLE|LUMINOUS_VIVID_PINK|GOLD|ORANGE|RED|GREY|DARKER_GREY|NAVY|DARK_AQUA|DARK_GREEN|DARK_BLUE|DARK_PURPLE|DARK_VIVID_PINK|DARK_GOLD|DARK_ORANGE|DARK_RED|DARK_GREY|LIGHT_GREY|DARK_NAVY|BLURPLE|GREYPLE|DARK_BUT_NOT_BLACK|NOT_QUITE_BLACK|RANDOM))$/
@@ -13,18 +14,18 @@ const ICONS_DIR = path.join(__dirname, "..", "modules", "skill-roles", "assets",
 const icons = glob.sync("*.png", { cwd: ICONS_DIR }).map(filename => filename.replace(".png", ""))
 
 /**
- * Constraint templates
+ * Define Constraint templates
  */
 const emojiConstraint = {
     constraints: "Must be one unicode emoji",
-    verifyConstraints: (value) => emojiRegex().test(value) && value.match(emojiRegex()).length === 1
+    verifyConstraints: (value: string) => emojiRegex().test(value) && value.match(emojiRegex()).length === 1
 }
 
 /**
  * Key names cannot contain the character: "#"
  * -> This is used in the frontend to create a flat object hirarchie
  */
-module.exports = {
+const config: DescriptiveObject = {
     colors: {
         description: "Color theme of the bot (e.g. embeds)",
         value: {
@@ -105,7 +106,7 @@ module.exports = {
                 description: "Level Roles which are assigned to a user who reaches the level",
                 value: ["Bronze", "Silber", "Gold", "Platin", "Diamant"],
                 constraints: "Must have the same amount of items as 'Role Colors' and 'Role Thresholds'",
-                verifyConstraints: (value, config) => (
+                verifyConstraints: (value: string[], config) => (
                     value.length > 0 &&
                     value.length === config.roleColors.length &&
                     value.length === config.roleThresholds.length
@@ -116,7 +117,7 @@ module.exports = {
                 description: "Color of each level role",
                 value: ["#E67E22", "#ffffff", "#F0C410", "#607d8b", "#3498DB"],
                 constraints: "Must have the same amount of items as 'Roles' and 'Role Thresholds'",
-                verifyConstraints: (value, config) => (
+                verifyConstraints: (value: string[], config) => (
                     value.length > 0 &&
                     value.length === config.roles.length &&
                     value.length === config.roleThresholds.length
@@ -127,7 +128,7 @@ module.exports = {
                 description: "Amount of reputation needed to reach the levels",
                 value: [10, 100, 500, 1000, 2500],
                 constraints: "Must have the same amount of items as 'Roles' and 'Role Colors'",
-                verifyConstraints: (value, config) => (
+                verifyConstraints: (value: string[], config) => (
                     value.length > 0 &&
                     value.length === config.roles.length &&
                     value.length === config.roleColors.length
@@ -153,7 +154,7 @@ module.exports = {
                 description: "Color of the roles (Discord color names allowed)",
                 value: "AQUA",
                 constraints: "Must be a valid color",
-                verifyConstraints: (value) => COLOR_REGEX.test(value)
+                verifyConstraints: (value: string) => COLOR_REGEX.test(value)
             },
             
             roles: {
@@ -169,7 +170,7 @@ module.exports = {
                     "Cpp"
                 ],
                 constraints: `Available roles: ${icons.map(e => `'${e}'`).join(", ")}`,
-                verifyConstraints: (value) => (
+                verifyConstraints: (value: string[]) => (
                     value.length > 0 &&
                     value.every(name => icons.includes(name.toLowerCase()))
                 )
@@ -177,3 +178,5 @@ module.exports = {
         }
     },
 }
+
+export default config

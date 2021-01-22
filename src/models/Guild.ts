@@ -1,10 +1,10 @@
-import path from "path"
 import * as Discord from "discord.js"
 import Model from "../lib/Model"
 import Member from "./Member"
 import ModuleInstance from "./ModuleInstance"
 import { formatDescriptiveObject } from "../utils"
 import LocaleServiceProvider from "../services/LocaleServiceProvider"
+import defaultConfigRaw from "../config/default"
 
 export type GuildModelValues = {
     id: string
@@ -12,8 +12,7 @@ export type GuildModelValues = {
     config: object
 }
 
-const DEFAULT_CONFIG_PATH = path.join(__dirname, "..", "config", "default.js")
-const defaultConfig = formatDescriptiveObject(require(DEFAULT_CONFIG_PATH))
+const defaultConfig: object = formatDescriptiveObject(defaultConfigRaw)
 
 class Guild extends Model implements GuildModelValues {
     locale: string
