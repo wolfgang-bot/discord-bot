@@ -1,10 +1,10 @@
 import * as Discord from "discord.js"
-import Module from "./Module"
+import Module from "../lib/Module"
 
 export type ContextProps = {
     client: Discord.Client,
     guild: Discord.Guild,
-    module: Module
+    module: typeof Module
 }
 
 /**
@@ -13,7 +13,7 @@ export type ContextProps = {
 class Context implements ContextProps {
     client: Discord.Client
     guild: Discord.Guild
-    module: Module
+    module: typeof Module
 
     constructor(props: ContextProps) {
         this.client = props.client
@@ -22,4 +22,4 @@ class Context implements ContextProps {
     }
 }
 
-module.exports = Context
+export default Context

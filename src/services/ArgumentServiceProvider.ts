@@ -1,32 +1,27 @@
-const Argument = require("../structures/Argument.js")
-const LocaleServiceProvider = require("./LocaleServiceProvider.js")
+import * as Discord from "discord.js"
+import Argument from "../structures/Argument"
+import LocaleServiceProvider from "./LocaleServiceProvider"
+
+export type ArgumentResolveTypes = Discord.TextChannel | Discord.VoiceChannel | Discord.CategoryChannel
 
 class ArgumentServiceProvider {
+    guild: Discord.Guild
+
     /**
-     * Create a ArgumentServiceProvider instance bound to a guild
-     *
-     * @param {Discord.Guild} guild
-     * @returns {ArgumentServiceProvider}
+     * Create an ArgumentServiceProvider instance bound to a guild
      */
-    static guild(guild) {
+    static guild(guild: Discord.Guild) {
         return new ArgumentServiceProvider(guild)
     }
 
-    /**
-     * @param {Discord.Guild} guild
-     */
-    constructor(guild) {
+    constructor(guild: Discord.Guild) {
         this.guild = guild
     }
 
     /**
      * Convert a text based argument (e.g. an id) to the corresponding object
-     * 
-     * @param {Discord.Client} client
-     * @param {Argument} argument
-     * @param {String} raw
      */
-    convertArgument(argument, raw) {
+    resolveArgument(argument: Argument, raw: string): Promise<ArgumentResolveTypes> {
         switch (argument.type) {
             case Argument.TYPES.TEXT_CHANNEL:
                 return this.fetchTextChannel(raw)
@@ -44,11 +39,8 @@ class ArgumentServiceProvider {
 
     /**
      * Fetch a text channel by id
-     * 
-     * @param {String} id
-     * @returns {Discord.TextChannel}
      */
-    async fetchTextChannel(id) {
+    async fetchTextChannel(id: string) {
         const channel = this.guild.channels.cache.get(id)
 
         if (!channel || channel.type !== "text") {
@@ -56,16 +48,13 @@ class ArgumentServiceProvider {
             throw locale.translate("error_text_channel_does_not_exist", id)
         }
 
-        return channel
+        return channel as Discord.TextChannel
     }
     
     /**
      * Fetch a voice channel by id
-     * 
-     * @param {String} id
-     * @returns {Discord.VoiceChannel}
      */
-    async fetchVoiceChannel(id) {
+    async fetchVoiceChannel(id: string) {
         const channel = this.guild.channels.cache.get(id)
 
         if (!channel || channel.type !== "voice") {
@@ -73,16 +62,13 @@ class ArgumentServiceProvider {
             throw locale.translate("error_voice_channel_does_not_exist", id)
         }
 
-        return channel
+        return channel as Discord.VoiceChannel
     }
 
     /**
      * Fetch a category channel by id
-     * 
-     * @param {String} id
-     * @returns {Discord.CategoryChannel}
      */
-    async fetchCategoryChannel(id) {
+    async fetchCategoryChannel(id: string) {
         const channel = this.guild.channels.cache.get(id)
 
         if (!channel || channel.type !== "category") {
@@ -90,8 +76,8 @@ class ArgumentServiceProvider {
             throw locale.translate("error_category_does_not_exist", id)
         }
 
-        return channel
+        return channel as Discord.CategoryChannel
     }
 }
 
-module.exports = ArgumentServiceProvider
+export default ArgumentServiceProvider

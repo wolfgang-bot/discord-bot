@@ -5,10 +5,10 @@ import User from "./User"
 import Guild from "./Guild"
 
 export type MemberModelValues = {
-    id: string
+    id?: string
     user_id: string
     guild_id: string
-    reputation: number
+    reputation?: number
 }
 
 class Member extends Model implements MemberModelValues {

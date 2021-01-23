@@ -6,7 +6,7 @@ const commands = [
 ]
 
 module.exports = new CommandRegistry(commands)
-    .setBaseCommand(require("./get.js"))
+    .setDefaultCommand(require("./get.js"))
     .setName("locale")
     .setGroup("Admin")
     .setDescription("command_locale_desc")

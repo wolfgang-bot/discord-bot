@@ -2,7 +2,7 @@ import { v4 as uuid } from "uuid"
 import Model from "../lib/Model"
 
 export type ModuleModelValues = {
-    id: string
+    id?: string
     name: string
 }
 

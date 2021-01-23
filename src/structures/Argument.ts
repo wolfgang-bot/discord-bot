@@ -25,6 +25,15 @@ class Argument implements ArgumentProps {
         this.displayName = props.displayName
         this.desc = props.desc
     }
+
+    clone() {
+        return new Argument({
+            type: this.type,
+            name: this.name,
+            displayName: this.displayName,
+            desc: this.desc
+        })
+    }
 }
 
 export default Argument

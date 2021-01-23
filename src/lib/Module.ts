@@ -1,5 +1,8 @@
+import fs from "fs"
+import { parseStringPromise as parseXML } from "xml2js"
 import { EventEmitter } from "events"
 import Configuration from "./Configuration"
+import Argument from "../structures/Argument"
 
 enum STATES {
     ACTIVE = "active",
@@ -8,14 +11,54 @@ enum STATES {
     STOPPING = "stopping"
 }
 
-abstract class Module extends EventEmitter {
+type ModuleTranslations = {
+    desc: string
+    features: string[]
+    args: Argument[]
+}
+
+class Module extends EventEmitter {
     static STATES = STATES
     static makeConfigFromArgs: Function
     static makeConfigFromJSON: Function
 
+    static internalName: string
+    static desc: string
+    static features: string
+    static args: Argument[] = []
+    static isGlobal: boolean
+    static isPrivate: boolean
+    static guildIds: string[] = []
+
+    static translations: ModuleTranslations = {
+        desc: null,
+        features: null,
+        args: null
+    }
+
     context: any
     config: Configuration
     state: STATES
+
+    /**
+     * Assign values from xml file to static attributes
+     */
+    static async loadXMLFile(path: string) {
+        const { module: data } = await parseXML(await fs.promises.readFile(path))
+
+        this.internalName = data.$.name,
+        this.desc = data.$.desc,
+        this.features = data.$.features,
+        this.isGlobal = data.$.global === "true",
+        this.isPrivate = data.$.private === "true",
+
+        this.args = (data.argument || []).map(arg => new Argument({
+            type: arg.$.type,
+            name: arg.$.name,
+            displayName: arg.$["display-name"],
+            desc: arg.$.desc
+        }))
+    }
 
     /**
      * Assign generator methods to module class
@@ -25,7 +68,7 @@ abstract class Module extends EventEmitter {
         module.makeConfigFromJSON = config.fromJSON
     }
 
-    constructor(context: any, config: Configuration) {
+    constructor(context: any, config?: Configuration) {
         super()
 
         this.context = context
@@ -34,7 +77,7 @@ abstract class Module extends EventEmitter {
     }
 
     /**
-     * Start the module
+     * Start the module (will call "this.start()")
      */
     async _start() {
         this.setState(Module.STATES["STARTING"])
@@ -45,7 +88,7 @@ abstract class Module extends EventEmitter {
     async start() {}
 
     /**
-     * Stop the module
+     * Stop the module (will call "this.stop()")
      */
     async _stop() {
         this.setState(Module.STATES["STOPPING"])

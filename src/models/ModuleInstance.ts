@@ -5,11 +5,11 @@ import Module from "./Module.js"
 import Guild from "./Guild.js"
 
 export type ModuleInstanceModelValues = {
-    id: string
+    id?: string
     module_id: string
     guild_id: string
     config: object
-    data: object
+    data?: object
 }
 
 class ModuleInstance extends Model implements ModuleInstanceModelValues {

@@ -12,11 +12,10 @@ export function makeCodeblock(str: string) {
 
 /**
  * Parse an argument string into an array and accept quoted string to
- * containe whitespace. e.g.
- * > 'arg1 "arg 2" arg3'
- * will be parsed to
- * > ["arg1", "arg 2", "arg3"]
- * It works like a PDA
+ * contain whitespace. It works like a PDA.
+ * 
+ * Example:
+ * 'arg1 "arg 2" arg3' --> ["arg1", "arg 2", "arg3"]
  */
 export function parseArguments(content: string) {
     // Sanitize input

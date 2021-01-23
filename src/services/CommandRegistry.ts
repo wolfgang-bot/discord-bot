@@ -1,49 +1,45 @@
-const Command = require("../structures/Command.js")
-const LocaleServiceProvider = require("./LocaleServiceProvider.js")
-const { parseArguments } = require("../utils")
+import * as Discord from "discord.js"
+import Command from "../structures/Command.js"
+import LocaleServiceProvider from "./LocaleServiceProvider"
+import { parseArguments } from "../utils"
+
+type CommandMap = {
+    [key: string]: Command
+}
+
+type CommandGroups = {
+    [group: string]: Command[]
+}
 
 class CommandRegistry extends Command {
-    /**
-     * Root registry -> May have child registries
-     * 
-     * @type {CommandRegistry}
-     */
-    static root = null
+    // Root registry -> May have child registries
+    static root: CommandRegistry = null
+
+    defaultCommand: Command
+    commands: CommandMap = {}
+    commandNames: Set<string> = new Set()
 
     constructor(commands = []) {
-        super()
-
-        this.baseCommand = null
+        super(null)
 
         // The super constructor overrides the "run" method
         this.run = this._run
-
-        /**
-         * @type {Map<String, Command>}
-         */
-        this.commands = {}
-        this.commandNames = new Set()
 
         commands.forEach(this.register.bind(this))
     }
 
     /**
      * Set the command which will be executed when no sub-command is specified
-     * 
-     * @param {Command} command 
-     * @returns {CommandRegistry} Enable method chaining
      */
-    setBaseCommand(command) {
-        this.baseCommand = command
+    setDefaultCommand(command: Command) {
+        this.defaultCommand = command
         return this
     }
 
     /**
      * Run a command by parsing the message's content
-     * 
-     * @param {Discord.Message} message
      */
-    async _run(message, args) {
+    async _run(message: Discord.Message, args: string[]) {
         if (!message.guild) {
             throw "Commands are only available on servers"
         }
@@ -56,7 +52,7 @@ class CommandRegistry extends Command {
         }
 
         const commandName = args.shift()
-        const command = commandName ? this.get(commandName) : this.baseCommand
+        const command = commandName ? this.get(commandName) : this.defaultCommand
 
         if (!command) {
             throw locale.translate("error_command_does_not_exist", commandName)
@@ -72,11 +68,9 @@ class CommandRegistry extends Command {
     }
 
     /**
-     * Add a command
-     * 
-     * @param {Command} command 
+     * Register a command. Sets the parent of the given command to this.
      */
-    register(command) {
+    register(command: Command) {
         command.setParent(this)
 
         this.commands[command.name] = command
@@ -86,11 +80,9 @@ class CommandRegistry extends Command {
     }
 
     /**
-     * Remove a command
-     * 
-     * @param {Command} command 
+     * Unregisters a command
      */
-    unregister(command) {
+    unregister(command: Command) {
         delete this.commands[command.name]
         command.alias.forEach(alias => delete this.commands[alias])
 
@@ -99,30 +91,23 @@ class CommandRegistry extends Command {
 
     /**
      * Get a command by name or alias
-     * 
-     * @param {String} name
-     * @returns {Command}
      */
-    get(key) {
+    get(key: string) {
         return this.commands[key]
     }
 
     /**
      * Get all command names
-     * 
-     * @returns {Set<String>}
      */
     getCommandNames() {
         return this.commandNames
     }
 
     /**
-     * Get the commands in the form: group: String -> commands: Array<Command>
-     * 
-     * @returns {Object}
+     * Get all commands mapped by their groups
      */
     getGroups() {
-        const groups = {}
+        const groups: CommandGroups = {}
 
         this.commandNames.forEach(name => {
             const command = this.commands[name]
@@ -138,4 +123,4 @@ class CommandRegistry extends Command {
     }
 }
 
-module.exports = CommandRegistry
+export default CommandRegistry

@@ -8,8 +8,8 @@ import defaultConfigRaw from "../config/default"
 
 export type GuildModelValues = {
     id: string
-    locale: string
-    config: object
+    locale?: string
+    config?: object
 }
 
 const defaultConfig: object = formatDescriptiveObject(defaultConfigRaw)

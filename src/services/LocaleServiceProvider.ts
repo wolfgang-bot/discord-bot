@@ -1,52 +1,64 @@
-const path = require("path")
-const fs = require("fs")
-const glob = require("glob-promise")
-const yaml = require("yaml")
-const Guild = require("../models/Guild.js")
+import path from "path"
+import fs from "fs"
+import glob from "glob-promise"
+import yaml from "yaml"
+import * as Discord from "discord.js"
+import Guild from "../models/Guild"
+
+type ScopeMap = {
+    [scope: string]: LocaleMap
+}
+
+type LocaleMap = {
+    [locale: string]: TranslationMap
+}
+
+type TranslationMap = {
+    [key: string]: string | string[]
+}
 
 class LocaleServiceProvider {
     static defaultLocale = "en"
     static defaultScope = "main"
 
+    locale: string
+    scopeName: string
+    _scope: LocaleMap
+    translations: TranslationMap
+
     /**
-     * Translations are encapsulated into scopes
+     * Translations are encapsulated into scopes.
+     * A scope can be the default scope or a module name.
      */
-    static scopes = {
-        [LocaleServiceProvider.defaultScope]: {}    
+    static scopes: ScopeMap = {
+        [LocaleServiceProvider.defaultScope]: {}
     }
 
     /**
-     * Load locale files into LocaleServiceProvider.locales
-     * 
-     * @param {String} dir
-     * @param {String} scope
+     * Load translation files
      */
-    static async loadLocales(dir, scope) {
+    static async loadLocales(dir: string, scope: string) {
         const files = await glob("*.yml", { cwd: dir })
 
         // Check for existence of default locale
         if (!files.some(filename => filename.startsWith(LocaleServiceProvider.defaultLocale))) {
-            throw new Error(`Missing required locale '${LocaleServiceProvider.defaultLocale}'`)
+            throw new Error(`Missing default locale '${LocaleServiceProvider.defaultLocale}'`)
         }
 
         await Promise.all(files.map(async filename => {
             // Load yaml file
             const localeCode = filename.replace(".yml", "")
             const content = await fs.promises.readFile(path.join(dir, filename), "utf-8")
-            const locales = yaml.parse(content)
+            const locales: TranslationMap = yaml.parse(content)
             
-            LocaleServiceProvider.addLocales(localeCode, locales, scope)
+            LocaleServiceProvider.addTranslations(localeCode, locales, scope)
         }))
     }
 
     /**
-     * Add locales to the locale object of a given scope
-     * 
-     * @param {String} localeCode 
-     * @param {Object} locales 
-     * @param {String} scope
+     * Add locales to a given scope
      */
-    static addLocales(localeCode, locales, scope = LocaleServiceProvider.defaultScope) {
+    static addTranslations(localeCode: string, locales: TranslationMap, scope: string = LocaleServiceProvider.defaultScope) {
         if (!LocaleServiceProvider.scopes[scope]) {
             LocaleServiceProvider.scopes[scope] = {}
         }
@@ -66,13 +78,10 @@ class LocaleServiceProvider {
     }
 
     /**
-     * Create an instance of this class which uses the guild's language defined in the database.
-     * 
-     * @param {Discord.Guild} guild
-     * @returns {LocaleServiceProvider}
+     * Create an instance of this class which uses the guild's language stored in the database
      */
-    static async guild(guild) {
-        const model = await Guild.findBy("id", guild.id)
+    static async guild(guild: Discord.Guild) {
+        const model = await Guild.findBy("id", guild.id) as Guild
 
         if (!model) {
             console.trace(`Guild '${guild.id}' - '${guild.name}' ist not available`)
@@ -82,11 +91,14 @@ class LocaleServiceProvider {
         return new LocaleServiceProvider(model.locale)
     }
 
-    constructor(locale = LocaleServiceProvider.defaultLocale, scope = LocaleServiceProvider.defaultScope) {
+    constructor(
+        locale: string = LocaleServiceProvider.defaultLocale,
+        scope: string = LocaleServiceProvider.defaultScope
+    ) {
         this.locale = locale
         this.scopeName = scope
 
-        // Name has to have the underscore, since "scope" is used for method chaining
+        // Name has to have the underscore since "scope" is used for method chaining
         this._scope = LocaleServiceProvider.scopes[this.scopeName]
         
         if (!this._scope) {
@@ -102,22 +114,15 @@ class LocaleServiceProvider {
 
     /**
      * Create a new instance of this class with a new scope
-     * 
-     * @param {String} scope
-     * @returns {LocaleServiceProvider}
      */
-    scope(scope) {
+    scope(scope: string) {
         return new LocaleServiceProvider(this.locale, scope)
     }
 
     /**
-     * Get the translation of a key by looking into the language specific translation file.
-     * 
-     * @param {String} key
-     * @param {...String} args
-     * @returns {String} Translation
+     * Get the translation of a key by looking into the language specific translations
      */
-    translate(key, ...args) {
+    private translateAnyType(key: string, ...args: string[]) {
         let value = this.translations[key]
         
         // Fallback to default locale
@@ -131,9 +136,9 @@ class LocaleServiceProvider {
 
         /**
          * Replace placeholders with variables
-         * {0} -> args[0], {1} -> args[1], ...
+         * "{0}" -> args[0], "{1}" -> args[1], ...
          */
-        const insertArgs = (value) => {
+        const insertArgs = (value: string) => {
             return args.reduce((value, arg, i) => {
                 return value.replace(new RegExp(`\\{${i}\\}`, "g"), arg)
             }, value)
@@ -142,15 +147,23 @@ class LocaleServiceProvider {
         if (value.constructor.name === "Array") {
             // Insert arguments into every translation in the "value" array
             for (let i = 0; i < value.length; i++) {
-                value[i] = insertArgs(value[i])
+                (value as string[])[i] = insertArgs(value[i])
             }
         } else {
             // Insert arguments into the translation
-            value = insertArgs(value)
+            value = insertArgs(value as string)
         }
 
         return value
     }
+
+    translate(...args: Parameters<LocaleServiceProvider["translateAnyType"]>) {
+        return this.translateAnyType(...args) as string
+    }
+
+    translateArray(...args: Parameters<LocaleServiceProvider["translateAnyType"]>) {
+        return this.translateAnyType(...args) as string[]
+    }
 }
 
-module.exports = LocaleServiceProvider
+export default LocaleServiceProvider

@@ -1,3 +1,5 @@
+import * as Discord from "discord.js"
+
 class Command {
     run: Function
     name: string
@@ -7,7 +9,7 @@ class Command {
     arguments: string[] = []
     module: string
     alias: string[] = []
-    permissions: string[] = []
+    permissions: Discord.PermissionString[] = []
 
     constructor(run: Function) {
         this.run = run
@@ -35,8 +37,8 @@ class Command {
      * Determine the required permissions to run this command by traversing
      * the command tree.
      */
-    getPermissions(): string[] {
-        const permissions: string[] = []
+    getPermissions() {
+        const permissions: Discord.PermissionString[] = []
 
         let command: Command = this
         while (command) {
@@ -88,7 +90,7 @@ class Command {
         return this
     }
     
-    setPermissions(permissions: string[]) {
+    setPermissions(permissions: Discord.PermissionString[]) {
         this.permissions = permissions
         return this
     }

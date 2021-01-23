@@ -10,7 +10,7 @@ const commands = [
 ]
 
 module.exports = new CommandRegistry(commands)
-    .setBaseCommand(require("./list.js"))
+    .setDefaultCommand(require("./list.js"))
     .setName("modules")
     .setGroup("Admin")
     .setDescription("command_modules_desc")
