@@ -1,9 +1,11 @@
+import Context from "../structures/Context"
+
 class Configuration {
-    static fromArgs(args: string[]): Configuration {
+    static fromArgs(args: any[]) {
         return new Configuration({})
     }
 
-    static fromJSON(context, object: object): Configuration {
+    static async fromJSON(context: Context, object: object) {
         return new Configuration({})
     }
 

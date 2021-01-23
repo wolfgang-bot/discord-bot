@@ -3,6 +3,7 @@ import { parseStringPromise as parseXML } from "xml2js"
 import { EventEmitter } from "events"
 import Configuration from "./Configuration"
 import Argument from "../structures/Argument"
+import Context from "../structures/Context"
 
 enum STATES {
     ACTIVE = "active",
@@ -19,8 +20,6 @@ type ModuleTranslations = {
 
 class Module extends EventEmitter {
     static STATES = STATES
-    static makeConfigFromArgs: Function
-    static makeConfigFromJSON: Function
 
     static internalName: string
     static desc: string
@@ -60,12 +59,12 @@ class Module extends EventEmitter {
         }))
     }
 
-    /**
-     * Assign generator methods to module class
-     */
-    static bindConfig(module: typeof Module, config: typeof Configuration) {
-        module.makeConfigFromArgs = config.fromArgs
-        module.makeConfigFromJSON = config.fromJSON
+    static makeConfigFromArgs(args: any[]) {
+        return new Configuration({})
+    }
+
+    static async makeConfigFromJSON(context: Context, object: object) {
+        return new Configuration({})
     }
 
     constructor(context: any, config?: Configuration) {

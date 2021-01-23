@@ -1,12 +1,18 @@
-const Guild = require("../../../models/Guild.js")
+import * as Discord from "discord.js"
+import Guild from "../../../models/Guild"
+import Manager from "../../../lib/Manager"
+import Context from "../../../structures/Context"
+import Configuration from "../models/Configuration"
 
-class VoiceChannelManager {
-    constructor(context, parentChannel) {
-        this.context = context
+class VoiceChannelManager extends Manager {
+    config: Configuration
+    parentChannel: Discord.CategoryChannel
+    channels: Discord.VoiceChannel[] = []
+
+    constructor(context: Context, parentChannel: Discord.CategoryChannel) {
+        super(context)
+
         this.parentChannel = parentChannel
-        this.config = null
-
-        this.channels = []
 
         this.updateVoiceChannels = this.updateVoiceChannels.bind(this)
     }
@@ -18,11 +24,11 @@ class VoiceChannelManager {
                 channel.type === "voice" &&
                 channel.parent &&
                 channel.parent.id === this.parentChannel.id
-            ))
+            )) as Discord.VoiceChannel[]
     }
 
-    async createVoiceChannel(index) {
-        const name = this.config.channelName.replace(/{}/g, index + 1)
+    async createVoiceChannel(index: number) {
+        const name = this.config.channelName.replace(/{}/g, (index + 1).toString())
         const channel = await this.context.guild.channels.create(name, {
             type: "voice",
             parent: this.parentChannel,
@@ -32,7 +38,7 @@ class VoiceChannelManager {
     }
 
     async updateVoiceChannels() {
-        // Delete all but one useless voicechannels
+        // Delete all but one empty voicechannels
         let shouldDeleteChannels = false
         await Promise.all(this.channels.map((channel, index) => {
             if (channel.members.size === 0) {
@@ -48,7 +54,7 @@ class VoiceChannelManager {
             }
         }))
 
-        // Create a new voice channel if there is at least one user in every channel,
+        // Create a new voice channel if there is at least one user in every channel
         if (this.channels.every(channel => channel.members.size > 0)) {
             this.createVoiceChannel(this.channels.length)
         }
@@ -74,4 +80,4 @@ class VoiceChannelManager {
     }
 }
 
-module.exports = VoiceChannelManager
+export default VoiceChannelManager
