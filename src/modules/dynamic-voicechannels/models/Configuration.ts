@@ -1,6 +1,6 @@
 import * as Discord from "discord.js"
 import DefaultConfig from "../../../lib/Configuration"
-import Context from "../../../structures/Context"
+import Context from "../../../lib/Context"
 
 type ConfigProps = {
     parentChannel: Discord.CategoryChannel

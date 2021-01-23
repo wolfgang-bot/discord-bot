@@ -1,4 +1,4 @@
-import DescriptiveObject from "../structures/DescriptiveObject"
+import DescriptiveObject from "../lib/DescriptiveObject"
 
 // Blank character which is not the "whitespace" character (used in discord embeds to make indents)
 const BLANK = "\u200B"

@@ -2,8 +2,8 @@ import fs from "fs"
 import { parseStringPromise as parseXML } from "xml2js"
 import { EventEmitter } from "events"
 import Configuration from "./Configuration"
-import Argument from "../structures/Argument"
-import Context from "../structures/Context"
+import Argument from "./Argument"
+import Context from "./Context"
 
 enum STATES {
     ACTIVE = "active",

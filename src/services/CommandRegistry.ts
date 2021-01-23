@@ -1,5 +1,5 @@
 import * as Discord from "discord.js"
-import Command from "../structures/Command.js"
+import Command from "../lib/Command.js"
 import LocaleServiceProvider from "./LocaleServiceProvider"
 import { parseArguments } from "../utils"
 

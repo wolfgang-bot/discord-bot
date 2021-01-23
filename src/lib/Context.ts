@@ -1,5 +1,5 @@
 import * as Discord from "discord.js"
-import Module from "../lib/Module"
+import Module from "./Module"
 
 export type ContextProps = {
     client: Discord.Client,

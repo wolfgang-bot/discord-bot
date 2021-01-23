@@ -1,4 +1,4 @@
-import Context from "../structures/Context"
+import Context from "./Context"
 
 class Configuration {
     static fromArgs(args: any[]) {

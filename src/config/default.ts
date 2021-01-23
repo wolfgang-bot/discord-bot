@@ -1,7 +1,7 @@
 import glob from "glob-promise"
 import path from "path"
 import emojiRegex from "emoji-regex/RGI_Emoji.js"
-import DescriptiveObject from "../structures/DescriptiveObject"
+import DescriptiveObject from "../lib/DescriptiveObject"
 
 // Match hex colors
 const HEX_COLOR_REGEX = /^#([0-9a-fA-F]{3}){1,2}$/

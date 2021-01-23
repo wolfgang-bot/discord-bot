@@ -1,5 +1,5 @@
 import Configuration from "../lib/Configuration"
-import Context from "../structures/Context"
+import Context from "./Context"
 import Guild from "../models/Guild"
 
 abstract class Manager {
