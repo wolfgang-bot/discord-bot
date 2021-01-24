@@ -1,8 +1,10 @@
-const BaseEmbed = require("../../../lib/BaseEmbed.js")
-const { makeCodeblock } = require("../../../utils")
+import BaseEmbed from "../../../lib/BaseEmbed"
+import LocaleServiceProvider from "../../../services/LocaleServiceProvider"
+import { CommandGroupMap } from "../../../services/CommandRegistry"
+import { makeCodeblock } from "../../../utils"
 
-class HelpEmbed extends BaseEmbed {
-    constructor(config, locale, groups) {
+export default class HelpEmbed extends BaseEmbed {
+    constructor(config, locale: LocaleServiceProvider, groups: CommandGroupMap) {
         super(config)
 
         this.setTitle(locale.translate("embed_help_title"))
@@ -14,5 +16,3 @@ class HelpEmbed extends BaseEmbed {
         })
     }
 }
-
-module.exports = HelpEmbed

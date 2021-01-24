@@ -1,20 +1,19 @@
-const CommandRegistry = require("../../../services/CommandRegistry.js")
-const Guild = require("../../../models/Guild.js")
-const User = require("../../../models/User.js")
-const Member = require("../../../models/Member.js")
+import * as Discord from "discord.js"
+import CommandRegistry from "../../../services/CommandRegistry"
+import Guild from "../../../models/Guild"
+import User from "../../../models/Guild"
+import Member from "../../../models/Member"
+import Context from "../../../lib/Context"
 
 class EventManager {
-    constructor({ client }) {
-        this.client = client
+    client: Discord.Client
+
+    constructor(context: Context) {
+        this.client = context.client
     }
 
-    /**
-     * "message" event handler.
-     * 
-     * @param {Discord.Message} message
-     */
-    async handleMessage(message) {
-        // Execute the requested command via the root command registry
+    async handleMessage(message: Discord.Message) {
+        // Execute the requested command through the root command registry
         if (!message.author.bot && message.content.startsWith(process.env.DISCORD_BOT_PREFIX)) {
             try {
                 await CommandRegistry.root.run(message)
@@ -23,18 +22,12 @@ class EventManager {
                     console.error(error)
                 }
 
-                await message.channel.send(typeof error === "string" ? error : "Serverfehler")
+                await message.channel.send(typeof error === "string" ? error : "Internal Server Error")
             }
         }
     }
 
-    /**
-     * "guildCreate" event handler.
-     * 
-     * @param {Discord.Guild} guild
-     */
-    async handleGuildCreate(guild) {
-        // Store the guild in the database
+    async handleGuildCreate(guild: Discord.Guild) {
         const model = new Guild({ id: guild.id })
         await model.store()
 
@@ -61,12 +54,7 @@ class EventManager {
         }))
     }
 
-    /**
-     * "guildDelete" event handler.
-     * 
-     * @param {Discord.Guild} guild
-     */
-    async handleGuildDelete(guild) {
+    async handleGuildDelete(guild: Discord.Guild) {
         const model = await Guild.findBy("id", guild.id)
 
         if (model) {
@@ -74,17 +62,12 @@ class EventManager {
         }
     }
 
-    /**
-     * "guildMemberAdd" event handler.
-     * 
-     * @param {Discord.Member} member
-     */
-    async handleGuildMemberAdd(member) {
+    async handleGuildMemberAdd(member: Discord.GuildMember) {
         if (member.user.bot) {
             return
         }
 
-        // Fetch the user role
+        // Fetch the "User" role
         const config = await Guild.config(member.guild)
         const roles = await member.guild.roles.fetch()
         const userRole = roles.cache.find(role => role.name === config.userRole)
@@ -111,23 +94,18 @@ class EventManager {
         await model.store()
     }
 
-    /**
-     * "guildMemberRemove" event handler.
-     * 
-     * @param {Discord.Member} member
-     */
-    async handleGuildMemberRemove(member) {
+    async handleGuildMemberRemove(member: Discord.GuildMember) {
         if (member.user.bot) {
             return
         }
 
         // Delete member from database
-        const model = await Member.where(`user_id = '${member.user.id}' AND guild_id = '${member.guild.id}'`)
+        const model = await Member.where(`user_id = '${member.user.id}' AND guild_id = '${member.guild.id}'`) as Member
         if (model) {
             await model.delete()
         }
 
-        // Delete user from database if he has no members anymore
+        // Delete user from database if he doesn't belong to any member
         const members = await Member.findAllBy("user_id", member.user.id)
         if (members.length === 0) {
             await model.fetchUser()
@@ -144,4 +122,4 @@ class EventManager {
     }
 }
 
-module.exports = EventManager
+export default EventManager

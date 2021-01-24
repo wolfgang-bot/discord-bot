@@ -1,8 +1,9 @@
-const BaseEmbed = require("../../../lib/BaseEmbed.js")
-const { capitalCase } = require("change-case")
+import { capitalCase } from "change-case"
+import BaseEmbed from "../../../lib/BaseEmbed"
+import LocaleServiceProvider from "../../../services/LocaleServiceProvider"
 
-class ModuleConfigEmbed extends BaseEmbed {
-    constructor(config, locale, moduleName, moduleConfig) {
+export default class ModuleConfigEmbed extends BaseEmbed {
+    constructor(config, locale: LocaleServiceProvider, moduleName: string, moduleConfig: object) {
         super(config)
         
         this.setTitle(locale.translate("embed_module_config_title", moduleName))
@@ -16,5 +17,3 @@ class ModuleConfigEmbed extends BaseEmbed {
         })
     }
 }
-
-module.exports = ModuleConfigEmbed

@@ -3,43 +3,31 @@ import Command from "../lib/Command.js"
 import LocaleServiceProvider from "./LocaleServiceProvider"
 import { parseArguments } from "../utils"
 
-type CommandMap = {
+export type CommandMap = {
     [key: string]: Command
 }
 
-type CommandGroups = {
+export type CommandGroupMap = {
     [group: string]: Command[]
 }
 
 class CommandRegistry extends Command {
-    // Root registry -> May have child registries
     static root: CommandRegistry = null
-
     defaultCommand: Command
     commands: CommandMap = {}
     commandNames: Set<string> = new Set()
+    name = null
+    group = null
 
-    constructor(commands = []) {
-        super(null)
-
-        // The super constructor overrides the "run" method
-        this.run = this._run
-
+    constructor(commands: Command[] = []) {
+        super()
         commands.forEach(this.register.bind(this))
-    }
-
-    /**
-     * Set the command which will be executed when no sub-command is specified
-     */
-    setDefaultCommand(command: Command) {
-        this.defaultCommand = command
-        return this
     }
 
     /**
      * Run a command by parsing the message's content
      */
-    async _run(message: Discord.Message, args: string[]) {
+    async run(message: Discord.Message, args?: string[]) {
         if (!message.guild) {
             throw "Commands are only available on servers"
         }
@@ -71,7 +59,7 @@ class CommandRegistry extends Command {
      * Register a command. Sets the parent of the given command to this.
      */
     register(command: Command) {
-        command.setParent(this)
+        command.parent = this
 
         this.commands[command.name] = command
         command.alias.forEach(alias => this.commands[alias] = command)
@@ -107,7 +95,7 @@ class CommandRegistry extends Command {
      * Get all commands mapped by their groups
      */
     getGroups() {
-        const groups: CommandGroups = {}
+        const groups: CommandGroupMap = {}
 
         this.commandNames.forEach(name => {
             const command = this.commands[name]

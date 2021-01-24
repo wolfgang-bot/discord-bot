@@ -1,9 +1,15 @@
-const BaseEmbed = require("../../../lib/BaseEmbed.js")
-const ModuleServiceProvider = require("../../../services/ModuleServiceProvider.js")
-const { makeCodeblock, makeURL } = require("../../../utils")
+import BaseEmbed from "../../../lib/BaseEmbed"
+import ModuleServiceProvider from "../../../services/ModuleServiceProvider"
+import LocaleServiceProvider from "../../../services/LocaleServiceProvider"
+import Guild from "../../../models/Guild"
+import { makeCodeblock, makeURL } from "../../../utils"
 
-class ModulesEmbed extends BaseEmbed {
-    constructor(config, locale, { guild }) {
+export default class ModulesEmbed extends BaseEmbed {
+    constructor(
+        config,
+        locale: LocaleServiceProvider,
+        { guild }: { guild: Guild }
+    ) {
         super(config)
 
         const modules = ModuleServiceProvider.modules.filter(module => !module.isGlobal)
@@ -15,5 +21,3 @@ class ModulesEmbed extends BaseEmbed {
             .addField(locale.translate("embed_modules_list_active"), makeCodeblock(moduleInstances.map(instance => instance.context.module.name).join("\n")), true)
     }
 }
-
-module.exports = ModulesEmbed

@@ -9,14 +9,14 @@ import defaultConfigRaw from "../config/default"
 export type GuildModelValues = {
     id: string
     locale?: string
-    config?: object
+    config?: any
 }
 
-const defaultConfig: object = formatDescriptiveObject(defaultConfigRaw)
+const defaultConfig: any = formatDescriptiveObject(defaultConfigRaw)
 
 class Guild extends Model implements GuildModelValues {
     locale: string
-    config: object
+    config: any
     discordGuild: Discord.Guild
 
     static async config(guild: Discord.Guild) {

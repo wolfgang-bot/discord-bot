@@ -1,7 +1,8 @@
-const BaseEmbed = require("../../../lib/BaseEmbed.js")
+import BaseEmbed from "../../../lib/BaseEmbed"
+import LocaleServiceProvider from "../../../services/LocaleServiceProvider"
 
-class LocaleEmbed extends BaseEmbed {
-    constructor(config, locale, code, availableCodes) {
+export default class LocaleEmbed extends BaseEmbed {
+    constructor(config, locale: LocaleServiceProvider, code: string, availableCodes: string[]) {
         super(config)
 
         this.setTitle(locale.translate("embed_locale_title"))
@@ -9,5 +10,3 @@ class LocaleEmbed extends BaseEmbed {
             .addField(locale.translate("embed_locale_field_available_title"), locale.translate("embed_locale_field_available_content", availableCodes.join("\n")))
     }
 }
-
-module.exports = LocaleEmbed

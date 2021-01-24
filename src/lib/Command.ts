@@ -1,25 +1,22 @@
 import * as Discord from "discord.js"
 
-class Command {
-    run: Function
-    name: string
+abstract class Command {
+    abstract name: string
     group: string
-    parent: Command
     description: string
-    arguments: string[] = []
+    arguments: string
+    alias: string[]
+    permissions: Discord.PermissionString[]
+    parent: Command
     module: string
-    alias: string[] = []
-    permissions: Discord.PermissionString[] = []
 
-    constructor(run: Function) {
-        this.run = run
-    }
+    abstract run(message: Discord.Message, args: string[]): Promise<void>
 
     /**
      * Get the command required to call this command by traversing the command
-     * tree and concatenating the command names.
+     * tree and concatenating the command names
      */
-    getCallableName(): string {
+    getCallableName() {
         const names: string[] = []
 
         let command: Command = this
@@ -35,7 +32,7 @@ class Command {
 
     /**
      * Determine the required permissions to run this command by traversing
-     * the command tree.
+     * the command tree
      */
     getPermissions() {
         const permissions: Discord.PermissionString[] = []
@@ -50,7 +47,7 @@ class Command {
     }
 
     /**
-     * Get the module this command demands by traversing the command tree.
+     * Get the module this command demands by traversing the command tree
      */
     getModule(): string {
         if (this.module) {
@@ -58,45 +55,6 @@ class Command {
         }
 
         return this.parent.getModule()
-    }
-
-    setName(name: string) {
-        this.name = name
-        return this
-    }
-    
-    setGroup(group: string) {
-        this.group = group
-        return this
-    }
-    
-    setParent(parent: Command) {
-        this.parent = parent
-        return this
-    }
-    
-    setDescription(description: string) {
-        this.description = description
-        return this
-    }
-    
-    setArguments(args: string[]) {
-        this.arguments = args
-        return this
-    }
-    
-    setAlias(alias: string[]) {
-        this.alias = alias
-        return this
-    }
-    
-    setPermissions(permissions: Discord.PermissionString[]) {
-        this.permissions = permissions
-        return this
-    }
-
-    setModule(module: string) {
-        this.module = module
     }
 }
 
