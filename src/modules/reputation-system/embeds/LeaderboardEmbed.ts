@@ -1,8 +1,11 @@
-const BaseEmbed = require("../../../lib/BaseEmbed.js")
-const { getLevel, space } = require("../../../utils")
+import BaseEmbed from "../../../lib/BaseEmbed"
+import Collection from "../../../lib/Collection"
+import Member from "../../../models/Member"
+import LocaleServiceProvider from "../../../services/LocaleServiceProvider"
+import { getLevel, space } from "../../../utils"
 
-class LeaderbaordEmbed extends BaseEmbed {
-    constructor(config, locale, users) {
+export default class LeaderbaordEmbed extends BaseEmbed {
+    constructor(config, locale: LocaleServiceProvider, members: Collection<Member>) {
         super(config)
         
         const moduleConfig = config["reputation-system"]
@@ -11,7 +14,7 @@ class LeaderbaordEmbed extends BaseEmbed {
 
         let desc = ""
 
-        users.forEach((user, i) => {
+        members.forEach((user, i) => {
             const level = getLevel(config, user.reputation)
             const nextLevelReputation = moduleConfig.roleThresholds[Math.min(level + 1, moduleConfig.roleThresholds.length - 1)]
 
@@ -29,5 +32,3 @@ class LeaderbaordEmbed extends BaseEmbed {
         this.setDescription(desc)
     }
 }
-
-module.exports = LeaderbaordEmbed

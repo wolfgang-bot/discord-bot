@@ -13,6 +13,10 @@ export type ModuleInstanceModelValues = {
 }
 
 class ModuleInstance extends Model implements ModuleInstanceModelValues {
+    static context = {
+        model: ModuleInstance,
+        table: "module_instances"
+    }
     module_id: string
     guild_id: string
     config: object
@@ -55,7 +59,5 @@ class ModuleInstance extends Model implements ModuleInstanceModelValues {
         }
     }
 }
-
-Model.bind(ModuleInstance, "module_instances")
 
 export default ModuleInstance

@@ -7,6 +7,10 @@ export type ModuleModelValues = {
 }
 
 class Module extends Model implements ModuleModelValues {
+    static context = {
+        model: Module,
+        table: "modules"
+    }
     name: string
 
     constructor(values: ModuleModelValues) {
@@ -19,8 +23,8 @@ class Module extends Model implements ModuleModelValues {
             values
         })
     }
-}
 
-Model.bind(Module, "modules")
+    init() {}
+}
 
 export default Module

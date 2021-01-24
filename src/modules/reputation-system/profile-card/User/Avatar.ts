@@ -1,9 +1,17 @@
-class Avatar {
-    constructor(config, theme, uri) {
-        this.theme = theme
-        this.uri = uri
+import SVGComponent from "../../../../lib/SVGComponent"
+import { Theme } from "../ProfileCard"
 
-        this.size = 64
+export default class Avatar extends SVGComponent {
+    uri: string
+    size: number = 64
+
+    constructor(config, theme: Theme, uri: string) {
+        super()
+        this.uri = uri
+    }
+
+    getWidth() {
+        return this.size
     }
 
     getHeight() {
@@ -29,5 +37,3 @@ class Avatar {
         `
     }
 }
-
-module.exports = Avatar

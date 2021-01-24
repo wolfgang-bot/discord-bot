@@ -9,7 +9,7 @@ export type ModelProps = {
     defaultValues?: object
 }
 
-type ModelContext = {
+export type ModelContext = {
     model: new (values: object) => Model
     table: string
 }
@@ -22,22 +22,25 @@ type QueryOptions = {
  * Class representing a Model. Strictly bound to the database.
  */
 abstract class Model {
-    public table: string
-    public columns: string[]
-    public id: string
+    static context: ModelContext
+    private table: string
+    private columns: string[]
+    id: string
+
+    abstract init(...args: any[]): void | Promise<void>
 
     /**
      * Select all matches for the given SQL selector and return a
      * collection containing models for all rows in the query result
      */
-    static async whereAll(this: ModelContext, selector: string, options: QueryOptions = {}): Promise<Collection<Model>> {
+    static async whereAll(selector: string, options: QueryOptions = {}): Promise<Collection<Model>> {
         // Get matches from database
-        const query = `SELECT * FROM ${this.table} WHERE ${selector}`
+        const query = `SELECT * FROM ${this.context.table} WHERE ${selector}`
         const results: RowDataPacket[] = await database.all(query)
 
         // Create models from results
         const models = await Promise.all(results.map(async row => {
-            const model = new this.model(row)
+            const model = new this.context.model(row)
 
             await model.init(options.initArgs)
 
@@ -78,19 +81,8 @@ abstract class Model {
     /**
      * Create models from database results
      */
-    static fromRows(this: ModelContext, rows: RowDataPacket[]) {
-        return new Collection<Model>(...rows.map(row => new this.model(row)))
-    }
-
-    /**
-     * Pass all static methods from "Model" to the given class
-     */
-    static bind(cls: new (values: object) => Model, table: string) {
-        const context: ModelContext = { model: cls, table }
-
-        Object.getOwnPropertyNames(Model)
-            .filter(prop => typeof Model[prop] === "function")
-            .forEach(prop => cls[prop] = Model[prop].bind(context))
+    static fromRows(rows: RowDataPacket[]) {
+        return new Collection<Model>(...rows.map(row => new this.context.model(row)))
     }
 
     /**
@@ -116,11 +108,6 @@ abstract class Model {
         const query = `DELETE FROM ${this.table} WHERE id = '${this.id}'`
         await database.run(query)
     }
-
-    /**
-     * Initialize model-specific properties (e.g. relations)
-     */
-    init(...args: any): any {}
 
     /**
      * Make an array which contains the column's values

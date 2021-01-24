@@ -13,12 +13,6 @@ class QuestionChannelsModule extends Module {
     config: Configuration
     channelManager: ChannelManager
 
-    constructor(context: Context, config: Configuration) {
-        super(context)
-        
-        this.config = config
-    }
-
     async start() {
         this.channelManager = new ChannelManager(this.context, this.config)
 

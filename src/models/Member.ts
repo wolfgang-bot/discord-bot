@@ -12,6 +12,10 @@ export type MemberModelValues = {
 }
 
 class Member extends Model implements MemberModelValues {
+    static context = {
+        model: Member,
+        table: "members"
+    }
     user_id: string
     guild_id: string
     reputation: number
@@ -35,6 +39,8 @@ class Member extends Model implements MemberModelValues {
         this.discordUser = null
     }
 
+    init() {}
+
     async fetchUser() {
         this.user = await User.findBy("id", this.user_id) as User
     }
@@ -47,7 +53,5 @@ class Member extends Model implements MemberModelValues {
         this.discordUser = await client.users.fetch(this.user_id)
     }
 }
-
-Model.bind(Member, "members")
 
 export default Member

@@ -1,14 +1,25 @@
-class ProgressBar {
-    constructor(config, theme, user, width, progress) {
-        this.theme = theme
-        this.user = user
+import SVGComponent from "../../../../lib/SVGComponent"
+import Member from "../../../../models/Member"
+import { Theme } from "../ProfileCard"
+
+export default class ProgressBar extends SVGComponent {
+    member: Member
+    width: number
+    progress: number
+    height: number = 4
+    r: number = this.height / 2
+    fill: string = "#080D14"
+    fillOverlay: string = "#5C6FF4"
+
+    constructor(config, theme: Theme, member: Member, width: number, progress: number) {
+        super()
+        this.member = member
         this.width = width
         this.progress = progress
+    }
 
-        this.height = 4
-        this.r = this.height / 2
-        this.fill = "#080D14"
-        this.fillOverlay = "#5C6FF4"
+    getWidth() {
+        return this.width
     }
     
     getHeight() {
@@ -33,5 +44,3 @@ class ProgressBar {
         `
     }
 }
-
-module.exports = ProgressBar

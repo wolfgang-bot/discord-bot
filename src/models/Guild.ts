@@ -15,6 +15,10 @@ export type GuildModelValues = {
 const defaultConfig: any = formatDescriptiveObject(defaultConfigRaw)
 
 class Guild extends Model implements GuildModelValues {
+    static context = {
+        model: Guild,
+        table: "guilds"
+    }
     locale: string
     config: any
     discordGuild: Discord.Guild
@@ -66,7 +70,5 @@ class Guild extends Model implements GuildModelValues {
         }
     }
 }
-
-Model.bind(Guild, "guilds")
 
 export default Guild

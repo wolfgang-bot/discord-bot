@@ -1,27 +1,32 @@
-const LocaleServiceProvider = require("../../../services/LocaleServiceProvider.js")
-const LevelUpEmbed = require("./../embeds/LevelUpEmbed.js")
-const Member = require("../../../models/Member.js")
-const Guild = require("../../../models/Guild.js")
-const { getLevel } = require("../../../utils")
+import * as Discord from "discord.js"
+import Manager from "../../../lib/Manager"
+import Context from "../../../lib/Context"
+import LocaleServiceProvider from "../../../services/LocaleServiceProvider"
+import LevelUpEmbed from "./../embeds/LevelUpEmbed"
+import Member from "../../../models/Member"
+import Guild from "../../../models/Guild"
+import { getLevel } from "../../../utils"
+import Configuration from "../models/Configuration"
 
-class ReputationManager {
-    constructor(context, channel) {
-        this.context = context
-        this.channel = channel
-        this.guildConfig = null
-        this.config = null
+export default class ReputationManager extends Manager {
+    channel: Discord.TextChannel
+    guildConfig
+    config: Configuration
+    roles: Discord.Role[] = []
 
-        this.roles = []
+    constructor(context: Context, config: Configuration) {
+        super(context)
+        this.channel = config.channel
 
         this.handleReputationAdd = this.handleReputationAdd.bind(this)
     }
 
-    async handleReputationAdd(member, amount) {
+    async handleReputationAdd(member: Discord.GuildMember, amount: number) {
         if (member.user.bot || member.guild.id !== this.context.guild.id) {
             return
         }
         
-        let model = await Member.where(`user_id = '${member.user.id}' AND guild_id = ${member.guild.id}`)
+        let model = await Member.where(`user_id = '${member.user.id}' AND guild_id = ${member.guild.id}`) as Member
 
         if (!model) {
             model = new Member({
@@ -77,14 +82,14 @@ class ReputationManager {
         await Promise.all(this.roles.map(role => role.delete()))
     }
 
-    async changeLevel(member, prevLevel, newLevel) {
+    async changeLevel(member: Discord.GuildMember, prevLevel: number, newLevel: number) {
         if (prevLevel >= 0) {
             await member.roles.remove(this.roles[prevLevel])
         }
         await member.roles.add(this.roles[newLevel])
     }
 
-    async announceLevelUp(user, newLevel) {
+    async announceLevelUp(user: Discord.User, newLevel: number) {
         const locale = (await LocaleServiceProvider.guild(this.context.guild)).scope("reputation-system")
 
         const message = await this.channel.send(new LevelUpEmbed(this.guildConfig, locale, user, newLevel))
@@ -107,5 +112,3 @@ class ReputationManager {
         this.context.client.removeListener("reputationAdd", this.handleReputationAdd)
     }
 }
-
-module.exports = ReputationManager

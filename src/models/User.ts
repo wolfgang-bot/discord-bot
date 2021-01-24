@@ -8,6 +8,10 @@ export type UserModelValues = {
 }
 
 class User extends Model implements UserModelValues {
+    static context = {
+        model: User,
+        table: "users"
+    }
     access_token: string
     refresh_token: string
     discordUser: Discord.User = null
@@ -19,6 +23,8 @@ class User extends Model implements UserModelValues {
             values
         })
     }
+
+    init() {}
 
     async fetchDiscordUser(client: Discord.Client) {
         this.discordUser = await client.users.fetch(this.id)
@@ -33,7 +39,5 @@ class User extends Model implements UserModelValues {
         }
     }
 }
-
-Model.bind(User, "users")
 
 export default User
