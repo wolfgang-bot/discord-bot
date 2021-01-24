@@ -9,14 +9,14 @@ export type ModuleInstanceModelValues = {
     module_id: string
     guild_id: string
     config: object
-    data?: object
+    data?: any
 }
 
 class ModuleInstance extends Model implements ModuleInstanceModelValues {
     module_id: string
     guild_id: string
     config: object
-    data: object
+    data: any
     module: Module
     guild: Guild
     discordUser: Discord.User

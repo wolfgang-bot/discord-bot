@@ -1,20 +1,26 @@
-const LocaleServiceProvider = require("../../services/LocaleServiceProvider.js")
-const Configuration = require("./models/Configuration.js")
-const ChannelManager = require("./managers/ChannelManager.js")
-const HelpEmbed = require("./embeds/HelpEmbed.js")
-const Guild = require("../../models/Guild.js")
+import Context from "../../lib/Context"
+import Module from "../../lib/Module"
+import LocaleServiceProvider from "../../services/LocaleServiceProvider"
+import Configuration from "./models/Configuration"
+import ChannelManager from "./managers/ChannelManager"
+import HelpEmbed from "./embeds/HelpEmbed"
+import Guild from "../../models/Guild"
 
-class QuestionChannelsModule {
+class QuestionChannelsModule extends Module {
     static makeConfigFromArgs = Configuration.fromArgs
     static makeConfigFromJSON = Configuration.fromJSON
 
-    constructor(context, config) {
-        this.context = context
+    config: Configuration
+    channelManager: ChannelManager
+
+    constructor(context: Context, config: Configuration) {
+        super(context)
+        
         this.config = config
     }
 
     async start() {
-        this.channelManager = new ChannelManager(this.context, this.config.channel)
+        this.channelManager = new ChannelManager(this.context, this.config)
 
         const guildConfig = await Guild.config(this.context.guild)
         const moduleConfig = guildConfig["question-channels"]
@@ -45,4 +51,4 @@ class QuestionChannelsModule {
     }
 }
 
-module.exports = QuestionChannelsModule
+export default QuestionChannelsModule

@@ -1,7 +1,9 @@
-const BaseEmbed = require("../../../lib/BaseEmbed.js")
+import * as Discord from "discord.js"
+import BaseEmbed from "../../../lib/BaseEmbed"
+import LocaleServiceProvider from "../../../services/LocaleServiceProvider"
 
-class NotificationEmbed extends BaseEmbed {
-    constructor(config, locale, guild) {
+export default class NotificationEmbed extends BaseEmbed {
+    constructor(config, locale: LocaleServiceProvider, guild: Discord.Guild) {
         super(config)
 
         this.setTitle(locale.translate("embed_notification_title", guild.name))
@@ -17,5 +19,3 @@ class NotificationEmbed extends BaseEmbed {
             ])
     }
 }
-
-module.exports = NotificationEmbed

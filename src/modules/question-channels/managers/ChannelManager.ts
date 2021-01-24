@@ -1,26 +1,40 @@
-const LocaleServiceProvider = require("../../../services/LocaleServiceProvider.js")
-const ActiveChannel = require("../models/ActiveChannel.js")
-const QuestionEmbed = require("../embeds/QuestionEmbed.js")
-const NotificationEmbed = require("../embeds/NotificationEmbed.js")
-const Guild = require("../../../models/Guild.js")
-const Module = require("../../../models/Module.js")
-const ModuleInstance = require("../../../models/ModuleInstance.js")
+import * as Discord from "discord.js"
+import Context from "../../../lib/Context"
+import Manager from "../../../lib/Manager.js"
+import LocaleServiceProvider from "../../../services/LocaleServiceProvider.js"
+import Guild from "../../../models/Guild.js"
+import Module from "../../../models/Module.js"
+import ModuleInstance from "../../../models/ModuleInstance.js"
+import QuestionEmbed from "../embeds/QuestionEmbed.js"
+import NotificationEmbed from "../embeds/NotificationEmbed.js"
+import ActiveChannel, { ActiveChannelJSON } from "../models/ActiveChannel.js"
+import Configuration from "../models/Configuration"
 
-class ChannelManager {
-    constructor(context, channel) {
-        this.context = context
-        this.channel = channel
-        this.guildConfig = null
-        this.config = null
+type InstanceData = {
+    activeChannels: ActiveChannelsMap
+}
 
-        this.activeChannels = {} // Map: channel-id -> ActiveChannel
-        this.timeoutUsers = new Set()
+type ActiveChannelsMap = {
+    [channelId: string]: ActiveChannel | ActiveChannelJSON
+}
+
+class ChannelManager extends Manager {
+    channel: Discord.TextChannel
+    guildConfig: any
+    activeChannels: ActiveChannelsMap = {}
+    timeoutUsers: Set<string> = new Set
+    config: Configuration
+
+    constructor(context: Context, config: Configuration) {
+        super(context)
+
+        this.channel = config.channel
 
         this.handleMessage = this.handleMessage.bind(this)
         this.handleReaction = this.handleReaction.bind(this)
     }
 
-    async handleMessage(message) {
+    async handleMessage(message: Discord.Message) {
         if (message.author.bot || !message.guild || message.guild.id !== this.context.guild.id) {
             return
         }
@@ -31,7 +45,7 @@ class ChannelManager {
             return
         }
 
-        const activeChannel = this.activeChannels[message.channel.id]
+        const activeChannel = this.activeChannels[message.channel.id] as ActiveChannel
 
         if (activeChannel) {
             // Add reputation to author
@@ -59,7 +73,7 @@ class ChannelManager {
         
     }
 
-    async handleReaction(reaction, user) {
+    async handleReaction(reaction: Discord.MessageReaction, user: Discord.User) {
         if (
             user.bot ||
             reaction.message.guild.id !== this.context.guild.id ||
@@ -68,7 +82,7 @@ class ChannelManager {
             return
         }
         
-        const activeChannel = this.activeChannels[reaction.message.channel.id]
+        const activeChannel = this.activeChannels[reaction.message.channel.id] as ActiveChannel
         
         if (user.id !== activeChannel.user.id) {
             return
@@ -79,7 +93,7 @@ class ChannelManager {
         }
     }
 
-    async resolveChannel(channel, reaction, user) {
+    async resolveChannel(channel: Discord.TextChannel, reaction: Discord.MessageReaction, user: Discord.User) {
         const locale = (await LocaleServiceProvider.guild(this.context.guild)).scope("question-channels")
 
         if (reaction.message.author.bot) {
@@ -99,13 +113,13 @@ class ChannelManager {
         await this.deleteChannel(channel)
     }
 
-    async deleteChannel(channel) {
+    async deleteChannel(channel: Discord.TextChannel) {
         await channel.delete()
         delete this.activeChannels[channel.id]
         await this.storeActiveChannels()
     }
 
-    async createChannel(message) {
+    async createChannel(message: Discord.Message) {
         const locale = (await LocaleServiceProvider.guild(this.context.guild)).scope("question-channels")
 
         // Delete original message of user
@@ -113,7 +127,8 @@ class ChannelManager {
 
         // Check if user already has an active channel
         const dm = await message.author.createDM()
-        if (Object.values(this.activeChannels).some(({ user }) => user.id === message.author.id)) {
+        const channels = Object.values(this.activeChannels) as ActiveChannel[]
+        if (channels.some(({ user }) => user.id === message.author.id)) {
             await dm.send(locale.translate("error_too_many_questions", message.content))
             return
         }
@@ -155,11 +170,12 @@ class ChannelManager {
     async loadActiveChannels() {
         const instance = await this.fetchInstance()
 
-        const { activeChannels } = instance.data
+        const { activeChannels } = instance.data as InstanceData
 
         if (activeChannels) {
-            await Promise.all(Object.entries(activeChannels).map(async ([id, { channelId, messageId, userId }]) => {
-                const channel = await this.context.guild.channels.cache.get(channelId)
+            const channels = Object.entries(activeChannels) as [string, ActiveChannelJSON][]
+            await Promise.all(channels.map(async ([id, { channelId, messageId, userId }]) => {
+                const channel = this.context.guild.channels.cache.get(channelId) as Discord.TextChannel
                 const message = await channel.messages.fetch(messageId)
                 const user = await this.context.client.users.fetch(userId)
 
@@ -169,8 +185,8 @@ class ChannelManager {
     }
 
     async fetchInstance() {
-        const module = await Module.findBy("name", this.context.module.name)
-        return await ModuleInstance.where(`module_id = '${module.id}' AND guild_id = '${this.context.guild.id}'`)
+        const module = await Module.findBy("name", this.context.module.internalName)
+        return await ModuleInstance.where(`module_id = '${module.id}' AND guild_id = '${this.context.guild.id}'`) as ModuleInstance
     }
     
     async init() {
@@ -185,11 +201,12 @@ class ChannelManager {
     
     async delete() {
         // Delete all active channels
-        await Promise.all(Object.values(this.activeChannels).map(({ channel }) => channel.delete()))
+        const channels = Object.values(this.activeChannels) as ActiveChannel[]
+        await Promise.all(channels.map(({ channel }) => channel.delete()))
 
         this.context.client.removeListener("message", this.handleMessage)
         this.context.client.removeListener("messageReactionAdd", this.handleReaction)
     }
 }
 
-module.exports = ChannelManager
+export default ChannelManager

@@ -1,7 +1,8 @@
-const BaseEmbed = require("../../../lib/BaseEmbed.js")
+import BaseEmbed from "../../../lib/BaseEmbed"
+import LocaleServiceProvider from "../../../services/LocaleServiceProvider"
 
-class HelpEmbed extends BaseEmbed {
-    constructor(config, locale) {
+export default class HelpEmbed extends BaseEmbed {
+    constructor(config, locale: LocaleServiceProvider) {
         super(config)
 
         this.setTitle(locale.translate("embed_help_title"))
@@ -21,5 +22,3 @@ class HelpEmbed extends BaseEmbed {
             ])
     }
 }
-
-module.exports = HelpEmbed

@@ -1,7 +1,9 @@
-const BaseEmbed = require("../../../lib/BaseEmbed.js")
+import * as Discord from "discord.js"
+import BaseEmbed from "../../../lib/BaseEmbed"
+import LocaleServiceProvider from "../../../services/LocaleServiceProvider"
 
-class QuestionEmbed extends BaseEmbed {
-    constructor(config, locale, message) {
+export default class QuestionEmbed extends BaseEmbed {
+    constructor(config, locale: LocaleServiceProvider, message: Discord.Message) {
         super(config)
 
         const lines = message.content.split("\n")
@@ -14,5 +16,3 @@ class QuestionEmbed extends BaseEmbed {
             .setTimestamp()
     }
 }
-
-module.exports = QuestionEmbed

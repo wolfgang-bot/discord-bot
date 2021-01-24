@@ -3,11 +3,11 @@ import Configuration from "./models/Configuration"
 import VoiceChannelManager from "./managers/VoiceChannelManager"
 
 class DynamicVoicechannelsModule extends Module {
-    voiceChannelManager: VoiceChannelManager
-    config: Configuration
-
     static makeConfigFromArgs = Configuration.fromArgs
     static makeConfigFromJSON = Configuration.fromJSON
+
+    voiceChannelManager: VoiceChannelManager
+    config: Configuration
 
     async start() {
         this.voiceChannelManager = new VoiceChannelManager(this.context, this.config.parentChannel)
