@@ -1,4 +1,6 @@
+import * as Discord from "discord.js"
 import DescriptiveObject from "../lib/DescriptiveObject"
+import User from "../models/User"
 
 // Blank character which is not the "whitespace" character (used in discord embeds to make indents)
 const BLANK = "\u200B"
@@ -281,4 +283,12 @@ export function transferValues(from: object, to: object): object {
     _transfer(from, to, result)
 
     return result
+}
+
+/**
+ * Check if a guild member has all permissions
+ */
+export async function checkPermissions(guild: Discord.Guild, user: User, permissions: Discord.PermissionString[]) {
+    const member = await guild.members.fetch(user.id)
+    return member.hasPermission(permissions)
 }

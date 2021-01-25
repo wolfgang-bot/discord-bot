@@ -2,7 +2,7 @@ import Guild from "../../../models/Guild"
 import defaultConfig from "../../../config/default"
 import { success, error } from "../responses"
 import { compareStructure, verifyConstraints, insertIntoDescriptiveObject } from "../../../utils"
-import { checkPermissions } from "../../utils"
+import { checkPermissions } from "../../../utils"
 import WebSocketController from "../../../lib/WebSocketController"
 
 export default class ConfigController extends WebSocketController {

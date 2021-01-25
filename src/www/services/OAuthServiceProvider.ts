@@ -1,16 +1,13 @@
-const fetch = require("node-fetch")
-const config = require("../config")
-const jwt = require("jsonwebtoken")
-const { makeURL } = require("../../utils")
+import fetch from "node-fetch"
+import jwt from "jsonwebtoken"
+import config from "../config"
+import { makeURL } from "../../utils"
 
-class OAuthServiceProvider {
+export default class OAuthServiceProvider {
     /**
-     * Request an OAuth token from discord
-     * 
-     * @param {String} code 
-     * @returns {Promise<Object>}
+     * Request an oauth token from discord
      */
-    static requestToken(code) {
+    static requestToken(code: string): Promise<object> {
         return new Promise((resolve, reject) => {
             const headers = {
                 "Content-Type": "application/x-www-form-urlencoded"
@@ -37,13 +34,9 @@ class OAuthServiceProvider {
     }
 
     /**
-     * Make an api request with the oauth token
-     * 
-     * @param {String} token
-     * @param {String} path
-     * @returns {Promise<Object>}
+     * Make an api request with an oauth token
      */
-    static apiRequest(token, path) {
+    static apiRequest(token: string, path: string): Promise<object> {
         return new Promise((resolve, reject) => {
             fetch(config.discord.api.basename + path, {
                 headers: {
@@ -64,48 +57,34 @@ class OAuthServiceProvider {
 
     /**
      * Fetch the profile of a discord user
-     * 
-     * @param {String} token OAuth token 
-     * @returns {Promise<Object>} Discord User
      */
-    static fetchProfile(token) {
+    static fetchProfile(token: string) {
         return OAuthServiceProvider.apiRequest(token, "/users/@me")
     }
 
     /**
      * Fetch the guilds of a discord user
-     * 
-     * @param {String} token
-     * @returns {Promise<Object>} User's Guilds
      */
-    static fetchGuilds(token) {
+    static fetchGuilds(token: string) {
         return OAuthServiceProvider.apiRequest(token, "/users/@me/guilds")
     }
 
     /**
      * Generates a token (JWT)
-     * 
-     * @param {String} input
-     * @returns {String} Token 
      */
-    static generateToken(input) {
+    static generateToken(input: string) {
         return jwt.sign(input, process.env.JWT_SECRET)
     }
 
     /**
      * Verifies and decodes a token (JWT)
-     * 
-     * @param {String} token
-     * @returns {Promise<String>} A promise which resolves with the decoded value 
      */
-    static verifyToken(token) {
+    static verifyToken(token: string): Promise<string> {
         return new Promise((resolve, reject) => {
             jwt.verify(token, process.env.JWT_SECRET, (error, decoded) => {
                 if (error) reject(error)
-                else resolve(decoded)
+                else resolve(decoded as unknown as string)
             })
         })
     }
 }
-
-module.exports = OAuthServiceProvider

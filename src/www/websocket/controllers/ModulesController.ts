@@ -4,7 +4,7 @@ import ModuleServiceProvider from "../../../services/ModuleServiceProvider"
 import Guild from "../../../models/Guild"
 import Module from "../../../models/Module"
 import { error, success } from "../responses"
-import { checkPermissions } from "../../utils"
+import { checkPermissions } from "../../../utils"
 
 export default class ModulesController extends WebSocketController {
     /**
