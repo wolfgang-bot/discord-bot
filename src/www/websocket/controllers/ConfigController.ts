@@ -1,26 +1,16 @@
-const Guild = require("../../../models/Guild.js")
-const defaultConfig = require("../../../config/default.js")
-const { success, error } = require("../responses.js")
-const { compareStructure, verifyConstraints, insertIntoDescriptiveObject } = require("../../../utils")
-const { checkPermissions } = require("../../utils")
+import Guild from "../../../models/Guild"
+import defaultConfig from "../../../config/default"
+import { success, error } from "../responses"
+import { compareStructure, verifyConstraints, insertIntoDescriptiveObject } from "../../../utils"
+import { checkPermissions } from "../../utils"
+import WebSocketController from "../../../lib/WebSocketController"
 
-class ConfigController {
-    /**
-     * @param {Discord.Client} client 
-     */
-    constructor(client) {
-        this.client = client
-    }
-
+export default class ConfigController extends WebSocketController {
     /**
      * Get a guild's configuration in form of a descriptive object
-     * 
-     * @param {Socket} socket
-     * @param {String} guildId
-     * @param {Function} send
      */
-    async getConfigDescriptive(socket, guildId, send) {
-        const guild = await Guild.findBy("id", guildId)
+    async getConfigDescriptive(guildId: string, send: Function) {
+        const guild = await Guild.findBy("id", guildId) as Guild
 
         if (!guild) {
             return send(error(404, "Guild not found"))
@@ -28,7 +18,7 @@ class ConfigController {
 
         await guild.fetchDiscordGuild(this.client)
 
-        if (!await checkPermissions(guild.discordGuild, socket.user, ["MANAGE_GUILD"])) {
+        if (!await checkPermissions(guild.discordGuild, this.socket.user, ["MANAGE_GUILD"])) {
             return send(error(403))
         }
 
@@ -40,8 +30,8 @@ class ConfigController {
     /**
      * Update a guild's configuration
      */
-    async updateConfig(socket, guildId, newValue, send) {
-        const guild = await Guild.findBy("id", guildId)
+    async updateConfig(guildId: string, newValue: object, send: Function) {
+        const guild = await Guild.findBy("id", guildId) as Guild
 
         if (!guild) {
             return send(error(404, "Guild not found"))
@@ -49,7 +39,7 @@ class ConfigController {
 
         await guild.fetchDiscordGuild(this.client)
 
-        if (!await checkPermissions(guild.discordGuild, socket.user, ["MANAGE_GUILD"])) {
+        if (!await checkPermissions(guild.discordGuild, this.socket.user, ["MANAGE_GUILD"])) {
             return send(error(403))
         }
 
@@ -64,7 +54,7 @@ class ConfigController {
         /**
          * Check if the given object matches all constraints
          */
-        const errors = verifyConstraints(req.body, defaultConfig)
+        const errors = verifyConstraints(newValue, defaultConfig)
 
         if (errors) {
             return send(error(400, errors))
@@ -76,5 +66,3 @@ class ConfigController {
         send(success())
     }
 }
-
-module.exports = ConfigController

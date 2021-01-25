@@ -1,25 +1,16 @@
-const HttpModulesController = require("../../controllers/ModulesController.js")
-const ModuleServiceProvider = require("../../../services/ModuleServiceProvider.js")
-const Guild = require("../../../models/Guild.js")
-const Module = require("../../../models/Module.js")
-const { error, success } = require("../responses.js")
-const { checkPermissions } = require("../../utils")
+import WebSocketController from "../../../lib/WebSocketController"
+import HttpModulesController from "../../controllers/ModulesController"
+import ModuleServiceProvider from "../../../services/ModuleServiceProvider"
+import Guild from "../../../models/Guild"
+import Module from "../../../models/Module"
+import { error, success } from "../responses"
+import { checkPermissions } from "../../utils"
 
-class ModulesController {
-    /**
-     * @param {Discord.Client} client 
-     */
-    constructor(client) {
-        this.client = client
-    }
-
+export default class ModulesController extends WebSocketController {
     /**
      * Forward request to http ModulesController.getAll
-     * 
-     * @param {Socket} socket
-     * @param {Function} send
      */
-    getModules(socket, send) {
+    getModules(send: Function) {
         HttpModulesController.getAll(null, {
             send: data => send(success(data))
         })
@@ -27,14 +18,9 @@ class ModulesController {
 
     /**
      * Get the module instances of a guild
-     * 
-     * @param {Socket} socket
-     * @param {String} guildId
-     * @param {Function} send
      */
-    async getInstances(socket, guildId, send) {
-        // Fetch guild
-        const guild = await Guild.findBy("id", guildId)
+    async getInstances(guildId: string, send: Function) {
+        const guild = await Guild.findBy("id", guildId) as Guild
 
         if (!guild) {
             return send(error(404, "Guild not found"))
@@ -45,11 +31,10 @@ class ModulesController {
          */
         await guild.fetchDiscordGuild(this.client)
 
-        if (!await checkPermissions(guild.discordGuild, socket.user, ["MANAGE_GUILD"])) {
+        if (!await checkPermissions(guild.discordGuild, this.socket.user, ["MANAGE_GUILD"])) {
             return send(error(403))
         }
 
-        // Get active instances
         const instances = Object.values(ModuleServiceProvider.guild(guild.discordGuild).instances)
 
         send(success(instances))
@@ -57,20 +42,13 @@ class ModulesController {
 
     /**
      * Start a module for a guild
-     * 
-     * @param {Socket} socket
-     * @param {String} guildId
-     * @param {String} moduleName
-     * @param {Array<String>} args
-     * @param {Function} send
      */
-    async startInstance(socket, guildId, moduleName, args, send) {
+    async startInstance(guildId: string, moduleName: string, args: string[], send: Function) {
         if (!args || args.constructor.name !== "Array") {
             return send(error(400))
         }
 
-        // Fetch guild
-        const guild = await Guild.findBy("id", guildId)
+        const guild = await Guild.findBy("id", guildId) as Guild
 
         if (!guild) {
             return send(error(404, "Guild not found"))
@@ -81,12 +59,11 @@ class ModulesController {
          */
         await guild.fetchDiscordGuild(this.client)
 
-        if (!await checkPermissions(guild.discordGuild, socket.user, ["MANAGE_GUILD"])) {
+        if (!await checkPermissions(guild.discordGuild, this.socket.user, ["MANAGE_GUILD"])) {
             return send(error(403))
         }
 
-        // Fetch module
-        const module = await Module.findBy("name", moduleName)
+        const module = await Module.findBy("name", moduleName) as Module
 
         if (!module) {
             return send(error(404, "Module not found"))
@@ -109,20 +86,15 @@ class ModulesController {
             }
         }
 
-        socket.sendModuleInstances(guildId)
+        this.socket.sendModuleInstances(guildId)
     }
 
     /**
      * Stop a module from a guild
-     * 
-     * @param {Socket} socket
-     * @param {String} guildId
-     * @param {String} moduleName
-     * @param {Function} send
      */
-    async stopInstance(socket, guildId, moduleName, send) {
+    async stopInstance(guildId: string, moduleName: string, send: Function) {
         // Fetch guild
-        const guild = await Guild.findBy("id", guildId)
+        const guild = await Guild.findBy("id", guildId) as Guild
 
         if (!guild) {
             return send(error(404, "Guild not found"))
@@ -133,12 +105,11 @@ class ModulesController {
          */
         await guild.fetchDiscordGuild(this.client)
 
-        if (!await checkPermissions(guild.discordGuild, socket.user, ["MANAGE_GUILD"])) {
+        if (!await checkPermissions(guild.discordGuild, this.socket.user, ["MANAGE_GUILD"])) {
             return send(error(403))
         }
 
-        // Fetch module
-        const module = await Module.findBy("name", moduleName)
+        const module = await Module.findBy("name", moduleName) as Module
 
         if (!module) {
             return send(error(404, "Module not found"))
@@ -161,20 +132,14 @@ class ModulesController {
             }
         }
 
-        socket.sendModuleInstances(guildId)
+        this.socket.sendModuleInstances(guildId)
     }
 
     /**
      * Restart a module from a guild
-     *
-     * @param {Socket} socket
-     * @param {String} guildId
-     * @param {String} moduleName
-     * @param {Function} send
      */
-    async restartInstance(socket, guildId, moduleName, send) {
-        // Fetch guild
-        const guild = await Guild.findBy("id", guildId)
+    async restartInstance(guildId: string, moduleName: string, send: Function) {
+        const guild = await Guild.findBy("id", guildId) as Guild
 
         if (!guild) {
             return send(error(404, "Guild not found"))
@@ -185,14 +150,14 @@ class ModulesController {
          */
         await guild.fetchDiscordGuild(this.client)
 
-        if (!await checkPermissions(guild.discordGuild, socket.user, ["MANAGE_GUILD"])) {
+        if (!await checkPermissions(guild.discordGuild, this.socket.user, ["MANAGE_GUILD"])) {
             return send(error(403))
         }
 
         /**
          * Validate module parameter
          */
-        const module = await Module.findBy("name", moduleName)
+        const module = await Module.findBy("name", moduleName) as Module
 
         if (!module) {
             return send(error(404, "Module not found"))
@@ -215,22 +180,17 @@ class ModulesController {
             }
         }
 
-        socket.sendModuleInstances(guildId)
+        this.socket.sendModuleInstances(guildId)
     }
 
     /**
      * Forward request to: 'this.getInstances'
-     * 
-     * @param {Socket} socket 
-     * @param {String} guildId 
      */
-    async sendModuleInstances(socket, guildId) {
-        this.getInstances(socket, guildId, (res) => {
-            socket.emit("set:module-instances", {
+    async sendModuleInstances(guildId: string) {
+        this.getInstances(guildId, (res) => {
+            this.socket.emit("set:module-instances", {
                 guildId: res.data
             })
         })
     }
 }
-
-module.exports = ModulesController
