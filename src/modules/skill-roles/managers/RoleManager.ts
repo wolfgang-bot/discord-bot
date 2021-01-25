@@ -1,23 +1,26 @@
-const Guild = require("../../../models/Guild.js")
+import * as Discord from "discord.js"
+import Manager from "../../../lib/Manager"
+import Guild from "../../../models/Guild"
+import Configuration from "../models/Configuration"
 
-class RoleManagaer {
-    constructor(context) {
-        this.guild = context.guild
-        this.config = null
+type RoleMap = {
+    [roleName: string]: Discord.Role
+}
 
-        this.roles = {}
-    }
-
+export default class RoleManagaer extends Manager {
+    config: Configuration
+    roles: RoleMap = {}
+    
     getRoles() {
         return this.roles
     }
 
     async createRoles() {
         await Promise.all(this.config.roles.map(async name => {
-            let role = this.guild.roles.cache.find(role => role.name === name)
+            let role = this.context.guild.roles.cache.find(role => role.name === name)
 
             if (!role) {
-                role = await this.guild.roles.create({
+                role = await this.context.guild.roles.create({
                     data: {
                         name,
                         color: this.config.roleColor
@@ -31,7 +34,7 @@ class RoleManagaer {
     
     async deleteRoles() {
         await Promise.all(this.config.roles.map(name => {
-            const role = this.guild.roles.cache.find(role => role.name === name)
+            const role = this.context.guild.roles.cache.find(role => role.name === name)
 
             if (role) {
                 return role.delete()
@@ -40,7 +43,7 @@ class RoleManagaer {
     }
 
     async init() {
-        this.config = (await Guild.config(this.guild))["skill-roles"]
+        this.config = (await Guild.config(this.context.guild))["skill-roles"]
 
         await this.createRoles()
     }
@@ -49,5 +52,3 @@ class RoleManagaer {
         await this.deleteRoles()
     }
 }
-
-module.exports = RoleManagaer

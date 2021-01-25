@@ -1,24 +1,31 @@
-const LocaleServiceProvider = require("../../services/LocaleServiceProvider.js")
-const Configuration = require("./models/Configuration.js")
-const EmojiManager = require("./managers/EmojiManager.js")
-const RoleManager = require("./managers/RoleManager.js")
-const ReactionManager = require("./managers/ReactionManager.js")
-const RoleEmbed = require("./embeds/RoleEmbed.js")
-const Guild = require("../../models/Guild.js")
+import Module from "../../lib/Module"
+import LocaleServiceProvider from "../../services/LocaleServiceProvider"
+import Guild from "../../models/Guild"
+import Configuration from "./models/Configuration"
+import EmojiManager from "./managers/EmojiManager"
+import RoleManager from "./managers/RoleManager"
+import ReactionManager from "./managers/ReactionManager"
+import RoleEmbed from "./embeds/RoleEmbed"
+import Context from "../../lib/Context"
 
-class RoleManagerModule {
+export default class RoleManagerModule extends Module {
     static makeConfigFromArgs = Configuration.fromArgs
     static makeConfigFromJSON = Configuration.fromJSON
 
-    constructor(context, config) {
-        this.context = context
+    config: Configuration
+    emojiManager: EmojiManager
+    roleManager: RoleManager
+    reactionManager: ReactionManager
+
+    constructor(context: Context, config: Configuration) {
+        super(context)
         this.config = config
     }
     
     async start() {
         this.emojiManager = new EmojiManager(this.context)
         this.roleManager = new RoleManager(this.context)
-        this.reactionManager = new ReactionManager(this.context, this.config.roleMessage, this.emojiManager, this.roleManager)
+        this.reactionManager = new ReactionManager(this.context, this.config, this.emojiManager, this.roleManager)
 
         if (!this.config.roleMessage) {
             const guildConfig = await Guild.config(this.context.guild)
@@ -51,5 +58,3 @@ class RoleManagerModule {
         return this.config
     }
 }
-
-module.exports = RoleManagerModule

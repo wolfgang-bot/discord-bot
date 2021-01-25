@@ -1,7 +1,25 @@
-class ReactionManager {
-    constructor(context, message, emojiManager, roleManager) {
-        this.context = context
-        this.message = message
+import * as Discord from "discord.js"
+import Context from "../../../lib/Context"
+import Manager from "../../../lib/Manager"
+import Configuration from "../models/Configuration"
+import EmojiManager from "./EmojiManager"
+import RoleManager from "./RoleManager"
+
+type ReactionMap = {
+    [roleName: string]: Discord.MessageReaction
+}
+
+export default class ReactionManager extends Manager {
+    config: Configuration
+    emojiManager: EmojiManager
+    roleManager: RoleManager
+    reactions: ReactionMap
+    message: Discord.Message
+
+    constructor(context: Context, config: Configuration, emojiManager: EmojiManager, roleManager: RoleManager) {
+        super(context)
+        this.config = config
+        this.message = config.roleMessage
         this.emojiManager = emojiManager
         this.roleManager = roleManager
 
@@ -11,7 +29,7 @@ class ReactionManager {
         this.handleReactionRemove = this.handleReactionRemove.bind(this)
     }
 
-    setMessage(message) {
+    setMessage(message: Discord.Message) {
         this.message = message
     }
 
@@ -38,7 +56,7 @@ class ReactionManager {
         }))
     }
 
-    async handleReactionAdd(reaction, user) {
+    async handleReactionAdd(reaction: Discord.MessageReaction, user: Discord.User) {
         if (user.bot || reaction.message.guild.id !== this.context.guild.id) {
             return
         }
@@ -53,7 +71,7 @@ class ReactionManager {
         }
     }
 
-    async handleReactionRemove(reaction, user) {
+    async handleReactionRemove(reaction: Discord.MessageReaction, user: Discord.User) {
         if (user.bot || reaction.message.guild.id !== this.context.guild.id) {
             return
         }
@@ -80,5 +98,3 @@ class ReactionManager {
         this.context.client.removeListener("messageReactionRemove", this.handleReactionRemove)
     }
 }
-
-module.exports = ReactionManager

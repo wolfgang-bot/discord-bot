@@ -1,22 +1,25 @@
-const glob = require("glob-promise")
-const path = require("path")
-const Guild = require("../../../models/Guild.js")
+import * as Discord from "discord.js"
+import glob from "glob-promise"
+import path from "path"
+import Manager from "../../../lib/Manager"
+import Guild from "../../../models/Guild"
+import Configuration from "../models/Configuration"
 
 const ICONS_DIR = path.join(__dirname, "..", "assets", "icons")
 
-class EmojiManager {
-    constructor(context) {
-        this.guild = context.guild
-        this.config = null
+type EmojiMap = {
+    [roleName: string]: Discord.GuildEmoji
+}
 
-        this.emojis = {}
-    }
+export default class EmojiManager extends Manager {
+    config: Configuration
+    emojis: EmojiMap = {}
 
     getEmojis() {
         return this.emojis
     }
 
-    getRoleFromEmoji(emoji) {
+    getRoleFromEmoji(emoji: Discord.Emoji) {
         for (let [roleName, { id }] of Object.entries(this.emojis)) {
             if (id === emoji.id) {
                 return roleName
@@ -30,7 +33,7 @@ class EmojiManager {
         await Promise.all(this.config.roles.map(async name => {
             const emojiName = this.makeEmojiName(name)
 
-            let emoji = this.guild.emojis.cache.find(emoji => emoji.name === emojiName)
+            let emoji = this.context.guild.emojis.cache.find(emoji => emoji.name === emojiName)
 
             if (!emoji) {
                 const icon = icons.find(filename => filename.toLowerCase().startsWith(name.toLowerCase()))
@@ -40,7 +43,7 @@ class EmojiManager {
                     return
                 }
 
-                emoji = await this.guild.emojis.create(path.join(ICONS_DIR, icon), emojiName)
+                emoji = await this.context.guild.emojis.create(path.join(ICONS_DIR, icon), emojiName)
             }
 
             this.emojis[name] = emoji
@@ -50,7 +53,7 @@ class EmojiManager {
     async deleteEmojis() {
         await Promise.all(this.config.roles.map(name => {
             const emojiName = this.makeEmojiName(name)
-            const emoji = this.guild.emojis.cache.find(emoji => emoji.name === emojiName)
+            const emoji = this.context.guild.emojis.cache.find(emoji => emoji.name === emojiName)
 
             if (emoji) {
                 return emoji.delete()
@@ -58,12 +61,12 @@ class EmojiManager {
         }))
     }
 
-    makeEmojiName(name) {
+    makeEmojiName(name: string) {
         return this.config.emojiPrefix + name.toLowerCase()
     }
 
     async init() {
-        this.config = (await Guild.config(this.guild))["skill-roles"]
+        this.config = (await Guild.config(this.context.guild))["skill-roles"]
         
         await this.createEmojis()
     }
@@ -72,5 +75,3 @@ class EmojiManager {
         await this.deleteEmojis()
     }
 }
-
-module.exports = EmojiManager
