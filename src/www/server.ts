@@ -1,8 +1,13 @@
-const express = require("express")
-const http = require("http")
-const { Server: WebSocketServer } = require("socket.io")
+import * as Discord from "discord.js"
+import express, { Request } from "express"
+import http from "http"
+import { Server as WebSocketServer } from "socket.io"
+import User from "../models/User"
+import boot from "./boot"
 
-const boot = require("./boot")
+export type InternalRequest = Request & {
+    user: User
+}
 
 const app = express()
 const server = http.createServer(app)
@@ -15,7 +20,7 @@ const websocket = new WebSocketServer(server, {
     } : {}
 })
 
-async function start(client) {
+export default async function start(client: Discord.Client) {
     await boot({ app, websocket, client })
 
     // Start server on port specified in .env
@@ -23,5 +28,3 @@ async function start(client) {
         console.log("Server is running on port", process.env.PORT)
     })
 }
-
-module.exports = start
