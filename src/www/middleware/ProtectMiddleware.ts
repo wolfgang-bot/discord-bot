@@ -1,11 +1,13 @@
-const OAuthServiceProvider = require("../Services/OAuthServiceProvider.js")
-const User = require("../../models/User.js")
+import { Response } from "express"
+import OAuthServiceProvider from "../Services/OAuthServiceProvider"
+import User from "../../models/User"
+import { InternalRequest } from "../server"
 
-class ProtectMiddleware {
+export default class ProtectMiddleware {
     /**
      * Get a user from request headers
      */
-    static async getUser(req) {
+    static async getUser(req: InternalRequest) {
         if (!req.header("Authorization")) {
             return
         }
@@ -13,7 +15,7 @@ class ProtectMiddleware {
         const token = req.header("Authorization").split(" ")[1]
     
         const userId = await OAuthServiceProvider.verifyToken(token)
-        const user = await User.findBy("id", userId)
+        const user = await User.findBy("id", userId) as User
 
         const discordUser = await OAuthServiceProvider.fetchProfile(user.access_token)
         Object.assign(user, discordUser)
@@ -24,7 +26,7 @@ class ProtectMiddleware {
     /**
      * Inject a user object into the request
      */
-    static async required(req, res, next) {
+    static async required(req: InternalRequest, res: Response, next: Function) {
         if (!req.header("Authorization")) {
             return res.sendStatus(401)
         }
@@ -37,7 +39,7 @@ class ProtectMiddleware {
             }
 
             req.user = user
-        } catch(error) {
+        } catch (error) {
             if (process.env.NODE_ENV === "development") {
                 console.error(error)
             }
@@ -51,17 +53,15 @@ class ProtectMiddleware {
     /**
      * Inject user into request or continue without user
      */
-    static async notRequired(req, res, next) {
+    static async notRequired(req: InternalRequest, res: Response, next: Function) {
         try {
             const user = await ProtectMiddleware.getUser(req)
 
             if (user) {
                 req.user = user
             }
-        } catch { } finally {
+        } finally {
             next()
         }
     }
 }
-
-module.exports = ProtectMiddleware 
