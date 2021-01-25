@@ -1,14 +1,21 @@
-const glob = require("glob-promise")
-const path = require("path")
-const express = require("express")
-const cors = require("cors")
+import * as Discord from "discord.js"
+import express from "express"
+import { Server as WebSocketServer } from "socket.io"
+import glob from "glob-promise"
+import path from "path"
+import cors from "cors"
+import routes from "../routes"
+import SocketManager from "../websocket/SocketManager.js"
 
-const routes = require("../routes")
-const SocketManager = require("../websocket/SocketManager.js")
+type BootProps = {
+    app: express.Application
+    websocket: WebSocketServer
+    client: Discord.Client
+}
 
 const ROOT_DIR = path.join(__dirname, "..")
 
-async function boot({ app, websocket, client }) {
+export default async function boot({ app, websocket, client }: BootProps) {
     setupExpress(app)
     setupWebSocket(websocket, client)
     await injectClient(client)
@@ -17,7 +24,7 @@ async function boot({ app, websocket, client }) {
 /**
  * Setup express related components
  */
-function setupExpress(app) {
+function setupExpress(app: express.Application) {
     if (process.env.NODE_ENV === "development") {
         app.use(cors())
     }
@@ -41,7 +48,7 @@ function setupExpress(app) {
 /**
  * Setup WebSocket server
  */
-function setupWebSocket(websocket, client) {
+function setupWebSocket(websocket: WebSocketServer, client: Discord.Client) {
     const manager = new SocketManager(websocket, client)
     manager.init()
 }
@@ -49,7 +56,7 @@ function setupWebSocket(websocket, client) {
 /**
  * Inject client into dependants
  */
-async function injectClient(client) {
+async function injectClient(client: Discord.Client) {
     const files = await glob("{controllers,middleware}/*.js", { cwd: ROOT_DIR })
 
     files.forEach(filepath => {
@@ -60,5 +67,3 @@ async function injectClient(client) {
         }
     })
 }
-
-module.exports = boot
