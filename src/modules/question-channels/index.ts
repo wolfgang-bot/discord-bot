@@ -1,4 +1,3 @@
-import Context from "../../lib/Context"
 import Module from "../../lib/Module"
 import LocaleServiceProvider from "../../services/LocaleServiceProvider"
 import Configuration from "./models/Configuration"

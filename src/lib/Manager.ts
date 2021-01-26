@@ -1,6 +1,5 @@
 import Configuration from "../lib/Configuration"
 import Context from "./Context"
-import Guild from "../models/Guild"
 
 abstract class Manager {
     context: Context
@@ -10,9 +9,7 @@ abstract class Manager {
         this.context = context
     }
 
-    async init() {
-        this.config = await Guild.config(this.context.guild)["{MODULE_NAME}"]
-    }
+    async init() {}
 
     async delete() {}
 }

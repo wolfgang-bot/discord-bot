@@ -1,15 +1,9 @@
-const Configuration = require("./models/Configuration.js")
+import Configuration from "./models/Configuration.js"
 
-class Module {
+export default class Module {
     static makeConfigFromArgs = Configuration.fromArgs
     static makeConfigFromJSON = Configuration.fromJSON
-
-    /**
-     * @param {Context} context 
-     * @param {Configuration} config 
-     */
-    constructor(context, config) { }
-
+    
     /**
      * Starts the module.
      * Code which needs to be run whenever the module is loaded should go here.
@@ -23,11 +17,7 @@ class Module {
     async stop() { }
 
     /**
-     * Get the configuration object of the module from which the module can be restored.
-     * 
-     * @returns {Configuration} 
+     * Get the configuration object of the module from which it can be restored.
      */
     getConfig() { }
 }
-
-module.exports = Module

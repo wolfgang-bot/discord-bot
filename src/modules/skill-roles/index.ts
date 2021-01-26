@@ -6,7 +6,6 @@ import EmojiManager from "./managers/EmojiManager"
 import RoleManager from "./managers/RoleManager"
 import ReactionManager from "./managers/ReactionManager"
 import RoleEmbed from "./embeds/RoleEmbed"
-import Context from "../../lib/Context"
 
 export default class RoleManagerModule extends Module {
     static makeConfigFromArgs = Configuration.fromArgs
@@ -16,11 +15,6 @@ export default class RoleManagerModule extends Module {
     emojiManager: EmojiManager
     roleManager: RoleManager
     reactionManager: ReactionManager
-
-    constructor(context: Context, config: Configuration) {
-        super(context)
-        this.config = config
-    }
     
     async start() {
         this.emojiManager = new EmojiManager(this.context)
