@@ -1,8 +1,6 @@
 import { v4 as uuid } from "uuid"
 import * as Discord from "discord.js"
 import Model from "../lib/Model"
-import Module from "./Module.js"
-import Guild from "./Guild.js"
 
 export type ModuleInstanceModelValues = {
     id?: string
@@ -61,3 +59,6 @@ class ModuleInstance extends Model implements ModuleInstanceModelValues {
 }
 
 export default ModuleInstance
+
+import Module from "./Module"
+import Guild from "./Guild"

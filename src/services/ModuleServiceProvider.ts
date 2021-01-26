@@ -40,7 +40,7 @@ class ModuleServiceProvider {
         await Promise.all(files.map(async filepath => {
             if (filepath.indexOf("dynamic-voicechannels") === -1) return
 
-            const module = require(path.join(MODULES_DIR, filepath, "..", "index.js"))
+            const module = require(path.join(MODULES_DIR, filepath, "..", "index")).default as typeof Module
 
             await module.loadXMLFile(path.join(MODULES_DIR, filepath))
 

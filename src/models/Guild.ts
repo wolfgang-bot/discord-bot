@@ -1,7 +1,5 @@
 import * as Discord from "discord.js"
 import Model from "../lib/Model"
-import Member from "./Member"
-import ModuleInstance from "./ModuleInstance"
 import { formatDescriptiveObject } from "../utils"
 import LocaleServiceProvider from "../services/LocaleServiceProvider"
 import defaultConfigRaw from "../config/default"
@@ -72,3 +70,6 @@ class Guild extends Model implements GuildModelValues {
 }
 
 export default Guild
+
+import Member from "./Member"
+import ModuleInstance from "./ModuleInstance"

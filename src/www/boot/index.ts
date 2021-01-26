@@ -5,7 +5,7 @@ import glob from "glob-promise"
 import path from "path"
 import cors from "cors"
 import routes from "../routes"
-import SocketManager from "../websocket/SocketManager.js"
+import SocketManager from "../websocket/SocketManager"
 
 type BootProps = {
     app: express.Application

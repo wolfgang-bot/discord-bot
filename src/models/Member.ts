@@ -1,8 +1,6 @@
 import { v4 as uuid } from "uuid"
 import * as Discord from "discord.js"
 import Model from "../lib/Model"
-import User from "./User"
-import Guild from "./Guild"
 
 export type MemberModelValues = {
     id?: string
@@ -55,3 +53,6 @@ class Member extends Model implements MemberModelValues {
 }
 
 export default Member
+
+import User from "./User"
+import Guild from "./Guild"
