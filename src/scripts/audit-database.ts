@@ -1,14 +1,14 @@
-const path = require("path")
-const Discord = require("discord.js")
-const chalk = require("chalk")
-const readline = require("readline")
-const { makeRunnable, run } = require("@m.moelter/task-runner")
-require("dotenv").config({ path: path.join(__dirname, "..", ".env")})
-
-const database = require("../src/database")
-const Guild = require("../src/models/Guild.js")
-const User = require("../src/models/User.js")
-const Member = require("../src/models/Member.js")
+import path from "path"
+import Discord from "discord.js"
+import chalk from "chalk"
+import readline from "readline"
+import { makeRunnable, run } from "@m.moelter/task-runner"
+import dotenv from "dotenv"
+import database from "../database"
+import Guild from "../models/Guild"
+import User from "../models/User"
+import Member from "../models/Member"
+dotenv.config({ path: path.join(__dirname, "..", "..", ".env")})
 
 const rl = readline.createInterface({
     input: process.stdin,
@@ -22,7 +22,7 @@ const opts = {
 /**
  * Await user input from the console (promise-based)
  */
-function question(content) {
+function question(content: string) {
     return new Promise(resolve => rl.question(content, resolve))
 }
 

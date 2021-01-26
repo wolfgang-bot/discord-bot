@@ -1,7 +1,7 @@
-const fs = require("fs-extra")
-const path = require("path")
-const glob = require("glob-promise")
-const { makeRunnable, run } = require("@m.moelter/task-runner")
+import fs from "fs-extra"
+import path from "path"
+import glob from "glob-promise"
+import { makeRunnable, run } from "@m.moelter/task-runner"
 
 const name = process.argv[2]
 

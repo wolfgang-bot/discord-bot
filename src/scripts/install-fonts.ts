@@ -1,9 +1,11 @@
-const fs = require("fs")
-const path = require("path")
-const util = require("util")
-const chalk = require("chalk")
-const exec = util.promisify(require("child_process").exec)
-const { makeRunnable, run } = require("@m.moelter/task-runner")
+import fs from "fs"
+import path from "path"
+import util from "util"
+import chalk from "chalk"
+import child_process from "child_process"
+import { makeRunnable, run } from "@m.moelter/task-runner"
+
+const exec = util.promisify(child_process.exec)
 
 const FONTS_DIR = path.join(__dirname, "..", "src", "assets", "fonts")
 const SYSTEM_FONTS_DIR = "/usr/share/fonts/truetype"
@@ -41,12 +43,12 @@ async function installFonts() {
     }))
 }
 
-async function copyFolder(src, dest) {
+async function copyFolder(src: string, dest: string) {
     await exec(`mkdir -p ${dest}`)
     await exec(`cp -r ${src}/* ${dest}`)
 }
 
-async function hasFont(font) {
+async function hasFont(font: string) {
     const { stdout: installedFonts, stderr } = await exec("fc-list")
 
     if (stderr) {

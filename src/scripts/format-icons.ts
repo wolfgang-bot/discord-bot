@@ -1,8 +1,8 @@
-const glob = require("glob-promise")
-const path = require("path")
-const fs = require("fs")
-const sharp = require("sharp")
-const { makeRunnable, run } = require("@m.moelter/task-runner")
+import glob from "glob-promise"
+import path from "path"
+import fs from "fs"
+import sharp from "sharp"
+import { makeRunnable, run } from "@m.moelter/task-runner"
 
 const FORMAT_SIZE = 128
 

@@ -1,12 +1,13 @@
-const path = require("path")
-const Discord = require("discord.js")
-const { makeRunnable, run } = require("@m.moelter/task-runner")
-require("dotenv").config({ path: path.join(__dirname, "..", ".env") })
-
-const database = require("../src/database")
-const Guild = require("../src/models/Guild.js")
-const defaultConfigRaw = require("../src/config/default.js")
-const { formatDescriptiveObject, transferValues } = require("../src/utils")
+import path from "path"
+import Discord from "discord.js"
+import { makeRunnable, run } from "@m.moelter/task-runner"
+import dotenv from "dotenv"
+import database from "../database"
+import Guild from "../models/Guild"
+import Collection from "../lib/Collection"
+import defaultConfigRaw from "../config/default"
+import { formatDescriptiveObject, transferValues } from "../utils"
+dotenv.config({ path: path.join(__dirname, "..", ".env") })
 
 const defaultConfig = formatDescriptiveObject(defaultConfigRaw)
 
@@ -31,7 +32,7 @@ makeRunnable(async () => {
  * Add new and remove obsolete keys from guild's configurations
  */
 async function updateConfigs() {
-    const guilds = await Guild.getAll()
+    const guilds = await Guild.getAll() as Collection<Guild>
 
     await Promise.all(guilds.map(guild => {
         guild.config = transferValues(guild.config, defaultConfig)

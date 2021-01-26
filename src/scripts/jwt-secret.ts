@@ -1,5 +1,5 @@
-const crypto = require("crypto")
-const chalk = require("chalk")
+import crypto from "crypto"
+import chalk from "chalk"
 
 const secret = crypto.randomBytes(64).toString("hex")
 

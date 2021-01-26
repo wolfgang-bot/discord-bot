@@ -3,8 +3,8 @@ import Model from "../lib/Model"
 
 export type UserModelValues = {
     id: string
-    access_token: string
-    refresh_token: string
+    access_token?: string
+    refresh_token?: string
 }
 
 class User extends Model implements UserModelValues {
@@ -12,8 +12,8 @@ class User extends Model implements UserModelValues {
         model: User,
         table: "users"
     }
-    access_token: string
-    refresh_token: string
+    access_token?: string
+    refresh_token?: string
     discordUser: Discord.User = null
 
     constructor(values: UserModelValues) {

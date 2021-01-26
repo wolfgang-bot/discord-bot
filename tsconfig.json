@@ -4,12 +4,12 @@
     "module": "CommonJS",
     "removeComments": true,
     "outDir": "dist",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "isolatedModules": true
   },
 
   "include": [
-    "src/**/*",
-    "scripts/**/*"
+    "src/**/*"
   ],
   
   "exclude": [

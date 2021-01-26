@@ -8,13 +8,13 @@
     "start:server": "nodemon ./dist/index.js",
     "build": "npx tsc",
     "build:watch": "npx tsc --watch",
-    "format-icons": "node ./scripts/format-icons.js",
-    "install-fonts": "node ./scripts/install-fonts.js",
-    "audit-database": "node ./scripts/audit-database.js",
-    "jwt-secret": "node ./scripts/jwt-secret.js",
-    "update-configs": "node ./scripts/update-configs.js",
-    "migrate": "node ./scripts/migrate.js",
-    "create-module": "node ./scripts/create-module.js"
+    "format-icons": "node ./dist/scripts/format-icons.js",
+    "install-fonts": "node ./dist/scripts/install-fonts.js",
+    "audit-database": "node ./dist/scripts/audit-database.js",
+    "jwt-secret": "node ./dist/scripts/jwt-secret.js",
+    "update-configs": "node ./dist/scripts/update-configs.js",
+    "migrate": "node ./dist/scripts/migrate.js",
+    "create-module": "node ./dist/scripts/create-module.js"
   },
   "author": "",
   "license": "ISC",
@@ -53,6 +53,7 @@
     "@types/uuid": "^8.3.0",
     "@types/xml2js": "^0.4.8",
     "concurrently": "^5.3.0",
+    "esbuild": "^0.8.36",
     "nodemon": "^2.0.6",
     "typescript": "^4.1.3"
   },
