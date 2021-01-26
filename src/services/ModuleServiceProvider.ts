@@ -38,8 +38,6 @@ class ModuleServiceProvider {
         const files = await glob("?*/module.xml", { cwd: MODULES_DIR })
 
         await Promise.all(files.map(async filepath => {
-            if (filepath.indexOf("dynamic-voicechannels") === -1) return
-
             const module = require(path.join(MODULES_DIR, filepath, "..", "index")).default as typeof Module
 
             await module.loadXMLFile(path.join(MODULES_DIR, filepath))
@@ -69,8 +67,6 @@ class ModuleServiceProvider {
         const models = await ModuleModel.getAll() as Collection<ModuleModel>
 
         await Promise.all(ModuleServiceProvider.modules.map(async module => {
-            if (module.name !== "dynamic-voicechannels") return
-
             const isInDatabase = models.some(model => model.name === module.internalName)
 
             if (!isInDatabase) {

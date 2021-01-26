@@ -1,4 +1,4 @@
-import Configuration from "./models/Configuration.js"
+import Configuration from "./models/Configuration"
 
 export default class Module {
     static makeConfigFromArgs = Configuration.fromArgs

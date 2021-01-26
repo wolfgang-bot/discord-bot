@@ -12,7 +12,7 @@ const commands = [
 
 commands.forEach(command => command.module = "reputation-system")
 
-class ReputationSystemModule extends Module {
+export default class ReputationSystemModule extends Module {
     static makeConfigFromArgs = Configuration.fromArgs
     static makeConfigFromJSON = Configuration.fromJSON
 
@@ -37,5 +37,3 @@ class ReputationSystemModule extends Module {
         return this.config
     }
 }
-
-module.exports = ReputationSystemModule

@@ -12,7 +12,7 @@ if (!name) {
 const SRC_DIR = path.join(__dirname, "..", "src")
 const TEMPLATE_DIR = path.join(SRC_DIR, "assets", "templates", "module")
 const NEW_DIR = path.join(SRC_DIR, "modules", name)
-const CONFIG_PATH = path.join(SRC_DIR, "config", "default.js")
+const CONFIG_PATH = path.join(SRC_DIR, "config", "default")
 
 const CONFIG_TEMPLATE = `
     "{MODULE_NAME}": {

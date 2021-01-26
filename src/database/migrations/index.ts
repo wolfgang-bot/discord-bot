@@ -3,10 +3,12 @@ import path from "path"
 import Database from "../Database"
 import { Migration } from "../index"
 
+const extension = process.env.NODE_ENV === "development" ? ".ts" : ".js"
+
 async function run(database: Database, table?: string) {
-    let migrations: Migration[] = (await glob("*.js", { cwd: __dirname }))
+    let migrations: Migration[] = (await glob("*" + extension, { cwd: __dirname }))
         .filter(filename => /[0-9]+\.\w+.\w+/.test(filename))
-        .map(filename => require(path.join(__dirname, filename)))
+        .map(filename => require(path.join(__dirname, filename)).default)
 
     if (table) {
         migrations = migrations.filter(migration => migration.table === table)
@@ -26,7 +28,7 @@ async function run(database: Database, table?: string) {
                 ${migration.columns.join(",\n")}
             );
         `
-
+        
         await database.run(query)
     }
 }

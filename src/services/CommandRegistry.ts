@@ -1,5 +1,5 @@
 import * as Discord from "discord.js"
-import Command from "../lib/Command.js"
+import Command from "../lib/Command"
 import LocaleServiceProvider from "./LocaleServiceProvider"
 import { parseArguments } from "../utils"
 
@@ -62,7 +62,7 @@ class CommandRegistry extends Command {
         command.parent = this
 
         this.commands[command.name] = command
-        command.alias.forEach(alias => this.commands[alias] = command)
+        command.alias?.forEach(alias => this.commands[alias] = command)
 
         this.commandNames.add(command.name)
     }

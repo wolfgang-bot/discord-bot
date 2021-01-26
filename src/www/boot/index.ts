@@ -57,10 +57,11 @@ function setupWebSocket(websocket: WebSocketServer, client: Discord.Client) {
  * Inject client into dependants
  */
 async function injectClient(client: Discord.Client) {
-    const files = await glob("{controllers,middleware}/*.js", { cwd: ROOT_DIR })
+    const extension = process.env.NODE_ENV === "development" ? ".js" : ".ts"
+    const files = await glob("{controllers,middleware}/*" + extension, { cwd: ROOT_DIR })
 
     files.forEach(filepath => {
-        const module = require(path.join(ROOT_DIR, filepath))
+        const module = require(path.join(ROOT_DIR, filepath)).default
 
         if (module.setDiscordClient) {
             module.setDiscordClient(client)

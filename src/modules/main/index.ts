@@ -3,14 +3,17 @@ import Module from "../../lib/Module"
 import Context from "../../lib/Context"
 import CommandRegistry from "../../services/CommandRegistry"
 import EventManager from "./managers/EventManager"
+import HelpCommand from "./commands/help"
+import LocaleCommand from "./commands/locale"
+import ModuleCommand from "./commands/modules"
 
 const commands = [
-    require("./commands/help.js"),
-    require("./commands/locale"),
-    require("./commands/modules"),
+    new HelpCommand(),
+    new LocaleCommand(),
+    new ModuleCommand()
 ]
 
-commands.forEach(command => command.setModule("main"))
+commands.forEach(command => command.module = "main")
 
 class MainModule extends Module {
     client: Discord.Client

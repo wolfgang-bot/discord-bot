@@ -137,7 +137,7 @@ abstract class Model {
         this.table = props.table
         this.columns = props.columns
 
-        Object.keys(props.columns).forEach(key => {
+        props.columns.forEach(key => {
             this[key] = props.values[key]
         })
 
