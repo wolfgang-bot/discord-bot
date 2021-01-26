@@ -9,7 +9,7 @@ if (!name) {
     throw new Error("Missing name")
 }
 
-const SRC_DIR = path.join(__dirname, "..", "src")
+const SRC_DIR = path.join(__dirname, "..")
 const TEMPLATE_DIR = path.join(SRC_DIR, "assets", "templates", "module")
 const NEW_DIR = path.join(SRC_DIR, "modules", name)
 const CONFIG_PATH = path.join(SRC_DIR, "config", "default")

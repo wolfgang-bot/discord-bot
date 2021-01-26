@@ -7,7 +7,7 @@ import { makeRunnable, run } from "@m.moelter/task-runner"
 
 const exec = util.promisify(child_process.exec)
 
-const FONTS_DIR = path.join(__dirname, "..", "src", "assets", "fonts")
+const FONTS_DIR = path.join(__dirname, "..", "assets", "fonts")
 const SYSTEM_FONTS_DIR = "/usr/share/fonts/truetype"
 
 const installed = []

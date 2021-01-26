@@ -7,7 +7,7 @@ import Guild from "../models/Guild"
 import Collection from "../lib/Collection"
 import defaultConfigRaw from "../config/default"
 import { formatDescriptiveObject, transferValues } from "../utils"
-dotenv.config({ path: path.join(__dirname, "..", ".env") })
+dotenv.config({ path: path.join(__dirname, "..", "..", ".env") })
 
 const defaultConfig = formatDescriptiveObject(defaultConfigRaw)
 
