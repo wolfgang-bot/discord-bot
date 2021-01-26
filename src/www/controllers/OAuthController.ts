@@ -51,7 +51,7 @@ export default class OAuthController extends HttpController {
         
         // Filter manageable guilds
         const filtered = guilds.filter(guild => {
-            return new Discord.Permissions(guild.permissions).has("MANAGE_GUILD")
+            return new Discord.Permissions(guild.permissions as string as Discord.PermissionResolvable).has("MANAGE_GUILD")
         })
         
         // Filter existing guilds

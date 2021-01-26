@@ -24,6 +24,7 @@
     "chalk": "^4.1.0",
     "change-case": "^4.1.1",
     "cors": "^2.8.5",
+    "discord-api-types": "^0.12.1",
     "discord.js": "^12.4.1",
     "dotenv": "^8.2.0",
     "emoji-regex": "^9.2.0",
