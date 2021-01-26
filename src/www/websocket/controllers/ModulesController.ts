@@ -1,3 +1,4 @@
+import { Response } from "express"
 import WebSocketController from "../../../lib/WebSocketController"
 import HttpModulesController from "../../controllers/ModulesController"
 import ModuleServiceProvider from "../../../services/ModuleServiceProvider"
@@ -13,7 +14,7 @@ export default class ModulesController extends WebSocketController {
     getModules(send: Function) {
         HttpModulesController.getAll(null, {
             send: data => send(success(data))
-        })
+        } as Response)
     }
 
     /**

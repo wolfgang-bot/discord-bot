@@ -1,13 +1,28 @@
+import * as Discord from "discord.js"
 import fetch from "node-fetch"
 import jwt from "jsonwebtoken"
 import config from "../config"
 import { makeURL } from "../../utils"
 
+export type TokenResponse = {
+    access_token: string
+    refresh_token: string
+}
+
+export type UserResponse = {
+    id: string
+}
+
+export type GuildResponse = {
+    id: string
+    permissions?: Discord.PermissionString
+}
+
 export default class OAuthServiceProvider {
     /**
      * Request an oauth token from discord
      */
-    static requestToken(code: string): Promise<object> {
+    static requestToken(code: string): Promise<TokenResponse> {
         return new Promise((resolve, reject) => {
             const headers = {
                 "Content-Type": "application/x-www-form-urlencoded"
@@ -36,7 +51,7 @@ export default class OAuthServiceProvider {
     /**
      * Make an api request with an oauth token
      */
-    static apiRequest(token: string, path: string): Promise<object> {
+    static apiRequest(token: string, path: string): Promise<any> {
         return new Promise((resolve, reject) => {
             fetch(config.discord.api.basename + path, {
                 headers: {
@@ -58,14 +73,14 @@ export default class OAuthServiceProvider {
     /**
      * Fetch the profile of a discord user
      */
-    static fetchProfile(token: string) {
+    static fetchProfile(token: string): Promise<UserResponse> {
         return OAuthServiceProvider.apiRequest(token, "/users/@me")
     }
 
     /**
      * Fetch the guilds of a discord user
      */
-    static fetchGuilds(token: string) {
+    static fetchGuilds(token: string): Promise<GuildResponse[]> {
         return OAuthServiceProvider.apiRequest(token, "/users/@me/guilds")
     }
 

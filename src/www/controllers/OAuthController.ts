@@ -1,33 +1,26 @@
-const Discord = require("discord.js")
-const OAuthServiceProvider = require("../services/OAuthServiceProvider.js")
-const User = require("../../models/User.js")
-const Guild = require("../../models/Guild.js")
+import * as Discord from "discord.js"
+import { Response } from "express"
+import HttpController from "../../lib/HttpController"
+import OAuthServiceProvider from "../services/OAuthServiceProvider"
+import User from "../../models/User"
+import Guild from "../../models/Guild"
+import { InternalRequest } from "../server"
 
-class OAuthController {
-    /**
-     * Discord bot client instance
-     */
-    static client = null
-
-    static setDiscordClient(client) {
-        OAuthController.client = client
-    }
-
+export default class OAuthController extends HttpController {
     /**
      * Receive an OAuth token from discord.
      */
-    static async oauthDiscord(req, res) {
+    static async oauthDiscord(req: InternalRequest, res: Response) {
         try {
             // Request oauth token
-            const data = await OAuthServiceProvider.requestToken(req.query.code)
+            const data = await OAuthServiceProvider.requestToken(req.query.code as string)
             const { access_token, refresh_token } = data
 
             // Get user profile
             const userData = await OAuthServiceProvider.fetchProfile(access_token)
 
             // Store token in database
-            let user = await User.findBy("id", userData.id)
-            Object.assign(user, userData)
+            let user = await User.findBy("id", userData.id) as User
             user.access_token = access_token
             user.refresh_token = refresh_token
             await user.update()
@@ -46,29 +39,29 @@ class OAuthController {
     /**
      * Get the user profile.
      */
-    static getProfile(req, res) {
+    static getProfile(req: InternalRequest, res: Response) {
         res.send(req.user)
     }
 
     /**
      * Get all guilds which are registered by the bot and manageable by the user
      */
-    static async getGuilds(req, res) {
+    static async getGuilds(req: InternalRequest, res: Response) {
         const guilds = await OAuthServiceProvider.fetchGuilds(req.user.access_token)
-
+        
         // Filter manageable guilds
         const filtered = guilds.filter(guild => {
             return new Discord.Permissions(guild.permissions).has("MANAGE_GUILD")
         })
-
+        
         // Filter existing guilds
+        const activeGuilds = {}
         await Promise.all(filtered.map(async guild => {
             const model = await Guild.findBy("id", guild.id)
-
-            guild.active = !!model
+            activeGuilds[guild.id] = !!model
         }))
 
-        filtered.sort((a, b) => b.active - a.active)
+        filtered.sort((a, b) => activeGuilds[b.id] - activeGuilds[a.id])
         
         res.send(filtered)
     }
@@ -76,7 +69,7 @@ class OAuthController {
     /**
      * Get guild by id
      */
-    static async getGuild(req, res) {
+    static async getGuild(req: InternalRequest, res: Response) {
         try {
             const guild = await OAuthController.client.guilds.fetch(req.params.id)
     
@@ -98,5 +91,3 @@ class OAuthController {
         }
     }
 }
-
-module.exports = OAuthController

@@ -1,23 +1,17 @@
-const Guild = require("../../models/Guild.js")
-const { compareStructure, verifyConstraints, insertIntoDescriptiveObject } = require("../../utils")
-const defaultConfig = require("../../config/default.js")
-const { checkPermissions } = require("../utils")
+import { Response } from "express"
+import HttpController from "../../lib/HttpController"
+import Guild from "../../models/Guild"
+import { compareStructure, verifyConstraints, insertIntoDescriptiveObject } from "../../utils"
+import defaultConfig from "../../config/default"
+import { checkPermissions } from "../../utils"
+import { InternalRequest } from "../server"
 
-class ConfigController {
-    /**
-     * Discord bot client instance
-     */
-    static client = null
-
-    static setDiscordClient(client) {
-        ConfigController.client = client
-    }
-    
+export default class ConfigController extends HttpController {
     /**
      * Get a guild's configuration object
      */
-    static async getOne(req, res) {
-        const guild = await Guild.findBy("id", req.params.guildId)
+    static async getOne(req: InternalRequest, res: Response) {
+        const guild = await Guild.findBy("id", req.params.guildId) as Guild
 
         if (!guild) {
             return res.status(404).end()
@@ -35,8 +29,8 @@ class ConfigController {
     /**
      * Get a guild's configuration as a descriptive object
      */
-    static async getOneDescriptive(req, res) {
-        const guild = await Guild.findBy("id", req.params.guildId)
+    static async getOneDescriptive(req: InternalRequest, res: Response) {
+        const guild = await Guild.findBy("id", req.params.guildId) as Guild
 
         if (!guild) {
             return res.status(404).end()
@@ -57,8 +51,8 @@ class ConfigController {
     /**
      * Update a guild's configuration
      */
-    static async update(req, res) {
-        const guild = await Guild.findBy("id", req.params.guildId)
+    static async update(req: InternalRequest, res: Response) {
+        const guild = await Guild.findBy("id", req.params.guildId) as Guild
 
         if (!guild) {
             return res.status(404).end()
@@ -93,5 +87,3 @@ class ConfigController {
         res.status(200).send()
     }
 }
-
-module.exports = ConfigController

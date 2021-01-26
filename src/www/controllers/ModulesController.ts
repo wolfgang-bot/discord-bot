@@ -1,22 +1,16 @@
-const ModuleServiceProvider = require("../../services/ModuleServiceProvider.js")
-const Guild = require("../../models/Guild.js")
-const Module = require("../../models/Module.js")
-const { checkPermissions } = require("../utils")
+import { Response } from "express"
+import HttpController from "../../lib/HttpController"
+import ModuleServiceProvider from "../../services/ModuleServiceProvider"
+import Guild from "../../models/Guild"
+import Module from "../../models/Module"
+import { checkPermissions } from "../../utils"
+import { InternalRequest } from "../server"
 
-class ModulesController {
-    /**
-     * Discord bot client instance
-     */
-    static client
-
-    static setDiscordClient(client) {
-        ModulesController.client = client
-    }
-
+export default class ModulesController extends HttpController {
     /**
      * Get all modules which are available to every guild
      */
-    static getAll(req, res) {
+    static getAll(req: InternalRequest, res: Response) {
         const modules = ModuleServiceProvider.modules.filter(module => !module.isPrivate && !module.isGlobal)
         const translated = modules.map(module => ModuleServiceProvider.translate(module))
 
@@ -26,11 +20,11 @@ class ModulesController {
     /**
      * Get the modules instantiated for a guild
      */
-    static async getInstances(req, res) {
+    static async getInstances(req: InternalRequest, res: Response) {
         /**
          * Validate guild parameter
          */
-        const guild = await Guild.findBy("id", req.params.guildId)
+        const guild = await Guild.findBy("id", req.params.guildId) as Guild
 
         if (!guild) {
             return res.status(404).end()
@@ -55,7 +49,7 @@ class ModulesController {
     /**
      * Start a module for a guild
      */
-    static async start(req, res) {
+    static async start(req: InternalRequest, res: Response) {
         /**
          * Validate body
          */
@@ -66,7 +60,7 @@ class ModulesController {
         /**
          * Validate guild parameter
          */
-        const guild = await Guild.findBy("id", req.params.guildId)
+        const guild = await Guild.findBy("id", req.params.guildId) as Guild
 
         if (!guild) {
             return res.status(404).end("Guild not found")
@@ -84,7 +78,7 @@ class ModulesController {
         /**
          * Validate module parameter
          */
-        const module = await Module.findBy("name", req.params.moduleName)
+        const module = await Module.findBy("name", req.params.moduleName) as Module
 
         if (!module) {
             return res.status(404).end("Module not found")
@@ -113,11 +107,11 @@ class ModulesController {
     /**
      * Stop a module from a guild
      */
-    static async stop(req, res) {
+    static async stop(req: InternalRequest, res: Response) {
         /**
          * Validate guild parameter
          */
-        const guild = await Guild.findBy("id", req.params.guildId)
+        const guild = await Guild.findBy("id", req.params.guildId) as Guild
 
         if (!guild) {
             return res.status(404).end("Guild not found")
@@ -135,7 +129,7 @@ class ModulesController {
         /**
          * Validate module parameter
          */
-        const module = await Module.findBy("name", req.params.moduleName)
+        const module = await Module.findBy("name", req.params.moduleName) as Module
 
         if (!module) {
             return res.status(404).end("Module not found")
@@ -164,11 +158,11 @@ class ModulesController {
     /**
      * Restart a module from a guild
      */
-    static async restart(req, res) {
+    static async restart(req: InternalRequest, res: Response) {
         /**
          * Validate guild parameter
          */
-        const guild = await Guild.findBy("id", req.params.guildId)
+        const guild = await Guild.findBy("id", req.params.guildId) as Guild
 
         if (!guild) {
             return res.status(404).end("Guild not found")
@@ -186,7 +180,7 @@ class ModulesController {
         /**
          * Validate module parameter
          */
-        const module = await Module.findBy("name", req.params.moduleName)
+        const module = await Module.findBy("name", req.params.moduleName) as Module
 
         if (!module) {
             return res.status(404).end("Module not found")
@@ -212,5 +206,3 @@ class ModulesController {
         res.status(200).end()
     }
 }
-
-module.exports = ModulesController
