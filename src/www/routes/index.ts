@@ -1,22 +1,13 @@
-const fs = require("fs")
-const path = require("path")
-const express = require("express")
-const { createProxyMiddleware } = require("http-proxy-middleware")
+import path from "path"
+import express from "express"
+import { createProxyMiddleware } from "http-proxy-middleware"
+import api from "./api"
 
 const ROOT_DIR = path.join(__dirname, "..")
 
 const rootRouter = express.Router()
 
-/**
- * Create routes from files in current directory
- */
-const routes = fs.readdirSync(__dirname)
-                .filter(filename => filename !== "index.js")
-                .map(filename => [filename.slice(0, -3), require("./" + filename)])
-
-for(let [route, router] of routes) {
-    rootRouter.use("/" + route, router)
-}
+rootRouter.use("/api", api)
 
 /**
  * Serve react app
@@ -31,4 +22,4 @@ if (process.env.NODE_ENV === "development") {
     rootRouter.get("/*", (req, res) => res.sendFile(path.resolve(ROOT_DIR, "public", "index.html")))
 }
 
-module.exports = rootRouter
+export default rootRouter

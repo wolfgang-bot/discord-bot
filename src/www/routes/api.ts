@@ -1,10 +1,8 @@
-const express = require("express")
-
-const ProtectMiddleware = require("../middleware/ProtectMiddleware.js")
-
-const OAuthController = require("../controllers/OAuthController.js")
-const ConfigController = require("../controllers/ConfigController.js")
-const ModulesController = require("../controllers/ModulesController.js")
+import express from "express"
+import ProtectMiddleware from "../middleware/ProtectMiddleware"
+import OAuthController from "../controllers/OAuthController"
+import ConfigController from "../controllers/ConfigController"
+import ModulesController from "../controllers/ModulesController"
 
 const router = express.Router()
 
@@ -23,4 +21,4 @@ router.post("/modules/instances/:guildId/start/:moduleName", ProtectMiddleware.r
 router.post("/modules/instances/:guildId/stop/:moduleName", ProtectMiddleware.required, ModulesController.stop)
 router.post("/modules/instances/:guildId/restart/:moduleName", ProtectMiddleware.required, ModulesController.restart)
 
-module.exports = router
+export default router
