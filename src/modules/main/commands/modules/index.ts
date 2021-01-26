@@ -1,4 +1,4 @@
-import * as Discord from "discord.js"
+import Discord from "discord.js"
 import CommandRegistry from "../../../../services/CommandRegistry"
 import ConfigCommand from "./config"
 import HelpCommand from "./help"

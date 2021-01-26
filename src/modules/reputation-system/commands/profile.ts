@@ -1,4 +1,4 @@
-import * as Discord from "discord.js"
+import Discord from "discord.js"
 import sharp from "sharp"
 import fetch from "node-fetch"
 import Command from "../../../lib/Command"

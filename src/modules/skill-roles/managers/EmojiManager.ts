@@ -1,4 +1,4 @@
-import * as Discord from "discord.js"
+import Discord from "discord.js"
 import glob from "glob-promise"
 import path from "path"
 import Manager from "../../../lib/Manager"

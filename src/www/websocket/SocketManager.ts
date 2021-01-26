@@ -1,4 +1,4 @@
-import * as Discord from "discord.js"
+import Discord from "discord.js"
 import { Server, Socket } from "socket.io"
 import OAuthServiceProvider from "../services/OAuthServiceProvider"
 import User from "../../models/User"

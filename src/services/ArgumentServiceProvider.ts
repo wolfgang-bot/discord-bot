@@ -1,4 +1,4 @@
-import * as Discord from "discord.js"
+import Discord from "discord.js"
 import Argument from "../lib/Argument"
 import LocaleServiceProvider from "./LocaleServiceProvider"
 

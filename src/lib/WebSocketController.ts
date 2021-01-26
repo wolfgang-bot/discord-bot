@@ -1,4 +1,4 @@
-import * as Discord from "discord.js"
+import Discord from "discord.js"
 import { InternalSocket } from "../www/websocket/SocketManager"
 
 export default abstract class WebSocketController {

@@ -2,7 +2,7 @@ import path from "path"
 import fs from "fs"
 import glob from "glob-promise"
 import yaml from "yaml"
-import * as Discord from "discord.js"
+import Discord from "discord.js"
 import Guild from "../models/Guild"
 
 type ScopeMap = {

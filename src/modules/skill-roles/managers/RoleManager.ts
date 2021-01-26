@@ -1,4 +1,4 @@
-import * as Discord from "discord.js"
+import Discord from "discord.js"
 import Manager from "../../../lib/Manager"
 import Guild from "../../../models/Guild"
 import Configuration from "../models/Configuration"

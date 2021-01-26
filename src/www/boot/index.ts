@@ -1,4 +1,4 @@
-import * as Discord from "discord.js"
+import Discord from "discord.js"
 import express from "express"
 import { Server as WebSocketServer } from "socket.io"
 import glob from "glob-promise"

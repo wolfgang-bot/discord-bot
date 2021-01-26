@@ -1,5 +1,5 @@
 import { v4 as uuid } from "uuid"
-import * as Discord from "discord.js"
+import Discord from "discord.js"
 import Model from "../lib/Model"
 
 export type MemberModelValues = {

@@ -1,4 +1,4 @@
-import * as Discord from "discord.js"
+import Discord from "discord.js"
 import ModuleServiceProvider from "../services/ModuleServiceProvider"
 import database from "../database"
 import loadLocales from "./loadLocales"

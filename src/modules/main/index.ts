@@ -1,4 +1,4 @@
-import * as Discord from "discord.js"
+import Discord from "discord.js"
 import Module from "../../lib/Module"
 import Context from "../../lib/Context"
 import CommandRegistry from "../../services/CommandRegistry"

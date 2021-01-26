@@ -1,4 +1,4 @@
-import * as Discord from "discord.js"
+import Discord from "discord.js"
 import Command from "../../../lib/Command"
 
 export default class MyCommand extends Command {

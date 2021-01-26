@@ -1,4 +1,4 @@
-import * as Discord from "discord.js"
+import Discord from "discord.js"
 import express, { Request } from "express"
 import http from "http"
 import { Server as WebSocketServer } from "socket.io"

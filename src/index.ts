@@ -1,4 +1,4 @@
-import * as Discord from "discord.js"
+import Discord from "discord.js"
 import chalk from "chalk"
 import path from "path"
 import dotenv from "dotenv"

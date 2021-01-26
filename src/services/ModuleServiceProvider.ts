@@ -1,6 +1,6 @@
 import glob from "glob-promise"
 import path from "path"
-import * as Discord from "discord.js"
+import Discord from "discord.js"
 import Module from "../lib/Module"
 import Collection from "../lib/Collection"
 import Context from "../lib/Context"

@@ -1,4 +1,4 @@
-import * as Discord from "discord.js"
+import Discord from "discord.js"
 import DescriptiveObject from "../lib/DescriptiveObject"
 import User from "../models/User"
 

@@ -1,4 +1,4 @@
-import * as Discord from "discord.js"
+import Discord from "discord.js"
 import Model from "../lib/Model"
 import { formatDescriptiveObject } from "../utils"
 import LocaleServiceProvider from "../services/LocaleServiceProvider"

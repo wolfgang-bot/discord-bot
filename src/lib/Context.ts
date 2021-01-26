@@ -1,4 +1,4 @@
-import * as Discord from "discord.js"
+import Discord from "discord.js"
 import Module from "./Module"
 
 export type ContextProps = {

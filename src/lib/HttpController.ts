@@ -1,4 +1,4 @@
-import * as Discord from "discord.js"
+import Discord from "discord.js"
 
 export default abstract class HttpController {
     static client: Discord.Client

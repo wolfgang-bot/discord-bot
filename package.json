@@ -6,7 +6,7 @@
   "scripts": {
     "start": "npx ts-node src/index.ts",
     "start:server": "nodemon ./dist/index.js",
-    "build": "npx tsc",
+    "build": "rm -rf ./dist && npx tsc",
     "build:watch": "npx tsc --watch",
     "format-icons": "node ./dist/scripts/format-icons.js",
     "install-fonts": "node ./dist/scripts/install-fonts.js",
