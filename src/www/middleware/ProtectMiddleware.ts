@@ -1,5 +1,5 @@
 import { Response } from "express"
-import OAuthServiceProvider from "../Services/OAuthServiceProvider"
+import OAuthServiceProvider from "../services/OAuthServiceProvider"
 import User from "../../models/User"
 import { InternalRequest } from "../server"
 
