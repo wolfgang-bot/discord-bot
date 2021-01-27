@@ -16,9 +16,8 @@ export default class ProtectMiddleware {
     
         const userId = await OAuthServiceProvider.verifyToken(token)
         const user = await User.findBy("id", userId) as User
-
-        const discordUser = await OAuthServiceProvider.fetchProfile(user.access_token)
-        Object.assign(user, discordUser)
+        
+        user.discordUser = await OAuthServiceProvider.fetchProfile(user.access_token)
     
         return user
     }
