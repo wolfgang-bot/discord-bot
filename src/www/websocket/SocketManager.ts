@@ -50,13 +50,6 @@ export default class SocketManager {
             socket.sendModuleInstances = modulesController.sendModuleInstances
         })
     }
-
-    /**
-     * Authorization middleware
-     * 
-     * @param {Socket} socket 
-     * @param {Function} next 
-     */
     async authorize(socket: InternalSocket, next: Function) {
         if (!socket.handshake.auth?.token) {
             return next(new Error("Unauthorized"))

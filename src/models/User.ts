@@ -1,4 +1,5 @@
 import Discord from "discord.js"
+import { APIUser } from "discord-api-types/v8"
 import Model from "../lib/Model"
 
 export type UserModelValues = {
@@ -14,7 +15,7 @@ class User extends Model implements UserModelValues {
     }
     access_token?: string
     refresh_token?: string
-    discordUser: Discord.User = null
+    discordUser: Discord.User | APIUser = null
 
     constructor(values: UserModelValues) {
         super({
@@ -33,9 +34,9 @@ class User extends Model implements UserModelValues {
     toJSON() {
         return {
             id: this.id,
-            username: this.discordUser.username,
-            discriminator: this.discordUser.discriminator,
-            avatar: this.discordUser.avatar
+            username: this.discordUser?.username,
+            discriminator: this.discordUser?.discriminator,
+            avatar: this.discordUser?.avatar
         }
     }
 }

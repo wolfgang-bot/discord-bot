@@ -19,13 +19,20 @@ export default class OAuthController extends HttpController {
             // Get user profile
             const userData = await OAuthServiceProvider.fetchProfile(access_token)
 
-            // Store token in database
             let user = await User.findBy("id", userData.id) as User
+            
+            if (!user) {
+                user = new User({
+                    id: userData.id
+                })
+                await user.store()
+            }
+
+            user.discordUser = userData
             user.access_token = access_token
             user.refresh_token = refresh_token
             await user.update()
 
-            // Generate jwt
             const token = OAuthServiceProvider.generateToken(user.id)
 
             res.render("oauth-receiver", { error: false, data: { token, user } })
