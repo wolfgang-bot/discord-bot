@@ -9,7 +9,7 @@ import RestartCommand from "./restart"
 
 export default class ModulesCommandGroup extends CommandRegistry {
     name = "modules"
-    groups = "Admin"
+    group = "Admin"
     description = "command_modules_desc"
     permissions: Discord.PermissionString[] = ["MANAGE_GUILD"]
     defaultCommand = new ListCommand()
