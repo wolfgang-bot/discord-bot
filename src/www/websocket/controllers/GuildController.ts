@@ -4,7 +4,7 @@ import HttpOAuthController from "../../controllers/OAuthController"
 import { success } from "../responses"
 import { InternalRequest } from "../../server"
 
-export default class GuildController extends WebSocketController{
+export default class GuildController extends WebSocketController {
     /**
      * Forward request to the OAuthController.getGuilds method
      */

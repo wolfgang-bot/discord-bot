@@ -66,7 +66,7 @@ export default class OAuthServiceProvider {
     /**
      * Fetch the guilds of a discord user
      */
-    static fetchGuilds(token: string): Promise<APIGuild[]> {
+    static fetchGuilds(token: string): Promise<(APIGuild & { isActive: boolean })[]> {
         return OAuthServiceProvider.apiRequest(token, "/users/@me/guilds")
     }
 

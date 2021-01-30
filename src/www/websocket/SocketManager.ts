@@ -38,18 +38,19 @@ export default class SocketManager {
             const modulesController = new ModulesController(this.client, socket)
             const configController = new ConfigController(this.client, socket)
 
-            socket.on("get:guilds", guildController.getGuilds)
-            socket.on("get:config-descriptive", configController.getConfigDescriptive)
-            socket.on("post:config", configController.updateConfig)
-            socket.on("get:modules", modulesController.getModules)
-            socket.on("get:module-instances", modulesController.getInstances)
-            socket.on("post:module-instances/start", modulesController.startInstance)
-            socket.on("post:module-instances/stop", modulesController.stopInstance)
-            socket.on("post:module-instances/restart", modulesController.restartInstance)
+            socket.on("get:guilds", guildController.getGuilds.bind(guildController))
+            socket.on("get:config-descriptive", configController.getConfigDescriptive.bind(configController))
+            socket.on("post:config", configController.updateConfig.bind(configController))
+            socket.on("get:modules", modulesController.getModules.bind(modulesController))
+            socket.on("get:module-instances", modulesController.getInstances.bind(modulesController))
+            socket.on("post:module-instances/start", modulesController.startInstance.bind(modulesController))
+            socket.on("post:module-instances/stop", modulesController.stopInstance.bind(modulesController))
+            socket.on("post:module-instances/restart", modulesController.restartInstance.bind(modulesController))
 
             socket.sendModuleInstances = modulesController.sendModuleInstances
         })
     }
+    
     async authorize(socket: InternalSocket, next: Function) {
         if (!socket.handshake.auth?.token) {
             return next(new Error("Unauthorized"))

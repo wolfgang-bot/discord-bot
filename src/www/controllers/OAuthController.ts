@@ -62,13 +62,12 @@ export default class OAuthController extends HttpController {
         })
         
         // Filter existing guilds
-        const activeGuilds = {}
         await Promise.all(filtered.map(async guild => {
             const model = await Guild.findBy("id", guild.id)
-            activeGuilds[guild.id] = !!model
+            guild.isActive = !!model
         }))
 
-        filtered.sort((a, b) => activeGuilds[b.id] - activeGuilds[a.id])
+        filtered.sort((a, b) => (b.isActive as unknown as number) - (a.isActive as unknown as number))
         
         res.send(filtered)
     }
