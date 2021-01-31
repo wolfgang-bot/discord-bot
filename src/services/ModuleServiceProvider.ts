@@ -118,19 +118,23 @@ class ModuleServiceProvider {
      * Fill a module's translation map
      */
     static translate(module: typeof Module) {
-        const moduleLocale = new LocaleServiceProvider().scope(module.name)
+        const moduleLocale = new LocaleServiceProvider().scope(module.internalName)
 
-        module.translations.desc = moduleLocale.translate(module.desc)
-        module.translations.features = moduleLocale.translateArray(module.features)
-        module.translations.args = module.args.map(arg => {
-            const newArg = arg.clone()
+        module.translations = {
+            desc: moduleLocale.translate(module.desc),
+
+            features: moduleLocale.translateArray(module.features),
             
-            newArg.name = moduleLocale.translate(arg.name)
-            newArg.displayName = moduleLocale.translate(arg.displayName)
-            newArg.desc = moduleLocale.translate(arg.desc)
+            args: module.args.map(arg => {
+                const newArg = arg.clone()
 
-            return newArg
-        })
+                newArg.name = moduleLocale.translate(arg.name)
+                newArg.displayName = moduleLocale.translate(arg.displayName)
+                newArg.desc = moduleLocale.translate(arg.desc)
+
+                return newArg
+            })
+        }
     }
 
     constructor(guild: Discord.Guild) {

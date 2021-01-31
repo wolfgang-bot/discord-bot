@@ -1,6 +1,4 @@
-const HTTPStatusCodes: {
-    [code: number]: string
-} = {
+const HTTPStatusCodes: Record<number, string> = {
     400: "Bad Request",
     403: "Forbidden",
     404: "Not Found",
@@ -10,7 +8,10 @@ const HTTPStatusCodes: {
 /**
  * Generate success object
  */
-export function success(data?: any) {
+export function success(data?: any): {
+    status: "ok"
+    data: any
+} {
     return {
         status: "ok",
         data
@@ -20,7 +21,10 @@ export function success(data?: any) {
 /**
  * Generate error object
  */
-export function error(status: number | string, message?: any) {
+export function error(status: number | string, message?: any): {
+    status: "error" | string
+    message: string
+} {
     if (typeof status === "number") {
         if (!message) {
             message = HTTPStatusCodes[status]

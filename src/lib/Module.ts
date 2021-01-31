@@ -20,6 +20,7 @@ type ModuleTranslations = {
 
 class Module extends EventEmitter {
     static STATES = STATES
+    static translations: ModuleTranslations
 
     static internalName: string
     static desc: string
@@ -28,13 +29,7 @@ class Module extends EventEmitter {
     static isGlobal: boolean
     static isPrivate: boolean
     static guildIds: string[] = []
-
-    static translations: ModuleTranslations = {
-        desc: null,
-        features: null,
-        args: null
-    }
-
+    
     context: any
     config: Configuration
     state: STATES
@@ -113,6 +108,15 @@ class Module extends EventEmitter {
         return {
             moduleName: this.context.module.name,
             state: this.state
+        }
+    }
+
+    static toJSON() {
+        return {
+            name: this.internalName,
+            isGlobal: this.isGlobal,
+            isPrivate: this.isPrivate,
+            translations: this.translations
         }
     }
 }

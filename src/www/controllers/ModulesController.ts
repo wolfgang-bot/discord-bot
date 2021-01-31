@@ -12,9 +12,9 @@ export default class ModulesController extends HttpController {
      */
     static getAll(req: InternalRequest, res: Response) {
         const modules = ModuleServiceProvider.modules.filter(module => !module.isPrivate && !module.isGlobal)
-        const translated = modules.map(module => ModuleServiceProvider.translate(module))
+        modules.forEach(module => ModuleServiceProvider.translate(module))
 
-        res.send(translated)
+        res.send(modules)
     }
 
     /**
