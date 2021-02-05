@@ -6,10 +6,10 @@ import Argument from "./Argument"
 import Context from "./Context"
 
 enum STATES {
-    ACTIVE = "active",
-    INACTIVE = "inactive",
-    STARTING = "starting",
-    STOPPING = "stopping"
+    ACTIVE,
+    INACTIVE,
+    STARTING,
+    STOPPING
 }
 
 type ModuleTranslations = {

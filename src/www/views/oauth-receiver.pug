@@ -10,6 +10,6 @@ script.
         window.opener.postMessage({
             source: "oauth",
             status: "ok",
-            payload: JSON.parse(`!{JSON.stringify(data)}`)
+            data: JSON.parse(`!{JSON.stringify(data)}`)
         })
     }

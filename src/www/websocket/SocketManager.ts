@@ -65,9 +65,16 @@ export default class SocketManager {
             return next(new Error("Unauthorized"))
         }
 
-        const discordUser = await OAuthServiceProvider.fetchProfile(user.access_token)
-        Object.assign(user, discordUser)
-        socket.user = user
+        try {
+            user.discordUser = await OAuthServiceProvider.fetchProfile(user.access_token)
+            socket.user = user
+        } catch (error) {
+            if (process.env.NODE_ENV === "development") {
+                console.error(error)
+            }
+
+            return next(new Error("Invalid token"))
+        }
 
         next()
     }

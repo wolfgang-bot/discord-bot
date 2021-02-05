@@ -23,7 +23,7 @@ export function success(data?: any): {
  */
 export function error(status: number | string, message?: any): {
     status: "error" | string
-    message: string
+    message: any
 } {
     if (typeof status === "number") {
         if (!message) {
