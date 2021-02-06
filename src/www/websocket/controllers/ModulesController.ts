@@ -32,7 +32,7 @@ export default class ModulesController extends WebSocketController {
          */
         await guild.fetchDiscordGuild(this.client)
 
-        if (!await checkPermissions(guild.discordGuild, this.socket.user, ["MANAGE_GUILD"])) {
+        if (!this.socket.user.isAdmin(guild)) {
             return send(error(403))
         }
 
@@ -60,7 +60,7 @@ export default class ModulesController extends WebSocketController {
          */
         await guild.fetchDiscordGuild(this.client)
 
-        if (!await checkPermissions(guild.discordGuild, this.socket.user, ["MANAGE_GUILD"])) {
+        if (!this.socket.user.isAdmin(guild)) {
             return send(error(403))
         }
 
@@ -106,7 +106,7 @@ export default class ModulesController extends WebSocketController {
          */
         await guild.fetchDiscordGuild(this.client)
 
-        if (!await checkPermissions(guild.discordGuild, this.socket.user, ["MANAGE_GUILD"])) {
+        if (!this.socket.user.isAdmin(guild)) {
             return send(error(403))
         }
 
@@ -151,7 +151,7 @@ export default class ModulesController extends WebSocketController {
          */
         await guild.fetchDiscordGuild(this.client)
 
-        if (!await checkPermissions(guild.discordGuild, this.socket.user, ["MANAGE_GUILD"])) {
+        if (!this.socket.user.isAdmin(guild)) {
             return send(error(403))
         }
 

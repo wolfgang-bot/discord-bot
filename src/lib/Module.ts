@@ -106,7 +106,7 @@ class Module extends EventEmitter {
 
     toJSON(): object {
         return {
-            moduleName: this.context.module.name,
+            moduleName: this.context.module.internalName,
             state: this.state
         }
     }

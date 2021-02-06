@@ -1,6 +1,7 @@
 import Discord from "discord.js"
 import { APIUser } from "discord-api-types/v8"
 import Model from "../lib/Model"
+import { checkPermissions } from "../utils"
 
 export type UserModelValues = {
     id: string
@@ -25,6 +26,13 @@ class User extends Model implements UserModelValues {
         })
     }
 
+    isAdmin(guild: Guild) {
+        if (!guild.discordGuild) {
+            throw new Error(`Discord guild for guild '${guild.id}' is not available`)
+        }
+
+        return checkPermissions(guild.discordGuild, this, ["MANAGE_GUILD"])
+    }
     init() {}
 
     async fetchDiscordUser(client: Discord.Client) {
@@ -42,3 +50,5 @@ class User extends Model implements UserModelValues {
 }
 
 export default User
+
+import Guild from "./Guild"

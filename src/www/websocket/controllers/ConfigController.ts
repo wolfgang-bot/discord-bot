@@ -2,7 +2,6 @@ import Guild from "../../../models/Guild"
 import defaultConfig from "../../../config/default"
 import { success, error } from "../responses"
 import { compareStructure, verifyConstraints, insertIntoDescriptiveObject } from "../../../utils"
-import { checkPermissions } from "../../../utils"
 import WebSocketController from "../../../lib/WebSocketController"
 
 export default class ConfigController extends WebSocketController {
@@ -18,7 +17,7 @@ export default class ConfigController extends WebSocketController {
 
         await guild.fetchDiscordGuild(this.client)
 
-        if (!await checkPermissions(guild.discordGuild, this.socket.user, ["MANAGE_GUILD"])) {
+        if (!this.socket.user.isAdmin(guild)) {
             return send(error(403))
         }
 
@@ -39,7 +38,7 @@ export default class ConfigController extends WebSocketController {
 
         await guild.fetchDiscordGuild(this.client)
 
-        if (!await checkPermissions(guild.discordGuild, this.socket.user, ["MANAGE_GUILD"])) {
+        if (!this.socket.user.isAdmin(guild)) {
             return send(error(403))
         }
 

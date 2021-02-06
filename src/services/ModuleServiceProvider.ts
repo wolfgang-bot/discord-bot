@@ -191,7 +191,7 @@ class ModuleServiceProvider {
          * Create the instance
          */
         const context = new Context({ client, guild: this.guild, module })
-        const config = module.makeConfigFromArgs(args)
+        const config = module.makeConfigFromArgs(resolvedArgs)
         const instance = new module(context, config)
 
         if (!instance) {

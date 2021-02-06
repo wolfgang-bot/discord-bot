@@ -39,6 +39,7 @@ export default class SocketManager {
             const configController = new ConfigController(this.client, socket)
 
             socket.on("get:guilds", guildController.getGuilds.bind(guildController))
+            socket.on("get:guild/channels", guildController.getChannels.bind(guildController))
             socket.on("get:config-descriptive", configController.getConfigDescriptive.bind(configController))
             socket.on("post:config", configController.updateConfig.bind(configController))
             socket.on("get:modules", modulesController.getModules.bind(modulesController))
@@ -47,7 +48,7 @@ export default class SocketManager {
             socket.on("post:module-instances/stop", modulesController.stopInstance.bind(modulesController))
             socket.on("post:module-instances/restart", modulesController.restartInstance.bind(modulesController))
 
-            socket.sendModuleInstances = modulesController.sendModuleInstances
+            socket.sendModuleInstances = modulesController.sendModuleInstances.bind(modulesController)
         })
     }
     
