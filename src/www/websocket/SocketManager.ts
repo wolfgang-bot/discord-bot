@@ -2,9 +2,7 @@ import Discord from "discord.js"
 import { Server, Socket } from "socket.io"
 import OAuthServiceProvider from "../services/OAuthServiceProvider"
 import User from "../../models/User"
-import GuildController from "./controllers/GuildController"
-import ModulesController from "./controllers/ModulesController"
-import ConfigController from "./controllers/ConfigController"
+import ConnectionManager from "./ConnectionManager"
 
 export type InternalSocket = Socket & {
     handshake: {
@@ -13,12 +11,13 @@ export type InternalSocket = Socket & {
         }
     }
     user: User
-    sendModuleInstances: Function
+    pushModuleInstances: Function
 }
 
 export default class SocketManager {
     server: Server
     client: Discord.Client
+    connections: Record<string, ConnectionManager> = {}
     
     constructor(socket: Server, client: Discord.Client) {
         this.server = socket
@@ -29,26 +28,16 @@ export default class SocketManager {
         this.server.use(this.authorize)
 
         this.server.on("connection", (socket: InternalSocket) => {
-
             if (process.env.NODE_ENV === "development") {
                 console.log("Connection", socket.id)
             }
 
-            const guildController = new GuildController(this.client, socket)
-            const modulesController = new ModulesController(this.client, socket)
-            const configController = new ConfigController(this.client, socket)
+            const connection = new ConnectionManager(socket, this.client)
+            this.connections[socket.id] = connection
 
-            socket.on("get:guilds", guildController.getGuilds.bind(guildController))
-            socket.on("get:guild/channels", guildController.getChannels.bind(guildController))
-            socket.on("get:config-descriptive", configController.getConfigDescriptive.bind(configController))
-            socket.on("post:config", configController.updateConfig.bind(configController))
-            socket.on("get:modules", modulesController.getModules.bind(modulesController))
-            socket.on("get:module-instances", modulesController.getInstances.bind(modulesController))
-            socket.on("post:module-instances/start", modulesController.startInstance.bind(modulesController))
-            socket.on("post:module-instances/stop", modulesController.stopInstance.bind(modulesController))
-            socket.on("post:module-instances/restart", modulesController.restartInstance.bind(modulesController))
-
-            socket.sendModuleInstances = modulesController.sendModuleInstances.bind(modulesController)
+            socket.on("disconnect", () => {
+                delete this.connections[socket.id]
+            })
         })
     }
     

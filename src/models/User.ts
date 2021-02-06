@@ -33,6 +33,7 @@ class User extends Model implements UserModelValues {
 
         return checkPermissions(guild.discordGuild, this, ["MANAGE_GUILD"])
     }
+    
     init() {}
 
     async fetchDiscordUser(client: Discord.Client) {

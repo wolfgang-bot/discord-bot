@@ -1,9 +1,7 @@
-import { Response } from "express"
 import Discord from "discord.js"
 import WebSocketController from "../../../lib/WebSocketController"
-import HttpOAuthController from "../../controllers/OAuthController"
+import OAuthServiceProvider from "../../services/OAuthServiceProvider"
 import { success, error } from "../responses"
-import { InternalRequest } from "../../server"
 import Guild from "../../../models/Guild"
 
 export default class GuildController extends WebSocketController {
@@ -11,9 +9,22 @@ export default class GuildController extends WebSocketController {
      * Forward request to the OAuthController.getGuilds method
      */
     async getGuilds(send: Function) {
-        HttpOAuthController.getGuilds(this.socket as unknown as InternalRequest, {
-            send: data => send(success(data))
-        } as Response)
+        const guilds = await OAuthServiceProvider.fetchGuilds(this.socket.user.access_token)
+
+        // Filter manageable guilds
+        const filtered = guilds.filter(guild => {
+            return new Discord.Permissions(guild.permissions as string as Discord.PermissionResolvable).has("MANAGE_GUILD")
+        })
+
+        // Filter existing guilds
+        await Promise.all(filtered.map(async guild => {
+            const model = await Guild.findBy("id", guild.id)
+            guild.isActive = !!model
+        }))
+
+        filtered.sort((a, b) => (b.isActive as unknown as number) - (a.isActive as unknown as number))
+
+        send(success(filtered))
     }
 
     /**

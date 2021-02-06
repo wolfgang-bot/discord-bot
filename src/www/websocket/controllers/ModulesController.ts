@@ -1,20 +1,18 @@
-import { Response } from "express"
 import WebSocketController from "../../../lib/WebSocketController"
-import HttpModulesController from "../../controllers/ModulesController"
 import ModuleServiceProvider from "../../../services/ModuleServiceProvider"
 import Guild from "../../../models/Guild"
 import Module from "../../../models/Module"
 import { error, success } from "../responses"
-import { checkPermissions } from "../../../utils"
 
 export default class ModulesController extends WebSocketController {
     /**
      * Forward request to http ModulesController.getAll
      */
     getModules(send: Function) {
-        HttpModulesController.getAll(null, {
-            send: data => send(success(data))
-        } as Response)
+        const modules = ModuleServiceProvider.modules.filter(module => !module.isPrivate && !module.isGlobal)
+        modules.forEach(module => ModuleServiceProvider.translate(module))
+
+        send(success(modules))
     }
 
     /**
@@ -86,8 +84,6 @@ export default class ModulesController extends WebSocketController {
                 return send(error(400, err))
             }
         }
-
-        this.socket.sendModuleInstances(guildId)
     }
 
     /**
@@ -132,8 +128,6 @@ export default class ModulesController extends WebSocketController {
                 return send(error(400, err))
             }
         }
-
-        this.socket.sendModuleInstances(guildId)
     }
 
     /**
@@ -180,17 +174,16 @@ export default class ModulesController extends WebSocketController {
                 return send(error(400, err))
             }
         }
-
-        this.socket.sendModuleInstances(guildId)
     }
 
     /**
-     * Forward request to: 'this.getInstances'
+     * Send response from this.getInstances
      */
-    async sendModuleInstances(guildId: string) {
+    async pushModuleInstances(guildId: string) {
         this.getInstances(guildId, (res) => {
-            this.socket.emit("set:module-instances", {
-                guildId: res.data
+            this.socket.emit("push:module-instances", {
+                guildId,
+                moduleInstances: res.data
             })
         })
     }

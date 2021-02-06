@@ -1,9 +1,7 @@
-import Discord from "discord.js"
 import { Response } from "express"
 import HttpController from "../../lib/HttpController"
 import OAuthServiceProvider from "../services/OAuthServiceProvider"
 import User from "../../models/User"
-import Guild from "../../models/Guild"
 import { InternalRequest } from "../server"
 
 export default class OAuthController extends HttpController {
@@ -48,52 +46,5 @@ export default class OAuthController extends HttpController {
      */
     static getProfile(req: InternalRequest, res: Response) {
         res.send(req.user)
-    }
-
-    /**
-     * Get all guilds which are registered by the bot and manageable by the user
-     */
-    static async getGuilds(req: InternalRequest, res: Response) {
-        const guilds = await OAuthServiceProvider.fetchGuilds(req.user.access_token)
-        
-        // Filter manageable guilds
-        const filtered = guilds.filter(guild => {
-            return new Discord.Permissions(guild.permissions as string as Discord.PermissionResolvable).has("MANAGE_GUILD")
-        })
-        
-        // Filter existing guilds
-        await Promise.all(filtered.map(async guild => {
-            const model = await Guild.findBy("id", guild.id)
-            guild.isActive = !!model
-        }))
-
-        filtered.sort((a, b) => (b.isActive as unknown as number) - (a.isActive as unknown as number))
-        
-        res.send(filtered)
-    }
-
-    /**
-     * Get guild by id
-     */
-    static async getGuild(req: InternalRequest, res: Response) {
-        try {
-            const guild = await OAuthController.client.guilds.fetch(req.params.id)
-    
-            if (!guild) {
-                return res.status(404).end()
-            }
-    
-            res.send({
-                id: guild.id,
-                name: guild.name,
-                icon: guild.icon
-            })
-        } catch(error) {
-            if (process.env.NODE_ENV === "development") {
-                console.error(error)
-            }
-
-            return res.status(404).end()
-        }
     }
 }
