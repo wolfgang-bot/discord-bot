@@ -1,6 +1,7 @@
 import glob from "glob-promise"
 import path from "path"
 import Discord from "discord.js"
+import { EventEmitter } from "events"
 import Module from "../lib/Module"
 import Collection from "../lib/Collection"
 import Context from "../lib/Context"
@@ -27,6 +28,7 @@ class ModuleServiceProvider {
     static modules: (typeof Module)[] = []
     static instances: GuildInstancesMap = {}
     static globalInstances: GlobalInstancesMap = {}
+    static eventEmitter: EventEmitter = new EventEmitter()
 
     guild: Discord.Guild
     instances: InstancesMap
@@ -137,6 +139,35 @@ class ModuleServiceProvider {
         }
     }
 
+    /**
+     * Register a module instance
+     */
+    static registerInstance({ guild, instance, model }: {
+        guild: Discord.Guild,
+        instance: Module,
+        model: ModuleInstanceModel
+    }) {
+        if (!this.instances[guild.id]) {
+            this.instances[guild.id] = {}
+        }
+
+        this.instances[guild.id][model.id] = instance
+
+        instance.on("update", () => {
+            this.eventEmitter.emit("update", instance)
+        })
+    }
+
+    /**
+     * Unregister a module instance
+     */
+    static unregisterInstance({ guild, model }: {
+        guild: Discord.Guild,
+        model: ModuleInstanceModel
+    }) {
+        delete this.instances[guild.id][model.id]
+    }
+
     constructor(guild: Discord.Guild) {
         this.guild = guild
 
@@ -186,7 +217,6 @@ class ModuleServiceProvider {
             return ArgumentServiceProvider.guild(this.guild).resolveArgument(argument, args[i])
         }))
 
-
         /**
          * Create the instance
          */
@@ -197,21 +227,22 @@ class ModuleServiceProvider {
         if (!instance) {
             throw locale.translate("error_illegal_invocation")
         }
-        
-        await instance._start()
-        
-        /**
-         * Store the instance
-         */
-        const moduleInstance = new ModuleInstanceModel({
+
+        const instanceModel = new ModuleInstanceModel({
             module_id: model.id,
             guild_id: this.guild.id,
             config: instance.getConfig()
         })
-
-        await moduleInstance.store()
         
-        this.instances[moduleInstance.id] = instance
+        ModuleServiceProvider.registerInstance({
+            guild: this.guild,
+            instance,
+            model: instanceModel
+        })
+
+        await instance._start()
+
+        await instanceModel.store()
 
         return instance
     }
@@ -220,7 +251,9 @@ class ModuleServiceProvider {
      * Stop the module's instance from this guild
      */
     async stopModule(model: ModuleModel) {
-        const moduleInstance = await ModuleInstanceModel.where(`module_id = '${model.id}' AND guild_id = ${this.guild.id}`)
+        const moduleInstance = await ModuleInstanceModel.where(
+            `module_id = '${model.id}' AND guild_id = ${this.guild.id}`
+        ) as ModuleInstanceModel
 
         if (!moduleInstance) {
             const locale = await LocaleServiceProvider.guild(this.guild)
@@ -228,7 +261,8 @@ class ModuleServiceProvider {
         }
 
         await this.instances[moduleInstance.id]._stop()
-        delete this.instances[moduleInstance.id]
+
+        ModuleServiceProvider.unregisterInstance({ guild: this.guild, model: moduleInstance })
 
         await moduleInstance.delete()
     }
@@ -270,7 +304,7 @@ class ModuleServiceProvider {
 
         await instance._start()
 
-        this.instances[model.id] = instance
+        ModuleServiceProvider.registerInstance({ guild: this.guild, instance, model })
         
         return instance
     }

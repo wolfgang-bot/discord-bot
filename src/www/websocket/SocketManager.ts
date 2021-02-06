@@ -2,7 +2,9 @@ import Discord from "discord.js"
 import { Server, Socket } from "socket.io"
 import OAuthServiceProvider from "../services/OAuthServiceProvider"
 import User from "../../models/User"
+import Guild from "../../models/Guild"
 import ConnectionManager from "./ConnectionManager"
+import { ExtendedAPIGuild } from "../services/OAuthServiceProvider"
 
 export type InternalSocket = Socket & {
     handshake: {
@@ -11,6 +13,7 @@ export type InternalSocket = Socket & {
         }
     }
     user: User
+    guilds: Record<string, ExtendedAPIGuild>
     pushModuleInstances: Function
 }
 
@@ -25,7 +28,7 @@ export default class SocketManager {
     }
 
     init() {
-        this.server.use(this.authorize)
+        this.server.use(this.authorize.bind(this))
 
         this.server.on("connection", (socket: InternalSocket) => {
             if (process.env.NODE_ENV === "development") {
@@ -36,6 +39,7 @@ export default class SocketManager {
             this.connections[socket.id] = connection
 
             socket.on("disconnect", () => {
+                connection.clean()
                 delete this.connections[socket.id]
             })
         })
@@ -56,8 +60,14 @@ export default class SocketManager {
         }
 
         try {
-            user.discordUser = await OAuthServiceProvider.fetchProfile(user.access_token)
+            const [discordUser, guilds] = await Promise.all([
+                OAuthServiceProvider.fetchProfile(user.access_token),
+                this.fetchGuilds(user)
+            ])
+
+            user.discordUser = discordUser
             socket.user = user
+            socket.guilds = guilds
         } catch (error) {
             if (process.env.NODE_ENV === "development") {
                 console.error(error)
@@ -67,5 +77,29 @@ export default class SocketManager {
         }
 
         next()
+    }
+
+    async fetchGuilds(user: User) {
+        const guilds = await OAuthServiceProvider.fetchGuilds(user.access_token)
+
+        // Filter guilds where the user is an admin
+        const filtered = guilds.filter(guild => {
+            return new Discord.Permissions(guild.permissions as string as Discord.PermissionResolvable)
+                .has("MANAGE_GUILD")
+        })
+
+        // Mark guilds which are registered by the bot
+        await Promise.all(filtered.map(async guild => {
+            const model = await Guild.findBy("id", guild.id)
+            guild.isActive = !!model
+        }))
+
+        const guildsMap: Record<string, ExtendedAPIGuild> = {}
+
+        filtered.forEach(guild => {
+            guildsMap[guild.id] = guild
+        })
+
+        return guildsMap
     }
 }

@@ -30,7 +30,7 @@ class Module extends EventEmitter {
     static isPrivate: boolean
     static guildIds: string[] = []
     
-    context: any
+    context: Context
     config: Configuration
     state: STATES
 
@@ -62,21 +62,21 @@ class Module extends EventEmitter {
         return new Configuration({})
     }
 
-    constructor(context: any, config?: Configuration) {
+    constructor(context: Context, config?: Configuration) {
         super()
 
         this.context = context
         this.config = config
-        this.state = Module.STATES["INACTIVE"]
+        this.state = Module.STATES.INACTIVE
     }
 
     /**
      * Start the module (will call "this.start()")
      */
     async _start() {
-        this.setState(Module.STATES["STARTING"])
+        this.setState(Module.STATES.STARTING)
         await this.start()
-        this.setState(Module.STATES["ACTIVE"])
+        this.setState(Module.STATES.ACTIVE)
     }
 
     async start() {}
@@ -85,9 +85,9 @@ class Module extends EventEmitter {
      * Stop the module (will call "this.stop()")
      */
     async _stop() {
-        this.setState(Module.STATES["STOPPING"])
+        this.setState(Module.STATES.STOPPING)
         await this.stop()
-        this.setState(Module.STATES["INACTIVE"])
+        this.setState(Module.STATES.INACTIVE)
     }
 
     async stop() {}
@@ -97,7 +97,7 @@ class Module extends EventEmitter {
      */
     setState(newState: STATES) {
         this.state = newState
-        this.emit("update")
+        this.emit("update", newState)
     }
 
     getConfig() {
@@ -107,6 +107,7 @@ class Module extends EventEmitter {
     toJSON(): object {
         return {
             moduleName: this.context.module.internalName,
+            guildId: this.context.guild.id,
             state: this.state
         }
     }

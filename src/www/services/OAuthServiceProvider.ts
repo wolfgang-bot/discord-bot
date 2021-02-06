@@ -4,6 +4,8 @@ import jwt from "jsonwebtoken"
 import config from "../config"
 import { makeURL } from "../../utils"
 
+export type ExtendedAPIGuild = APIGuild & { isActive: boolean }
+
 export default class OAuthServiceProvider {
     /**
      * Request an oauth token from discord
@@ -66,7 +68,7 @@ export default class OAuthServiceProvider {
     /**
      * Fetch the guilds of a discord user
      */
-    static fetchGuilds(token: string): Promise<(APIGuild & { isActive: boolean })[]> {
+    static fetchGuilds(token: string): Promise<ExtendedAPIGuild[]> {
         return OAuthServiceProvider.apiRequest(token, "/users/@me/guilds")
     }
 

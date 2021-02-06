@@ -2,6 +2,7 @@ import WebSocketController from "../../../lib/WebSocketController"
 import ModuleServiceProvider from "../../../services/ModuleServiceProvider"
 import Guild from "../../../models/Guild"
 import Module from "../../../models/Module"
+import LibModule from "../../../lib/Module"
 import { error, success } from "../responses"
 
 export default class ModulesController extends WebSocketController {
@@ -177,14 +178,9 @@ export default class ModulesController extends WebSocketController {
     }
 
     /**
-     * Send response from this.getInstances
+     * Push module instances to client
      */
-    async pushModuleInstances(guildId: string) {
-        this.getInstances(guildId, (res) => {
-            this.socket.emit("push:module-instances", {
-                guildId,
-                moduleInstances: res.data
-            })
-        })
+    async pushModuleInstances(instances: LibModule[]) {
+        this.socket.emit("push:module-instances", instances)
     }
 }
