@@ -3,7 +3,7 @@ import Module from "./Module"
 
 export type ContextProps = {
     client: Discord.Client,
-    guild: Discord.Guild,
+    guild?: Discord.Guild,
     module: typeof Module
 }
 
@@ -12,7 +12,7 @@ export type ContextProps = {
  */
 class Context implements ContextProps {
     client: Discord.Client
-    guild: Discord.Guild
+    guild?: Discord.Guild
     module: typeof Module
 
     constructor(props: ContextProps) {

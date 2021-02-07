@@ -110,7 +110,7 @@ class ModuleServiceProvider {
             throw new Error(`The module '${module.internalName}' is already running`)
         }
 
-        const instance = new module({ client })
+        const instance = new module({ client, module })
         await instance._start()
 
         ModuleServiceProvider.globalInstances[module.name] = instance
