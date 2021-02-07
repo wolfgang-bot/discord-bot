@@ -1,6 +1,7 @@
 import Discord from "discord.js"
 import DefaultConfig from "../../../lib/Configuration"
 import Context from "../../../lib/Context"
+import DescriptiveObject from "../../../lib/DescriptiveObject"
 
 type ConfigProps = {
     parentChannel: Discord.CategoryChannel
@@ -14,10 +15,24 @@ type ConfigJSON = {
     parentChannelId: string
 }
 
-class Configuration extends DefaultConfig implements ConfigProps {
+export default class Configuration extends DefaultConfig implements ConfigProps {
     parentChannel: Discord.CategoryChannel
-    defaultChannels: number = 3
-    channelName: string = "🔊┃voice {}"
+    defaultChannels: number
+    channelName: string
+
+    static guildConfig = new DescriptiveObject({
+        value: {
+            defaultChannels: new DescriptiveObject({
+                description: "Amount of persistant channels",
+                value: 3
+            }),
+
+            channelName: new DescriptiveObject({
+                description: "Template for the voice channel names ('{}' will be replaced with channels index)",
+                value: "🔊┃voice {}"
+            })
+        }
+    })
 
     static fromArgs(args: ConfigArgs) {
         return new Configuration({ parentChannel: args[0] })
@@ -39,5 +54,3 @@ class Configuration extends DefaultConfig implements ConfigProps {
         }
     }
 }
-
-export default Configuration

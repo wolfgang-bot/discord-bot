@@ -9,7 +9,15 @@ export type GuildModelValues = {
     config?: any
 }
 
-const defaultConfig: any = defaultConfigRaw.toJSON()
+let defaultConfig: object
+
+function getDefaultConfig() {
+    if (!defaultConfig) {
+        defaultConfig = defaultConfigRaw.toJSON()
+    }
+
+    return defaultConfig
+}
 
 class Guild extends Model implements GuildModelValues {
     static context = {
@@ -25,7 +33,7 @@ class Guild extends Model implements GuildModelValues {
         
         if (!model) {
             console.trace(`Guild '${guild.id}' - '${guild.name}' is not available`)
-            return defaultConfig
+            return getDefaultConfig()
         }
 
         return model.config
@@ -37,7 +45,7 @@ class Guild extends Model implements GuildModelValues {
             columns: ["id", "locale", "config"],
             defaultValues: {
                 locale: LocaleServiceProvider.defaultLocale,
-                config: defaultConfig
+                config: getDefaultConfig()
             },
             values
         })
@@ -60,7 +68,7 @@ class Guild extends Model implements GuildModelValues {
 
         super.delete()
     }
-
+    
     init() {
         if (typeof this.config === "string") {
             this.config = JSON.parse(this.config)

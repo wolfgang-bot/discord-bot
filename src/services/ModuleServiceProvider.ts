@@ -5,10 +5,12 @@ import { EventEmitter } from "events"
 import Module from "../lib/Module"
 import Collection from "../lib/Collection"
 import Context from "../lib/Context"
+import Configuration from "../lib/Configuration"
 import ModuleModel from "../models/Module"
 import ModuleInstanceModel from "../models/ModuleInstance"
 import LocaleServiceProvider from "./LocaleServiceProvider"
 import ArgumentServiceProvider, { ArgumentResolveTypes } from "./ArgumentServiceProvider"
+import defaultConfig from "../config/default"
 
 type GuildInstancesMap = {
     [guildId: string]: InstancesMap
@@ -40,12 +42,37 @@ class ModuleServiceProvider {
         const files = await glob("?*/module.xml", { cwd: MODULES_DIR })
 
         await Promise.all(files.map(async filepath => {
-            const module = require(path.join(MODULES_DIR, filepath, "..", "index")).default as typeof Module
+            const module = require(
+                path.join(MODULES_DIR, filepath, "..", "index")
+            ).default as typeof Module
 
             await module.loadXMLFile(path.join(MODULES_DIR, filepath))
 
             ModuleServiceProvider.modules.push(module)
+
+            if (!module.isGlobal) {
+                ModuleServiceProvider.addModuleConfigToDefaultConfig(module)
+            }
         }))
+    }
+
+    /**
+     * Add a module's guild configuration to the default config
+     */
+    static addModuleConfigToDefaultConfig(module: typeof Module) {
+        try {
+            const moduleConfig = require(
+                path.join(MODULES_DIR, module.internalName, "models", "Configuration.ts")
+            ).default as typeof Configuration
+            
+            defaultConfig.value[module.internalName] = moduleConfig.guildConfig
+        } catch (error) {
+            if (process.env.NODE_ENV === "development") {
+                console.error(error)
+            }
+
+            throw new Error(`Failed to load config from module '${module.internalName}'`)
+        }
     }
 
     /**

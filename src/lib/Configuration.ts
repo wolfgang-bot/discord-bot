@@ -1,6 +1,8 @@
 import Context from "./Context"
 
 class Configuration {
+    static guildConfig: object
+
     static fromArgs(args: any[]) {
         return new Configuration({})
     }
