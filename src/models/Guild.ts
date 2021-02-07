@@ -13,7 +13,7 @@ let defaultConfig: object
 
 function getDefaultConfig() {
     if (!defaultConfig) {
-        defaultConfig = defaultConfigRaw.toJSON()
+        defaultConfig = defaultConfigRaw.toVanillaObject()
     }
 
     return defaultConfig

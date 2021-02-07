@@ -21,15 +21,15 @@ class DescriptiveObject implements DescriptiveObjectProps {
     /**
      * Create a vanilla object from the value of this object
      */
-    toJSON() {
+    toVanillaObject() {
         let result: any = {}
 
         if (this.value instanceof DescriptiveObject) {
-            result = this.value.toJSON()
+            result = this.value.toVanillaObject()
         } else if (this.value.constructor.name === "Object") {
             for (let key in this.value) {
                 if (this.value[key] instanceof DescriptiveObject) {
-                    result[key] = (this.value[key] as DescriptiveObject).toJSON()
+                    result[key] = (this.value[key] as DescriptiveObject).toVanillaObject()
                 } else {
                     result[key] = this.value[key]
                 }
@@ -93,7 +93,7 @@ class DescriptiveObject implements DescriptiveObjectProps {
             }
         }
 
-        if (this.verifyConstraints && !this.verifyConstraints(this.value, root.toJSON())) {
+        if (this.verifyConstraints && !this.verifyConstraints(this.value, root.toVanillaObject())) {
             if (!errors) {
                 errors = {}
             }

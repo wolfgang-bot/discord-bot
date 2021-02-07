@@ -21,7 +21,7 @@ makeRunnable(async () => {
         ModuleServiceProvider.loadModules()
     ]), "Setup")
 
-    defaultConfig = defaultConfigDescriptive.toJSON()
+    defaultConfig = defaultConfigDescriptive.toVanillaObject()
 
     await run(updateConfigs, "Update configs")
 

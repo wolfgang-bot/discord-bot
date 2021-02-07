@@ -46,7 +46,7 @@ export default class ConfigController extends WebSocketController {
          * Check if the given object has the same structure as the existing
          * configuration object
          */
-        if (typeof newValue !== "object" || !compareStructure(guild.config, newValue)) {
+        if (newValue.constructor.name !== "Object" || !compareStructure(guild.config, newValue)) {
             return send(error(400, "Invalid format"))
         }
 
