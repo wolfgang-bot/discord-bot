@@ -1,6 +1,5 @@
 import Discord from "discord.js"
 import Model from "../lib/Model"
-import { formatDescriptiveObject } from "../utils"
 import LocaleServiceProvider from "../services/LocaleServiceProvider"
 import defaultConfigRaw from "../config/default"
 
@@ -10,7 +9,7 @@ export type GuildModelValues = {
     config?: any
 }
 
-const defaultConfig: any = formatDescriptiveObject(defaultConfigRaw)
+const defaultConfig: any = defaultConfigRaw.toJSON()
 
 class Guild extends Model implements GuildModelValues {
     static context = {

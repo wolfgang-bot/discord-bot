@@ -6,7 +6,6 @@ import Guild from "../../../../../models/Guild"
 import Module from "../../../../../models/Module"
 import ModuleConfigEmbed from "../../../embeds/ModuleConfigEmbed"
 import defaultConfig from "../../../../../config/default"
-import { insertIntoDescriptiveObject } from "../../../../../utils"
 
 export default class GetCommand extends Command {
     name = "get"
@@ -29,10 +28,11 @@ export default class GetCommand extends Command {
             return
         }
 
-        const config = await Guild.config(message.guild)
-        const moduleConfig: object = config[args[0]]
-        const descriptiveConfig = insertIntoDescriptiveObject(moduleConfig, defaultConfig[args[0]].value as DescriptiveObject)
+        const guildConfig = await Guild.config(message.guild)
+        const moduleConfig: object = guildConfig[args[0]]
+        const moduleConfigDescriptive = (defaultConfig.value[args[0]] as DescriptiveObject)
+            .assignVanillaObject(moduleConfig)
 
-        await message.channel.send(new ModuleConfigEmbed(config, locale, args[0], descriptiveConfig))
+        await message.channel.send(new ModuleConfigEmbed(guildConfig, locale, args[0], moduleConfigDescriptive))
     }
 }

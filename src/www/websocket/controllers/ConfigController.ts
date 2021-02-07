@@ -1,7 +1,7 @@
 import Guild from "../../../models/Guild"
 import defaultConfig from "../../../config/default"
 import { success, error } from "../responses"
-import { compareStructure, verifyConstraints, insertIntoDescriptiveObject } from "../../../utils"
+import { compareStructure } from "../../../utils"
 import WebSocketController from "../../../lib/WebSocketController"
 
 export default class ConfigController extends WebSocketController {
@@ -21,7 +21,7 @@ export default class ConfigController extends WebSocketController {
             return send(error(403))
         }
 
-        const formatted = insertIntoDescriptiveObject(guild.config, defaultConfig)
+        const formatted = defaultConfig.assignVanillaObject(guild.config)
 
         send(success(formatted))
     }
@@ -53,7 +53,7 @@ export default class ConfigController extends WebSocketController {
         /**
          * Check if the given object matches all constraints
          */
-        const errors = verifyConstraints(newValue, defaultConfig)
+        const errors = defaultConfig.assignVanillaObject(newValue).verifyConstraints()
 
         if (errors) {
             return send(error(400, errors))

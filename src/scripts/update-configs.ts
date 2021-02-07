@@ -5,11 +5,11 @@ import dotenv from "dotenv"
 import database from "../database"
 import Guild from "../models/Guild"
 import Collection from "../lib/Collection"
-import defaultConfigRaw from "../config/default"
-import { formatDescriptiveObject, transferValues } from "../utils"
+import defaultConfigDescriptive from "../config/default"
+import { transferValues } from "../utils"
 dotenv.config({ path: path.join(__dirname, "..", "..", ".env") })
 
-const defaultConfig = formatDescriptiveObject(defaultConfigRaw)
+const defaultConfig = defaultConfigDescriptive.toJSON()
 
 const client = new Discord.Client()
 

@@ -1,5 +1,4 @@
 import Discord from "discord.js"
-import DescriptiveObject from "../lib/DescriptiveObject"
 import User from "../models/User"
 
 // Blank character which is not the "whitespace" character (used in discord embeds to make indents)
@@ -88,43 +87,6 @@ export function space(length: number) {
 }
 
 /**
- * Formats a descriptive object recursively into an object which only contains the values
- */
-export function formatDescriptiveObject(object: DescriptiveObject): {} {
-    const formatted = {}
-
-    for (let key in object) {
-        if (object[key].value.constructor.name === "Object") {
-            formatted[key] = formatDescriptiveObject(object[key].value as DescriptiveObject)
-        } else {
-            formatted[key] = object[key].value
-        }
-    }
-
-    return formatted
-}
-
-/**
- * Inserts the values of the source object into the values of
- * the dest object, where the dest object is a descriptive object.
- */
-export function insertIntoDescriptiveObject(source: object, dest: DescriptiveObject) {
-    const result: DescriptiveObject = {}
-
-    for (let key in source) {
-        result[key] = dest[key]
-
-        if (source[key].constructor.name === "Object") {
-            result[key].value = insertIntoDescriptiveObject(source[key], result[key].value as DescriptiveObject)
-        } else {
-            result[key].value = source[key]
-        }
-    }
-
-    return result
-}
-
-/**
  * Check recursively if a key exists in an object
  */
 export function existsInObject(object: object, key: string) {
@@ -202,41 +164,6 @@ export function compareStructure(object1: object, object2: Object) {
     }
 
     return true
-}
-
-/**
- * Run constraint methods of a descriptive object
- */
-export function verifyConstraints(source: object, dest: DescriptiveObject): object {
-    const errors = {}
-    let hasErrors = false
-
-    function verify(source: object, dest: DescriptiveObject, errors: object) {
-        for (let key in source) {
-            const value = source[key]
-            const descriptor = dest[key]
-
-            // Run the "verifyContraints" method
-            if (descriptor.verifyConstraints && !descriptor.verifyConstraints(value, source)) {
-                errors[key] = descriptor.constraints
-                hasErrors = true
-            }
-
-            // Recursively verify sub-objects
-            if (value.constructor.name === "Object") {
-                errors[key] = {}
-                verify(value, descriptor.value as DescriptiveObject, errors[key])
-            }
-        }
-    }
-
-    verify(source, dest, errors)
-
-    if (hasErrors) {
-        return errors
-    }
-
-    return null
 }
 
 /**

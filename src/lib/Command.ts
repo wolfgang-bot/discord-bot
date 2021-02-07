@@ -39,7 +39,9 @@ abstract class Command {
 
         let command: Command = this
         while (command) {
-            permissions.push(...command.permissions)
+            if (command.permissions) {
+                permissions.push(...command.permissions)
+            }
             command = command.parent
         }
         

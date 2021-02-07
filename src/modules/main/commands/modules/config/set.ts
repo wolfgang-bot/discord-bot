@@ -42,9 +42,9 @@ export default class SetCommand extends Command {
         /**
          * Format value to match the default value's datatype
          */
-        let formattedValue
+        let formattedValue: any
         try {
-            const defaultValue = defaultConfig[moduleName].value[attribute].value
+            const defaultValue = defaultConfig.value[moduleName].value[attribute].value
             formattedValue = convertDatatype(value, defaultValue.constructor.name)
         } catch (error) {
             if (process.env.NODE_ENV === "development") {

@@ -31,7 +31,7 @@ export default class HelpCommandEmbed extends BaseEmbed {
             },
             {
                 name: locale.translate("embed_help_command_alias"),
-                value: makeCodeblock(command.alias.join("\n") || " ")
+                value: makeCodeblock((command.alias || []).join("\n") || " ")
             }
         ])
     }
