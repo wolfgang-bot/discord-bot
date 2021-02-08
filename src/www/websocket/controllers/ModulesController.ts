@@ -85,6 +85,8 @@ export default class ModulesController extends WebSocketController {
                 return send(error(400, err))
             }
         }
+
+        return send(success())
     }
 
     /**
@@ -129,6 +131,8 @@ export default class ModulesController extends WebSocketController {
                 return send(error(400, err))
             }
         }
+
+        return send(success())
     }
 
     /**
@@ -175,6 +179,8 @@ export default class ModulesController extends WebSocketController {
                 return send(error(400, err))
             }
         }
+
+        return send(success())
     }
 
     /**

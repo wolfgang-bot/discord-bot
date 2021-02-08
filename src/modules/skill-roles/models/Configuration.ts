@@ -6,7 +6,7 @@ import Context from "../../../lib/Context"
 import DescriptiveObject from "../../../lib/DescriptiveObject"
 import { COLOR_REGEX } from "../../../lib/constraints"
 
-const ICONS_DIR = path.join(__dirname, "..", "modules", "skill-roles", "assets", "icons")
+const ICONS_DIR = path.join(__dirname, "..", "assets", "icons")
 
 const icons = glob.sync("*.png", { cwd: ICONS_DIR }).map(filename => filename.replace(".png", ""))
 

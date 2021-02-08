@@ -44,14 +44,14 @@ class DescriptiveObject implements DescriptiveObjectProps {
     /**
      * Assign a vanilla object to a copy of this object
      */
-    assignVanillaObject(source: any): DescriptiveObject {
-        const result = this.clone()
+    assignVanillaObject(source: any, result?: DescriptiveObject): DescriptiveObject {
+        result = !result ? this.clone() : result
 
         if (source.constructor.name === "Object") {
             for (let key in source) {
                 if (result.value[key] instanceof DescriptiveObject) {
                     if (source[key].constructor.name === "Object") {
-                        (result.value[key] as DescriptiveObject).assignVanillaObject(source[key])
+                        (result.value[key] as DescriptiveObject).assignVanillaObject(source[key], result.value[key])
                     } else {
                         result.value[key].value = source[key]
                     }

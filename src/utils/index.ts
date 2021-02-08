@@ -133,13 +133,22 @@ export function convertDatatype(input: string, datatype: "String" | "Number" | "
  * Check recursively if two objects have the same keys and every value has
  * the same type.
  */
-export function compareStructure(object1: object, object2: Object) {
+export function compareStructure(object1: object, object2: object) {
     // Collect keys from both objects
     const keys = new Set(Object.keys(object1).concat(Object.keys(object2)))
 
     for (let key of keys) {
         // Verify existance
         if (!(key in object1) || !(key in object2)) {
+            return false
+        }
+
+        // Verify that values are defined
+        // TODO: Allow null and undefined
+        if (
+            object1[key] === null || object1[key] === undefined ||
+            object2[key] === null || object2[key] === undefined
+        ) {
             return false
         }
 

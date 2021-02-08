@@ -53,7 +53,7 @@ export default class ConfigController extends WebSocketController {
         /**
          * Check if the given object matches all constraints
          */
-        const errors = defaultConfig.assignVanillaObject(newValue).verifyConstraints()
+        const errors = defaultConfig.assignVanillaObject(newValue).runConstraints()
 
         if (errors) {
             return send(error(400, errors))
@@ -62,6 +62,8 @@ export default class ConfigController extends WebSocketController {
         guild.config = newValue
         await guild.update()
 
-        send(success())
+        send(success(
+            defaultConfig.assignVanillaObject(guild.config)
+        ))
     }
 }

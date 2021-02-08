@@ -33,8 +33,8 @@ export default class Configuration extends DefaultConfig implements ConfigProps 
                 constraints: "Must have the same amount of items as 'Role Colors' and 'Role Thresholds'",
                 verifyConstraints: (value: string[], config) => (
                     value.length > 0 &&
-                    value.length === config.roleColors.length &&
-                    value.length === config.roleThresholds.length
+                    value.length === config["reputation-system"].roleColors.length &&
+                    value.length === config["reputation-system"].roleThresholds.length
                 )
             }),
 
@@ -44,8 +44,8 @@ export default class Configuration extends DefaultConfig implements ConfigProps 
                 constraints: "Must have the same amount of items as 'Roles' and 'Role Thresholds'",
                 verifyConstraints: (value: string[], config) => (
                     value.length > 0 &&
-                    value.length === config.roles.length &&
-                    value.length === config.roleThresholds.length
+                    value.length === config["reputation-system"].roles.length &&
+                    value.length === config["reputation-system"].roleThresholds.length
                 )
             }),
 
@@ -55,8 +55,8 @@ export default class Configuration extends DefaultConfig implements ConfigProps 
                 constraints: "Must have the same amount of items as 'Roles' and 'Role Colors'",
                 verifyConstraints: (value: string[], config) => (
                     value.length > 0 &&
-                    value.length === config.roles.length &&
-                    value.length === config.roleColors.length
+                    value.length === config["reputation-system"].roles.length &&
+                    value.length === config["reputation-system"].roleColors.length
                 )
             }),
 
@@ -73,7 +73,7 @@ export default class Configuration extends DefaultConfig implements ConfigProps 
     }
 
     static async fromJSON(context: Context, object: ConfigJSON) {
-        const channel = await context.guild.channels.cache.get(object.channelId) as Discord.TextChannel
+        const channel = context.guild.channels.cache.get(object.channelId) as Discord.TextChannel
         return new Configuration({ channel })
     }
 
