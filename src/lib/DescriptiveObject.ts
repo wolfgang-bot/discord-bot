@@ -70,38 +70,31 @@ class DescriptiveObject implements DescriptiveObjectProps {
      * Run all constraint methods and return errors
      */
     runConstraints(root: DescriptiveObject = this): any | undefined {
-        let errors: {
-            error?: string,
-            [key: string]: any
-        } | undefined = undefined
+        let result: Record<string, any> | string | undefined
 
         if (this.value instanceof DescriptiveObject) {
-            errors = this.value.runConstraints(root)
+            result = this.value.runConstraints(root)
         } else if (this.value.constructor.name === "Object") {
             for (let key in this.value) {
                 if (this.value[key] instanceof DescriptiveObject) {
                     const error = (this.value[key] as DescriptiveObject).runConstraints(root)
-                    
+
                     if (error) {
-                        if (!errors) {
-                            errors = {}
+                        if (!result) {
+                            result = {}
                         }
 
-                        errors[key] = error
+                        (result as Record<string, any>)[key] = error
                     }
                 }
             }
         }
 
         if (this.verifyConstraints && !this.verifyConstraints(this.value, root.toVanillaObject())) {
-            if (!errors) {
-                errors = {}
-            }
-
-            errors.error = this.constraints
+            result = this.constraints
         }
 
-        return errors
+        return result
     }
 
     /**
