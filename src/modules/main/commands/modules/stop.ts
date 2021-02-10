@@ -1,6 +1,6 @@
 import Discord from "discord.js"
 import Command from "../../../../lib/Command"
-import ModuleServiceProvider from "../../../../services/ModuleServiceProvider"
+import ModuleRegistry from "../../../../services/ModuleRegistry"
 import LocaleServiceProvider from "../../../../services/LocaleServiceProvider"
 import Module from "../../../../models/Module"
 
@@ -24,14 +24,14 @@ export default class StopCommand extends Command {
             return
         }
 
-        const isLoaded = await ModuleServiceProvider.guild(message.guild).isLoaded(module)
+        const isLoaded = await ModuleRegistry.guild(message.guild).isLoaded(module)
 
         if (!isLoaded) {
             await message.channel.send(locale.translate("error_module_not_running"))
             return
         }
 
-        await ModuleServiceProvider.guild(message.guild).stopModule(module)
+        await ModuleRegistry.guild(message.guild).stopModule(module)
 
         await message.channel.send(locale.translate("success"))
     }

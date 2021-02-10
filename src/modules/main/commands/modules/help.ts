@@ -1,6 +1,6 @@
 import Discord from "discord.js"
 import Command from "../../../../lib/Command"
-import ModuleServiceProvider from "../../../../services/ModuleServiceProvider"
+import ModuleRegistry from "../../../../services/ModuleRegistry"
 import LocaleServiceProvider from "../../../../services/LocaleServiceProvider"
 import ModuleHelpEmbed from "../../embeds/ModuleHelpEmbed"
 import Module from "../../../../models/Module"
@@ -26,7 +26,7 @@ export default class HelpCommand extends Command {
             return
         }
 
-        const module = ModuleServiceProvider.getModule(model)
+        const module = ModuleRegistry.getModule(model)
         const config = await Guild.config(message.guild)
         await message.channel.send(new ModuleHelpEmbed(config, locale, module))
     }

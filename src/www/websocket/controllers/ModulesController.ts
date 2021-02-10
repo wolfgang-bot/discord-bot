@@ -1,5 +1,5 @@
 import WebSocketController from "../../../lib/WebSocketController"
-import ModuleServiceProvider from "../../../services/ModuleServiceProvider"
+import ModuleRegistry from "../../../services/ModuleRegistry"
 import Guild from "../../../models/Guild"
 import Module from "../../../models/Module"
 import LibModule from "../../../lib/Module"
@@ -10,8 +10,8 @@ export default class ModulesController extends WebSocketController {
      * Forward request to http ModulesController.getAll
      */
     getModules(send: Function) {
-        const modules = ModuleServiceProvider.modules.filter(module => !module.isPrivate && !module.isGlobal)
-        modules.forEach(module => ModuleServiceProvider.translate(module))
+        const modules = ModuleRegistry.modules.filter(module => !module.isPrivate && !module.isGlobal)
+        modules.forEach(module => ModuleRegistry.translate(module))
 
         send(success(modules))
     }
@@ -35,7 +35,7 @@ export default class ModulesController extends WebSocketController {
             return send(error(403))
         }
 
-        const instances = Object.values(ModuleServiceProvider.guild(guild.discordGuild).instances)
+        const instances = Object.values(ModuleRegistry.guild(guild.discordGuild).instances)
 
         send(success(instances))
     }
@@ -73,7 +73,7 @@ export default class ModulesController extends WebSocketController {
          * Start instance and forward errors to client
          */
         try {
-            await ModuleServiceProvider.guild(guild.discordGuild).startModule(this.client, module, args)
+            await ModuleRegistry.guild(guild.discordGuild).startModule(this.client, module, args)
         } catch (err) {
             if (process.env.NODE_ENV === "development") {
                 console.error(err)
@@ -119,7 +119,7 @@ export default class ModulesController extends WebSocketController {
          * Stop instance and forward errors to the client
          */
         try {
-            await ModuleServiceProvider.guild(guild.discordGuild).stopModule(module)
+            await ModuleRegistry.guild(guild.discordGuild).stopModule(module)
         } catch (err) {
             if (process.env.NODE_ENV === "development") {
                 console.error(err)
@@ -167,7 +167,7 @@ export default class ModulesController extends WebSocketController {
          * Stop instance and forward errors to the client
          */
         try {
-            await ModuleServiceProvider.guild(guild.discordGuild).restartModule(module)
+            await ModuleRegistry.guild(guild.discordGuild).restartModule(module)
         } catch (err) {
             if (process.env.NODE_ENV === "development") {
                 console.error(err)

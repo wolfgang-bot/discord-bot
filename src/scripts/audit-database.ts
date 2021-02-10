@@ -4,7 +4,7 @@ import chalk from "chalk"
 import readline from "readline"
 import { makeRunnable, run } from "@m.moelter/task-runner"
 import dotenv from "dotenv"
-import ModuleServiceProvider from "../services/ModuleServiceProvider"
+import ModuleRegistry from "../services/ModuleRegistry"
 import database from "../database"
 import Guild from "../models/Guild"
 import User from "../models/User"
@@ -40,7 +40,7 @@ makeRunnable(async () => {
     await run(() => Promise.all([
         database.connect(),
         client.login(process.env.DISCORD_BOT_TOKEN),
-        ModuleServiceProvider.loadModules()
+        ModuleRegistry.loadModules()
     ]), "Setup", opts)
 
     // Audit database

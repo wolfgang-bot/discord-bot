@@ -26,7 +26,7 @@ type GlobalInstancesMap = {
 
 const MODULES_DIR = path.join(__dirname, "..", "modules")
 
-class ModuleServiceProvider {
+class ModuleRegistry {
     static modules: (typeof Module)[] = []
     static instances: GuildInstancesMap = {}
     static globalInstances: GlobalInstancesMap = {}
@@ -46,10 +46,10 @@ class ModuleServiceProvider {
                 path.join(MODULES_DIR, filepath, "index")
             ).default as typeof Module
 
-            ModuleServiceProvider.modules.push(module)
+            ModuleRegistry.modules.push(module)
 
             if (!module.isGlobal) {
-                ModuleServiceProvider.addModuleConfigToDefaultConfig(module)
+                ModuleRegistry.addModuleConfigToDefaultConfig(module)
             }
         }))
     }
@@ -77,14 +77,14 @@ class ModuleServiceProvider {
      * Get a module class from a database model
      */
     static getModule(model: ModuleModel) {
-        return ModuleServiceProvider.modules.find(module => module.internalName === model.name)
+        return ModuleRegistry.modules.find(module => module.internalName === model.name)
     }
 
     /**
-     * Create a ModuleServiceProvider instance bound to a guild
+     * Create a ModuleRegistry instance bound to a guild
      */
     static guild(guild: Discord.Guild) {
-        return new ModuleServiceProvider(guild)
+        return new ModuleRegistry(guild)
     }
 
     /**
@@ -93,7 +93,7 @@ class ModuleServiceProvider {
     static async loadModulesToDB() {
         const models = await ModuleModel.getAll() as Collection<ModuleModel>
 
-        await Promise.all(ModuleServiceProvider.modules.map(async module => {
+        await Promise.all(ModuleRegistry.modules.map(async module => {
             const isInDatabase = models.some(model => model.name === module.internalName)
 
             if (!isInDatabase) {
@@ -110,15 +110,15 @@ class ModuleServiceProvider {
      */
     static async restoreInstances(client: Discord.Client) {
         // Start global modules independent from guilds
-        const globalModules = ModuleServiceProvider.modules.filter(module => module.isGlobal)
-        await Promise.all(globalModules.map(module => ModuleServiceProvider.startGlobalModule(client, module)))
+        const globalModules = ModuleRegistry.modules.filter(module => module.isGlobal)
+        await Promise.all(globalModules.map(module => ModuleRegistry.startGlobalModule(client, module)))
 
         // Start each guild's individual instances
         await Promise.all(client.guilds.cache.map(async guild => {
             const models = await ModuleInstanceModel.findAllBy("guild_id", guild.id) as Collection<ModuleInstanceModel>
 
             await Promise.all(models.map(model => {
-                return ModuleServiceProvider.guild(guild).startModuleFromInstanceModel(client, model)
+                return ModuleRegistry.guild(guild).startModuleFromInstanceModel(client, model)
             }))
         }))
     }
@@ -131,14 +131,14 @@ class ModuleServiceProvider {
             throw new Error(`The module '${module.name}' is not global`)
         }
 
-        if (module.internalName in ModuleServiceProvider.globalInstances) {
+        if (module.internalName in ModuleRegistry.globalInstances) {
             throw new Error(`The module '${module.internalName}' is already running`)
         }
 
         const instance = new module({ client, module })
         await instance._start()
 
-        ModuleServiceProvider.globalInstances[module.name] = instance
+        ModuleRegistry.globalInstances[module.name] = instance
     }
 
     /**
@@ -196,11 +196,11 @@ class ModuleServiceProvider {
     constructor(guild: Discord.Guild) {
         this.guild = guild
 
-        if (!ModuleServiceProvider.instances[this.guild.id]) {
-            ModuleServiceProvider.instances[this.guild.id] = {}
+        if (!ModuleRegistry.instances[this.guild.id]) {
+            ModuleRegistry.instances[this.guild.id] = {}
         }
 
-        this.instances = ModuleServiceProvider.instances[this.guild.id]
+        this.instances = ModuleRegistry.instances[this.guild.id]
     }
 
     /**
@@ -225,7 +225,7 @@ class ModuleServiceProvider {
             throw locale.translate("error_module_running")
         }
 
-        const module = ModuleServiceProvider.getModule(model)
+        const module = ModuleRegistry.getModule(model)
 
         if (module.isGlobal) {
             throw locale.translate("error_illegal_invocation")
@@ -259,7 +259,7 @@ class ModuleServiceProvider {
             config: instance.getConfig()
         })
         
-        ModuleServiceProvider.registerInstance({
+        ModuleRegistry.registerInstance({
             guild: this.guild,
             instance,
             model: instanceModel
@@ -287,7 +287,7 @@ class ModuleServiceProvider {
 
         await this.instances[moduleInstance.id]._stop()
 
-        ModuleServiceProvider.unregisterInstance({ guild: this.guild, model: moduleInstance })
+        ModuleRegistry.unregisterInstance({ guild: this.guild, model: moduleInstance })
 
         await moduleInstance.delete()
     }
@@ -321,7 +321,7 @@ class ModuleServiceProvider {
      */
     async startModuleFromInstanceModel(client: Discord.Client, model: ModuleInstanceModel) {
         await model.fetchModule()
-        const module = ModuleServiceProvider.getModule(model.module)
+        const module = ModuleRegistry.getModule(model.module)
 
         const context = new Context({ client, guild: this.guild, module })
         const config = await module.makeConfigFromJSON(context, model.config)
@@ -329,10 +329,10 @@ class ModuleServiceProvider {
 
         await instance._start()
 
-        ModuleServiceProvider.registerInstance({ guild: this.guild, instance, model })
+        ModuleRegistry.registerInstance({ guild: this.guild, instance, model })
         
         return instance
     }
 }
 
-export default ModuleServiceProvider
+export default ModuleRegistry

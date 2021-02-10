@@ -6,7 +6,7 @@ import database from "../database"
 import Guild from "../models/Guild"
 import Collection from "../lib/Collection"
 import defaultConfigDescriptive from "../config/default"
-import ModuleServiceProvider from "../services/ModuleServiceProvider"
+import ModuleRegistry from "../services/ModuleRegistry"
 import { transferValues } from "../utils"
 dotenv.config({ path: path.join(__dirname, "..", "..", ".env") })
 
@@ -18,7 +18,7 @@ makeRunnable(async () => {
     await run(() => Promise.all([
         database.connect(),
         client.login(process.env.DISCORD_BOT_TOKEN),
-        ModuleServiceProvider.loadModules()
+        ModuleRegistry.loadModules()
     ]), "Setup")
 
     defaultConfig = defaultConfigDescriptive.toVanillaObject()
