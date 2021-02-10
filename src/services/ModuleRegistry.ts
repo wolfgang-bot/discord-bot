@@ -21,7 +21,7 @@ type InstancesMap = {
 }
 
 type GlobalInstancesMap = {
-    [moduleName: string]: Module
+    [moduleKey: string]: Module
 }
 
 const MODULES_DIR = path.join(__dirname, "..", "modules")
@@ -60,16 +60,16 @@ class ModuleRegistry {
     static addModuleConfigToDefaultConfig(module: typeof Module) {
         try {
             const moduleConfig = require(
-                path.join(MODULES_DIR, module.internalName, "models", "Configuration.ts")
+                path.join(MODULES_DIR, module.key, "models", "Configuration.ts")
             ).default as typeof Configuration
             
-            defaultConfig.value[module.internalName] = moduleConfig.guildConfig
+            defaultConfig.value[module.key] = moduleConfig.guildConfig
         } catch (error) {
             if (process.env.NODE_ENV === "development") {
                 console.error(error)
             }
 
-            throw new Error(`Failed to load config from module '${module.internalName}'`)
+            throw new Error(`Failed to load config from module '${module.key}'`)
         }
     }
 
@@ -77,7 +77,7 @@ class ModuleRegistry {
      * Get a module class from a database model
      */
     static getModule(model: ModuleModel) {
-        return ModuleRegistry.modules.find(module => module.internalName === model.name)
+        return ModuleRegistry.modules.find(module => module.key === model.key)
     }
 
     /**
@@ -94,11 +94,11 @@ class ModuleRegistry {
         const models = await ModuleModel.getAll() as Collection<ModuleModel>
 
         await Promise.all(ModuleRegistry.modules.map(async module => {
-            const isInDatabase = models.some(model => model.name === module.internalName)
+            const isInDatabase = models.some(model => model.key === module.key)
 
             if (!isInDatabase) {
                 const model = new ModuleModel({
-                    name: module.internalName
+                    key: module.key
                 })
                 await model.store()
             }
@@ -128,24 +128,24 @@ class ModuleRegistry {
      */
     static async startGlobalModule(client: Discord.Client, module: typeof Module) {
         if (!module.isGlobal) {
-            throw new Error(`The module '${module.name}' is not global`)
+            throw new Error(`The module '${module.key}' is not global`)
         }
 
-        if (module.internalName in ModuleRegistry.globalInstances) {
-            throw new Error(`The module '${module.internalName}' is already running`)
+        if (module.key in ModuleRegistry.globalInstances) {
+            throw new Error(`The module '${module.key}' is already running`)
         }
 
         const instance = new module({ client, module })
         await instance._start()
 
-        ModuleRegistry.globalInstances[module.name] = instance
+        ModuleRegistry.globalInstances[module.key] = instance
     }
 
     /**
      * Fill a module's translation map
      */
     static translate(module: typeof Module) {
-        const moduleLocale = new LocaleProvider().scope(module.internalName)
+        const moduleLocale = new LocaleProvider().scope(module.key)
 
         module.translations = {
             desc: moduleLocale.translate(module.desc),
@@ -219,7 +219,7 @@ class ModuleRegistry {
          * Validate invocation
          */
         const locale = await LocaleProvider.guild(this.guild)
-        const moduleLocale = locale.scope(model.name)
+        const moduleLocale = locale.scope(model.key)
 
         if (await this.isLoaded(model)) {
             throw locale.translate("error_module_running")

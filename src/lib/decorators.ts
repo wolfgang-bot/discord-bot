@@ -18,7 +18,7 @@ export function argument(props: ArgumentProps) {
 
 export function module(props: ModuleProps) {
     return (module: typeof Module) => {
-        module.internalName = props.name
+        module.key = props.name
         module.desc = props.desc
         module.features = props.features
 

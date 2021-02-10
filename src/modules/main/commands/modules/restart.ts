@@ -16,7 +16,7 @@ export default class RestartCommand extends Command {
             throw locale.translate("error_missing_argument", "module")
         }
 
-        const module = await Module.findBy("name", args[0]) as Module
+        const module = await Module.findBy("key", args[0]) as Module
 
         if (!module) {
             throw locale.translate("error_module_not_found", args[0])

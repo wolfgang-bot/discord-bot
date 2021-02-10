@@ -43,7 +43,7 @@ export default class ModulesController extends WebSocketController {
     /**
      * Start a module for a guild
      */
-    async startInstance(guildId: string, moduleName: string, args: string[], send: Function) {
+    async startInstance(guildId: string, moduleKey: string, args: string[], send: Function) {
         if (!args || args.constructor.name !== "Array") {
             return send(error(400))
         }
@@ -63,7 +63,7 @@ export default class ModulesController extends WebSocketController {
             return send(error(403))
         }
 
-        const module = await Module.findBy("name", moduleName) as Module
+        const module = await Module.findBy("key", moduleKey) as Module
 
         if (!module) {
             return send(error(404, "Module not found"))
@@ -92,7 +92,7 @@ export default class ModulesController extends WebSocketController {
     /**
      * Stop a module from a guild
      */
-    async stopInstance(guildId: string, moduleName: string, send: Function) {
+    async stopInstance(guildId: string, moduleKey: string, send: Function) {
         // Fetch guild
         const guild = await Guild.findBy("id", guildId) as Guild
 
@@ -109,7 +109,7 @@ export default class ModulesController extends WebSocketController {
             return send(error(403))
         }
 
-        const module = await Module.findBy("name", moduleName) as Module
+        const module = await Module.findBy("key", moduleKey) as Module
 
         if (!module) {
             return send(error(404, "Module not found"))
@@ -138,7 +138,7 @@ export default class ModulesController extends WebSocketController {
     /**
      * Restart a module from a guild
      */
-    async restartInstance(guildId: string, moduleName: string, send: Function) {
+    async restartInstance(guildId: string, moduleKey: string, send: Function) {
         const guild = await Guild.findBy("id", guildId) as Guild
 
         if (!guild) {
@@ -157,7 +157,7 @@ export default class ModulesController extends WebSocketController {
         /**
          * Validate module parameter
          */
-        const module = await Module.findBy("name", moduleName) as Module
+        const module = await Module.findBy("key", moduleKey) as Module
 
         if (!module) {
             return send(error(404, "Module not found"))

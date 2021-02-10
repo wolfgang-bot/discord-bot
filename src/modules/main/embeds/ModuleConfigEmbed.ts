@@ -4,10 +4,10 @@ import DescriptiveObject from "../../../lib/DescriptiveObject"
 import LocaleProvider from "../../../services/LocaleProvider"
 
 export default class ModuleConfigEmbed extends BaseEmbed {
-    constructor(config, locale: LocaleProvider, moduleName: string, moduleConfig: DescriptiveObject) {
+    constructor(config, locale: LocaleProvider, moduleKey: string, moduleConfig: DescriptiveObject) {
         super(config)
         
-        this.setTitle(locale.translate("embed_module_config_title", moduleName))
+        this.setTitle(locale.translate("embed_module_config_title", moduleKey))
 
         Object.entries(moduleConfig.value).forEach(([key, entry]) => {
             let { description, value } = entry as DescriptiveObject

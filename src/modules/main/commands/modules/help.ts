@@ -19,7 +19,7 @@ export default class HelpCommand extends Command {
             return
         }
 
-        const model = await Module.findBy("name", args[0]) as Module
+        const model = await Module.findBy("key", args[0]) as Module
 
         if (!model) {
             await message.channel.send(locale.translate("error_module_does_not_exist", args[0]))

@@ -14,25 +14,25 @@ export default class SetCommand extends Command {
     async run(message: Discord.Message, args: string[]) {
         const locale = await LocaleProvider.guild(message.guild)
 
-        const [moduleName, attribute, value] = args
+        const [moduleKey, attribute, value] = args
 
         /**
          * Validate arguments
          */
-        if (!moduleName) {
+        if (!moduleKey) {
             await message.channel.send(locale.translate("error_missing_argument", "module"))
             return
         }
 
-        const module = await Module.findBy("name", moduleName)
+        const module = await Module.findBy("key", moduleKey)
 
         if (!module) {
-            await message.channel.send(locale.translate("error_module_does_not_exist", moduleName))
+            await message.channel.send(locale.translate("error_module_does_not_exist", moduleKey))
             return
         }
 
         const guild = await Guild.findBy("id", message.guild.id) as Guild
-        const moduleConfig = guild.config[moduleName]
+        const moduleConfig = guild.config[moduleKey]
 
         if (!(attribute in moduleConfig)) {
             await message.channel.send(locale.translate("error_key_does_not_exist", attribute))
@@ -44,7 +44,7 @@ export default class SetCommand extends Command {
          */
         let formattedValue: any
         try {
-            const defaultValue = defaultConfig.value[moduleName].value[attribute].value
+            const defaultValue = defaultConfig.value[moduleKey].value[attribute].value
             formattedValue = convertDatatype(value, defaultValue.constructor.name)
         } catch (error) {
             if (process.env.NODE_ENV === "development") {
@@ -60,7 +60,7 @@ export default class SetCommand extends Command {
         /**
          * Set the new value and update guild
          */
-        guild.config[moduleName][attribute] = formattedValue
+        guild.config[moduleKey][attribute] = formattedValue
         await guild.update()
 
         await message.channel.send(locale.translate("success"))

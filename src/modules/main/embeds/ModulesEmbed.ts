@@ -19,12 +19,12 @@ export default class ModulesEmbed extends BaseEmbed {
             .setDescription(`[${locale.translate("embed_modules_list_dashboard")}](${makeURL("/guild/" + guild.id)})`)
             .addField(
                 locale.translate("embed_modules_list_available"),
-                makeCodeblock(modules.map(module => module.internalName).join("\n")),
+                makeCodeblock(modules.map(module => module.key).join("\n")),
                 true
             )
             .addField(
                 locale.translate("embed_modules_list_active"),
-                makeCodeblock(moduleInstances.map(instance => instance.context.module.internalName).join("\n")),
+                makeCodeblock(moduleInstances.map(instance => instance.context.module.key).join("\n")),
                 true
             )
     }

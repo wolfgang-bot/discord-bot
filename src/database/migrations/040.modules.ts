@@ -5,7 +5,7 @@ const migration: Migration = {
 
     columns: [
         "id varchar(255) PRIMARY KEY",
-        "name varchar(255) UNIQUE"
+        "key varchar(255) UNIQUE"
     ]
 }
 

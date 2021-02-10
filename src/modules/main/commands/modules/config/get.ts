@@ -21,7 +21,7 @@ export default class GetCommand extends Command {
             return
         }
 
-        const module = await Module.findBy("name", args[0])
+        const module = await Module.findBy("key", args[0])
 
         if (!module) {
             await message.channel.send(locale.translate("error_module_does_not_exist", args[0]))

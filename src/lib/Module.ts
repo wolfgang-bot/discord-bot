@@ -20,7 +20,7 @@ class Module extends EventEmitter {
     static STATES = STATES
     static translations: ModuleTranslations
 
-    static internalName: string
+    static key: string
     static desc: string
     static features: string
     static args: Argument[]
@@ -84,7 +84,7 @@ class Module extends EventEmitter {
 
     toJSON(): object {
         return {
-            moduleName: this.context.module.internalName,
+            moduleName: this.context.module.key,
             guildId: this.context.guild.id,
             state: this.state
         }
@@ -92,7 +92,7 @@ class Module extends EventEmitter {
 
     static toJSON() {
         return {
-            name: this.internalName,
+            key: this.key,
             isGlobal: this.isGlobal,
             isPrivate: this.isPrivate,
             translations: this.translations

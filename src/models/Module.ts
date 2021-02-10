@@ -3,7 +3,7 @@ import Model from "../lib/Model"
 
 export type ModuleModelValues = {
     id?: string
-    name: string
+    key: string
 }
 
 class Module extends Model implements ModuleModelValues {
@@ -11,12 +11,12 @@ class Module extends Model implements ModuleModelValues {
         model: Module,
         table: "modules"
     }
-    name: string
+    key: string
 
     constructor(values: ModuleModelValues) {
         super({
             table: "modules",
-            columns: ["id", "name"],
+            columns: ["id", "key"],
             defaultValues: {
                 id: uuid
             },
