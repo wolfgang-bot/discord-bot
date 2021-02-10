@@ -1,8 +1,8 @@
 import BaseEmbed from "../../../lib/BaseEmbed"
-import LocaleServiceProvider from "../../../services/LocaleServiceProvider"
+import LocaleProvider from "../../../services/LocaleProvider"
 
 export default class LocaleEmbed extends BaseEmbed {
-    constructor(config, locale: LocaleServiceProvider, code: string, availableCodes: string[]) {
+    constructor(config, locale: LocaleProvider, code: string, availableCodes: string[]) {
         super(config)
 
         this.setTitle(locale.translate("embed_locale_title"))

@@ -8,7 +8,7 @@ import Context from "../lib/Context"
 import Configuration from "../lib/Configuration"
 import ModuleModel from "../models/Module"
 import ModuleInstanceModel from "../models/ModuleInstance"
-import LocaleServiceProvider from "./LocaleServiceProvider"
+import LocaleProvider from "./LocaleProvider"
 import ArgumentServiceProvider, { ArgumentResolveTypes } from "./ArgumentServiceProvider"
 import defaultConfig from "../config/default"
 
@@ -145,7 +145,7 @@ class ModuleRegistry {
      * Fill a module's translation map
      */
     static translate(module: typeof Module) {
-        const moduleLocale = new LocaleServiceProvider().scope(module.internalName)
+        const moduleLocale = new LocaleProvider().scope(module.internalName)
 
         module.translations = {
             desc: moduleLocale.translate(module.desc),
@@ -218,7 +218,7 @@ class ModuleRegistry {
         /**
          * Validate invocation
          */
-        const locale = await LocaleServiceProvider.guild(this.guild)
+        const locale = await LocaleProvider.guild(this.guild)
         const moduleLocale = locale.scope(model.name)
 
         if (await this.isLoaded(model)) {
@@ -281,7 +281,7 @@ class ModuleRegistry {
         ) as ModuleInstanceModel
 
         if (!moduleInstance) {
-            const locale = await LocaleServiceProvider.guild(this.guild)
+            const locale = await LocaleProvider.guild(this.guild)
             throw locale.translate("error_module_not_running")
         }
 
@@ -299,7 +299,7 @@ class ModuleRegistry {
         const model = await ModuleInstanceModel.where(`module_id = '${module.id}' AND guild_id = '${this.guild.id}'`) as ModuleInstanceModel
 
         if (!model) {
-            const locale = await LocaleServiceProvider.guild(this.guild)
+            const locale = await LocaleProvider.guild(this.guild)
             throw locale.translate("error_module_not_running")
         }
 

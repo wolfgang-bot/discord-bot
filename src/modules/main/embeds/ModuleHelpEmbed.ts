@@ -1,9 +1,9 @@
 import BaseEmbed from "../../../lib/BaseEmbed"
-import LocaleServiceProvider from "../../../services/LocaleServiceProvider"
+import LocaleProvider from "../../../services/LocaleProvider"
 import Module from "../../../lib/Module"
 
 export default class ModuleHelpEmbed extends BaseEmbed {
-    constructor(config, locale: LocaleServiceProvider, module: typeof Module) {
+    constructor(config, locale: LocaleProvider, module: typeof Module) {
         super(config)
 
         const moduleLocale = locale.scope(module.internalName)

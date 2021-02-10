@@ -1,9 +1,9 @@
 import Discord from "discord.js"
 import BaseEmbed from "../../../lib/BaseEmbed"
-import LocaleServiceProvider from "../../../services/LocaleServiceProvider"
+import LocaleProvider from "../../../services/LocaleProvider"
 
 export default class QuestionEmbed extends BaseEmbed {
-    constructor(config, locale: LocaleServiceProvider, message: Discord.Message) {
+    constructor(config, locale: LocaleProvider, message: Discord.Message) {
         super(config)
 
         const lines = message.content.split("\n")

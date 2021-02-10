@@ -1,6 +1,6 @@
 import Discord from "discord.js"
 import Command from "../lib/Command"
-import LocaleServiceProvider from "./LocaleServiceProvider"
+import LocaleProvider from "./LocaleProvider"
 import { parseArguments } from "../utils"
 
 export type CommandMap = {
@@ -32,7 +32,7 @@ class CommandRegistry extends Command {
             throw "Commands are only available on servers"
         }
         
-        const locale = await LocaleServiceProvider.guild(message.guild)
+        const locale = await LocaleProvider.guild(message.guild)
 
         // Parse the arguments and get command
         if (!args) {

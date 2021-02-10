@@ -1,7 +1,7 @@
 import Discord from "discord.js"
 import Command from "../../../../lib/Command"
 import ModuleRegistry from "../../../../services/ModuleRegistry"
-import LocaleServiceProvider from "../../../../services/LocaleServiceProvider"
+import LocaleProvider from "../../../../services/LocaleProvider"
 import Module from "../../../../models/Module"
 
 export default class RestartCommand extends Command {
@@ -10,7 +10,7 @@ export default class RestartCommand extends Command {
     arguments = "command_modules_restart_args"
 
     async run(message: Discord.Message, args: string[]) {
-        const locale = await LocaleServiceProvider.guild(message.guild)
+        const locale = await LocaleProvider.guild(message.guild)
 
         if (!args[0]) {
             throw locale.translate("error_missing_argument", "module")

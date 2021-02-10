@@ -1,7 +1,7 @@
 import Discord from "discord.js"
 import Manager from "../../../lib/Manager"
 import Context from "../../../lib/Context"
-import LocaleServiceProvider from "../../../services/LocaleServiceProvider"
+import LocaleProvider from "../../../services/LocaleProvider"
 import LevelUpEmbed from "./../embeds/LevelUpEmbed"
 import Member from "../../../models/Member"
 import Guild from "../../../models/Guild"
@@ -90,7 +90,7 @@ export default class ReputationManager extends Manager {
     }
 
     async announceLevelUp(user: Discord.User, newLevel: number) {
-        const locale = (await LocaleServiceProvider.guild(this.context.guild)).scope("reputation-system")
+        const locale = (await LocaleProvider.guild(this.context.guild)).scope("reputation-system")
 
         const message = await this.channel.send(new LevelUpEmbed(this.guildConfig, locale, user, newLevel))
         

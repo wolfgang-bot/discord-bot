@@ -1,6 +1,6 @@
 import Discord from "discord.js"
 import Argument from "../lib/Argument"
-import LocaleServiceProvider from "./LocaleServiceProvider"
+import LocaleProvider from "./LocaleProvider"
 
 export type ArgumentResolveTypes = Discord.TextChannel | Discord.VoiceChannel | Discord.CategoryChannel
 
@@ -44,7 +44,7 @@ class ArgumentServiceProvider {
         const channel = this.guild.channels.cache.get(id)
 
         if (!channel || channel.type !== "text") {
-            const locale = await LocaleServiceProvider.guild(this.guild)
+            const locale = await LocaleProvider.guild(this.guild)
             throw locale.translate("error_text_channel_does_not_exist", id)
         }
 
@@ -58,7 +58,7 @@ class ArgumentServiceProvider {
         const channel = this.guild.channels.cache.get(id)
 
         if (!channel || channel.type !== "voice") {
-            const locale = await LocaleServiceProvider.guild(this.guild)
+            const locale = await LocaleProvider.guild(this.guild)
             throw locale.translate("error_voice_channel_does_not_exist", id)
         }
 
@@ -72,7 +72,7 @@ class ArgumentServiceProvider {
         const channel = this.guild.channels.cache.get(id)
 
         if (!channel || channel.type !== "category") {
-            const locale = await LocaleServiceProvider.guild(this.guild)
+            const locale = await LocaleProvider.guild(this.guild)
             throw locale.translate("error_category_does_not_exist", id)
         }
 

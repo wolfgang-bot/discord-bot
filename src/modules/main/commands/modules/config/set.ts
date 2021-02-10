@@ -1,6 +1,6 @@
 import Discord from "discord.js"
 import Command from "../../../../../lib/Command"
-import LocaleServiceProvider from "../../../../../services/LocaleServiceProvider"
+import LocaleProvider from "../../../../../services/LocaleProvider"
 import Guild from "../../../../../models/Guild"
 import Module from "../../../../../models/Module"
 import defaultConfig from "../../../../../config/default"
@@ -12,7 +12,7 @@ export default class SetCommand extends Command {
     arguments = "command_modules_config_set_args"
 
     async run(message: Discord.Message, args: string[]) {
-        const locale = await LocaleServiceProvider.guild(message.guild)
+        const locale = await LocaleProvider.guild(message.guild)
 
         const [moduleName, attribute, value] = args
 

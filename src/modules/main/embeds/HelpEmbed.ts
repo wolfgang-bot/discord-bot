@@ -1,10 +1,10 @@
 import BaseEmbed from "../../../lib/BaseEmbed"
-import LocaleServiceProvider from "../../../services/LocaleServiceProvider"
+import LocaleProvider from "../../../services/LocaleProvider"
 import { CommandGroupMap } from "../../../services/CommandRegistry"
 import { makeCodeblock } from "../../../utils"
 
 export default class HelpEmbed extends BaseEmbed {
-    constructor(config, locale: LocaleServiceProvider, groups: CommandGroupMap) {
+    constructor(config, locale: LocaleProvider, groups: CommandGroupMap) {
         super(config)
 
         this.setTitle(locale.translate("embed_help_title"))

@@ -1,6 +1,6 @@
 import Discord from "discord.js"
 import Command from "../../../../lib/Command"
-import LocaleServiceProvider from "../../../../services/LocaleServiceProvider"
+import LocaleProvider from "../../../../services/LocaleProvider"
 import Guild from "../../../../models/Guild"
 
 export default class SetCommand extends Command {
@@ -12,14 +12,14 @@ export default class SetCommand extends Command {
         const [newLocale] = args
 
         const guild = await Guild.findBy("id", message.guild.id) as Guild
-        const locale = await LocaleServiceProvider.guild(message.guild)
+        const locale = await LocaleProvider.guild(message.guild)
 
         if (!newLocale) {
             await message.channel.send(locale.translate("error_missing_argument", "locale_code"))
             return
         }
 
-        const availableLocales = Object.keys(LocaleServiceProvider.scopes[LocaleServiceProvider.defaultScope])
+        const availableLocales = Object.keys(LocaleProvider.scopes[LocaleProvider.defaultScope])
         if (!availableLocales.includes(newLocale)) {
             await message.channel.send(locale.translate("error_locale_does_not_exist", newLocale))
             return

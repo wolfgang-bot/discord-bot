@@ -1,11 +1,11 @@
 import BaseEmbed from "../../../lib/BaseEmbed"
 import Command from "../../../lib/Command"
-import LocaleServiceProvider from "../../../services/LocaleServiceProvider"
+import LocaleProvider from "../../../services/LocaleProvider"
 import CommandRegistry from "../../../services/CommandRegistry"
 import { makeCodeblock } from "../../../utils"
 
 export default class HelpCommandEmbed extends BaseEmbed {
-    constructor(config, locale: LocaleServiceProvider, command: Command) {
+    constructor(config, locale: LocaleProvider, command: Command) {
         super(config)
 
         const moduleLocale = locale.scope(command.getModule())

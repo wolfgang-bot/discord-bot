@@ -1,7 +1,7 @@
 import Discord from "discord.js"
 import Context from "../../../lib/Context"
 import Manager from "../../../lib/Manager"
-import LocaleServiceProvider from "../../../services/LocaleServiceProvider"
+import LocaleProvider from "../../../services/LocaleProvider"
 import Guild from "../../../models/Guild"
 import Module from "../../../models/Module"
 import ModuleInstance from "../../../models/ModuleInstance"
@@ -94,7 +94,7 @@ class ChannelManager extends Manager {
     }
 
     async resolveChannel(channel: Discord.TextChannel, reaction: Discord.MessageReaction, user: Discord.User) {
-        const locale = (await LocaleServiceProvider.guild(this.context.guild)).scope("question-channels")
+        const locale = (await LocaleProvider.guild(this.context.guild)).scope("question-channels")
 
         if (reaction.message.author.bot) {
             await reaction.remove()
@@ -120,7 +120,7 @@ class ChannelManager extends Manager {
     }
 
     async createChannel(message: Discord.Message) {
-        const locale = (await LocaleServiceProvider.guild(this.context.guild)).scope("question-channels")
+        const locale = (await LocaleProvider.guild(this.context.guild)).scope("question-channels")
 
         // Delete original message of user
         await message.delete()

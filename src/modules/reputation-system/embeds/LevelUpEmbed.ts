@@ -1,9 +1,9 @@
 import Discord from "discord.js"
 import BaseEmbed from "../../../lib/BaseEmbed"
-import LocaleServiceProvider from "../../../services/LocaleServiceProvider"
+import LocaleProvider from "../../../services/LocaleProvider"
 
 export default class LevelUpEmbed extends BaseEmbed {
-    constructor(config, locale: LocaleServiceProvider, user: Discord.User, level: number) {
+    constructor(config, locale: LocaleProvider, user: Discord.User, level: number) {
         super(config)
 
         this.setTitle(locale.translate("embed_levelup_title"))

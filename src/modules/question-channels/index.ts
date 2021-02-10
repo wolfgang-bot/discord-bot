@@ -1,7 +1,7 @@
 import Module from "../../lib/Module"
 import { module, argument } from "../../lib/decorators"
 import { TYPES as ARGUMENT_TYPES } from "../../lib/Argument"
-import LocaleServiceProvider from "../../services/LocaleServiceProvider"
+import LocaleProvider from "../../services/LocaleProvider"
 import Configuration from "./models/Configuration"
 import ChannelManager from "./managers/ChannelManager"
 import HelpEmbed from "./embeds/HelpEmbed"
@@ -30,7 +30,7 @@ class QuestionChannelsModule extends Module {
 
         const guildConfig = await Guild.config(this.context.guild)
         const moduleConfig = guildConfig["question-channels"]
-        const locale = (await LocaleServiceProvider.guild(this.context.guild)).scope("question-channels")
+        const locale = (await LocaleProvider.guild(this.context.guild)).scope("question-channels")
 
         // Send help embed into channel if hasn't already
         if (!this.config.helpMessage) {

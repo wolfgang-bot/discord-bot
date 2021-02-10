@@ -17,7 +17,7 @@ type TranslationMap = {
     [key: string]: string | string[]
 }
 
-class LocaleServiceProvider {
+class LocaleProvider {
     static defaultLocale = "en"
     static defaultScope = "main"
 
@@ -31,7 +31,7 @@ class LocaleServiceProvider {
      * A scope can be the default scope or a module name.
      */
     static scopes: ScopeMap = {
-        [LocaleServiceProvider.defaultScope]: {}
+        [LocaleProvider.defaultScope]: {}
     }
 
     /**
@@ -41,8 +41,8 @@ class LocaleServiceProvider {
         const files = await glob("*.yml", { cwd: dir })
 
         // Check for existence of default locale
-        if (!files.some(filename => filename.startsWith(LocaleServiceProvider.defaultLocale))) {
-            throw new Error(`Missing default locale '${LocaleServiceProvider.defaultLocale}'`)
+        if (!files.some(filename => filename.startsWith(LocaleProvider.defaultLocale))) {
+            throw new Error(`Missing default locale '${LocaleProvider.defaultLocale}'`)
         }
 
         await Promise.all(files.map(async filename => {
@@ -51,30 +51,30 @@ class LocaleServiceProvider {
             const content = await fs.promises.readFile(path.join(dir, filename), "utf-8")
             const locales: TranslationMap = yaml.parse(content)
             
-            LocaleServiceProvider.addTranslations(localeCode, locales, scope)
+            LocaleProvider.addTranslations(localeCode, locales, scope)
         }))
     }
 
     /**
      * Add locales to a given scope
      */
-    static addTranslations(localeCode: string, locales: TranslationMap, scope: string = LocaleServiceProvider.defaultScope) {
-        if (!LocaleServiceProvider.scopes[scope]) {
-            LocaleServiceProvider.scopes[scope] = {}
+    static addTranslations(localeCode: string, locales: TranslationMap, scope: string = LocaleProvider.defaultScope) {
+        if (!LocaleProvider.scopes[scope]) {
+            LocaleProvider.scopes[scope] = {}
         }
 
-        if (!LocaleServiceProvider.scopes[scope][localeCode]) {
-            LocaleServiceProvider.scopes[scope][localeCode] = {}
+        if (!LocaleProvider.scopes[scope][localeCode]) {
+            LocaleProvider.scopes[scope][localeCode] = {}
         }
 
         // Check for duplicate keys
         for (let key in locales) {
-            if (key in LocaleServiceProvider.scopes[scope][localeCode]) {
+            if (key in LocaleProvider.scopes[scope][localeCode]) {
                 throw new Error(`Key '${key}' already exists`)
             }
         }
 
-        Object.assign(LocaleServiceProvider.scopes[scope][localeCode], locales)
+        Object.assign(LocaleProvider.scopes[scope][localeCode], locales)
     }
 
     /**
@@ -85,21 +85,21 @@ class LocaleServiceProvider {
 
         if (!model) {
             console.trace(`Guild '${guild.id}' - '${guild.name}' ist not available`)
-            return new LocaleServiceProvider(LocaleServiceProvider.defaultLocale)
+            return new LocaleProvider(LocaleProvider.defaultLocale)
         }
 
-        return new LocaleServiceProvider(model.locale)
+        return new LocaleProvider(model.locale)
     }
 
     constructor(
-        locale: string = LocaleServiceProvider.defaultLocale,
-        scope: string = LocaleServiceProvider.defaultScope
+        locale: string = LocaleProvider.defaultLocale,
+        scope: string = LocaleProvider.defaultScope
     ) {
         this.locale = locale
         this.scopeName = scope
 
         // Name has to have the underscore since "scope" is used for method chaining
-        this._scope = LocaleServiceProvider.scopes[this.scopeName]
+        this._scope = LocaleProvider.scopes[this.scopeName]
         
         if (!this._scope) {
             throw new Error(`Scope '${this.scopeName}' does not exist`)
@@ -116,7 +116,7 @@ class LocaleServiceProvider {
      * Create a new instance of this class with a new scope
      */
     scope(scope: string) {
-        return new LocaleServiceProvider(this.locale, scope)
+        return new LocaleProvider(this.locale, scope)
     }
 
     /**
@@ -127,7 +127,7 @@ class LocaleServiceProvider {
         
         // Fallback to default locale
         if (!value) {
-            value = this._scope[LocaleServiceProvider.defaultLocale][key]
+            value = this._scope[LocaleProvider.defaultLocale][key]
         }
 
         if (!value) {
@@ -157,13 +157,13 @@ class LocaleServiceProvider {
         return value
     }
 
-    translate(...args: Parameters<LocaleServiceProvider["translateAnyType"]>) {
+    translate(...args: Parameters<LocaleProvider["translateAnyType"]>) {
         return this.translateAnyType(...args) as string
     }
 
-    translateArray(...args: Parameters<LocaleServiceProvider["translateAnyType"]>) {
+    translateArray(...args: Parameters<LocaleProvider["translateAnyType"]>) {
         return this.translateAnyType(...args) as string[]
     }
 }
 
-export default LocaleServiceProvider
+export default LocaleProvider

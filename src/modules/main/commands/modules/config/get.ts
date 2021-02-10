@@ -1,7 +1,7 @@
 import Discord from "discord.js"
 import DescriptiveObject from "../../../../../lib/DescriptiveObject"
 import Command from "../../../../../lib/Command"
-import LocaleServiceProvider from "../../../../../services/LocaleServiceProvider"
+import LocaleProvider from "../../../../../services/LocaleProvider"
 import Guild from "../../../../../models/Guild"
 import Module from "../../../../../models/Module"
 import ModuleConfigEmbed from "../../../embeds/ModuleConfigEmbed"
@@ -14,7 +14,7 @@ export default class GetCommand extends Command {
     alias = ["show"]
 
     async run(message: Discord.Message, args: string[]) {
-        const locale = await LocaleServiceProvider.guild(message.guild)
+        const locale = await LocaleProvider.guild(message.guild)
 
         if (!args[0]) {
             await message.channel.send(locale.translate("error_missing_argument", "module"))

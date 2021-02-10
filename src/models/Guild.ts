@@ -1,6 +1,6 @@
 import Discord from "discord.js"
 import Model from "../lib/Model"
-import LocaleServiceProvider from "../services/LocaleServiceProvider"
+import LocaleProvider from "../services/LocaleProvider"
 import defaultConfigRaw from "../config/default"
 
 export type GuildModelValues = {
@@ -44,7 +44,7 @@ class Guild extends Model implements GuildModelValues {
             table: "guilds",
             columns: ["id", "locale", "config"],
             defaultValues: {
-                locale: LocaleServiceProvider.defaultLocale,
+                locale: LocaleProvider.defaultLocale,
                 config: getDefaultConfig()
             },
             values

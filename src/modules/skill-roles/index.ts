@@ -1,7 +1,7 @@
 import Module from "../../lib/Module"
 import { module, argument } from "../../lib/decorators"
 import { TYPES as ARGUMENT_TYPES } from "../../lib/Argument"
-import LocaleServiceProvider from "../../services/LocaleServiceProvider"
+import LocaleProvider from "../../services/LocaleProvider"
 import Guild from "../../models/Guild"
 import Configuration from "./models/Configuration"
 import EmojiManager from "./managers/EmojiManager"
@@ -36,7 +36,7 @@ export default class RoleManagerModule extends Module {
 
         if (!this.config.roleMessage) {
             const guildConfig = await Guild.config(this.context.guild)
-            const locale = (await LocaleServiceProvider.guild(this.context.guild)).scope("skill-roles")
+            const locale = (await LocaleProvider.guild(this.context.guild)).scope("skill-roles")
 
             this.config.roleMessage = await this.config.channel.send(new RoleEmbed(guildConfig, locale))
             this.reactionManager.setMessage(this.config.roleMessage)

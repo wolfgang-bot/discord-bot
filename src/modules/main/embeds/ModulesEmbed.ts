@@ -1,13 +1,13 @@
 import BaseEmbed from "../../../lib/BaseEmbed"
 import ModuleRegistry from "../../../services/ModuleRegistry"
-import LocaleServiceProvider from "../../../services/LocaleServiceProvider"
+import LocaleProvider from "../../../services/LocaleProvider"
 import Guild from "../../../models/Guild"
 import { makeCodeblock, makeURL } from "../../../utils"
 
 export default class ModulesEmbed extends BaseEmbed {
     constructor(
         config,
-        locale: LocaleServiceProvider,
+        locale: LocaleProvider,
         { guild }: { guild: Guild }
     ) {
         super(config)

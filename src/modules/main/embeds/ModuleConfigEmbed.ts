@@ -1,10 +1,10 @@
 import { capitalCase } from "change-case"
 import BaseEmbed from "../../../lib/BaseEmbed"
 import DescriptiveObject from "../../../lib/DescriptiveObject"
-import LocaleServiceProvider from "../../../services/LocaleServiceProvider"
+import LocaleProvider from "../../../services/LocaleProvider"
 
 export default class ModuleConfigEmbed extends BaseEmbed {
-    constructor(config, locale: LocaleServiceProvider, moduleName: string, moduleConfig: DescriptiveObject) {
+    constructor(config, locale: LocaleProvider, moduleName: string, moduleConfig: DescriptiveObject) {
         super(config)
         
         this.setTitle(locale.translate("embed_module_config_title", moduleName))

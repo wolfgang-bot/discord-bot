@@ -1,7 +1,7 @@
 import Discord from "discord.js"
 import Command from "../../../lib/Command"
 import CommandRegistry from "../../../services/CommandRegistry"
-import LocaleServiceProvider from "../../../services/LocaleServiceProvider"
+import LocaleProvider from "../../../services/LocaleProvider"
 import HelpEmbed from "../embeds/HelpEmbed"
 import HelpCommandEmbed from "../embeds/HelpCommandEmbed"
 import Guild from "../../../models/Guild"
@@ -14,7 +14,7 @@ export default class HelpCommand extends Command {
 
     async run(message: Discord.Message, args: string[]) {
         const config = await Guild.config(message.guild)
-        const locale = await LocaleServiceProvider.guild(message.guild)
+        const locale = await LocaleProvider.guild(message.guild)
 
         let embed: HelpEmbed | HelpCommandEmbed
 

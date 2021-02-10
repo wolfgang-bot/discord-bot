@@ -1,11 +1,11 @@
 import BaseEmbed from "../../../lib/BaseEmbed"
 import Collection from "../../../lib/Collection"
 import Member from "../../../models/Member"
-import LocaleServiceProvider from "../../../services/LocaleServiceProvider"
+import LocaleProvider from "../../../services/LocaleProvider"
 import { getLevel, space } from "../../../utils"
 
 export default class LeaderbaordEmbed extends BaseEmbed {
-    constructor(config, locale: LocaleServiceProvider, members: Collection<Member>) {
+    constructor(config, locale: LocaleProvider, members: Collection<Member>) {
         super(config)
         
         const moduleConfig = config["reputation-system"]
