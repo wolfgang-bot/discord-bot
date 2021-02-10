@@ -2,7 +2,7 @@ import Module from "./Module"
 import Argument, { ArgumentProps } from "./Argument"
 
 type ModuleProps = {
-    name: string,
+    key: string,
     desc?: string,
     features?: string
 }
@@ -18,7 +18,7 @@ export function argument(props: ArgumentProps) {
 
 export function module(props: ModuleProps) {
     return (module: typeof Module) => {
-        module.key = props.name
+        module.key = props.key
         module.desc = props.desc
         module.features = props.features
 

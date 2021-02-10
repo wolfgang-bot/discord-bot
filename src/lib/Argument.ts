@@ -6,31 +6,31 @@ export enum TYPES {
 
 export type ArgumentProps = {
     type: TYPES
+    key: string
     name: string
-    displayName: string
     desc: string
 }
 
 class Argument implements ArgumentProps {
     type: TYPES
+    key: string
     name: string
-    displayName: string
     desc: string
     
     static TYPES = TYPES
 
     constructor(props: ArgumentProps) {
         this.type = props.type
+        this.key = props.key
         this.name = props.name
-        this.displayName = props.displayName
         this.desc = props.desc
     }
 
     clone() {
         return new Argument({
             type: this.type,
+            key: this.key,
             name: this.name,
-            displayName: this.displayName,
             desc: this.desc
         })
     }

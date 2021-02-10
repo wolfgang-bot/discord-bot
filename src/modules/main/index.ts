@@ -17,7 +17,7 @@ const commands = [
 commands.forEach(command => command.module = "main")
 
 @module({
-    name: "main"
+    key: "main"
 })
 @global
 class MainModule extends Module {

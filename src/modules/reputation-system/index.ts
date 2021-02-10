@@ -15,14 +15,14 @@ const commands = [
 commands.forEach(command => command.module = "reputation-system")
 
 @module({
-    name: "reputation-system",
+    key: "reputation-system",
     desc: "meta_desc",
     features: "meta_features"
 })
 @argument({
     type: ARGUMENT_TYPES.TEXT_CHANNEL,
-    name: "arg_notifications_channel_name",
-    displayName: "arg_notifications_channel_display_name",
+    key: "notifications_channel_id",
+    name: "arg_notifications_channel_display_name",
     desc: "arg_notifications_channel_desc",
 })
 export default class ReputationSystemModule extends Module {

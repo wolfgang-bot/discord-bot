@@ -10,14 +10,14 @@ import ReactionManager from "./managers/ReactionManager"
 import RoleEmbed from "./embeds/RoleEmbed"
 
 @module({
-    name: "skill-roles",
+    key: "skill-roles",
     desc: "meta_desc",
     features: "meta_features"
 })
 @argument({
     type: ARGUMENT_TYPES.TEXT_CHANNEL,
-    name: "arg_roles_channel_name",
-    displayName: "arg_roles_channel_display_name",
+    key: "roles_channel_id",
+    name: "arg_roles_channel_display_name",
     desc: "arg_roles_channel_desc",
 })
 export default class RoleManagerModule extends Module {

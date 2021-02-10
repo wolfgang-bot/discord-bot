@@ -14,7 +14,6 @@ meta_features:
 #
 
 # Notifications Channel
-arg_notifications_channel_name: notifications_channel_id
 arg_notifications_channel_display_name: Notifications Channel
 arg_notifications_channel_desc: The channel in which notifications like level ups will be sent.
 

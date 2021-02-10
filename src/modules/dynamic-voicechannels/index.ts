@@ -5,14 +5,14 @@ import Configuration from "./models/Configuration"
 import VoiceChannelManager from "./managers/VoiceChannelManager"
 
 @module({
-    name: "dynamic-voicechannels",
+    key: "dynamic-voicechannels",
     desc: "meta_desc",
     features: "meta_features"
 })
 @argument({
     type: ARGUMENT_TYPES.CATEGORY_CHANNEL,
-    name: "arg_category_channel_name",
-    displayName: "arg_category_channel_display_name",
+    key: "category_id",
+    name: "arg_category_channel_display_name",
     desc: "arg_category_channel_desc"
 })
 class DynamicVoicechannelsModule extends Module {

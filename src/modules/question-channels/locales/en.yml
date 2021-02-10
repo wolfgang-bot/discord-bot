@@ -13,7 +13,6 @@ meta_features:
 #
 
 # Question Channel
-arg_question_channel_name: question_channel_id
 arg_question_channel_display_name: Question Channel
 arg_question_channel_desc: The channel in which questions can be asked.
 

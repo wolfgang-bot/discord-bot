@@ -8,14 +8,14 @@ import HelpEmbed from "./embeds/HelpEmbed"
 import Guild from "../../models/Guild"
 
 @module({
-    name: "question-channels",
+    key: "question-channels",
     desc: "meta_desc",
     features: "meta_features"
 })
 @argument({
     type: ARGUMENT_TYPES.TEXT_CHANNEL,
-    name: "arg_question_channel_name",
-    displayName: "arg_question_channel_display_name",
+    key: "question_channel_id",
+    name: "arg_question_channel_display_name",
     desc: "arg_question_channel_desc",
 })
 class QuestionChannelsModule extends Module {
