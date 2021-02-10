@@ -4,14 +4,14 @@ import LocaleProvider from "./LocaleProvider"
 
 export type ArgumentResolveTypes = Discord.TextChannel | Discord.VoiceChannel | Discord.CategoryChannel
 
-class ArgumentServiceProvider {
+class ArgumentResolver {
     guild: Discord.Guild
 
     /**
-     * Create an ArgumentServiceProvider instance bound to a guild
+     * Create an ArgumentResolver instance bound to a guild
      */
     static guild(guild: Discord.Guild) {
-        return new ArgumentServiceProvider(guild)
+        return new ArgumentResolver(guild)
     }
 
     constructor(guild: Discord.Guild) {
@@ -80,4 +80,4 @@ class ArgumentServiceProvider {
     }
 }
 
-export default ArgumentServiceProvider
+export default ArgumentResolver

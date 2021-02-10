@@ -9,7 +9,7 @@ import Configuration from "../lib/Configuration"
 import ModuleModel from "../models/Module"
 import ModuleInstanceModel from "../models/ModuleInstance"
 import LocaleProvider from "./LocaleProvider"
-import ArgumentServiceProvider, { ArgumentResolveTypes } from "./ArgumentServiceProvider"
+import ArgumentResolver, { ArgumentResolveTypes } from "./ArgumentResolver"
 import defaultConfig from "../config/default"
 
 type GuildInstancesMap = {
@@ -239,7 +239,7 @@ class ModuleRegistry {
                 throw locale.translate("error_missing_argument", moduleLocale.translate(argument.name))
             }
 
-            return ArgumentServiceProvider.guild(this.guild).resolveArgument(argument, args[i])
+            return ArgumentResolver.guild(this.guild).resolveArgument(argument, args[i])
         }))
 
         /**
