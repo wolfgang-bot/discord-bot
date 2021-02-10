@@ -1,5 +1,3 @@
-import fs from "fs"
-import { parseStringPromise as parseXML } from "xml2js"
 import { EventEmitter } from "events"
 import Configuration from "./Configuration"
 import Argument from "./Argument"
@@ -25,34 +23,14 @@ class Module extends EventEmitter {
     static internalName: string
     static desc: string
     static features: string
-    static args: Argument[] = []
-    static isGlobal: boolean
-    static isPrivate: boolean
-    static guildIds: string[] = []
+    static args: Argument[]
+    static isGlobal: boolean = false
+    static isPrivate: boolean = false
+    static guildIds: string[]
     
     context: Context
     config: Configuration
     state: STATES
-
-    /**
-     * Assign values from xml file to static attributes
-     */
-    static async loadXMLFile(path: string) {
-        const { module: data } = await parseXML(await fs.promises.readFile(path))
-
-        this.internalName = data.$.name,
-        this.desc = data.$.desc,
-        this.features = data.$.features,
-        this.isGlobal = data.$.global === "true",
-        this.isPrivate = data.$.private === "true",
-
-        this.args = (data.argument || []).map(arg => new Argument({
-            type: arg.$.type,
-            name: arg.$.name,
-            displayName: arg.$["display-name"],
-            desc: arg.$.desc
-        }))
-    }
 
     static makeConfigFromArgs(args: any[]) {
         return new Configuration({})

@@ -1,4 +1,6 @@
 import Module from "../../lib/Module"
+import { module, argument } from "../../lib/decorators"
+import { TYPES as ARGUMENT_TYPES } from "../../lib/Argument"
 import CommandRegistry from "../../services/CommandRegistry"
 import Configuration from "./models/Configuration"
 import ReputationManager from "./managers/ReputationManager"
@@ -12,6 +14,17 @@ const commands = [
 
 commands.forEach(command => command.module = "reputation-system")
 
+@module({
+    name: "reputation-system",
+    desc: "meta_desc",
+    features: "meta_features"
+})
+@argument({
+    type: ARGUMENT_TYPES.TEXT_CHANNEL,
+    name: "arg_notifications_channel_name",
+    displayName: "arg_notifications_channel_display_name",
+    desc: "arg_notifications_channel_desc",
+})
 export default class ReputationSystemModule extends Module {
     static makeConfigFromArgs = Configuration.fromArgs
     static makeConfigFromJSON = Configuration.fromJSON

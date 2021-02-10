@@ -1,4 +1,4 @@
-enum TYPES {
+export enum TYPES {
     TEXT_CHANNEL = "text_channel",
     VOICE_CHANNEL = "voice_channel",
     CATEGORY_CHANNEL = "category_channel"

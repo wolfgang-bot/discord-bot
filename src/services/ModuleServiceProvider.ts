@@ -36,17 +36,15 @@ class ModuleServiceProvider {
     instances: InstancesMap
 
     /**
-     * Load modules from all "src/modules/.../modules.xml" files
+     * Load modules from all "src/modules/../index" files
      */
     static async loadModules() {
-        const files = await glob("?*/module.xml", { cwd: MODULES_DIR })
+        const files = await glob("?*/", { cwd: MODULES_DIR })
 
         await Promise.all(files.map(async filepath => {
             const module = require(
-                path.join(MODULES_DIR, filepath, "..", "index")
+                path.join(MODULES_DIR, filepath, "index")
             ).default as typeof Module
-
-            await module.loadXMLFile(path.join(MODULES_DIR, filepath))
 
             ModuleServiceProvider.modules.push(module)
 

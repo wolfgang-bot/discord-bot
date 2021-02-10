@@ -1,10 +1,23 @@
 import Module from "../../lib/Module"
+import { module, argument } from "../../lib/decorators"
+import { TYPES as ARGUMENT_TYPES } from "../../lib/Argument"
 import LocaleServiceProvider from "../../services/LocaleServiceProvider"
 import Configuration from "./models/Configuration"
 import ChannelManager from "./managers/ChannelManager"
 import HelpEmbed from "./embeds/HelpEmbed"
 import Guild from "../../models/Guild"
 
+@module({
+    name: "question-channels",
+    desc: "meta_desc",
+    features: "meta_features"
+})
+@argument({
+    type: ARGUMENT_TYPES.TEXT_CHANNEL,
+    name: "arg_question_channel_name",
+    displayName: "arg_question_channel_display_name",
+    desc: "arg_question_channel_desc",
+})
 class QuestionChannelsModule extends Module {
     static makeConfigFromArgs = Configuration.fromArgs
     static makeConfigFromJSON = Configuration.fromJSON

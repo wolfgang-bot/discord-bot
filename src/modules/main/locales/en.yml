@@ -79,7 +79,7 @@ embed_module_help_features: Features
 
 # Modules List
 embed_modules_list_title: Modules
-embed_modules_list_webinterface: Webinterface
+embed_modules_list_dashboard: Dashboard
 embed_modules_list_available: Available
 embed_modules_list_active: Active
 

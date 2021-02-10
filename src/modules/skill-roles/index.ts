@@ -1,4 +1,6 @@
 import Module from "../../lib/Module"
+import { module, argument } from "../../lib/decorators"
+import { TYPES as ARGUMENT_TYPES } from "../../lib/Argument"
 import LocaleServiceProvider from "../../services/LocaleServiceProvider"
 import Guild from "../../models/Guild"
 import Configuration from "./models/Configuration"
@@ -7,6 +9,17 @@ import RoleManager from "./managers/RoleManager"
 import ReactionManager from "./managers/ReactionManager"
 import RoleEmbed from "./embeds/RoleEmbed"
 
+@module({
+    name: "skill-roles",
+    desc: "meta_desc",
+    features: "meta_features"
+})
+@argument({
+    type: ARGUMENT_TYPES.TEXT_CHANNEL,
+    name: "arg_roles_channel_name",
+    displayName: "arg_roles_channel_display_name",
+    desc: "arg_roles_channel_desc",
+})
 export default class RoleManagerModule extends Module {
     static makeConfigFromArgs = Configuration.fromArgs
     static makeConfigFromJSON = Configuration.fromJSON

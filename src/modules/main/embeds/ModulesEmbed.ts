@@ -16,7 +16,7 @@ export default class ModulesEmbed extends BaseEmbed {
         const moduleInstances = Object.values(ModuleServiceProvider.instances[guild.id] || {})
 
         this.setTitle(locale.translate("embed_modules_list_title"))
-            .setDescription(`[${locale.translate("embed_modules_list_webinterface")}](${makeURL("/guild/" + guild.id)})`)
+            .setDescription(`[${locale.translate("embed_modules_list_dashboard")}](${makeURL("/guild/" + guild.id)})`)
             .addField(
                 locale.translate("embed_modules_list_available"),
                 makeCodeblock(modules.map(module => module.internalName).join("\n")),
