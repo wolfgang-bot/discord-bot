@@ -1,13 +1,13 @@
 import { Response } from "express"
 import OAuthServiceProvider from "../services/OAuthServiceProvider"
 import User from "../../models/User"
-import { InternalRequest } from "../server"
+import { AuthorizedRequest } from "../server"
 
 export default class ProtectMiddleware {
     /**
      * Get a user from request headers
      */
-    static async getUser(req: InternalRequest) {
+    static async getUser(req: AuthorizedRequest) {
         if (!req.header("Authorization")) {
             return
         }
@@ -25,7 +25,7 @@ export default class ProtectMiddleware {
     /**
      * Inject a user object into the request
      */
-    static async required(req: InternalRequest, res: Response, next: Function) {
+    static async required(req: AuthorizedRequest, res: Response, next: Function) {
         if (!req.header("Authorization")) {
             return res.sendStatus(401)
         }
@@ -52,7 +52,7 @@ export default class ProtectMiddleware {
     /**
      * Inject user into request or continue without user
      */
-    static async notRequired(req: InternalRequest, res: Response, next: Function) {
+    static async notRequired(req: AuthorizedRequest, res: Response, next: Function) {
         try {
             const user = await ProtectMiddleware.getUser(req)
 

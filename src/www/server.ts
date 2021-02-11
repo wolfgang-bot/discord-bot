@@ -5,7 +5,7 @@ import { Server as WebSocketServer } from "socket.io"
 import User from "../models/User"
 import boot from "./boot"
 
-export type InternalRequest = Request & {
+export type AuthorizedRequest = Request & {
     user: User
 }
 

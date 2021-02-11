@@ -2,13 +2,13 @@ import { Response } from "express"
 import HttpController from "../../lib/HttpController"
 import OAuthServiceProvider from "../services/OAuthServiceProvider"
 import User from "../../models/User"
-import { InternalRequest } from "../server"
+import { AuthorizedRequest } from "../server"
 
 export default class OAuthController extends HttpController {
     /**
      * Receive an OAuth token from discord.
      */
-    static async oauthDiscord(req: InternalRequest, res: Response) {
+    static async oauthDiscord(req: AuthorizedRequest, res: Response) {
         try {
             // Request oauth token
             const data = await OAuthServiceProvider.requestToken(req.query.code as string)
@@ -44,7 +44,7 @@ export default class OAuthController extends HttpController {
     /**
      * Get the user profile.
      */
-    static getProfile(req: InternalRequest, res: Response) {
+    static getProfile(req: AuthorizedRequest, res: Response) {
         res.send(req.user)
     }
 }
