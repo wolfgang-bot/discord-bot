@@ -1,5 +1,6 @@
 import BaseEmbed from "../../../lib/BaseEmbed"
 import ModuleRegistry from "../../../services/ModuleRegistry"
+import ModuleInstanceRegistry from "../../../services/ModuleInstanceRegistry"
 import LocaleProvider from "../../../services/LocaleProvider"
 import Guild from "../../../models/Guild"
 import { makeCodeblock, makeURL } from "../../../utils"
@@ -13,7 +14,7 @@ export default class ModulesEmbed extends BaseEmbed {
         super(config)
 
         const modules = ModuleRegistry.modules.filter(module => !module.isGlobal)
-        const moduleInstances = Object.values(ModuleRegistry.instances[guild.id] || {})
+        const moduleInstances = Object.values(ModuleInstanceRegistry.instances[guild.id] || {})
 
         this.setTitle(locale.translate("embed_modules_list_title"))
             .setDescription(`[${locale.translate("embed_modules_list_dashboard")}](${makeURL("/guild/" + guild.id)})`)

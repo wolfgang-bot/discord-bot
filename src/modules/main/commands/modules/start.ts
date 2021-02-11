@@ -1,6 +1,6 @@
 import Discord from "discord.js"
 import Command from "../../../../lib/Command"
-import ModuleRegistry from "../../../../services/ModuleRegistry"
+import ModuleInstanceRegistry from "../../../../services/ModuleInstanceRegistry"
 import LocaleProvider from "../../../../services/LocaleProvider"
 import Module from "../../../../models/Module"
 
@@ -26,7 +26,7 @@ export default class StartCommand extends Command {
 
         // Start the requested module
         try {
-            await ModuleRegistry.guild(message.guild).startModule(message.client, module, args.slice(1))
+            await ModuleInstanceRegistry.guild(message.guild).startModule(message.client, module, args.slice(1))
         } catch (error) {
             if (process.env.NODE_ENV === "development") {
                 console.error(error)

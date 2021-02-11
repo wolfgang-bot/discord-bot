@@ -7,9 +7,7 @@ import startServer from "../www/server"
 function boot(client: Discord.Client): Promise<void> {
     return new Promise(async resolve => {
         client.once("ready", async () => {
-            await ModuleRegistry.loadModules()
-            await ModuleRegistry.loadModulesToDB()
-            await ModuleRegistry.restoreInstances(client)
+            await ModuleRegistry.boot(client)
             
             await startServer(client)
 

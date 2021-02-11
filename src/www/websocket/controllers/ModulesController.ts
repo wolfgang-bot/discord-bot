@@ -1,5 +1,6 @@
 import WebSocketController from "../../../lib/WebSocketController"
 import ModuleRegistry from "../../../services/ModuleRegistry"
+import ModuleInstanceRegistry from "../../../services/ModuleInstanceRegistry"
 import Guild from "../../../models/Guild"
 import Module from "../../../models/Module"
 import LibModule from "../../../lib/Module"
@@ -35,7 +36,7 @@ export default class ModulesController extends WebSocketController {
             return send(error(403))
         }
 
-        const instances = Object.values(ModuleRegistry.guild(guild.discordGuild).instances)
+        const instances = Object.values(ModuleInstanceRegistry.guild(guild.discordGuild).instances)
 
         send(success(instances))
     }
@@ -73,7 +74,7 @@ export default class ModulesController extends WebSocketController {
          * Start instance and forward errors to client
          */
         try {
-            await ModuleRegistry.guild(guild.discordGuild).startModule(this.client, module, args)
+            await ModuleInstanceRegistry.guild(guild.discordGuild).startModule(this.client, module, args)
         } catch (err) {
             if (process.env.NODE_ENV === "development") {
                 console.error(err)
@@ -119,7 +120,7 @@ export default class ModulesController extends WebSocketController {
          * Stop instance and forward errors to the client
          */
         try {
-            await ModuleRegistry.guild(guild.discordGuild).stopModule(module)
+            await ModuleInstanceRegistry.guild(guild.discordGuild).stopModule(module)
         } catch (err) {
             if (process.env.NODE_ENV === "development") {
                 console.error(err)
@@ -167,7 +168,7 @@ export default class ModulesController extends WebSocketController {
          * Stop instance and forward errors to the client
          */
         try {
-            await ModuleRegistry.guild(guild.discordGuild).restartModule(module)
+            await ModuleInstanceRegistry.guild(guild.discordGuild).restartModule(module)
         } catch (err) {
             if (process.env.NODE_ENV === "development") {
                 console.error(err)

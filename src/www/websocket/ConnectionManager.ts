@@ -3,7 +3,7 @@ import { InternalSocket } from "./SocketManager"
 import GuildController from "./controllers/GuildController"
 import ModulesController from "./controllers/ModulesController"
 import ConfigController from "./controllers/ConfigController"
-import ModuleRegistry from "../../services/ModuleRegistry"
+import ModuleInstanceRegistry from "../../services/ModuleInstanceRegistry"
 import Module from "../../lib/Module"
 
 export default class ConnectionManager {
@@ -51,11 +51,11 @@ export default class ConnectionManager {
     }
 
     attachModuleInstanceListeners() {
-        ModuleRegistry.eventEmitter.on("update", this.handleModuleInstanceUpdate)
+        ModuleInstanceRegistry.eventEmitter.on("update", this.handleModuleInstanceUpdate)
     }
 
     removeModuleInstanceListeners() {
-        ModuleRegistry.eventEmitter.removeListener("update", this.handleModuleInstanceUpdate)
+        ModuleInstanceRegistry.eventEmitter.removeListener("update", this.handleModuleInstanceUpdate)
     }
 
     handleModuleInstanceUpdate(instance: Module) {

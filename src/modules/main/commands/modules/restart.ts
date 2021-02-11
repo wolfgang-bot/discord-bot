@@ -1,6 +1,6 @@
 import Discord from "discord.js"
 import Command from "../../../../lib/Command"
-import ModuleRegistry from "../../../../services/ModuleRegistry"
+import ModuleInstanceRegistry from "../../../../services/ModuleInstanceRegistry"
 import LocaleProvider from "../../../../services/LocaleProvider"
 import Module from "../../../../models/Module"
 
@@ -22,11 +22,11 @@ export default class RestartCommand extends Command {
             throw locale.translate("error_module_not_found", args[0])
         }
 
-        if (!ModuleRegistry.guild(message.guild).isLoaded(module)) {
+        if (!ModuleInstanceRegistry.guild(message.guild).isLoaded(module)) {
             throw locale.translate("error_module_not_running")
         }
 
-        await ModuleRegistry.guild(message.guild).restartModule(module)
+        await ModuleInstanceRegistry.guild(message.guild).restartModule(module)
 
         await message.channel.send(locale.translate("success"))
     }
