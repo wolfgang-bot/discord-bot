@@ -102,7 +102,6 @@ class ModuleRegistry {
             args: module.args.map(arg => {
                 const newArg = arg.clone()
 
-                newArg.key = moduleLocale.translate(arg.key)
                 newArg.name = moduleLocale.translate(arg.name)
                 newArg.desc = moduleLocale.translate(arg.desc)
 
