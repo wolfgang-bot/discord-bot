@@ -3,7 +3,7 @@ import Guild from "../../../models/Guild"
 
 export default class MyManager extends Manager {
     async init() {
-        this.config = await Guild.config(this.context.guild)["{MODULE_NAME}"]
+        this.config = await Guild.config(this.context.guild)["{MODULE_KEY}"]
     }
 
     async delete() {

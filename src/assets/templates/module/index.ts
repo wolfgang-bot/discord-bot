@@ -1,5 +1,12 @@
+import Module from "../../lib/Module"
+import { module } from "../../lib/decorators"
 import Configuration from "./models/Configuration"
 
+@module({
+    key: "{MODULE_KEY}",
+    desc: "meta_desc",
+    features: "meta_features"
+})
 export default class Module {
     static makeConfigFromArgs = Configuration.fromArgs
     static makeConfigFromJSON = Configuration.fromJSON
