@@ -19,7 +19,7 @@ export default class SetCommand extends Command {
             return
         }
 
-        const availableLocales = Object.keys(LocaleProvider.scopes[LocaleProvider.defaultScope])
+        const availableLocales = LocaleProvider.getLocaleKeys()
         if (!availableLocales.includes(newLocale)) {
             await message.channel.send(locale.translate("error_locale_does_not_exist", newLocale))
             return

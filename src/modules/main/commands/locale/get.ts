@@ -13,7 +13,7 @@ export default class LocaleGetCommand extends Command {
         const config = await Guild.config(message.guild)
         const locale = await LocaleProvider.guild(message.guild)
 
-        const availableLocales = Object.keys(LocaleProvider.scopes[LocaleProvider.defaultScope])
+        const availableLocales = LocaleProvider.getLocaleKeys()
 
         await message.channel.send(new LocaleEmbed(config, locale, guild.locale, availableLocales))
     }

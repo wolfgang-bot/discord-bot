@@ -6,7 +6,7 @@ import Guild from "../../models/Guild"
 import ConnectionManager from "./ConnectionManager"
 import { ExtendedAPIGuild } from "../services/OAuthServiceProvider"
 
-export type InternalSocket = Socket & {
+export type AuthorizedSocket = Socket & {
     handshake: {
         auth?: {
             token?: string
@@ -30,7 +30,7 @@ export default class SocketManager {
     init() {
         this.server.use(this.authorize.bind(this))
 
-        this.server.on("connection", (socket: InternalSocket) => {
+        this.server.on("connection", (socket: AuthorizedSocket) => {
             if (process.env.NODE_ENV === "development") {
                 console.log("Connection", socket.id)
             }
@@ -45,7 +45,7 @@ export default class SocketManager {
         })
     }
     
-    async authorize(socket: InternalSocket, next: Function) {
+    async authorize(socket: AuthorizedSocket, next: Function) {
         if (!socket.handshake.auth?.token) {
             return next(new Error("Unauthorized"))
         }

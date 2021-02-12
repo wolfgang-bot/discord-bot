@@ -78,6 +78,13 @@ class LocaleProvider {
     }
 
     /**
+     * Get all locale keys
+     */
+    static getLocaleKeys() {
+        return Object.keys(LocaleProvider.scopes[LocaleProvider.defaultScope])
+    }
+
+    /**
      * Create an instance of this class which uses the guild's language stored in the database
      */
     static async guild(guild: Discord.Guild) {

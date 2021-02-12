@@ -84,7 +84,7 @@ class Module extends EventEmitter {
 
     toJSON(): object {
         return {
-            moduleName: this.context.module.key,
+            moduleKey: this.context.module.key,
             guildId: this.context.guild.id,
             state: this.state
         }

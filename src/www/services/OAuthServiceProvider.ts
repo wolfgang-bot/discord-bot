@@ -4,7 +4,9 @@ import jwt from "jsonwebtoken"
 import config from "../config"
 import { makeURL } from "../../utils"
 
-export type ExtendedAPIGuild = APIGuild & { isActive: boolean }
+export type ExtendedAPIGuild = APIGuild & {
+    isActive?: boolean
+}
 
 export default class OAuthServiceProvider {
     /**

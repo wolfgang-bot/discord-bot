@@ -6,9 +6,9 @@ import Module from "../../../models/Module"
 import LibModule from "../../../lib/Module"
 import { error, success } from "../responses"
 
-export default class ModulesController extends WebSocketController {
+export default class ModuleController extends WebSocketController {
     /**
-     * Forward request to http ModulesController.getAll
+     * Get all modules available to the requesting user
      */
     getModules(send: Function) {
         const modules = ModuleRegistry.modules.filter(module => !module.isPrivate && !module.isGlobal)
