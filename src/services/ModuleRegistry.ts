@@ -95,6 +95,8 @@ class ModuleRegistry {
         const moduleLocale = new LocaleProvider().scope(module.key)
 
         module.translations = {
+            name: moduleLocale.translate(module.internalName),
+
             desc: moduleLocale.translate(module.desc),
 
             features: moduleLocale.translateArray(module.features),

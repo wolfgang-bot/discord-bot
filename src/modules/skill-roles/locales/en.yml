@@ -2,8 +2,8 @@
 # Meta
 #
 
+meta_name: Skill Roles
 meta_desc: Creates a message whose reactions are used to assign the skill-roles.
-meta_args: <roles_channel_id>
 meta_features:
     - Creates the skill-roles and one emoji per role.
     - Sends a messages into the roles channel which has one reaction per role used to assign it.

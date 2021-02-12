@@ -2,6 +2,7 @@
 # Meta
 #
 
+meta_name: Question Channels
 meta_desc: Manages textchannels used for answering questions.
 meta_features:
     - Creates a textchannel for a user when he asks a question in the question channel.

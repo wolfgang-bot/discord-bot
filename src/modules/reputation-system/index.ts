@@ -16,6 +16,7 @@ commands.forEach(command => command.module = "reputation-system")
 
 @module({
     key: "reputation-system",
+    name: "meta_name",
     desc: "meta_desc",
     features: "meta_features"
 })

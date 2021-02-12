@@ -4,6 +4,7 @@ import Configuration from "./models/Configuration"
 
 @module({
     key: "{MODULE_KEY}",
+    name: "meta_name",
     desc: "meta_desc",
     features: "meta_features"
 })

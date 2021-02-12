@@ -6,6 +6,7 @@ import VoiceChannelManager from "./managers/VoiceChannelManager"
 
 @module({
     key: "dynamic-voicechannels",
+    name: "meta_name",
     desc: "meta_desc",
     features: "meta_features"
 })

@@ -11,6 +11,7 @@ enum STATES {
 }
 
 type ModuleTranslations = {
+    name: string
     desc: string
     features: string[]
     args: Argument[]
@@ -21,6 +22,7 @@ class Module extends EventEmitter {
     static translations: ModuleTranslations
 
     static key: string
+    static internalName: string
     static desc: string
     static features: string
     static args: Argument[]

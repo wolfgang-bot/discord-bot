@@ -11,6 +11,7 @@ import RoleEmbed from "./embeds/RoleEmbed"
 
 @module({
     key: "skill-roles",
+    name: "meta_name",
     desc: "meta_desc",
     features: "meta_features"
 })

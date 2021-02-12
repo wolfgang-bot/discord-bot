@@ -2,6 +2,7 @@
 # Meta
 #
 
+meta_name: Dynamic Voicechannels
 meta_desc: Ensures that there always is an empty voicechannel.
 meta_features:
     - Creates a predefined amount of persistant voicechannels in the given category.

@@ -9,6 +9,7 @@ import Guild from "../../models/Guild"
 
 @module({
     key: "question-channels",
+    name: "meta_name",
     desc: "meta_desc",
     features: "meta_features"
 })
