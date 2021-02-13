@@ -9,9 +9,9 @@ abstract class Manager {
         this.context = context
     }
 
-    async init() {}
+    abstract init(): Promise<void>
 
-    async delete() {}
+    abstract delete(): Promise<void>
 }
 
 export default Manager

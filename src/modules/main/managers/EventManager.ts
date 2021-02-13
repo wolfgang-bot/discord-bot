@@ -1,28 +1,28 @@
 import Discord from "discord.js"
+import Manager from "../../../lib/Manager"
 import CommandRegistry from "../../../services/CommandRegistry"
 import Guild from "../../../models/Guild"
 import User from "../../../models/Guild"
 import Member from "../../../models/Member"
-import Context from "../../../lib/Context"
+import StatisticsManager from "./StatisticsManager"
 
-class EventManager {
-    client: Discord.Client
-
-    constructor(context: Context) {
-        this.client = context.client
-    }
+class EventManager extends Manager {
+    statistics: StatisticsManager = new StatisticsManager()
 
     async handleMessage(message: Discord.Message) {
-        // Execute the requested command through the root command registry
-        if (!message.author.bot && message.content.startsWith(process.env.DISCORD_BOT_PREFIX)) {
-            try {
-                await CommandRegistry.root.run(message)
-            } catch (error) {
-                if (process.env.NODE_ENV === "development") {
-                    console.error(error)
-                }
+        if (!message.author.bot) {
+            if (message.content.startsWith(process.env.DISCORD_BOT_PREFIX)) {
+                try {
+                    await CommandRegistry.root.run(message)
+                } catch (error) {
+                    if (process.env.NODE_ENV === "development") {
+                        console.error(error)
+                    }
 
-                await message.channel.send(typeof error === "string" ? error : "Internal Server Error")
+                    await message.channel.send(typeof error === "string" ? error : "Internal Server Error")
+                }
+            } else {
+                await this.statistics.registerMessageSendEvent(message.guild)
             }
         }
     }
@@ -74,7 +74,7 @@ class EventManager {
 
         // Assign the user role to the new user
         if (!userRole) {
-            console.error(`The role '${config.userRole}' does not exist`)
+            console.error(`The role '${config.main.userRole}' does not exist`)
         } else {
             await member.roles.add(userRole)
         }
@@ -92,6 +92,8 @@ class EventManager {
             guild_id: member.guild.id
         })
         await model.store()
+
+        await this.statistics.registerGuildMemberAddEvent(member.guild)
     }
 
     async handleGuildMemberRemove(member: Discord.GuildMember) {
@@ -111,14 +113,39 @@ class EventManager {
             await model.fetchUser()
             await model.user.delete()
         }
-    } 
 
-    init() {
-        this.client.on("message", this.handleMessage.bind(this))
-        this.client.on("guildCreate", this.handleGuildCreate.bind(this))
-        this.client.on("guildDelete", this.handleGuildDelete.bind(this))
-        this.client.on("guildMemberAdd", this.handleGuildMemberAdd.bind(this))
-        this.client.on("guildMemberRemove", this.handleGuildMemberRemove.bind(this))
+        await this.statistics.registerGuildMemberRemoveEvent(member.guild)
+    }
+
+    async handleVoiceStateUpdate(oldState: Discord.VoiceState, newState: Discord.VoiceState) {
+        // User stayed in the same voicechannel
+        if (oldState.channelID === newState.channelID) {
+            return
+        }
+
+        // User joined a voicechannel
+        if (!oldState.channelID) {
+            return await this.statistics.registerVoiceChannelJoinEvent(newState)
+        }
+
+        // User left the voicechannel (not by moving into another channel)
+        if (!newState.channelID) {
+            await this.statistics.registerVoiceChannelLeaveEvent(newState)
+        }
+    }
+
+    async init() {
+        const { client } = this.context
+        client.on("message", this.handleMessage.bind(this))
+        client.on("guildCreate", this.handleGuildCreate.bind(this))
+        client.on("guildDelete", this.handleGuildDelete.bind(this))
+        client.on("guildMemberAdd", this.handleGuildMemberAdd.bind(this))
+        client.on("guildMemberRemove", this.handleGuildMemberRemove.bind(this))
+        client.on("voiceStateUpdate", this.handleVoiceStateUpdate.bind(this))
+    }
+
+    async delete() {
+        // The main module will never be stopped --> nothing to do here
     }
 }
 

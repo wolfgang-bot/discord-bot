@@ -14,7 +14,6 @@ export type AuthorizedSocket = Socket & {
     }
     user: User
     guilds: Record<string, ExtendedAPIGuild>
-    pushModuleInstances: Function
 }
 
 export default class SocketManager {
@@ -39,7 +38,7 @@ export default class SocketManager {
             this.connections[socket.id] = connection
 
             socket.on("disconnect", () => {
-                connection.clean()
+                connection.destroy()
                 delete this.connections[socket.id]
             })
         })

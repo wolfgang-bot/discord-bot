@@ -1,19 +1,22 @@
 import Discord from "discord.js"
+import WebSocketEmitter from "../../lib/WebSocketEmitter"
 import { AuthorizedSocket } from "./SocketManager"
-import ModuleInstanceRegistry from "../../services/ModuleInstanceRegistry"
-import Module from "../../lib/Module"
 import GuildController from "./controllers/GuildController"
 import ModuleController from "./controllers/ModuleController"
 import ConfigController from "./controllers/ConfigController"
 import LocaleController from "./controllers/LocaleController"
+import ModuleInstanceEmitter from "./emitter/ModuleInstanceEmitter"
 
 export default class ConnectionManager {
     socket: AuthorizedSocket
     client: Discord.Client
+
     guildController: GuildController
     moduleController: ModuleController
     configController: ConfigController
     localeController: LocaleController
+
+    emitter: WebSocketEmitter[] = []
 
     constructor(socket: AuthorizedSocket, client: Discord.Client) {
         this.socket = socket
@@ -24,18 +27,13 @@ export default class ConnectionManager {
         this.configController = new ConfigController(client, socket)
         this.localeController = new LocaleController(client, socket)
 
-        this.handleModuleInstanceUpdate = this.handleModuleInstanceUpdate.bind(this)
+        this.emitter.push(new ModuleInstanceEmitter(client, socket))
 
-        this.attachEventReceivers()
-        this.attachEventEmitters()
-        this.attachModuleInstanceListeners()
+        this.attachReceivers()
+        this.attachEmitters()
     }
 
-    clean() {
-        this.removeModuleInstanceListeners()
-    }
-
-    attachEventReceivers() {
+    attachReceivers() {
         this.socket.on("get:guilds",                    this.guildController.getGuilds.bind(this.guildController))
         this.socket.on("get:guild/channels",            this.guildController.getChannels.bind(this.guildController))
         this.socket.on("get:guild/locale",              this.guildController.getLocale.bind(this.guildController))
@@ -53,21 +51,11 @@ export default class ConnectionManager {
         this.socket.on("get:locales",                   this.localeController.getLocales.bind(this.localeController))
     }
 
-    attachEventEmitters() {
-        this.socket.pushModuleInstances = this.moduleController.pushModuleInstances.bind(this.moduleController)
+    attachEmitters() {
+        this.emitter.forEach(emitter => emitter.attach())
     }
-
-    attachModuleInstanceListeners() {
-        ModuleInstanceRegistry.eventEmitter.on("update", this.handleModuleInstanceUpdate)
-    }
-
-    removeModuleInstanceListeners() {
-        ModuleInstanceRegistry.eventEmitter.removeListener("update", this.handleModuleInstanceUpdate)
-    }
-
-    handleModuleInstanceUpdate(instance: Module) {
-        if (instance.context.guild.id in this.socket.guilds) {
-            this.socket.pushModuleInstances([instance])
-        }
+    
+    destroy() {
+        this.emitter.forEach(emitter => emitter.remove())
     }
 }

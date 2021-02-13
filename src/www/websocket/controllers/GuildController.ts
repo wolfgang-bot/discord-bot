@@ -57,6 +57,12 @@ export default class GuildController extends WebSocketController {
             return send(error(404))
         }
 
+        await guild.fetchDiscordGuild(this.client)
+
+        if (!this.socket.user.isAdmin(guild)) {
+            return send(error(403))
+        }
+
         const availableLocales = LocaleProvider.getLocaleKeys()
 
         if (!availableLocales.includes(newLocale)) {
@@ -67,5 +73,18 @@ export default class GuildController extends WebSocketController {
         await guild.update()
 
         send(success())
+    }
+
+    /**
+     * Get member count of guild
+     */
+    async getMemberCount(guildId: string, send: Function) {
+        const guild = await this.client.guilds.fetch(guildId)
+        
+        if (!guild || !guild.available) {
+            return send(error(404))
+        }
+
+        send(success(guild.memberCount))
     }
 }

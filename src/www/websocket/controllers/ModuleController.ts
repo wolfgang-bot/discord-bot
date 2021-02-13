@@ -3,7 +3,6 @@ import ModuleRegistry from "../../../services/ModuleRegistry"
 import ModuleInstanceRegistry from "../../../services/ModuleInstanceRegistry"
 import Guild from "../../../models/Guild"
 import Module from "../../../models/Module"
-import LibModule from "../../../lib/Module"
 import { error, success } from "../responses"
 
 export default class ModuleController extends WebSocketController {
@@ -182,12 +181,5 @@ export default class ModuleController extends WebSocketController {
         }
 
         return send(success())
-    }
-
-    /**
-     * Push module instances to client
-     */
-    async pushModuleInstances(instances: LibModule[]) {
-        this.socket.emit("push:module-instances", instances)
     }
 }
