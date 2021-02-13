@@ -3,6 +3,8 @@ import Module from "../../../lib/Module"
 import ModuleInstanceRegistry from "../../../services/ModuleInstanceRegistry"
 
 export default class ModuleInstanceEmitter extends WebSocketEmitter {
+    pushInitialValues: undefined
+
     attach() {
         ModuleInstanceRegistry.eventEmitter.on("update", this.handleModuleInstanceUpdate)
     }

@@ -26,12 +26,16 @@ class User extends Model implements UserModelValues {
         })
     }
 
-    isAdmin(guild: Guild) {
-        if (!guild.discordGuild) {
-            throw new Error(`Discord guild for guild '${guild.id}' is not available`)
+    isAdmin(guild: Discord.Guild | Guild) {
+        if (guild instanceof Guild) {
+            if (!guild.discordGuild) {
+                throw new Error(`Discord guild for guild '${guild.id}' is not available`)
+            }
+
+            guild = guild.discordGuild
         }
 
-        return checkPermissions(guild.discordGuild, this, ["MANAGE_GUILD"])
+        return checkPermissions(guild, this, ["MANAGE_GUILD"])
     }
     
     init() {}

@@ -21,14 +21,14 @@ export type VoiceChannelLeaveEventMeta = {
     duration: number
 }
 
-export type EventModelValues = {
+export type EventModelValues<TMeta> = {
     type: EVENT_TYPES,
     timestamp: number,
     guild_id?: string,
-    meta?: object,
+    meta?: TMeta,
 }
 
-class Event extends Model implements EventModelValues {
+class Event<TMeta = undefined> extends Model implements EventModelValues<TMeta> {
     static context = {
         model: Event,
         table: "events"
@@ -36,9 +36,9 @@ class Event extends Model implements EventModelValues {
     type: EVENT_TYPES
     timestamp: number
     guild_id?: string
-    meta?: object
+    meta?: TMeta
 
-    constructor(values: EventModelValues) {
+    constructor(values: EventModelValues<TMeta>) {
         super({
             table: "events",
             columns: ["id", "type", "timestamp", "guild_id", "meta"],
@@ -52,6 +52,15 @@ class Event extends Model implements EventModelValues {
     async init() {
         if (typeof this.meta === "string") {
             this.meta = JSON.parse(this.meta)
+        }
+    }
+
+    toJSON() {
+        return {
+            type: this.type,
+            timestamp: this.timestamp,
+            guild_id: this.guild_id,
+            meta: this.meta
         }
     }
 }

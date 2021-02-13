@@ -1,5 +1,12 @@
 import Discord from "discord.js"
-import Event, { EVENT_TYPES, GuildMemberAddEventMeta, GuildMemberRemoveEventMeta, VoiceChannelLeaveEventMeta } from "../../../models/Event"
+import Event, {
+    EVENT_TYPES,
+    GuildMemberAddEventMeta,
+    GuildMemberRemoveEventMeta,
+    VoiceChannelLeaveEventMeta,
+    EventModelValues
+} from "../../../models/Event"
+import BroadcastChannel from "../../../services/BroadcastChannel"
 
 type VoiceChannelConnection = {
     joinedAt: number
@@ -8,36 +15,54 @@ type VoiceChannelConnection = {
 export default class StatisticsManager {
     voiceChannelConnections: Record<string, VoiceChannelConnection> = {}
 
-    async registerGuildMemberAddEvent(guild: Discord.Guild) {
-        const meta: GuildMemberAddEventMeta = {
-            memberCount: guild.memberCount
+    private async registerEvent<TMeta = undefined>({ getData, broadcastEvent }: {
+        getData: () => EventModelValues<TMeta>,
+        broadcastEvent?: string
+    }) {
+        const event = new Event(getData())
+        await event.store()
+        if (broadcastEvent) {
+            BroadcastChannel.emit(`statistics/${broadcastEvent}`, event)
         }
-        await new Event({
-            type: EVENT_TYPES.GUILD_MEMBER_ADD,
-            timestamp: Date.now(),
-            guild_id: guild.id,
-            meta
-        }).store()
+    }
+
+    async registerGuildMemberAddEvent(guild: Discord.Guild) {
+        await this.registerEvent<GuildMemberAddEventMeta>({
+            getData: () => ({
+                type: EVENT_TYPES.GUILD_MEMBER_ADD,
+                timestamp: Date.now(),
+                guild_id: guild.id,
+                meta: {
+                    memberCount: guild.memberCount
+                }
+            }),
+            broadcastEvent: "guild-member-add"
+        })
     }
 
     async registerGuildMemberRemoveEvent(guild: Discord.Guild) {
-        const meta: GuildMemberRemoveEventMeta = {
-            memberCount: guild.memberCount
-        }
-        await new Event({
-            type: EVENT_TYPES.GUILD_MEMBER_REMOVE,
-            timestamp: Date.now(),
-            guild_id: guild.id,
-            meta
-        }).store()
+        await this.registerEvent<GuildMemberRemoveEventMeta>({
+            getData: () => ({
+                type: EVENT_TYPES.GUILD_MEMBER_REMOVE,
+                timestamp: Date.now(),
+                guild_id: guild.id,
+                meta: {
+                    memberCount: guild.memberCount
+                }
+            }),
+            broadcastEvent: "guild-member-remove"
+        })
     }
 
     async registerMessageSendEvent(guild: Discord.Guild) {
-        await new Event({
-            type: EVENT_TYPES.MESSAGE_SEND,
-            timestamp: Date.now(),
-            guild_id: guild.id
-        }).store()
+        await this.registerEvent({
+            getData: () => ({
+                type: EVENT_TYPES.MESSAGE_SEND,
+                timestamp: Date.now(),
+                guild_id: guild.id
+            }),
+            broadcastEvent: "message-send"
+        })
     }
 
     async registerVoiceChannelJoinEvent(voiceState: Discord.VoiceState) {
@@ -47,25 +72,30 @@ export default class StatisticsManager {
             joinedAt: timestamp
         }
 
-        await new Event({
-            type: EVENT_TYPES.VOICECHANNEL_JOIN,
-            timestamp,
-            guild_id: voiceState.guild.id
-        }).store()
+        await this.registerEvent({
+            getData: () => ({
+                type: EVENT_TYPES.VOICECHANNEL_JOIN,
+                timestamp,
+                guidl_id: voiceState.guild.id
+            })
+        })
     }
 
     async registerVoiceChannelLeaveEvent(voiceState: Discord.VoiceState) {
         const timestamp = Date.now()
 
-        const meta: VoiceChannelLeaveEventMeta = {
-            duration: timestamp - this.voiceChannelConnections[voiceState.sessionID].joinedAt
-        }
+        await this.registerEvent<VoiceChannelLeaveEventMeta>({
+            getData: () => ({
+                type: EVENT_TYPES.VOICECHANNEL_LEAVE,
+                timestamp,
+                guild_id: voiceState.guild.id,
+                meta: {
+                    duration: timestamp - this.voiceChannelConnections[voiceState.sessionID].joinedAt
+                }
+            }),
+            broadcastEvent: "guild-channel-leave"
+        })
 
-        await new Event({
-            type: EVENT_TYPES.VOICECHANNEL_LEAVE,
-            timestamp,
-            guild_id: voiceState.guild.id,
-            meta
-        }).store()
+        delete this.voiceChannelConnections[voiceState.sessionID]
     }
 }

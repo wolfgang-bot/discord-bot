@@ -85,6 +85,10 @@ export default class GuildController extends WebSocketController {
             return send(error(404))
         }
 
+        if (!this.socket.user.isAdmin(guild)) {
+            return send(error(403))
+        }
+
         send(success(guild.memberCount))
     }
 }
