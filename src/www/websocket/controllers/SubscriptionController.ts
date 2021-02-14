@@ -1,13 +1,8 @@
 import Discord from "discord.js"
 import WebSocketController from "../../../lib/WebSocketController"
-import StreamManager, { EVENT_STREAMS } from "../StreamManager"
+import StreamManager, { EVENT_STREAMS, SubscriptionArgs } from "../StreamManager"
 import { AuthorizedSocket } from "../SocketManager"
 import { success, error } from "../responses"
-
-export type SubscriptionArgs = {
-    eventStream: EVENT_STREAMS,
-    guildId: string
-}
 
 export default class SubscriptionController extends WebSocketController {
     constructor(

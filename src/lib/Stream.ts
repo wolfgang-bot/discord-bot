@@ -35,7 +35,7 @@ export abstract class Readable<T> {
         this.destStreams.push(stream)
         
         if (this.state === READING_STATES.PAUSED) {
-            this.state = READING_STATES.FLOWING
+            this.resume()
             this.construct()
         }
 

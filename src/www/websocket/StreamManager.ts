@@ -1,12 +1,16 @@
 import Discord from "discord.js"
 import { Readable } from "../../lib/Stream"
 import { AuthorizedSocket } from "./SocketManager"
-import { SubscriptionArgs } from "./controllers/SubscriptionController"
 import SocketStream from "./streams/SocketStream"
 import ModuleInstanceStream from "./streams/ModuleInstanceStream"
 import MemberStream from "./streams/MemberStream"
 import MessageStream from "./streams/MessageStream"
 import VoiceStream from "./streams/VoiceStream"
+
+export type SubscriptionArgs = {
+    eventStream: EVENT_STREAMS,
+    guildId: string
+}
 
 export enum EVENT_STREAMS {
     MODULE_INSTANCES = "module-instances",
@@ -31,7 +35,7 @@ export default class StreamManager {
         console.log("Subscribe", args)
 
         const eventStream = new STREAMS[args.eventStream](args.guildId)
-        const socketStream = new SocketStream(this.socket, args.eventStream)
+        const socketStream = new SocketStream(this.socket, args)
 
         if (!this.streams[args.guildId]) {
             this.streams[args.guildId] = {}
