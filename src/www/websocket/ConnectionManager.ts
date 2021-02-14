@@ -1,12 +1,11 @@
 import Discord from "discord.js"
-import WebSocketEmitter from "../../lib/WebSocketEmitter"
 import { AuthorizedSocket } from "./SocketManager"
+import StreamManager from "./StreamManager"
 import GuildController from "./controllers/GuildController"
 import ModuleController from "./controllers/ModuleController"
 import ConfigController from "./controllers/ConfigController"
 import LocaleController from "./controllers/LocaleController"
 import SubscriptionController from "./controllers/SubscriptionController"
-import ModuleInstanceEmitter from "./emitter/ModuleInstanceEmitter"
 
 export default class ConnectionManager {
     socket: AuthorizedSocket
@@ -18,22 +17,21 @@ export default class ConnectionManager {
     localeController: LocaleController
     subscriptionController: SubscriptionController
 
-    emitter: WebSocketEmitter[] = []
+    streamManager: StreamManager
 
     constructor(socket: AuthorizedSocket, client: Discord.Client) {
         this.socket = socket
         this.client = client
 
+        this.streamManager = new StreamManager(client, socket)
+
         this.guildController = new GuildController(client, socket)
         this.moduleController = new ModuleController(client, socket)
         this.configController = new ConfigController(client, socket)
         this.localeController = new LocaleController(client, socket)
-        this.subscriptionController = new SubscriptionController(client, socket)
-
-        this.emitter.push(new ModuleInstanceEmitter(client, socket))
+        this.subscriptionController = new SubscriptionController(client, socket, this.streamManager)
 
         this.attachReceivers()
-        this.attachEmitters()
     }
 
     attachReceivers() {
@@ -54,17 +52,11 @@ export default class ConnectionManager {
 
         this.socket.on("get:locales",                   this.localeController.getLocales.bind(this.localeController))
 
-        this.socket.on("post:subscribe/members",        this.subscriptionController.subscribe.bind(this.subscriptionController, "members"))
-        this.socket.on("post:unsubscribe/members",      this.subscriptionController.unsubscribe.bind(this.subscriptionController, "members"))
-        this.socket.on("post:subscribe/messages",       this.subscriptionController.subscribe.bind(this.subscriptionController, "messages"))
-        this.socket.on("post:subscribe/voice",          this.subscriptionController.subscribe.bind(this.subscriptionController, "voice"))
+        this.socket.on("post:subscribe",                this.subscriptionController.subscribe.bind(this.subscriptionController))
+        this.socket.on("post:unsubscribe",              this.subscriptionController.unsubscribe.bind(this.subscriptionController))
     }
 
-    attachEmitters() {
-        this.emitter.forEach(emitter => emitter.attach())
-    }
-    
     destroy() {
-        this.emitter.forEach(emitter => emitter.remove())
+        this.streamManager.unsubscribeAll()
     }
 }

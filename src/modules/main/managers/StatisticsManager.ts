@@ -64,22 +64,6 @@ export default class StatisticsManager {
         })
     }
 
-    async registerVoiceChannelJoinEvent(voiceState: Discord.VoiceState) {
-        const timestamp = Date.now()
-
-        this.voiceChannelConnections[voiceState.sessionID] = {
-            joinedAt: timestamp
-        }
-
-        await this.registerEvent({
-            getData: () => ({
-                type: EVENT_TYPES.VOICECHANNEL_JOIN,
-                timestamp,
-                guidl_id: voiceState.guild.id
-            })
-        })
-    }
-
     async registerVoiceChannelLeaveEvent(voiceState: Discord.VoiceState) {
         const timestamp = Date.now()
 

@@ -1,8 +1,8 @@
 import Discord from "discord.js"
-import { EventEmitter } from "events"
 import Module from "../lib/Module"
 import Collection from "../lib/Collection"
 import Context from "../lib/Context"
+import BroadcastChannel from "../services/BroadcastChannel"
 import ModuleModel from "../models/Module"
 import ModuleInstanceModel from "../models/ModuleInstance"
 import LocaleProvider from "./LocaleProvider"
@@ -25,7 +25,6 @@ class ModuleInstanceRegistry {
     static moduleRegistry: typeof ModuleRegistry
     static instances: GuildInstancesMap = {}
     static globalInstances: GlobalInstancesMap = {}
-    static eventEmitter: EventEmitter = new EventEmitter()
 
     guild: Discord.Guild
     instances: InstancesMap
@@ -88,7 +87,7 @@ class ModuleInstanceRegistry {
         this.instances[guild.id][model.id] = instance
 
         instance.on("update", () => {
-            this.eventEmitter.emit("update", instance)
+            BroadcastChannel.emit("module-instances/update", instance)
         })
     }
 
