@@ -19,12 +19,13 @@ export abstract class Readable<T> {
     }
 
     pipe(stream: Writable<T>) {
+        this.destStreams.push(stream)
+        
         if (this.state === READING_STATES.PAUSED) {
-            this.construct()
             this.state = READING_STATES.FLOWING
+            this.construct()
         }
 
-        this.destStreams.push(stream)
         return stream
     }
 }

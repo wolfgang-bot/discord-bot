@@ -35,7 +35,7 @@ export default class ModuleController extends WebSocketController {
             return send(error(403))
         }
 
-        const instances = Object.values(ModuleInstanceRegistry.guild(guild.discordGuild).instances)
+        const instances = ModuleInstanceRegistry.getInstancesFromGuildId(guild.id)
 
         send(success(instances))
     }

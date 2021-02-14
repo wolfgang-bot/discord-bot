@@ -26,6 +26,11 @@ export default class SubscriptionController extends WebSocketController {
             return send(error(400))
         }
 
+        const guild = await this.client.guilds.fetch(args.guildId)
+        if (!this.socket.user.isAdmin(guild)) {
+            return send(error(403))
+        }
+
         try {
             this.streamManager.subscribe(args)
             send(success())

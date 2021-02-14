@@ -101,6 +101,13 @@ class ModuleInstanceRegistry {
         delete this.instances[guild.id][model.id]
     }
 
+    /**
+     * Get module instances registered by a guild's id
+     */
+    static getInstancesFromGuildId(guildId: string) {
+        return Object.values(this.instances[guildId] || {})
+    }
+
     constructor(guild: Discord.Guild) {
         this.guild = guild
 
