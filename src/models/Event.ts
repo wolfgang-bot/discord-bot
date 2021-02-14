@@ -9,11 +9,7 @@ export enum EVENT_TYPES {
     VOICECHANNEL_LEAVE
 }
 
-export type GuildMemberAddEventMeta = {
-    memberCount: number
-}
-
-export type GuildMemberRemoveEventMeta = {
+export type GuildMemberEventMeta = {
     memberCount: number
 }
 

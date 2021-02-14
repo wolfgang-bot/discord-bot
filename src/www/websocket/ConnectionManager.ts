@@ -7,7 +7,6 @@ import ConfigController from "./controllers/ConfigController"
 import LocaleController from "./controllers/LocaleController"
 import SubscriptionController from "./controllers/SubscriptionController"
 import ModuleInstanceEmitter from "./emitter/ModuleInstanceEmitter"
-import SubscriptionManager from "./SubscriptionManager"
 
 export default class ConnectionManager {
     socket: AuthorizedSocket
@@ -20,22 +19,16 @@ export default class ConnectionManager {
     subscriptionController: SubscriptionController
 
     emitter: WebSocketEmitter[] = []
-    subscriptionManager: SubscriptionManager
 
     constructor(socket: AuthorizedSocket, client: Discord.Client) {
         this.socket = socket
         this.client = client
 
-        this.subscriptionManager = new SubscriptionManager(client, socket)
-
         this.guildController = new GuildController(client, socket)
         this.moduleController = new ModuleController(client, socket)
         this.configController = new ConfigController(client, socket)
         this.localeController = new LocaleController(client, socket)
-        this.subscriptionController = new SubscriptionController(client, socket, {
-            onSubscribe: this.subscriptionManager.subscribe.bind(this.subscriptionManager),
-            onUnsubscribe: this.subscriptionManager.unsubscribe.bind(this.subscriptionManager)
-        })
+        this.subscriptionController = new SubscriptionController(client, socket)
 
         this.emitter.push(new ModuleInstanceEmitter(client, socket))
 

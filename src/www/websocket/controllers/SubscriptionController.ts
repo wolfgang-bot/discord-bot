@@ -3,6 +3,7 @@ import WebSocketController from "../../../lib/WebSocketController"
 import { AuthorizedSocket } from "../SocketManager"
 import { success, error } from "../responses"
 import Event, { EVENT_TYPES } from "../../../models/Event"
+import StreamManager from "../StreamManager"
 
 export enum EVENT_STREAMS {
     MEMBERS = "members",
@@ -12,27 +13,18 @@ export enum EVENT_STREAMS {
 
 export type SubscriptionArgs = {
     eventStream: EVENT_STREAMS,
-    guildId?: string
+    guildId: string
 }
 
-type onSubscribeCallback = (args: SubscriptionArgs) => void
-type onUnsubscribeCallback = (args: SubscriptionArgs) => void
-
 export default class SubscriptionController extends WebSocketController {
-    onSubscribe: onSubscribeCallback
-    onUnsubscribe: onUnsubscribeCallback
+    streamManager: StreamManager
 
     constructor(
         client: Discord.Client,
-        socket: AuthorizedSocket,
-        { onSubscribe, onUnsubscribe }: {
-            onSubscribe: onSubscribeCallback,
-            onUnsubscribe: onUnsubscribeCallback
-        }
+        socket: AuthorizedSocket
     ) {
         super(client, socket)
-        this.onSubscribe = onSubscribe
-        this.onUnsubscribe = onUnsubscribe
+        this.streamManager = new StreamManager(client, socket)
     }
 
     /**
@@ -40,10 +32,15 @@ export default class SubscriptionController extends WebSocketController {
      */
     async subscribe(eventStream: EVENT_STREAMS, args: SubscriptionArgs, send: Function) {
         args.eventStream = eventStream
+
+        if (!args.guildId) {
+            return send(error(400, "Missing argument: guildId"))
+        }
+
         try {
             const initialValue = await this.getInitialValue(args)
             send(success(initialValue))
-            this.onSubscribe(args)
+            this.streamManager.subscribe(args)
         } catch (err) {
             console.error(err)
             send(error(500))
@@ -55,7 +52,7 @@ export default class SubscriptionController extends WebSocketController {
      */
     async unsubscribe(eventStream: EVENT_STREAMS, args: SubscriptionArgs) {
         args.eventStream = eventStream
-        this.onUnsubscribe(args)
+        this.streamManager.unsubscribe(args)
     }
 
     /**

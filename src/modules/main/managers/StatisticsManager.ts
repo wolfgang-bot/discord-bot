@@ -1,8 +1,7 @@
 import Discord from "discord.js"
 import Event, {
     EVENT_TYPES,
-    GuildMemberAddEventMeta,
-    GuildMemberRemoveEventMeta,
+    GuildMemberEventMeta,
     VoiceChannelLeaveEventMeta,
     EventModelValues
 } from "../../../models/Event"
@@ -27,7 +26,7 @@ export default class StatisticsManager {
     }
 
     async registerGuildMemberAddEvent(guild: Discord.Guild) {
-        await this.registerEvent<GuildMemberAddEventMeta>({
+        await this.registerEvent<GuildMemberEventMeta>({
             getData: () => ({
                 type: EVENT_TYPES.GUILD_MEMBER_ADD,
                 timestamp: Date.now(),
@@ -41,7 +40,7 @@ export default class StatisticsManager {
     }
 
     async registerGuildMemberRemoveEvent(guild: Discord.Guild) {
-        await this.registerEvent<GuildMemberRemoveEventMeta>({
+        await this.registerEvent<GuildMemberEventMeta>({
             getData: () => ({
                 type: EVENT_TYPES.GUILD_MEMBER_REMOVE,
                 timestamp: Date.now(),
