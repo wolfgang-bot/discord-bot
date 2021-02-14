@@ -6,7 +6,7 @@ export default class SocketWriteStream<T> extends Writable<T> {
         super()
     }
 
-    write(data: T) {
+    write(data: T[]) {
         this.socket.emit(`push:stream/${this.eventName}`, data)
     }
 }

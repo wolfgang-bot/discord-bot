@@ -4,7 +4,7 @@ import Event, { EVENT_TYPES } from "../../../models/Event"
 import BroadcastChannel from "../../../services/BroadcastChannel"
 import config from "../../config"
 
-export default class MessageStream extends Readable<Event[]> {
+export default class MessageStream extends Readable<Event> {
     constructor(public guildId: string) {
         super()
 

@@ -52,8 +52,10 @@ export default class ConnectionManager {
 
         this.socket.on("get:locales",                   this.localeController.getLocales.bind(this.localeController))
 
-        this.socket.on("post:subscribe",                this.subscriptionController.subscribe.bind(this.subscriptionController))
-        this.socket.on("post:unsubscribe",              this.subscriptionController.unsubscribe.bind(this.subscriptionController))
+        this.socket.on("post:stream/subscribe",         this.subscriptionController.subscribe.bind(this.subscriptionController))
+        this.socket.on("post:stream/unsubscribe",       this.subscriptionController.unsubscribe.bind(this.subscriptionController))
+        this.socket.on("post:stream/pause",             this.subscriptionController.pause.bind(this.subscriptionController))
+        this.socket.on("post:stream/resume",            this.subscriptionController.resume.bind(this.subscriptionController))
     }
 
     destroy() {

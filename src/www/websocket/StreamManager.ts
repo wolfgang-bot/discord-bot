@@ -53,6 +53,18 @@ export default class StreamManager {
         delete this.streams[args.guildId][args.eventStream]
     }
 
+    pause(args: SubscriptionArgs) {
+        console.log("Pause", args)
+
+        this.streams[args.guildId][args.eventStream].pause()
+    }
+
+    resume(args: SubscriptionArgs) {
+        console.log("Resume", args)
+
+        this.streams[args.guildId][args.eventStream].resume()
+    }
+
     unsubscribeAll() {
         console.log("Unsubscribe all")
 

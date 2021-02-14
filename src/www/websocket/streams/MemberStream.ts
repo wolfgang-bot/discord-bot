@@ -4,7 +4,7 @@ import BroadcastChannel from "../../../services/BroadcastChannel"
 import Event, { EVENT_TYPES, GuildMemberEventMeta } from "../../../models/Event"
 import config from "../../config"
 
-export default class MembersStream extends Readable<Event<GuildMemberEventMeta>[]> {
+export default class MembersStream extends Readable<Event<GuildMemberEventMeta>> {
     constructor(public guildId: string) {
         super()
 

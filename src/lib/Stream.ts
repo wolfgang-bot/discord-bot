@@ -6,16 +6,29 @@ export enum READING_STATES {
 export abstract class Readable<T> {
     destStreams: Writable<T>[] = []
     state: READING_STATES = READING_STATES.PAUSED
+    buffer: T[] = []
 
     abstract construct(): void
     abstract destroy(): void
 
-    push(data: T) {
+    push(data: T[]) {
         if (this.state === READING_STATES.FLOWING) {
             this.destStreams.forEach(stream => {
                 stream.write(data)
             })
+        } else if (this.state === READING_STATES.PAUSED) {
+            this.buffer.push(...data)
         }
+    }
+
+    pause() {
+        this.state = READING_STATES.PAUSED
+    }
+
+    resume() {
+        this.state = READING_STATES.FLOWING
+        this.push(this.buffer)
+        this.buffer = []
     }
 
     pipe(stream: Writable<T>) {
@@ -31,5 +44,5 @@ export abstract class Readable<T> {
 }
 
 export abstract class Writable<T> {
-    abstract write(data: T): void
+    abstract write(data: T[]): void
 }
