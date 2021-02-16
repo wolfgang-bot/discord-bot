@@ -10,14 +10,15 @@ export abstract class Readable<T> {
 
     abstract construct(): void
     abstract destroy(): void
+    abstract collectBuffer(buffer: T[]): T
 
-    push(data: T[]) {
+    push(data: T) {
         if (this.state === READING_STATES.FLOWING) {
             this.destStreams.forEach(stream => {
                 stream.write(data)
             })
         } else if (this.state === READING_STATES.PAUSED) {
-            this.buffer.push(...data)
+            this.buffer.push(data)
         }
     }
 
@@ -27,10 +28,8 @@ export abstract class Readable<T> {
 
     resume() {
         this.state = READING_STATES.FLOWING
-        if (this.buffer.length > 0) {
-            this.push(this.buffer)
-            this.buffer = []
-        }
+        this.push(this.collectBuffer(this.buffer))
+        this.buffer = []
     }
 
     pipe(stream: Writable<T>) {
@@ -46,5 +45,5 @@ export abstract class Readable<T> {
 }
 
 export abstract class Writable<T> {
-    abstract write(data: T[]): void
+    abstract write(data: T): void
 }

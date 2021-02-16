@@ -4,7 +4,7 @@ import BroadcastChannel from "../../../services/BroadcastChannel"
 import Event, { EVENT_TYPES, GuildMemberEventMeta } from "../../../models/Event"
 import config from "../../config"
 
-export default class MembersStream extends Readable<Event<GuildMemberEventMeta>> {
+export default class MembersStream extends Readable<Event<GuildMemberEventMeta>[]> {
     constructor(public guildId: string) {
         super()
 
@@ -21,6 +21,10 @@ export default class MembersStream extends Readable<Event<GuildMemberEventMeta>>
     destroy() {
         BroadcastChannel.removeListener("statistics/guild-member-add", this.handleMembersEvent)
         BroadcastChannel.removeListener("statistics/guild-member-remove", this.handleMembersEvent)
+    }
+
+    collectBuffer(buffer: Event<GuildMemberEventMeta>[][]) {
+        return buffer.flat()
     }
 
     async pushInitialValues() {

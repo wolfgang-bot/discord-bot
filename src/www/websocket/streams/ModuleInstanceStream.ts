@@ -3,7 +3,7 @@ import Module from "../../../lib/Module"
 import BroadcastChannel from "../../../services/BroadcastChannel"
 import ModuleInstanceRegistry from "../../../services/ModuleInstanceRegistry"
 
-export default class ModuleInstanceStream extends Readable<Module> {
+export default class ModuleInstanceStream extends Readable<Module[]> {
     constructor(public guildId: string) {
         super()
 
@@ -17,6 +17,10 @@ export default class ModuleInstanceStream extends Readable<Module> {
     
     destroy() {
         BroadcastChannel.removeListener("module-instances/update", this.handleInstanceUpdate)
+    }
+
+    collectBuffer(buffer: Module[][]) {
+        return buffer.flat()
     }
 
     pushInitialValues() {

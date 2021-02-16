@@ -4,7 +4,7 @@ import Event, { EVENT_TYPES, VoiceChannelLeaveEventMeta } from "../../../models/
 import BroadcastChannel from "../../../services/BroadcastChannel"
 import config from "../../config"
 
-export default class VoiceStream extends Readable<Event<VoiceChannelLeaveEventMeta>> {
+export default class VoiceStream extends Readable<Event<VoiceChannelLeaveEventMeta>[]> {
     constructor(public guildId: string) {
         super()
 
@@ -19,6 +19,10 @@ export default class VoiceStream extends Readable<Event<VoiceChannelLeaveEventMe
     
     destroy() {
         BroadcastChannel.removeListener("statistics/guild-channel-leave", this.handleVoiceEvent)
+    }
+
+    collectBuffer(buffer: Event<VoiceChannelLeaveEventMeta>[][]) {
+        return buffer.flat()
     }
 
     async pushInitialValues() {

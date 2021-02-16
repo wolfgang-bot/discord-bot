@@ -4,7 +4,7 @@ import Event, { EVENT_TYPES } from "../../../models/Event"
 import BroadcastChannel from "../../../services/BroadcastChannel"
 import config from "../../config"
 
-export default class MessageStream extends Readable<Event> {
+export default class MessageStream extends Readable<Float64Array> {
     constructor(public guildId: string) {
         super()
 
@@ -21,20 +21,39 @@ export default class MessageStream extends Readable<Event> {
         BroadcastChannel.removeListener("statistics/message-send", this.handleMessageEvent)
     }
 
+    collectBuffer(buffer: Float64Array[]) {
+        const values = buffer.reduce(
+            (values, array) => {
+                values.push(...array)
+                return values
+            },
+            [] as number[]
+        )
+
+        return new Float64Array(values)
+    }
+
     async pushInitialValues() {
         const events = await Event.whereAll(`
             type = ${EVENT_TYPES.MESSAGE_SEND} AND
             guild_id = ${this.guildId}
-            ORDER BY timestamp ASC
+            ORDER BY timestamp DESC
             LIMIT ${config.stream.maxInitialValues}
         `) as Collection<Event>
 
-        this.push(events)
+        events.reverse()
+
+        this.push(this.eventsToBinary(events))
     }
 
     handleMessageEvent(event: Event) {
         if (event.guild_id === this.guildId) {
-            this.push([event])
+            this.push(this.eventsToBinary([event]))
         }
+    }
+
+    eventsToBinary(events: Event[]) {
+        const timestamps = events.map(event => event.timestamp)
+        return new Float64Array(timestamps)
     }
 }
