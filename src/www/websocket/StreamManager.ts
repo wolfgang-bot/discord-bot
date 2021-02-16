@@ -32,8 +32,6 @@ export default class StreamManager {
     constructor(public client: Discord.Client, public socket: AuthorizedSocket) {}
 
     subscribe(args: SubscriptionArgs) {
-        console.log("Subscribe", args)
-
         const eventStream = new STREAMS[args.eventStream](args.guildId)
         const socketStream = new SocketStream(this.socket, args)
 
@@ -51,27 +49,19 @@ export default class StreamManager {
     }
 
     unsubscribe(args: SubscriptionArgs) {
-        console.log("Unsubscribe", args)
-
         this.streams[args.guildId][args.eventStream].destroy()
         delete this.streams[args.guildId][args.eventStream]
     }
 
     pause(args: SubscriptionArgs) {
-        console.log("Pause", args)
-
         this.streams[args.guildId][args.eventStream].pause()
     }
 
     resume(args: SubscriptionArgs) {
-        console.log("Resume", args)
-
         this.streams[args.guildId][args.eventStream].resume()
     }
 
     unsubscribeAll() {
-        console.log("Unsubscribe all")
-
         for (let guildId in this.streams) {
             for (let eventStream in this.streams[guildId]) {
                 this.unsubscribe({

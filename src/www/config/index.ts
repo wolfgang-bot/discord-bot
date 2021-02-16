@@ -6,7 +6,7 @@ const config = {
     },
 
     stream: {
-        maxInitialValues: 1e5
+        maxInitialValues: 1e4
     }
 }
 

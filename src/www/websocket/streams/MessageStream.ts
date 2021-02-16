@@ -28,6 +28,7 @@ export default class MessageStream extends Readable<Event> {
             ORDER BY timestamp ASC
             LIMIT ${config.stream.maxInitialValues}
         `) as Collection<Event>
+
         this.push(events)
     }
 

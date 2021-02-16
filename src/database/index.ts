@@ -8,7 +8,12 @@ export type Migration = {
 
 export type Seeder = {
     table: string
-    run: Function
+    run: (
+        callback: (event: {
+            type: "init" | "update" | "stop",
+            data: number
+        }) => void
+    ) => Promise<void> | void
 }
 
 const DATABASE_PATH = path.join(__dirname, "db.sqlite3")
