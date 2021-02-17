@@ -28,8 +28,10 @@ export abstract class Readable<T> {
 
     resume() {
         this.state = READING_STATES.FLOWING
-        this.push(this.collectBuffer(this.buffer))
-        this.buffer = []
+        if (this.buffer.length > 0) {
+            this.push(this.collectBuffer(this.buffer))
+            this.buffer = []
+        }
     }
 
     pipe(stream: Writable<T>) {

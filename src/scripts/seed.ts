@@ -33,6 +33,8 @@ function createProgressBar(label: string, length: number) {
     await database.connect()
 
     for (let table of tables) {
+        console.log(`Seed table: ${table}`)
+
         await seed(table, (event: any) => {
             if (event.type === "init") {
                 bars[event.key] = createProgressBar(event.key, event.data)

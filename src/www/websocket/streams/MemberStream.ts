@@ -33,9 +33,12 @@ export default class MembersStream extends Readable<Event<GuildMemberEventMeta>[
                 type = '${EVENT_TYPES.GUILD_MEMBER_ADD}' OR 
                 type = '${EVENT_TYPES.GUILD_MEMBER_REMOVE}'
             ) AND guild_id = '${this.guildId}'
-            ORDER BY timestamp ASC
+            ORDER BY timestamp DESC
             LIMIT ${config.stream.maxInitialValues}
         `) as Collection<Event<GuildMemberEventMeta>>
+
+        events.reverse()
+
         this.push(events)
     }
 
