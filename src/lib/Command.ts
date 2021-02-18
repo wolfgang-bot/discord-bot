@@ -1,4 +1,5 @@
 import Discord from "discord.js"
+import LocaleProvider from "../services/LocaleProvider"
 
 abstract class Command {
     abstract name: string
@@ -57,6 +58,27 @@ abstract class Command {
         }
 
         return this.parent.getModule()
+    }T
+
+    /**
+     * Get the message which a user has to type into the chat to execute this command
+     */
+    getUsage() {
+        const args = this.arguments &&
+            new LocaleProvider().scope(this.module).translate(this.arguments)
+        return `${process.env.DISCORD_BOT_PREFIX}${this.getCallableName()} ${args || ""}`.trim()
+    }
+
+    toJSON() {
+        const locale = new LocaleProvider().scope(this.module)
+
+        return {
+            name: this.name,
+            group: this.group,
+            module: this.getModule(),
+            description: this.description && locale.translate(this.description),
+            usage: this.getUsage()
+        }
     }
 }
 

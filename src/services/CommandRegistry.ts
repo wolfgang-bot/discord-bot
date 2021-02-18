@@ -109,6 +109,34 @@ class CommandRegistry extends Command {
 
         return groups
     }
+
+    /**
+     * Get the sub-commands of this registry
+     */
+    getSubCommands() {
+        const commands: Record<string, Command> = {}
+
+        this.commandNames.forEach(name => {
+            commands[name] = this.commands[name]
+        })
+
+        return commands
+    }
+
+    /**
+     * Append sub commands to the command usage
+     */
+    getUsage() {
+        const subCommands = Array.from(this.getCommandNames())
+        return `${super.getUsage()} [${subCommands.join("|")}]`.trim()
+    }
+
+    toJSON() {
+        return {
+            ...super.toJSON(),
+            commands: this.getSubCommands()
+        }
+    }
 }
 
 export default CommandRegistry
