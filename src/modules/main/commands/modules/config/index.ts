@@ -1,8 +1,8 @@
-import CommandRegistry from "../../../../../services/CommandRegistry"
+import CommandGroup from "../../../../../lib/CommandGroup"
 import GetCommand from "./get"
 import SetCommand from "./set" 
 
-export default class ConfigCommandGroup extends CommandRegistry {
+export default class ConfigCommandGroup extends CommandGroup {
     name = "config"
     description = "command_modules_config_desc"
 

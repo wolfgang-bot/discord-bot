@@ -1,5 +1,6 @@
 import Discord from "discord.js"
 import Command from "../../../lib/Command"
+import CommandGroup from "../../../lib/CommandGroup"
 import CommandRegistry from "../../../services/CommandRegistry"
 import LocaleProvider from "../../../services/LocaleProvider"
 import HelpEmbed from "../embeds/HelpEmbed"
@@ -19,14 +20,14 @@ export default class HelpCommand extends Command {
         let embed: HelpEmbed | HelpCommandEmbed
 
         if (!args[0]) {
-            const groups = CommandRegistry.root.getGroups()
+            const groups = CommandRegistry.guild(message.guild).getGroups()
             embed = new HelpEmbed(config, locale, groups)
         } else {
-            let command: Command = CommandRegistry.root
+            let command: Command = CommandRegistry.guild(message.guild)
 
             // Find requested sub-command in command tree
             for (let name of args) {
-                if (!(command instanceof CommandRegistry)) {
+                if (!(command instanceof CommandGroup)) {
                     command = null
                     break
                 }

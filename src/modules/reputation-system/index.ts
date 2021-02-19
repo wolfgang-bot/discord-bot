@@ -1,18 +1,13 @@
 import Module from "../../lib/Module"
 import { module, argument } from "../../lib/decorators"
 import { TYPES as ARGUMENT_TYPES } from "../../lib/Argument"
+import Context from "../../lib/Context"
+import Command from "../../lib/Command"
 import CommandRegistry from "../../services/CommandRegistry"
 import Configuration from "./models/Configuration"
 import ReputationManager from "./managers/ReputationManager"
 import LeaderboardCommand from "./commands/leaderboard"
 import ProfileCommand from "./commands/profile"
-
-const commands = [
-    new LeaderboardCommand(),
-    new ProfileCommand()
-]
-
-commands.forEach(command => command.module = "reputation-system")
 
 @module({
     key: "reputation-system",
@@ -32,17 +27,29 @@ export default class ReputationSystemModule extends Module {
 
     config: Configuration
     reputationManager: ReputationManager
+    commands: Command[]
+
+    constructor(context: Context, config: Configuration) {
+        super(context, config)
+        
+        this.commands = [
+            new LeaderboardCommand(),
+            new ProfileCommand()
+        ]
+
+        this.commands.forEach(command => command.module = "reputation-system")
+    }
 
     async start() {
         this.reputationManager = new ReputationManager(this.context, this.config)
 
-        commands.forEach(command => CommandRegistry.root.register(command))
+        CommandRegistry.guild(this.context.guild).register(this.commands)
         
         await this.reputationManager.init()
     }
     
     async stop() {
-        commands.forEach(command => CommandRegistry.root.unregister(command))
+        CommandRegistry.guild(this.context.guild).unregister(this.commands)
 
         await this.reputationManager.delete()
     }

@@ -1,6 +1,6 @@
 import BaseEmbed from "../../../lib/BaseEmbed"
 import LocaleProvider from "../../../services/LocaleProvider"
-import { CommandGroupMap } from "../../../services/CommandRegistry"
+import { CommandGroupMap } from "../../../lib/CommandGroup"
 import { makeCodeblock } from "../../../utils"
 
 export default class HelpEmbed extends BaseEmbed {

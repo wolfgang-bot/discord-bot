@@ -58,13 +58,14 @@ class Guild extends Model implements GuildModelValues {
     }
 
     async delete() {
-        // Delete members
         const members = await Member.findAllBy("guild_id", this.id)
         await members.mapAsync(member => member.delete())
 
-        // Delete module instances
         const moduleInstances = await ModuleInstance.findAllBy("guild_id", this.id)
         await moduleInstances.mapAsync(instance => instance.delete())
+
+        const events = await Event.findAllBy("guild_id", this.id)
+        await events.mapAsync(event => event.delete())
 
         super.delete()
     }
@@ -80,3 +81,4 @@ export default Guild
 
 import Member from "./Member"
 import ModuleInstance from "./ModuleInstance"
+import Event from "./Event"

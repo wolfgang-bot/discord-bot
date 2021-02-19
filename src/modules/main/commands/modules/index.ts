@@ -1,5 +1,5 @@
 import Discord from "discord.js"
-import CommandRegistry from "../../../../services/CommandRegistry"
+import CommandGroup from "../../../../lib/CommandGroup"
 import ConfigCommand from "./config"
 import HelpCommand from "./help"
 import ListCommand from "./list"
@@ -7,8 +7,9 @@ import StartCommand from "./start"
 import StopCommand from "./stop"
 import RestartCommand from "./restart"
 
-export default class ModulesCommandGroup extends CommandRegistry {
+export default class ModulesCommandGroup extends CommandGroup {
     name = "modules"
+    alias = ["module"]
     group = "Admin"
     description = "command_modules_desc"
     permissions: Discord.PermissionString[] = ["MANAGE_GUILD"]

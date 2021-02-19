@@ -1,7 +1,7 @@
 import BaseEmbed from "../../../lib/BaseEmbed"
 import Command from "../../../lib/Command"
 import LocaleProvider from "../../../services/LocaleProvider"
-import CommandRegistry from "../../../services/CommandRegistry"
+import CommandGroup from "../../../lib/CommandGroup"
 import { makeCodeblock } from "../../../utils"
 
 export default class HelpCommandEmbed extends BaseEmbed {
@@ -16,7 +16,7 @@ export default class HelpCommandEmbed extends BaseEmbed {
             this.setDescription(moduleLocale.translate(command.description))
         }
 
-        const subCommands = command instanceof CommandRegistry ? `[${Array.from(command.getCommandNames()).join("|")}]` : null
+        const subCommands = command instanceof CommandGroup ? `[${Array.from(command.getCommandNames()).join("|")}]` : null
 
         const args = command.arguments && moduleLocale.translate(command.arguments)
 

@@ -5,6 +5,7 @@ import Guild from "../../../models/Guild"
 import User from "../../../models/Guild"
 import Member from "../../../models/Member"
 import StatisticsManager from "./StatisticsManager"
+import RootCommandGroup from "../commands"
 
 class EventManager extends Manager {
     statistics: StatisticsManager = new StatisticsManager()
@@ -13,7 +14,7 @@ class EventManager extends Manager {
         if (!message.author.bot) {
             if (message.content.startsWith(process.env.DISCORD_BOT_PREFIX)) {
                 try {
-                    await CommandRegistry.root.run(message)
+                    await CommandRegistry.guild(message.guild).run(message)
                 } catch (error) {
                     if (process.env.NODE_ENV === "development") {
                         console.error(error)
@@ -30,6 +31,8 @@ class EventManager extends Manager {
     async handleGuildCreate(guild: Discord.Guild) {
         const model = new Guild({ id: guild.id })
         await model.store()
+
+        CommandRegistry.registerGroupForGuild(guild, new RootCommandGroup())
 
         await guild.members.fetch()
 
@@ -60,6 +63,8 @@ class EventManager extends Manager {
         if (model) {
             await model.delete()
         }
+
+        CommandRegistry.unregisterGuild(guild)
     }
 
     async handleGuildMemberAdd(member: Discord.GuildMember) {

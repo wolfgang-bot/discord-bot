@@ -2,19 +2,11 @@ import Discord from "discord.js"
 import Module from "../../lib/Module"
 import Context from "../../lib/Context"
 import { module, global } from "../../lib/decorators"
+import Collection from "../../lib/Collection"
 import CommandRegistry from "../../services/CommandRegistry"
 import EventManager from "./managers/EventManager"
-import HelpCommand from "./commands/help"
-import LocaleCommand from "./commands/locale"
-import ModuleCommand from "./commands/modules"
-
-const commands = [
-    new HelpCommand(),
-    new LocaleCommand(),
-    new ModuleCommand()
-]
-
-commands.forEach(command => command.module = "main")
+import Guild from "../../models/Guild"
+import RootCommandGroup from "./commands"
 
 @module({
     key: "main",
@@ -31,8 +23,16 @@ class MainModule extends Module {
     }
 
     async start() {
-        CommandRegistry.root = new CommandRegistry(commands)
         this.eventManager.init()
+        await this.registerCommandsForGuilds()
+    }
+
+    async registerCommandsForGuilds() {
+        const guilds = await Guild.getAll() as Collection<Guild>
+
+        await guilds.mapAsync(guild => {
+            CommandRegistry.registerGroupForGuild(guild, new RootCommandGroup())
+        })
     }
 }
 
