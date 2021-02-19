@@ -14,6 +14,10 @@ import RootCommandGroup from "./commands"
 })
 @global
 class MainModule extends Module {
+    static commands = Object.values(
+        new RootCommandGroup().getSubCommands()
+    )
+    
     client: Discord.Client
     eventManager: EventManager
 

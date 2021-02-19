@@ -2,6 +2,7 @@ import { EventEmitter } from "events"
 import Configuration from "./Configuration"
 import Argument from "./Argument"
 import Context from "./Context"
+import Command from "./Command"
 
 enum STATES {
     ACTIVE,
@@ -29,6 +30,7 @@ class Module extends EventEmitter {
     static isGlobal: boolean = false
     static isPrivate: boolean = false
     static guildIds: string[]
+    static commands?: Command[]
     
     context: Context
     config: Configuration

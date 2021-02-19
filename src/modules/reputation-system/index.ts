@@ -24,20 +24,27 @@ import ProfileCommand from "./commands/profile"
 export default class ReputationSystemModule extends Module {
     static makeConfigFromArgs = Configuration.fromArgs
     static makeConfigFromJSON = Configuration.fromJSON
+    static commands = ReputationSystemModule.createCommands()
 
     config: Configuration
     reputationManager: ReputationManager
     commands: Command[]
 
-    constructor(context: Context, config: Configuration) {
-        super(context, config)
-        
-        this.commands = [
+    static createCommands() {
+        const commands: Command[] = [
             new LeaderboardCommand(),
             new ProfileCommand()
         ]
 
-        this.commands.forEach(command => command.module = "reputation-system")
+        commands.forEach(command => command.module = "reputation-system")
+
+        return commands
+    }
+
+    constructor(context: Context, config: Configuration) {
+        super(context, config)
+
+        this.commands = ReputationSystemModule.createCommands()
     }
 
     async start() {

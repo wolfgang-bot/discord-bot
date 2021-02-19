@@ -111,6 +111,19 @@ class ModuleRegistry {
             })
         }
     }
+
+    /**
+     * Get all commands from all modules combined
+     */
+    static getAllCommands() {
+        return this.modules.reduce((commands, module) => {
+            if (module.commands) {
+                commands.push(...module.commands)
+            }
+
+            return commands
+        }, [])
+    }
 }
 
 export default ModuleRegistry
