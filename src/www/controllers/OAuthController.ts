@@ -1,10 +1,9 @@
 import { Response } from "express"
-import HttpController from "../../lib/HttpController"
 import OAuthServiceProvider from "../services/OAuthServiceProvider"
 import User from "../../models/User"
 import { AuthorizedRequest } from "../server"
 
-export default class OAuthController extends HttpController {
+export default class OAuthController {
     /**
      * Receive an OAuth token from discord.
      */

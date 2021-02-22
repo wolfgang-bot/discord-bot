@@ -1,8 +1,7 @@
 import { Request, Response } from "express"
-import HttpController from "../../lib/HttpController"
 import ModuleRegistry from "../../services/ModuleRegistry"
 
-export default class ModuleController extends HttpController {
+export default class ModuleController {
     /**
      * Get all modules available to the requesting user
      */

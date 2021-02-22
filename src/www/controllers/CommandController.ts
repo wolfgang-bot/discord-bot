@@ -1,8 +1,7 @@
 import { Request, Response } from "express"
-import HttpController from "../../lib/HttpController"
 import ModuleRegistry from "../../services/ModuleRegistry"
 
-export default class CommandController extends HttpController {
+export default class CommandController {
     /**
      * Get all commands
      */
