@@ -1,5 +1,5 @@
 import Discord from "discord.js"
-import Model from "../lib/Model"
+import Model from "@personal-discord-bot/shared/dist/Model"
 import LocaleProvider from "../services/LocaleProvider"
 import defaultConfigRaw from "../config/default"
 

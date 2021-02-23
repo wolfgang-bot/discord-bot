@@ -1,5 +1,6 @@
 import fs from "fs"
 import sqlite from "sqlite3"
+import Model from "@personal-discord-bot/shared/dist/Model"
 import migrate from "./migrations"
 import seed from "./seeders"
 
@@ -27,6 +28,8 @@ class Database {
                         await seed()
                     }
                 }
+
+                Model.bindDatabase(this)
 
                 resolve()
             })

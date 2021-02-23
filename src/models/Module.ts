@@ -1,5 +1,5 @@
 import { v4 as uuid } from "uuid"
-import Model from "../lib/Model"
+import Model from "@personal-discord-bot/shared/dist/Model"
 
 export type ModuleModelValues = {
     id?: string
