@@ -1,4 +1,4 @@
-import SVGComponent from "../../../../lib/SVGComponent"
+import SVGComponent from "@personal-discord-bot/shared/dist/SVGComponent"
 import Member from "@personal-discord-bot/shared/dist/models/Member"
 import { Theme } from "../ProfileCard"
 import Avatar from "./Avatar"
