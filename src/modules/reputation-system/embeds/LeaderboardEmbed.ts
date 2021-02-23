@@ -1,4 +1,4 @@
-import BaseEmbed from "../../../lib/BaseEmbed"
+import BaseEmbed from "@personal-discord-bot/shared/dist/BaseEmbed"
 import Collection from "../../../lib/Collection"
 import Member from "../../../models/Member"
 import LocaleProvider from "../../../services/LocaleProvider"

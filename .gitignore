@@ -4,3 +4,5 @@ storage.json
 *.sqlite3
 .idea/
 dist/
+.yalc/
+yalc.lock

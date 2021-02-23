@@ -1,4 +1,4 @@
-import BaseEmbed from "../../../lib/BaseEmbed"
+import BaseEmbed from "@personal-discord-bot/shared/dist/BaseEmbed"
 
 export default class NotificationEmbed extends BaseEmbed {
     constructor(config) {

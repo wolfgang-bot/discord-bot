@@ -1,4 +1,4 @@
-import BaseEmbed from "../../../lib/BaseEmbed"
+import BaseEmbed from "@personal-discord-bot/shared/dist/BaseEmbed"
 import ModuleRegistry from "../../../services/ModuleRegistry"
 import ModuleInstanceRegistry from "../../../services/ModuleInstanceRegistry"
 import LocaleProvider from "../../../services/LocaleProvider"

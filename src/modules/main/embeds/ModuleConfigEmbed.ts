@@ -1,5 +1,5 @@
 import { capitalCase } from "change-case"
-import BaseEmbed from "../../../lib/BaseEmbed"
+import BaseEmbed from "@personal-discord-bot/shared/dist/BaseEmbed"
 import DescriptiveObject from "../../../lib/DescriptiveObject"
 import LocaleProvider from "../../../services/LocaleProvider"
 
