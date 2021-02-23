@@ -1,8 +1,8 @@
 import Discord from "discord.js"
 import Command from "../../../../../lib/Command"
 import LocaleProvider from "../../../../../services/LocaleProvider"
-import Guild from "../../../../../models/Guild"
-import Module from "../../../../../models/Module"
+import Guild from "@personal-discord-bot/shared/dist/models/Guild"
+import Module from "@personal-discord-bot/shared/dist/models/Module"
 import defaultConfig from "../../../../../config/default"
 import { convertDatatype } from "../../../../../utils"
 

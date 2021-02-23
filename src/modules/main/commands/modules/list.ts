@@ -1,8 +1,8 @@
 import Discord from "discord.js"
+import Guild from "@personal-discord-bot/shared/dist/models/Guild"
 import Command from "../../../../lib/Command"
 import LocaleProvider from "../../../../services/LocaleProvider"
 import ModulesEmbed from "../../embeds/ModulesEmbed"
-import Guild from "../../../../models/Guild"
 
 export default class ListCommand extends Command {
     name = "list"

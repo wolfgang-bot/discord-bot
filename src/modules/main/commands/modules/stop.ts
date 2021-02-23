@@ -2,7 +2,7 @@ import Discord from "discord.js"
 import Command from "../../../../lib/Command"
 import ModuleInstanceRegistry from "../../../../services/ModuleInstanceRegistry"
 import LocaleProvider from "../../../../services/LocaleProvider"
-import Module from "../../../../models/Module"
+import Module from "@personal-discord-bot/shared/dist/models/Module"
 
 export default class StopCommand extends Command {
     name = "stop"

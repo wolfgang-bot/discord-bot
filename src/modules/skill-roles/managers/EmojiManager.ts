@@ -2,7 +2,7 @@ import Discord from "discord.js"
 import glob from "glob-promise"
 import path from "path"
 import Manager from "../../../lib/Manager"
-import Guild from "../../../models/Guild"
+import Guild from "@personal-discord-bot/shared/dist/models/Guild"
 import Configuration from "../models/Configuration"
 
 const ICONS_DIR = path.join(__dirname, "..", "assets", "icons")

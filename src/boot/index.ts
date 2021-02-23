@@ -2,6 +2,7 @@ import Discord from "discord.js"
 import ModuleRegistry from "../services/ModuleRegistry"
 import database from "../database"
 import loadLocales from "./loadLocales"
+import initModels from "./initModels"
 import startServer from "../www/server"
 
 function boot(client: Discord.Client): Promise<void> {
@@ -18,6 +19,8 @@ function boot(client: Discord.Client): Promise<void> {
             database.connect(),
             
             loadLocales(),
+
+            initModels(),
 
             client.login(process.env.DISCORD_BOT_TOKEN)
         ])

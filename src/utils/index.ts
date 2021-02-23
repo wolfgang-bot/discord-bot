@@ -1,5 +1,5 @@
 import Discord from "discord.js"
-import User from "../models/User"
+import User from "@personal-discord-bot/shared/dist/models/User"
 
 // Blank character which is not the "whitespace" character (used in discord embeds to make indents)
 const BLANK = "\u200B"

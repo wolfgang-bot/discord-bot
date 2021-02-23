@@ -1,8 +1,8 @@
 import WebSocketController from "../../../lib/WebSocketController"
 import ModuleRegistry from "../../../services/ModuleRegistry"
 import ModuleInstanceRegistry from "../../../services/ModuleInstanceRegistry"
-import Guild from "../../../models/Guild"
-import Module from "../../../models/Module"
+import Guild from "@personal-discord-bot/shared/dist/models/Guild"
+import Module from "@personal-discord-bot/shared/dist/models/Module"
 import { error, success } from "../responses"
 
 export default class ModuleController extends WebSocketController {

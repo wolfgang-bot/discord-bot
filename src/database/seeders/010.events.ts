@@ -1,4 +1,4 @@
-import Event, { EVENT_TYPES } from "../../models/Event"
+import Event, { EVENT_TYPES } from "@personal-discord-bot/shared/dist/models/Event"
 import { Seeder, ProgressCallback } from "../index"
 
 const GENERATE_DATA_FOR_DAYS = 30

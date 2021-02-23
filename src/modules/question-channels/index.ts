@@ -5,7 +5,7 @@ import LocaleProvider from "../../services/LocaleProvider"
 import Configuration from "./models/Configuration"
 import ChannelManager from "./managers/ChannelManager"
 import HelpEmbed from "./embeds/HelpEmbed"
-import Guild from "../../models/Guild"
+import Guild from "@personal-discord-bot/shared/dist/models/Guild"
 
 @module({
     key: "question-channels",

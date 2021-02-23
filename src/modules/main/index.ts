@@ -1,11 +1,11 @@
 import Discord from "discord.js"
 import Collection from "@personal-discord-bot/shared/dist/orm/Collection"
+import Guild from "@personal-discord-bot/shared/dist/models/Guild"
 import Module from "../../lib/Module"
 import Context from "../../lib/Context"
 import { module, global } from "../../lib/decorators"
 import CommandRegistry from "../../services/CommandRegistry"
 import EventManager from "./managers/EventManager"
-import Guild from "../../models/Guild"
 import RootCommandGroup from "./commands"
 
 @module({

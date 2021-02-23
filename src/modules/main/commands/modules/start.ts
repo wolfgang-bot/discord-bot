@@ -1,8 +1,8 @@
 import Discord from "discord.js"
+import Module from "@personal-discord-bot/shared/dist/models/Module"
 import Command from "../../../../lib/Command"
 import ModuleInstanceRegistry from "../../../../services/ModuleInstanceRegistry"
 import LocaleProvider from "../../../../services/LocaleProvider"
-import Module from "../../../../models/Module"
 
 export default class StartCommand extends Command {
     name = "start"

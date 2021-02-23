@@ -1,8 +1,8 @@
 import Discord from "discord.js"
 import { Server, Socket } from "socket.io"
 import OAuthServiceProvider from "../services/OAuthServiceProvider"
-import User from "../../models/User"
-import Guild from "../../models/Guild"
+import User from "@personal-discord-bot/shared/dist/models/User"
+import Guild from "@personal-discord-bot/shared/dist/models/Guild"
 import ConnectionManager from "./ConnectionManager"
 import { ExtendedAPIGuild } from "../services/OAuthServiceProvider"
 

@@ -1,9 +1,9 @@
 import Discord from "discord.js"
 import Manager from "../../../lib/Manager"
 import CommandRegistry from "../../../services/CommandRegistry"
-import Guild from "../../../models/Guild"
-import User from "../../../models/Guild"
-import Member from "../../../models/Member"
+import Guild from "@personal-discord-bot/shared/dist/models/Guild"
+import User from "@personal-discord-bot/shared/dist/models/Guild"
+import Member from "@personal-discord-bot/shared/dist/models/Member"
 import StatisticsManager from "./StatisticsManager"
 import RootCommandGroup from "../commands"
 

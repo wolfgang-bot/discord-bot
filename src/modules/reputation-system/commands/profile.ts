@@ -3,8 +3,8 @@ import sharp from "sharp"
 import fetch from "node-fetch"
 import Command from "../../../lib/Command"
 import ProfileCard from "../profile-card"
-import Member from "../../../models/Member"
-import Guild from "../../../models/Guild"
+import Member from "@personal-discord-bot/shared/dist/models/Member"
+import Guild from "@personal-discord-bot/shared/dist/models/Guild"
 
 export default class ProfileCommand extends Command {
     name = "profile"

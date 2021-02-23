@@ -1,5 +1,5 @@
 import Discord from "discord.js"
-import Guild from "../../../models/Guild"
+import Guild from "@personal-discord-bot/shared/dist/models/Guild"
 import Manager from "../../../lib/Manager"
 import Context from "../../../lib/Context"
 import Configuration from "../models/Configuration"

@@ -3,7 +3,7 @@ import fs from "fs"
 import glob from "glob-promise"
 import yaml from "yaml"
 import Discord from "discord.js"
-import Guild from "../models/Guild"
+import Guild from "@personal-discord-bot/shared/dist/models/Guild"
 
 type ScopeMap = {
     [scope: string]: LocaleMap

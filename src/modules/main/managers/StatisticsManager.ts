@@ -4,7 +4,7 @@ import Event, {
     GuildMemberEventMeta,
     VoiceChannelLeaveEventMeta,
     EventModelValues
-} from "../../../models/Event"
+} from "@personal-discord-bot/shared/dist/models/Event"
 import BroadcastChannel from "../../../services/BroadcastChannel"
 
 type VoiceChannelConnection = {

@@ -1,4 +1,4 @@
-import Guild from "../../../models/Guild"
+import Guild from "@personal-discord-bot/shared/dist/models/Guild"
 import defaultConfig from "../../../config/default"
 import { success, error } from "../responses"
 import { compareStructure } from "../../../utils"
