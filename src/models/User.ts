@@ -1,6 +1,6 @@
 import Discord from "discord.js"
 import { APIUser } from "discord-api-types/v8"
-import Model from "@personal-discord-bot/shared/dist/Model"
+import Model from "@personal-discord-bot/shared/dist/orm/Model"
 import { checkPermissions } from "../utils"
 
 export type UserModelValues = {

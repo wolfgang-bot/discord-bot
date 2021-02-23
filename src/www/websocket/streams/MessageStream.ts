@@ -1,4 +1,4 @@
-import Collection from "@personal-discord-bot/shared/dist/Collection"
+import Collection from "@personal-discord-bot/shared/dist/orm/Collection"
 import { Readable } from "../../../lib/Stream"
 import Event, { EVENT_TYPES } from "../../../models/Event"
 import BroadcastChannel from "../../../services/BroadcastChannel"

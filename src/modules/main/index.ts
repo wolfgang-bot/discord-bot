@@ -1,5 +1,5 @@
 import Discord from "discord.js"
-import Collection from "@personal-discord-bot/shared/dist/Collection"
+import Collection from "@personal-discord-bot/shared/dist/orm/Collection"
 import Module from "../../lib/Module"
 import Context from "../../lib/Context"
 import { module, global } from "../../lib/decorators"

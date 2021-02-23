@@ -1,5 +1,5 @@
 import { v4 as uuid } from "uuid"
-import Model from "@personal-discord-bot/shared/dist/Model"
+import Model from "@personal-discord-bot/shared/dist/orm/Model"
 
 export enum EVENT_TYPES {
     GUILD_MEMBER_ADD,

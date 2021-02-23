@@ -1,5 +1,5 @@
 import { Readable } from "../../../lib/Stream"
-import Collection from "@personal-discord-bot/shared/dist/Collection"
+import Collection from "@personal-discord-bot/shared/dist/orm/Collection"
 import BroadcastChannel from "../../../services/BroadcastChannel"
 import Event, { EVENT_TYPES, GuildMemberEventMeta } from "../../../models/Event"
 import config from "../../config"

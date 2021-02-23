@@ -1,6 +1,6 @@
 import { v4 as uuid } from "uuid"
 import Discord from "discord.js"
-import Model from "@personal-discord-bot/shared/dist/Model"
+import Model from "@personal-discord-bot/shared/dist/orm/Model"
 
 export type ModuleInstanceModelValues = {
     id?: string

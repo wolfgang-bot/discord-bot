@@ -1,6 +1,6 @@
 import Discord from "discord.js"
 import Module from "../lib/Module"
-import Collection from "@personal-discord-bot/shared/dist/Collection"
+import Collection from "@personal-discord-bot/shared/dist/orm/Collection"
 import Context from "../lib/Context"
 import BroadcastChannel from "../services/BroadcastChannel"
 import ModuleModel from "../models/Module"
