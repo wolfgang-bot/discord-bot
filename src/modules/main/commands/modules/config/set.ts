@@ -1,6 +1,6 @@
 import Discord from "discord.js"
 import Command from "../../../../../lib/Command"
-import LocaleProvider from "../../../../../services/LocaleProvider"
+import LocaleProvider from "@personal-discord-bot/shared/dist/LocaleProvider"
 import Guild from "@personal-discord-bot/shared/dist/models/Guild"
 import Module from "@personal-discord-bot/shared/dist/models/Module"
 import defaultConfig from "../../../../../config/default"

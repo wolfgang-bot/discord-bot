@@ -1,7 +1,7 @@
 import WebSocketController from "../../../lib/WebSocketController"
 import { success, error } from "../responses"
 import Guild from "@personal-discord-bot/shared/dist/models/Guild"
-import LocaleProvider from "../../../services/LocaleProvider"
+import LocaleProvider from "@personal-discord-bot/shared/dist/LocaleProvider"
 
 export default class GuildController extends WebSocketController {
     /**

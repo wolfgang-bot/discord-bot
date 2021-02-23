@@ -1,6 +1,6 @@
 import Discord from "discord.js"
 import Command from "./Command"
-import LocaleProvider from "../services/LocaleProvider"
+import LocaleProvider from "@personal-discord-bot/shared/dist/LocaleProvider"
 import { parseArguments } from "@personal-discord-bot/shared/dist/utils"
 
 export type CommandMap = Record<string, Command>

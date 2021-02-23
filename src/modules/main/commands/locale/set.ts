@@ -1,7 +1,7 @@
 import Discord from "discord.js"
 import Guild from "@personal-discord-bot/shared/dist/models/Guild"
 import Command from "../../../../lib/Command"
-import LocaleProvider from "../../../../services/LocaleProvider"
+import LocaleProvider from "@personal-discord-bot/shared/dist/LocaleProvider"
 
 export default class SetCommand extends Command {
     name = "set"

@@ -1,7 +1,7 @@
 import { capitalCase } from "change-case"
 import BaseEmbed from "@personal-discord-bot/shared/dist/BaseEmbed"
 import DescriptiveObject from "../../../lib/DescriptiveObject"
-import LocaleProvider from "../../../services/LocaleProvider"
+import LocaleProvider from "@personal-discord-bot/shared/dist/LocaleProvider"
 
 export default class ModuleConfigEmbed extends BaseEmbed {
     constructor(config, locale: LocaleProvider, moduleKey: string, moduleConfig: DescriptiveObject) {

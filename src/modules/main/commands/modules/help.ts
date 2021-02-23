@@ -3,7 +3,7 @@ import Module from "@personal-discord-bot/shared/dist/models/Module"
 import Guild from "@personal-discord-bot/shared/dist/models/Guild"
 import Command from "../../../../lib/Command"
 import ModuleRegistry from "../../../../services/ModuleRegistry"
-import LocaleProvider from "../../../../services/LocaleProvider"
+import LocaleProvider from "@personal-discord-bot/shared/dist/LocaleProvider"
 import ModuleHelpEmbed from "../../embeds/ModuleHelpEmbed"
 
 export default class HelpCommand extends Command {

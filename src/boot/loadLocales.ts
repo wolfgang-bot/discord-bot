@@ -1,6 +1,6 @@
 import path from "path"
 import fs from "fs"
-import LocaleProvider from "../services/LocaleProvider"
+import LocaleProvider from "@personal-discord-bot/shared/dist/LocaleProvider"
 
 const SRC_DIR = path.join(__dirname, "..")
 const MODULES_DIR = path.join(SRC_DIR, "modules")

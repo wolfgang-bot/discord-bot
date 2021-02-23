@@ -2,7 +2,7 @@ import Discord from "discord.js"
 import Module from "@personal-discord-bot/shared/dist/models/Module"
 import Command from "../../../../lib/Command"
 import ModuleInstanceRegistry from "../../../../services/ModuleInstanceRegistry"
-import LocaleProvider from "../../../../services/LocaleProvider"
+import LocaleProvider from "@personal-discord-bot/shared/dist/LocaleProvider"
 
 export default class RestartCommand extends Command {
     name = "restart"

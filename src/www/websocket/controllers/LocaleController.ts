@@ -1,5 +1,5 @@
 import WebSocketController from "../../../lib/WebSocketController"
-import LocaleProvider from "../../../services/LocaleProvider"
+import LocaleProvider from "@personal-discord-bot/shared/dist/LocaleProvider"
 import { success } from "../responses"
 
 export default class LocaleController extends WebSocketController {

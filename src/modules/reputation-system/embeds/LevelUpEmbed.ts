@@ -1,6 +1,6 @@
 import Discord from "discord.js"
 import BaseEmbed from "@personal-discord-bot/shared/dist/BaseEmbed"
-import LocaleProvider from "../../../services/LocaleProvider"
+import LocaleProvider from "@personal-discord-bot/shared/dist/LocaleProvider"
 
 export default class LevelUpEmbed extends BaseEmbed {
     constructor(config, locale: LocaleProvider, user: Discord.User, level: number) {

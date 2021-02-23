@@ -1,5 +1,5 @@
 import Discord from "discord.js"
-import LocaleProvider from "../services/LocaleProvider"
+import LocaleProvider from "@personal-discord-bot/shared/dist/LocaleProvider"
 
 abstract class Command {
     abstract name: string

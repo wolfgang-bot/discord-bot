@@ -1,5 +1,5 @@
 import BaseEmbed from "@personal-discord-bot/shared/dist/BaseEmbed"
-import LocaleProvider from "../../../services/LocaleProvider"
+import LocaleProvider from "@personal-discord-bot/shared/dist/LocaleProvider"
 import Module from "../../../lib/Module"
 
 export default class ModuleHelpEmbed extends BaseEmbed {
