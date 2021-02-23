@@ -1,5 +1,5 @@
 import { RowDataPacket } from "mysql2"
-import Collection from "./Collection"
+import Collection from "@personal-discord-bot/shared/dist/Collection"
 import database from "../database"
 
 export type ModelProps = {

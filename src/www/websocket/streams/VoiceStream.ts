@@ -1,5 +1,5 @@
-import Collection from "../../../lib/Collection";
-import { Readable } from "../../../lib/Stream";
+import Collection from "@personal-discord-bot/shared/dist/Collection"
+import { Readable } from "../../../lib/Stream"
 import Event, { EVENT_TYPES, VoiceChannelLeaveEventMeta } from "../../../models/Event"
 import BroadcastChannel from "../../../services/BroadcastChannel"
 import config from "../../config"

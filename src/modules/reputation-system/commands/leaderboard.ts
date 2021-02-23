@@ -1,6 +1,6 @@
 import Discord from "discord.js"
+import Collection from "@personal-discord-bot/shared/dist/Collection"
 import Command from "../../../lib/Command"
-import Collection from "../../../lib/Collection"
 import LocaleProvider from "../../../services/LocaleProvider"
 import Member from "../../../models/Member"
 import LeaderboardEmbed from "../embeds/LeaderboardEmbed"

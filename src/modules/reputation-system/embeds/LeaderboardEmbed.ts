@@ -1,5 +1,5 @@
 import BaseEmbed from "@personal-discord-bot/shared/dist/BaseEmbed"
-import Collection from "../../../lib/Collection"
+import Collection from "@personal-discord-bot/shared/dist/Collection"
 import Member from "../../../models/Member"
 import LocaleProvider from "../../../services/LocaleProvider"
 import { getLevel, space } from "../../../utils"
