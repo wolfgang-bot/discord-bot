@@ -2,7 +2,7 @@ import { EventEmitter } from "events"
 import Configuration from "./Configuration"
 import Argument from "@personal-discord-bot/shared/dist/module/Argument"
 import Context from "./Context"
-import Command from "./Command"
+import Command from "@personal-discord-bot/shared/dist/command/Command"
 
 enum STATES {
     ACTIVE,

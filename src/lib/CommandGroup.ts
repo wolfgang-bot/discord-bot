@@ -1,5 +1,5 @@
 import Discord from "discord.js"
-import Command from "./Command"
+import Command from "@personal-discord-bot/shared/dist/command/Command"
 import LocaleProvider from "@personal-discord-bot/shared/dist/LocaleProvider"
 import { parseArguments } from "@personal-discord-bot/shared/dist/utils"
 

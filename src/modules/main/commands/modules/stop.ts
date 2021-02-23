@@ -1,5 +1,5 @@
 import Discord from "discord.js"
-import Command from "../../../../lib/Command"
+import Command from "@personal-discord-bot/shared/dist/command/Command"
 import ModuleInstanceRegistry from "../../../../services/ModuleInstanceRegistry"
 import LocaleProvider from "@personal-discord-bot/shared/dist/LocaleProvider"
 import Module from "@personal-discord-bot/shared/dist/models/Module"

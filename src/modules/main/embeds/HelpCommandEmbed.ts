@@ -1,5 +1,5 @@
 import BaseEmbed from "@personal-discord-bot/shared/dist/BaseEmbed"
-import Command from "../../../lib/Command"
+import Command from "@personal-discord-bot/shared/dist/command/Command"
 import LocaleProvider from "@personal-discord-bot/shared/dist/LocaleProvider"
 import CommandGroup from "../../../lib/CommandGroup"
 import { makeCodeblock } from "@personal-discord-bot/shared/dist/utils"
