@@ -1,10 +1,10 @@
 import Discord from "discord.js"
-import WebSocketController from "../../../lib/WebSocketController"
+import WebSocketController from "@personal-discord-bot/shared/dist/WebSocketController"
 import StreamManager, { EVENT_STREAMS, SubscriptionArgs } from "../StreamManager"
-import { AuthorizedSocket } from "../SocketManager"
 import { success, error } from "../responses"
+import { AuthorizedSocket } from "../SocketManager"
 
-export default class SubscriptionController extends WebSocketController {
+export default class SubscriptionController extends WebSocketController<AuthorizedSocket> {
     constructor(
         client: Discord.Client,
         socket: AuthorizedSocket,

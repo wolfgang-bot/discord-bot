@@ -1,9 +1,10 @@
-import WebSocketController from "../../../lib/WebSocketController"
+import WebSocketController from "@personal-discord-bot/shared/dist/WebSocketController"
 import { success, error } from "../responses"
 import Guild from "@personal-discord-bot/shared/dist/models/Guild"
 import LocaleProvider from "@personal-discord-bot/shared/dist/LocaleProvider"
+import { AuthorizedSocket } from "../SocketManager"
 
-export default class GuildController extends WebSocketController {
+export default class GuildController extends WebSocketController<AuthorizedSocket> {
     /**
      * Forward request to the OAuthController.getGuilds method
      */

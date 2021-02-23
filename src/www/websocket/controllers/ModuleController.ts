@@ -1,11 +1,12 @@
-import WebSocketController from "../../../lib/WebSocketController"
+import WebSocketController from "@personal-discord-bot/shared/dist/WebSocketController"
 import ModuleRegistry from "../../../services/ModuleRegistry"
 import ModuleInstanceRegistry from "../../../services/ModuleInstanceRegistry"
 import Guild from "@personal-discord-bot/shared/dist/models/Guild"
 import Module from "@personal-discord-bot/shared/dist/models/Module"
 import { error, success } from "../responses"
+import { AuthorizedSocket } from "../SocketManager"
 
-export default class ModuleController extends WebSocketController {
+export default class ModuleController extends WebSocketController<AuthorizedSocket> {
     /**
      * Get all modules available to the requesting user
      */
