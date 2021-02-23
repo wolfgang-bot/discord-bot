@@ -1,7 +1,7 @@
 import BaseEmbed from "@personal-discord-bot/shared/dist/BaseEmbed"
 import Command from "@personal-discord-bot/shared/dist/command/Command"
 import LocaleProvider from "@personal-discord-bot/shared/dist/LocaleProvider"
-import CommandGroup from "../../../lib/CommandGroup"
+import CommandGroup from "@personal-discord-bot/shared/dist/command/CommandGroup"
 import { makeCodeblock } from "@personal-discord-bot/shared/dist/utils"
 
 export default class HelpCommandEmbed extends BaseEmbed {

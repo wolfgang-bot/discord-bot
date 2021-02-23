@@ -1,5 +1,5 @@
 import Discord from "discord.js"
-import CommandGroup from "../../../../lib/CommandGroup"
+import CommandGroup from "@personal-discord-bot/shared/dist/command/CommandGroup"
 import GetCommand from "./get"
 import SetCommand from "./set"
 
