@@ -2,7 +2,7 @@ import { APIUser, APIGuild, RESTPostOAuth2AccessTokenResult } from "discord-api-
 import fetch from "node-fetch"
 import jwt from "jsonwebtoken"
 import config from "../config"
-import { makeURL } from "../../utils"
+import { makeURL } from "@personal-discord-bot/shared/dist/utils"
 
 export type ExtendedAPIGuild = APIGuild & {
     isActive?: boolean

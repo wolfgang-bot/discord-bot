@@ -2,7 +2,7 @@ import SVGComponent from "../../../lib/SVGComponent"
 import Member from "@personal-discord-bot/shared/dist/models/Member"
 import Background from "./Background"
 import User from "./User/User"
-import { getLevel } from "../../../utils"
+import { getLevel } from "@personal-discord-bot/shared/dist/utils"
 
 export type Theme = {
     spacing: number

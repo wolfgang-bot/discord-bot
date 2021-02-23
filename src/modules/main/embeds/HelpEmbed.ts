@@ -1,7 +1,7 @@
 import BaseEmbed from "@personal-discord-bot/shared/dist/BaseEmbed"
 import LocaleProvider from "../../../services/LocaleProvider"
 import { CommandGroupMap } from "../../../lib/CommandGroup"
-import { makeCodeblock } from "../../../utils"
+import { makeCodeblock } from "@personal-discord-bot/shared/dist/utils"
 
 export default class HelpEmbed extends BaseEmbed {
     constructor(config, locale: LocaleProvider, groups: CommandGroupMap) {

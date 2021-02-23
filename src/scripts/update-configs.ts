@@ -7,7 +7,7 @@ import database from "../database"
 import Guild from "@personal-discord-bot/shared/dist/models/Guild"
 import defaultConfigDescriptive from "../config/default"
 import ModuleRegistry from "../services/ModuleRegistry"
-import { transferValues } from "../utils"
+import { transferValues } from "@personal-discord-bot/shared/dist/utils"
 dotenv.config({ path: path.join(__dirname, "..", "..", ".env") })
 
 let defaultConfig: object

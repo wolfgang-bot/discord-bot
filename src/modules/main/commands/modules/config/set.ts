@@ -4,7 +4,7 @@ import LocaleProvider from "../../../../../services/LocaleProvider"
 import Guild from "@personal-discord-bot/shared/dist/models/Guild"
 import Module from "@personal-discord-bot/shared/dist/models/Module"
 import defaultConfig from "../../../../../config/default"
-import { convertDatatype } from "../../../../../utils"
+import { convertDatatype } from "@personal-discord-bot/shared/dist/utils"
 
 export default class SetCommand extends Command {
     name = "set"

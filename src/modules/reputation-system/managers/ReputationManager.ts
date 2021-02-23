@@ -5,7 +5,7 @@ import LocaleProvider from "../../../services/LocaleProvider"
 import LevelUpEmbed from "./../embeds/LevelUpEmbed"
 import Member from "@personal-discord-bot/shared/dist/models/Member"
 import Guild from "@personal-discord-bot/shared/dist/models/Guild"
-import { getLevel } from "../../../utils"
+import { getLevel } from "@personal-discord-bot/shared/dist/utils"
 import Configuration from "../models/Configuration"
 
 export default class ReputationManager extends Manager {

@@ -1,7 +1,7 @@
 import SVGComponent from "../../../../lib/SVGComponent"
 import Member from "@personal-discord-bot/shared/dist/models/Member"
 import { Theme } from "../ProfileCard"
-import { getLevel } from "../../../../utils"
+import { getLevel } from "@personal-discord-bot/shared/dist/utils"
 
 export default class Reputation extends SVGComponent {
     config
