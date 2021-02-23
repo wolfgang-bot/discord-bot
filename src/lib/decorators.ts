@@ -1,5 +1,5 @@
 import Module from "./Module"
-import Argument, { ArgumentProps } from "./Argument"
+import Argument, { ArgumentProps } from "@personal-discord-bot/shared/dist/module/Argument"
 
 type ModuleProps = {
     key: string,

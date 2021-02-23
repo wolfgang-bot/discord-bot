@@ -1,6 +1,6 @@
 import Module from "../../lib/Module"
 import { argument, module } from "../../lib/decorators"
-import { TYPES as ARGUMENT_TYPES } from "../../lib/Argument"
+import { TYPES as ARGUMENT_TYPES } from "@personal-discord-bot/shared/dist/module/Argument"
 import Configuration from "./models/Configuration"
 import VoiceChannelManager from "./managers/VoiceChannelManager"
 
