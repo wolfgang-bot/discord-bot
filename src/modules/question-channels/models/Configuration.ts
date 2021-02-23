@@ -1,7 +1,7 @@
 import Discord from "discord.js"
 import DefaultConfig from "../../../lib/Configuration"
 import Context from "../../../lib/Context"
-import DescriptiveObject from "../../../lib/DescriptiveObject"
+import DescriptiveObject from "@personal-discord-bot/shared/dist/DescriptiveObject"
 import { emojiConstraint } from "../../../lib/constraints"
 
 type ConfigProps = {

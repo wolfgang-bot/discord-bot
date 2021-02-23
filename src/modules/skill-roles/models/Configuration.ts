@@ -3,7 +3,7 @@ import path from "path"
 import glob from "glob-promise"
 import DefaultConfig from "../../../lib/Configuration"
 import Context from "../../../lib/Context"
-import DescriptiveObject from "../../../lib/DescriptiveObject"
+import DescriptiveObject from "@personal-discord-bot/shared/dist/DescriptiveObject"
 import { COLOR_REGEX } from "../../../lib/constraints"
 
 const ICONS_DIR = path.join(__dirname, "..", "assets", "icons")

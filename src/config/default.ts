@@ -1,4 +1,4 @@
-import DescriptiveObject from "../lib/DescriptiveObject"
+import DescriptiveObject from "@personal-discord-bot/shared/dist/DescriptiveObject"
 import { HEX_COLOR_REGEX } from "../lib/constraints"
 
 /**
