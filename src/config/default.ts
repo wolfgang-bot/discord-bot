@@ -1,5 +1,5 @@
 import DescriptiveObject from "@personal-discord-bot/shared/dist/DescriptiveObject"
-import { HEX_COLOR_REGEX } from "../lib/constraints"
+import { HEX_COLOR_REGEX } from "@personal-discord-bot/shared/dist/constraints"
 
 /**
  * Key names cannot contain the character: "#"
