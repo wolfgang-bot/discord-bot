@@ -1,7 +1,7 @@
 import Discord from "discord.js"
 import Guild from "@personal-discord-bot/shared/dist/models/Guild"
 import Manager from "../../../lib/Manager"
-import Context from "../../../lib/Context"
+import Context from "@personal-discord-bot/shared/dist/module/Context"
 import Configuration from "../models/Configuration"
 
 class VoiceChannelManager extends Manager {

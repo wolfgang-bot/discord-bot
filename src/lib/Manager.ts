@@ -1,5 +1,5 @@
-import Configuration from "../lib/Configuration"
-import Context from "./Context"
+import Configuration from "@personal-discord-bot/shared/dist/module/Configuration"
+import Context from "@personal-discord-bot/shared/dist/module/Context"
 
 abstract class Manager {
     context: Context

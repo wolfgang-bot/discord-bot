@@ -1,5 +1,5 @@
 import Discord from "discord.js"
-import Context from "../../../lib/Context"
+import Context from "@personal-discord-bot/shared/dist/module/Context"
 import Manager from "../../../lib/Manager"
 import LocaleProvider from "@personal-discord-bot/shared/dist/LocaleProvider"
 import Guild from "@personal-discord-bot/shared/dist/models/Guild"

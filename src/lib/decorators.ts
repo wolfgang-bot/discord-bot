@@ -1,4 +1,4 @@
-import Module from "./Module"
+import Module from "@personal-discord-bot/shared/dist/module/Module"
 import Argument, { ArgumentProps } from "@personal-discord-bot/shared/dist/module/Argument"
 
 type ModuleProps = {
