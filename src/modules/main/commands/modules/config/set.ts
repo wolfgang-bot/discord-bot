@@ -1,8 +1,7 @@
 import Discord from "discord.js"
 import { Command } from "@personal-discord-bot/shared/dist/command"
 import { LocaleProvider } from "@personal-discord-bot/shared/dist"
-import { Guild } from "@personal-discord-bot/shared/dist/models"
-import { Module } from "@personal-discord-bot/shared/dist/models"
+import { Guild, Module } from "@personal-discord-bot/shared/dist/models"
 import defaultConfig from "../../../../../config/default"
 import { convertDatatype } from "@personal-discord-bot/shared/dist/utils"
 

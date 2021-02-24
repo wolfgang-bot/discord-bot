@@ -1,8 +1,7 @@
 import { WebSocketController } from "@personal-discord-bot/shared/dist"
 import ModuleRegistry from "../../../services/ModuleRegistry"
 import ModuleInstanceRegistry from "../../../services/ModuleInstanceRegistry"
-import { Guild } from "@personal-discord-bot/shared/dist/models"
-import { Module } from "@personal-discord-bot/shared/dist/models"
+import { Guild, Module } from "@personal-discord-bot/shared/dist/models"
 import { error, success } from "../responses"
 import { AuthorizedSocket } from "../SocketManager"
 

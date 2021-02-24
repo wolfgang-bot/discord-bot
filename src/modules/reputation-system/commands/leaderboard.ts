@@ -2,9 +2,8 @@ import Discord from "discord.js"
 import Collection from "@personal-discord-bot/shared/dist/orm/Collection"
 import { Command } from "@personal-discord-bot/shared/dist/command"
 import { LocaleProvider } from "@personal-discord-bot/shared/dist"
-import { Member } from "@personal-discord-bot/shared/dist/models"
+import { Member, Guild } from "@personal-discord-bot/shared/dist/models"
 import LeaderboardEmbed from "../embeds/LeaderboardEmbed"
-import { Guild } from "@personal-discord-bot/shared/dist/models"
 
 export default class LeaderboardCommand extends Command {
     name = "leaderboard"

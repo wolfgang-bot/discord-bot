@@ -6,9 +6,7 @@ import { makeRunnable, run } from "@m.moelter/task-runner"
 import dotenv from "dotenv"
 import ModuleRegistry from "../services/ModuleRegistry"
 import database from "../database"
-import { Guild } from "@personal-discord-bot/shared/dist/models"
-import { User } from "@personal-discord-bot/shared/dist/models"
-import { Member } from "@personal-discord-bot/shared/dist/models"
+import { Guild, User, Member } from "@personal-discord-bot/shared/dist/models"
 dotenv.config({ path: path.join(__dirname, "..", "..", ".env")})
 
 const rl = readline.createInterface({
