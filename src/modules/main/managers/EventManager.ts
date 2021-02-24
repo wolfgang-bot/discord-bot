@@ -1,5 +1,5 @@
 import Discord from "discord.js"
-import Manager from "@personal-discord-bot/shared/dist/module/Manager"
+import { Manager } from "@personal-discord-bot/shared/dist/module"
 import CommandRegistry from "../../../services/CommandRegistry"
 import { Guild, User, Member } from "@personal-discord-bot/shared/dist/models"
 import StatisticsManager from "./StatisticsManager"
