@@ -1,6 +1,6 @@
 import fs from "fs"
 import sqlite from "sqlite3"
-import Model from "@personal-discord-bot/shared/dist/orm/Model"
+import { Model } from "@personal-discord-bot/shared/dist/orm"
 import migrate from "./migrations"
 import seed from "./seeders"
 
