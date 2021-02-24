@@ -1,5 +1,5 @@
 import Module from "@personal-discord-bot/shared/dist/module/Module"
-import { module } from "../../lib/decorators"
+import { module } from "@personal-discord-bot/shared/dist/module/decorators"
 import Configuration from "./models/Configuration"
 
 @module({

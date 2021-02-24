@@ -1,5 +1,5 @@
 import Module from "@personal-discord-bot/shared/dist/module/Module"
-import { module, argument } from "../../lib/decorators"
+import { module, argument } from "@personal-discord-bot/shared/dist/module/decorators"
 import { TYPES as ARGUMENT_TYPES } from "@personal-discord-bot/shared/dist/module/Argument"
 import Context from "@personal-discord-bot/shared/dist/module/Context"
 import Command from "@personal-discord-bot/shared/dist/command/Command"
