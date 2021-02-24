@@ -1,5 +1,5 @@
 import Discord from "discord.js"
-import WebSocketController from "@personal-discord-bot/shared/dist/WebSocketController"
+import { WebSocketController } from "@personal-discord-bot/shared/dist"
 import StreamManager, { EVENT_STREAMS, SubscriptionArgs } from "../StreamManager"
 import { success, error } from "../responses"
 import { AuthorizedSocket } from "../SocketManager"

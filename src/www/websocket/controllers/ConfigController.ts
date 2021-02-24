@@ -2,7 +2,7 @@ import Guild from "@personal-discord-bot/shared/dist/models/Guild"
 import defaultConfig from "../../../config/default"
 import { success, error } from "../responses"
 import { compareStructure } from "@personal-discord-bot/shared/dist/utils"
-import WebSocketController from "@personal-discord-bot/shared/dist/WebSocketController"
+import { WebSocketController } from "@personal-discord-bot/shared/dist"
 import { AuthorizedSocket } from "../SocketManager"
 
 export default class ConfigController extends WebSocketController<AuthorizedSocket> {

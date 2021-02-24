@@ -1,4 +1,4 @@
-import WebSocketController from "@personal-discord-bot/shared/dist/WebSocketController"
+import { WebSocketController } from "@personal-discord-bot/shared/dist"
 import ModuleRegistry from "../../../services/ModuleRegistry"
 import ModuleInstanceRegistry from "../../../services/ModuleInstanceRegistry"
 import Guild from "@personal-discord-bot/shared/dist/models/Guild"
