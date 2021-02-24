@@ -1,4 +1,4 @@
-import BaseEmbed from "@personal-discord-bot/shared/dist/BaseEmbed"
+import { BaseEmbed } from "@personal-discord-bot/shared/dist"
 import Command from "@personal-discord-bot/shared/dist/command/Command"
 import LocaleProvider from "@personal-discord-bot/shared/dist/LocaleProvider"
 import CommandGroup from "@personal-discord-bot/shared/dist/command/CommandGroup"
