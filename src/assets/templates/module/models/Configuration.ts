@@ -17,7 +17,7 @@ export default class Configuration extends DefaultConfig implements ConfigProps 
     }
 
     constructor(props: ConfigProps) {
-        super()
+        super(props)
     }
 
     toJSON(): ConfigJSON {

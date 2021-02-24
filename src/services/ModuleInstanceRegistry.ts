@@ -1,10 +1,10 @@
 import Discord from "discord.js"
 import { Module, Context } from "@personal-discord-bot/shared/dist/module"
 import { Collection } from "@personal-discord-bot/shared/dist/orm"
-import BroadcastChannel from "../services/BroadcastChannel"
 import ModuleModel from "@personal-discord-bot/shared/dist/models/Module"
 import ModuleInstanceModel from "@personal-discord-bot/shared/dist/models/ModuleInstance"
 import { LocaleProvider } from "@personal-discord-bot/shared/dist"
+import BroadcastChannel from "../services/BroadcastChannel"
 import ArgumentResolver, { ArgumentResolveTypes } from "./ArgumentResolver"
 import type ModuleRegistry from "./ModuleRegistry"
 

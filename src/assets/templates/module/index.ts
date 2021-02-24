@@ -8,7 +8,7 @@ import Configuration from "./models/Configuration"
     desc: "meta_desc",
     features: "meta_features"
 })
-export default class Module {
+export default class MyModule extends Module {
     static makeConfigFromArgs = Configuration.fromArgs
     static makeConfigFromJSON = Configuration.fromJSON
     
@@ -27,5 +27,7 @@ export default class Module {
     /**
      * Get the configuration object of the module from which it can be restored.
      */
-    getConfig() { }
+    getConfig() {
+        return this.config
+    }
 }
