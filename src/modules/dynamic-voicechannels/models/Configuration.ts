@@ -1,7 +1,7 @@
 import Discord from "discord.js"
 import DefaultConfig from "@personal-discord-bot/shared/dist/module/Configuration"
 import Context from "@personal-discord-bot/shared/dist/module/Context"
-import DescriptiveObject from "@personal-discord-bot/shared/dist/DescriptiveObject"
+import { DescriptiveObject } from "@personal-discord-bot/shared/dist"
 
 type ConfigProps = {
     parentChannel: Discord.CategoryChannel

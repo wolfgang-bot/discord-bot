@@ -1,5 +1,5 @@
 import Discord from "discord.js"
-import DescriptiveObject from "@personal-discord-bot/shared/dist/DescriptiveObject"
+import { DescriptiveObject } from "@personal-discord-bot/shared/dist"
 import Command from "@personal-discord-bot/shared/dist/command/Command"
 import LocaleProvider from "@personal-discord-bot/shared/dist/LocaleProvider"
 import Guild from "@personal-discord-bot/shared/dist/models/Guild"
