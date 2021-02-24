@@ -1,5 +1,5 @@
 import Discord from "discord.js"
-import Collection from "@personal-discord-bot/shared/dist/orm/Collection"
+import { Collection } from "@personal-discord-bot/shared/dist/orm"
 import { Command } from "@personal-discord-bot/shared/dist/command"
 import { LocaleProvider } from "@personal-discord-bot/shared/dist"
 import { Member, Guild } from "@personal-discord-bot/shared/dist/models"

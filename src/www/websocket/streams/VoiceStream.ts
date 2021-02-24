@@ -1,4 +1,4 @@
-import Collection from "@personal-discord-bot/shared/dist/orm/Collection"
+import { Collection } from "@personal-discord-bot/shared/dist/orm"
 import Readable from "@personal-discord-bot/shared/dist/streams/Readable"
 import Event, { EVENT_TYPES, VoiceChannelLeaveEventMeta } from "@personal-discord-bot/shared/dist/models/Event"
 import BroadcastChannel from "../../../services/BroadcastChannel"
