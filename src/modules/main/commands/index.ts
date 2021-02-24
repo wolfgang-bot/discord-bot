@@ -1,4 +1,4 @@
-import CommandGroup from "@personal-discord-bot/shared/dist/command/CommandGroup"
+import { CommandGroup  } from "@personal-discord-bot/shared/dist/command"
 import HelpCommand from "./help"
 import LocaleCommand from "./locale"
 import ModuleCommand from "./modules"
