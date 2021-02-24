@@ -1,5 +1,4 @@
-import { BaseEmbed } from "@personal-discord-bot/shared/dist"
-import { LocaleProvider } from "@personal-discord-bot/shared/dist"
+import { BaseEmbed, LocaleProvider } from "@personal-discord-bot/shared/dist"
 import { CommandGroupMap } from "@personal-discord-bot/shared/dist/command/CommandGroup"
 import { makeCodeblock } from "@personal-discord-bot/shared/dist/utils"
 

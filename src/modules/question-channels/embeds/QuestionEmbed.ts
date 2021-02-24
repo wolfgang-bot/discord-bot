@@ -1,6 +1,5 @@
 import Discord from "discord.js"
-import { BaseEmbed } from "@personal-discord-bot/shared/dist"
-import { LocaleProvider } from "@personal-discord-bot/shared/dist"
+import { BaseEmbed, LocaleProvider } from "@personal-discord-bot/shared/dist"
 
 export default class QuestionEmbed extends BaseEmbed {
     constructor(config, locale: LocaleProvider, message: Discord.Message) {

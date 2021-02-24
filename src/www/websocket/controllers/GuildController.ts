@@ -1,7 +1,6 @@
-import { WebSocketController } from "@personal-discord-bot/shared/dist"
+import { WebSocketController, LocaleProvider } from "@personal-discord-bot/shared/dist"
 import { success, error } from "../responses"
 import Guild from "@personal-discord-bot/shared/dist/models/Guild"
-import { LocaleProvider } from "@personal-discord-bot/shared/dist"
 import { AuthorizedSocket } from "../SocketManager"
 
 export default class GuildController extends WebSocketController<AuthorizedSocket> {

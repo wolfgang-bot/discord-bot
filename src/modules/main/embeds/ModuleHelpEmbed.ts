@@ -1,5 +1,4 @@
-import { BaseEmbed } from "@personal-discord-bot/shared/dist"
-import { LocaleProvider } from "@personal-discord-bot/shared/dist"
+import { BaseEmbed, LocaleProvider } from "@personal-discord-bot/shared/dist"
 import Module from "@personal-discord-bot/shared/dist/module/Module"
 
 export default class ModuleHelpEmbed extends BaseEmbed {
