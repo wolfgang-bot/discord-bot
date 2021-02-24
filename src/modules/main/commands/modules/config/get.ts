@@ -1,6 +1,6 @@
 import Discord from "discord.js"
 import { DescriptiveObject, LocaleProvider } from "@personal-discord-bot/shared/dist"
-import Command from "@personal-discord-bot/shared/dist/command/Command"
+import { Command } from "@personal-discord-bot/shared/dist/command"
 import Guild from "@personal-discord-bot/shared/dist/models/Guild"
 import Module from "@personal-discord-bot/shared/dist/models/Module"
 import ModuleConfigEmbed from "../../../embeds/ModuleConfigEmbed"

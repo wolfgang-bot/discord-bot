@@ -1,6 +1,6 @@
 import Discord from "discord.js"
 import Guild from "@personal-discord-bot/shared/dist/models/Guild"
-import Command from "@personal-discord-bot/shared/dist/command/Command"
+import { Command } from "@personal-discord-bot/shared/dist/command"
 import CommandGroup from "@personal-discord-bot/shared/dist/command/CommandGroup"
 import CommandRegistry from "../../../services/CommandRegistry"
 import { LocaleProvider } from "@personal-discord-bot/shared/dist"

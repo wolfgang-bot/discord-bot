@@ -1,5 +1,5 @@
 import Discord from "discord.js"
-import Command from "@personal-discord-bot/shared/dist/command/Command"
+import { Command } from "@personal-discord-bot/shared/dist/command"
 
 export default class MyCommand extends Command {
     name = "command"
