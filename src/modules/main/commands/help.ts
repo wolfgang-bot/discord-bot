@@ -3,7 +3,7 @@ import Guild from "@personal-discord-bot/shared/dist/models/Guild"
 import Command from "@personal-discord-bot/shared/dist/command/Command"
 import CommandGroup from "@personal-discord-bot/shared/dist/command/CommandGroup"
 import CommandRegistry from "../../../services/CommandRegistry"
-import LocaleProvider from "@personal-discord-bot/shared/dist/LocaleProvider"
+import { LocaleProvider } from "@personal-discord-bot/shared/dist"
 import HelpEmbed from "../embeds/HelpEmbed"
 import HelpCommandEmbed from "../embeds/HelpCommandEmbed"
 

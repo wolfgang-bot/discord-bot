@@ -1,5 +1,5 @@
 import WebSocketController from "@personal-discord-bot/shared/dist/WebSocketController"
-import LocaleProvider from "@personal-discord-bot/shared/dist/LocaleProvider"
+import { LocaleProvider } from "@personal-discord-bot/shared/dist"
 import { success } from "../responses"
 import { AuthorizedSocket } from "../SocketManager"
 

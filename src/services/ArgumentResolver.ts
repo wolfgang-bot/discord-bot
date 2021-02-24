@@ -1,6 +1,6 @@
 import Discord from "discord.js"
 import Argument from "@personal-discord-bot/shared/dist/module/Argument"
-import LocaleProvider from "@personal-discord-bot/shared/dist/LocaleProvider"
+import { LocaleProvider } from "@personal-discord-bot/shared/dist"
 
 export type ArgumentResolveTypes = Discord.TextChannel | Discord.VoiceChannel | Discord.CategoryChannel
 

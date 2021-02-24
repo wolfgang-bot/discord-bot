@@ -1,7 +1,7 @@
 import Discord from "discord.js"
 import Guild from "@personal-discord-bot/shared/dist/models/Guild"
 import Command from "@personal-discord-bot/shared/dist/command/Command"
-import LocaleProvider from "@personal-discord-bot/shared/dist/LocaleProvider"
+import { LocaleProvider } from "@personal-discord-bot/shared/dist"
 import LocaleEmbed from "../../embeds/LocaleEmbed"
 
 export default class LocaleGetCommand extends Command {

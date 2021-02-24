@@ -1,6 +1,6 @@
 import Discord from "discord.js"
 import { BaseEmbed } from "@personal-discord-bot/shared/dist"
-import LocaleProvider from "@personal-discord-bot/shared/dist/LocaleProvider"
+import { LocaleProvider } from "@personal-discord-bot/shared/dist"
 
 export default class NotificationEmbed extends BaseEmbed {
     constructor(config, locale: LocaleProvider, guild: Discord.Guild) {

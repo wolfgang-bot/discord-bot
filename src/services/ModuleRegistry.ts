@@ -5,7 +5,7 @@ import Module from "@personal-discord-bot/shared/dist/module/Module"
 import Collection from "@personal-discord-bot/shared/dist/orm/Collection"
 import Configuration from "@personal-discord-bot/shared/dist/module/Configuration"
 import ModuleModel from "@personal-discord-bot/shared/dist/models/Module"
-import LocaleProvider from "@personal-discord-bot/shared/dist/LocaleProvider"
+import { LocaleProvider } from "@personal-discord-bot/shared/dist"
 import defaultConfig from "../config/default"
 import ModuleInstanceRegistry from "./ModuleInstanceRegistry"
 
