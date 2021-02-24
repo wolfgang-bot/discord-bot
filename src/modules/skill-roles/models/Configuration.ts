@@ -2,7 +2,7 @@ import Discord from "discord.js"
 import path from "path"
 import glob from "glob-promise"
 import DefaultConfig from "@personal-discord-bot/shared/dist/module/Configuration"
-import Context from "@personal-discord-bot/shared/dist/module/Context"
+import { Context } from "@personal-discord-bot/shared/dist/module"
 import { DescriptiveObject } from "@personal-discord-bot/shared/dist"
 import { COLOR_REGEX } from "@personal-discord-bot/shared/dist/constraints"
 

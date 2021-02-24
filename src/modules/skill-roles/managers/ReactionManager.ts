@@ -1,5 +1,5 @@
 import Discord from "discord.js"
-import Context from "@personal-discord-bot/shared/dist/module/Context"
+import { Context } from "@personal-discord-bot/shared/dist/module"
 import Manager from "@personal-discord-bot/shared/dist/module/Manager"
 import Configuration from "../models/Configuration"
 import EmojiManager from "./EmojiManager"

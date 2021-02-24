@@ -1,5 +1,5 @@
 import DefaultConfig from "@personal-discord-bot/shared/dist/module/Configuration"
-import Context from "@personal-discord-bot/shared/dist/module/Context"
+import { Context } from "@personal-discord-bot/shared/dist/module"
 
 type ConfigProps = {}
 
