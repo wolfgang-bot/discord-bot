@@ -1,5 +1,5 @@
 import Discord from "discord.js"
-import Module from "@personal-discord-bot/shared/dist/models/Module"
+import { Module } from "@personal-discord-bot/shared/dist/models"
 import { Guild } from "@personal-discord-bot/shared/dist/models"
 import { Command } from "@personal-discord-bot/shared/dist/command"
 import ModuleRegistry from "../../../../services/ModuleRegistry"
