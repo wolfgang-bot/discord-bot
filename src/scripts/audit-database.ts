@@ -7,7 +7,7 @@ import dotenv from "dotenv"
 import ModuleRegistry from "../services/ModuleRegistry"
 import database from "../database"
 import { Guild } from "@personal-discord-bot/shared/dist/models"
-import User from "@personal-discord-bot/shared/dist/models/User"
+import { User } from "@personal-discord-bot/shared/dist/models"
 import { Member } from "@personal-discord-bot/shared/dist/models"
 dotenv.config({ path: path.join(__dirname, "..", "..", ".env")})
 

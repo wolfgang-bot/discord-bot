@@ -1,6 +1,6 @@
 import { Response } from "express"
 import OAuthServiceProvider from "../services/OAuthServiceProvider"
-import User from "@personal-discord-bot/shared/dist/models/User"
+import { User } from "@personal-discord-bot/shared/dist/models"
 import { AuthorizedRequest } from "../server"
 
 export default class OAuthController {
