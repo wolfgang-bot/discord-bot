@@ -1,4 +1,4 @@
-import Module from "@personal-discord-bot/shared/dist/module/Module"
+import { Module } from "@personal-discord-bot/shared/dist/module"
 import { module } from "@personal-discord-bot/shared/dist/module/decorators"
 import Configuration from "./models/Configuration"
 

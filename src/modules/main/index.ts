@@ -1,7 +1,7 @@
 import Discord from "discord.js"
 import Collection from "@personal-discord-bot/shared/dist/orm/Collection"
 import { Guild } from "@personal-discord-bot/shared/dist/models"
-import Module from "@personal-discord-bot/shared/dist/module/Module"
+import { Module } from "@personal-discord-bot/shared/dist/module"
 import { Context } from "@personal-discord-bot/shared/dist/module"
 import { module, global } from "@personal-discord-bot/shared/dist/module/decorators"
 import CommandRegistry from "../../services/CommandRegistry"

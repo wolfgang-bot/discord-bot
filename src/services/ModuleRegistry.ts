@@ -1,7 +1,7 @@
 import glob from "glob-promise"
 import path from "path"
 import Discord from "discord.js"
-import Module from "@personal-discord-bot/shared/dist/module/Module"
+import { Module } from "@personal-discord-bot/shared/dist/module"
 import Collection from "@personal-discord-bot/shared/dist/orm/Collection"
 import { Configuration } from "@personal-discord-bot/shared/dist/module"
 import ModuleModel from "@personal-discord-bot/shared/dist/models/Module"

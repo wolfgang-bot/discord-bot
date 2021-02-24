@@ -1,5 +1,5 @@
 import Discord from "discord.js"
-import Module from "@personal-discord-bot/shared/dist/module/Module"
+import { Module } from "@personal-discord-bot/shared/dist/module"
 import Collection from "@personal-discord-bot/shared/dist/orm/Collection"
 import { Context } from "@personal-discord-bot/shared/dist/module"
 import BroadcastChannel from "../services/BroadcastChannel"
