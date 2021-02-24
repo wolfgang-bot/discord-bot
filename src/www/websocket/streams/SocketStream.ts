@@ -1,4 +1,4 @@
-import Writable from "@personal-discord-bot/shared/dist/streams/Writable"
+import { Writable } from "@personal-discord-bot/shared/dist/streams"
 import { AuthorizedSocket } from "../SocketManager"
 import { SubscriptionArgs } from "../StreamManager"
 
