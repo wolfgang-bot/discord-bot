@@ -1,7 +1,7 @@
 import Discord from "discord.js"
 import glob from "glob-promise"
 import path from "path"
-import Manager from "../../../lib/Manager"
+import Manager from "@personal-discord-bot/shared/dist/module/Manager"
 import Guild from "@personal-discord-bot/shared/dist/models/Guild"
 import Configuration from "../models/Configuration"
 

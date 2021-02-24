@@ -1,5 +1,5 @@
 import Discord from "discord.js"
-import Manager from "../../../lib/Manager"
+import Manager from "@personal-discord-bot/shared/dist/module/Manager"
 import Context from "@personal-discord-bot/shared/dist/module/Context"
 import LocaleProvider from "@personal-discord-bot/shared/dist/LocaleProvider"
 import LevelUpEmbed from "./../embeds/LevelUpEmbed"
