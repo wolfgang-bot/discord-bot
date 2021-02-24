@@ -1,6 +1,6 @@
 import Discord from "discord.js"
 import Manager from "@personal-discord-bot/shared/dist/module/Manager"
-import Guild from "@personal-discord-bot/shared/dist/models/Guild"
+import { Guild } from "@personal-discord-bot/shared/dist/models"
 import Configuration from "../models/Configuration"
 
 type RoleMap = {

@@ -4,7 +4,7 @@ import Context from "@personal-discord-bot/shared/dist/module/Context"
 import { LocaleProvider } from "@personal-discord-bot/shared/dist"
 import LevelUpEmbed from "./../embeds/LevelUpEmbed"
 import Member from "@personal-discord-bot/shared/dist/models/Member"
-import Guild from "@personal-discord-bot/shared/dist/models/Guild"
+import { Guild } from "@personal-discord-bot/shared/dist/models"
 import { getLevel } from "@personal-discord-bot/shared/dist/utils"
 import Configuration from "../models/Configuration"
 

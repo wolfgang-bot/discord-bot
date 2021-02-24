@@ -4,7 +4,7 @@ import fetch from "node-fetch"
 import { Command } from "@personal-discord-bot/shared/dist/command"
 import ProfileCard from "../profile-card"
 import Member from "@personal-discord-bot/shared/dist/models/Member"
-import Guild from "@personal-discord-bot/shared/dist/models/Guild"
+import { Guild } from "@personal-discord-bot/shared/dist/models"
 
 export default class ProfileCommand extends Command {
     name = "profile"

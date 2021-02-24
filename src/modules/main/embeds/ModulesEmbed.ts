@@ -1,7 +1,7 @@
 import { BaseEmbed, LocaleProvider } from "@personal-discord-bot/shared/dist"
 import ModuleRegistry from "../../../services/ModuleRegistry"
 import ModuleInstanceRegistry from "../../../services/ModuleInstanceRegistry"
-import Guild from "@personal-discord-bot/shared/dist/models/Guild"
+import { Guild } from "@personal-discord-bot/shared/dist/models"
 import { makeCodeblock, makeURL } from "@personal-discord-bot/shared/dist/utils"
 
 export default class ModulesEmbed extends BaseEmbed {

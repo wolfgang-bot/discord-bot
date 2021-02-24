@@ -1,6 +1,6 @@
 import Discord from "discord.js"
 import Collection from "@personal-discord-bot/shared/dist/orm/Collection"
-import Guild from "@personal-discord-bot/shared/dist/models/Guild"
+import { Guild } from "@personal-discord-bot/shared/dist/models"
 import Module from "@personal-discord-bot/shared/dist/module/Module"
 import Context from "@personal-discord-bot/shared/dist/module/Context"
 import { module, global } from "@personal-discord-bot/shared/dist/module/decorators"

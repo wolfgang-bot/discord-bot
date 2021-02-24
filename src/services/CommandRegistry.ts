@@ -1,7 +1,7 @@
 import Discord from "discord.js"
 
 import { CommandGroup  } from "@personal-discord-bot/shared/dist/command"
-import Guild from "@personal-discord-bot/shared/dist/models/Guild"
+import { Guild } from "@personal-discord-bot/shared/dist/models"
 
 type GuildCommandGroupsMap = Record<string, CommandGroup>
 

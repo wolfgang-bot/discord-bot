@@ -1,5 +1,5 @@
 import Discord from "discord.js"
-import Guild from "@personal-discord-bot/shared/dist/models/Guild"
+import { Guild } from "@personal-discord-bot/shared/dist/models"
 import { Command } from "@personal-discord-bot/shared/dist/command"
 import { LocaleProvider } from "@personal-discord-bot/shared/dist"
 import LocaleEmbed from "../../embeds/LocaleEmbed"

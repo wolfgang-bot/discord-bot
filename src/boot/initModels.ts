@@ -1,4 +1,4 @@
-import Guild from "@personal-discord-bot/shared/dist/models/Guild"
+import { Guild } from "@personal-discord-bot/shared/dist/models"
 import defaultConfigRaw from "../config/default"
 
 let defaultConfig: object

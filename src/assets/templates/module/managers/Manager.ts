@@ -1,5 +1,5 @@
 import Manager from "../../../lib/Manger"
-import Guild from "@personal-discord-bot/shared/dist/models/Guild"
+import { Guild } from "@personal-discord-bot/shared/dist/models"
 
 export default class MyManager extends Manager {
     async init() {
