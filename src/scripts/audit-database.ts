@@ -8,7 +8,7 @@ import ModuleRegistry from "../services/ModuleRegistry"
 import database from "../database"
 import { Guild } from "@personal-discord-bot/shared/dist/models"
 import User from "@personal-discord-bot/shared/dist/models/User"
-import Member from "@personal-discord-bot/shared/dist/models/Member"
+import { Member } from "@personal-discord-bot/shared/dist/models"
 dotenv.config({ path: path.join(__dirname, "..", "..", ".env")})
 
 const rl = readline.createInterface({

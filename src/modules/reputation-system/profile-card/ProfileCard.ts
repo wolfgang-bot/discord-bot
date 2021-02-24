@@ -1,5 +1,5 @@
 import { SVGComponent } from "@personal-discord-bot/shared/dist"
-import Member from "@personal-discord-bot/shared/dist/models/Member"
+import { Member } from "@personal-discord-bot/shared/dist/models"
 import Background from "./Background"
 import User from "./User/User"
 import { getLevel } from "@personal-discord-bot/shared/dist/utils"

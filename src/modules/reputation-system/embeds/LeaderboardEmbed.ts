@@ -1,6 +1,6 @@
 import { BaseEmbed, LocaleProvider } from "@personal-discord-bot/shared/dist"
 import Collection from "@personal-discord-bot/shared/dist/orm/Collection"
-import Member from "@personal-discord-bot/shared/dist/models/Member"
+import { Member } from "@personal-discord-bot/shared/dist/models"
 import { getLevel, space } from "@personal-discord-bot/shared/dist/utils"
 
 export default class LeaderbaordEmbed extends BaseEmbed {

@@ -3,7 +3,7 @@ import Manager from "@personal-discord-bot/shared/dist/module/Manager"
 import CommandRegistry from "../../../services/CommandRegistry"
 import { Guild } from "@personal-discord-bot/shared/dist/models"
 import User from "@personal-discord-bot/shared/dist/models/Guild"
-import Member from "@personal-discord-bot/shared/dist/models/Member"
+import { Member } from "@personal-discord-bot/shared/dist/models"
 import StatisticsManager from "./StatisticsManager"
 import RootCommandGroup from "../commands"
 
