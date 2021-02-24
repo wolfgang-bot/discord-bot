@@ -1,4 +1,4 @@
-import SVGComponent from "@personal-discord-bot/shared/dist/SVGComponent"
+import { SVGComponent } from "@personal-discord-bot/shared/dist"
 import { Theme } from "../ProfileCard"
 
 export default class Avatar extends SVGComponent {
