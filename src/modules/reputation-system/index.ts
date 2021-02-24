@@ -1,7 +1,6 @@
-import { Module } from "@personal-discord-bot/shared/dist/module"
+import { Module, Context } from "@personal-discord-bot/shared/dist/module"
 import { module, argument } from "@personal-discord-bot/shared/dist/module/decorators"
 import { TYPES as ARGUMENT_TYPES } from "@personal-discord-bot/shared/dist/module/Argument"
-import { Context } from "@personal-discord-bot/shared/dist/module"
 import { Command } from "@personal-discord-bot/shared/dist/command"
 import CommandRegistry from "../../services/CommandRegistry"
 import Configuration from "./models/Configuration"

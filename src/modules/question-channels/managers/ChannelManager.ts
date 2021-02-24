@@ -1,6 +1,5 @@
 import Discord from "discord.js"
-import { Context } from "@personal-discord-bot/shared/dist/module"
-import { Manager } from "@personal-discord-bot/shared/dist/module"
+import { Context, Manager } from "@personal-discord-bot/shared/dist/module"
 import { LocaleProvider } from "@personal-discord-bot/shared/dist"
 import { Guild, Module, ModuleInstance } from "@personal-discord-bot/shared/dist/models"
 import QuestionEmbed from "../embeds/QuestionEmbed"
