@@ -1,4 +1,4 @@
-import Readable from "@personal-discord-bot/shared/dist/streams/Readable"
+import { Readable } from "@personal-discord-bot/shared/dist/streams"
 import { Collection } from "@personal-discord-bot/shared/dist/orm"
 import BroadcastChannel from "../../../services/BroadcastChannel"
 import Event, { EVENT_TYPES, GuildMemberEventMeta } from "@personal-discord-bot/shared/dist/models/Event"

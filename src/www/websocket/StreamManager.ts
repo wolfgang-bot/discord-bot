@@ -1,5 +1,5 @@
 import Discord from "discord.js"
-import Readable from "@personal-discord-bot/shared/dist/streams/Readable"
+import { Readable } from "@personal-discord-bot/shared/dist/streams"
 import { AuthorizedSocket } from "./SocketManager"
 import SocketStream from "./streams/SocketStream"
 import ModuleInstanceStream from "./streams/ModuleInstanceStream"

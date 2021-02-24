@@ -1,4 +1,4 @@
-import Readable from "@personal-discord-bot/shared/dist/streams/Readable"
+import { Readable } from "@personal-discord-bot/shared/dist/streams"
 import { Module } from "@personal-discord-bot/shared/dist/module"
 import BroadcastChannel from "../../../services/BroadcastChannel"
 import ModuleInstanceRegistry from "../../../services/ModuleInstanceRegistry"

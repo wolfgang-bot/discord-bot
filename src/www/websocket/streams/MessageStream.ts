@@ -1,5 +1,5 @@
 import { Collection } from "@personal-discord-bot/shared/dist/orm"
-import Readable from "@personal-discord-bot/shared/dist/streams/Readable"
+import { Readable } from "@personal-discord-bot/shared/dist/streams"
 import Event, { EVENT_TYPES } from "@personal-discord-bot/shared/dist/models/Event"
 import BroadcastChannel from "../../../services/BroadcastChannel"
 import config from "../../config"
