@@ -74,6 +74,7 @@ abstract class Command {
 
         return {
             name: this.name,
+            callableName: this.getCallableName(),
             group: this.group,
             module: this.getModule(),
             description: this.description && locale.translate(this.description),

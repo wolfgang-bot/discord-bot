@@ -1,7 +1,6 @@
 import fs from "fs"
 import sqlite from "sqlite3"
 import migrate from "./migrations"
-import seed from "./seeders"
 
 sqlite.verbose()
 
@@ -22,10 +21,6 @@ class Database {
 
                 if (!fileExists) {
                     await migrate(this)
-
-                    if (process.env.NODE_ENV === "development") {
-                        await seed()
-                    }
                 }
 
                 resolve()
