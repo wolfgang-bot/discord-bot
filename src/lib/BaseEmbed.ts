@@ -4,7 +4,7 @@ class BaseEmbed extends MessageEmbed {
     constructor(config) {
         super()
 
-        this.setColor(config.colors.primary)
+        this.setColor(config.settings.colors.primary)
     }
 }
 
