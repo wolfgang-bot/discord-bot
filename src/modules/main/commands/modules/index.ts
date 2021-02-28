@@ -12,7 +12,7 @@ export default class ModulesCommandGroup extends CommandGroup {
     alias = ["module"]
     group = "Admin"
     description = "command_modules_desc"
-    permissions: Discord.PermissionString[] = ["MANAGE_GUILD"]
+    permissions: Discord.PermissionString[] = ["ADMINISTRATOR"]
     defaultCommand = new ListCommand()
 
     constructor() {

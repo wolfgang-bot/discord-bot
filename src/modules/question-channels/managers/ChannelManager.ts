@@ -9,6 +9,7 @@ import QuestionEmbed from "../embeds/QuestionEmbed"
 import NotificationEmbed from "../embeds/NotificationEmbed"
 import ActiveChannel, { ActiveChannelJSON } from "../models/ActiveChannel"
 import Configuration from "../models/Configuration"
+import { checkPermissions } from "../../../utils"
 
 type InstanceData = {
     activeChannels: ActiveChannelsMap
@@ -63,11 +64,13 @@ class ChannelManager extends Manager {
             }
     
             // Delete channel
-            if (
-                message.author.id === activeChannel.user.id && // User is the question channel's creator
-                message.content.trim() === this.config.deleteMessage
-            ) {
-                await this.deleteChannel(activeChannel.channel)
+            if (message.content.trim() === this.config.deleteMessage) {
+                if (
+                    message.author.id === activeChannel.user.id || // User is the question channel's creator
+                    await checkPermissions(this.context.guild, message.author, ["ADMINISTRATOR"]) // User is administrator
+                ) {
+                    await this.deleteChannel(activeChannel.channel)
+                }
             }
         }
         

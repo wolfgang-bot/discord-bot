@@ -35,7 +35,7 @@ class User extends Model implements UserModelValues {
             guild = guild.discordGuild
         }
 
-        return checkPermissions(guild, this, ["MANAGE_GUILD"])
+        return checkPermissions(guild, this, ["ADMINISTRATOR"])
     }
     
     init() {}

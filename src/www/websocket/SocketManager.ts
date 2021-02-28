@@ -84,7 +84,7 @@ export default class SocketManager {
         // Filter guilds where the user is an admin
         const filtered = guilds.filter(guild => {
             return new Discord.Permissions(guild.permissions as string as Discord.PermissionResolvable)
-                .has("MANAGE_GUILD")
+                .has("ADMINISTRATOR")
         })
 
         // Mark guilds which are registered by the bot
