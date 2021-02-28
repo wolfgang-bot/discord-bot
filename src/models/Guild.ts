@@ -1,5 +1,6 @@
 import Discord from "discord.js"
 import Model from "../lib/Model"
+import ModuleInstanceRegistry from "../services/ModuleInstanceRegistry"
 import defaultConfigRaw from "../config/default"
 
 export type GuildModelValues = {
@@ -59,6 +60,7 @@ class Guild extends Model implements GuildModelValues {
 
         const moduleInstances = await ModuleInstance.findAllBy("guild_id", this.id)
         await moduleInstances.mapAsync(instance => instance.delete())
+        delete ModuleInstanceRegistry.instances[this.id]
 
         const events = await Event.findAllBy("guild_id", this.id)
         await events.mapAsync(event => event.delete())
@@ -78,3 +80,4 @@ export default Guild
 import Member from "./Member"
 import ModuleInstance from "./ModuleInstance"
 import Event from "./Event"
+
