@@ -88,14 +88,8 @@ class LocaleProvider {
      * Create an instance of this class which uses the guild's language stored in the database
      */
     static async guild(guild: Discord.Guild) {
-        const model = await Guild.findBy("id", guild.id) as Guild
-
-        if (!model) {
-            console.trace(`Guild '${guild.id}' - '${guild.name}' ist not available`)
-            return new LocaleProvider(LocaleProvider.defaultLocale)
-        }
-
-        return new LocaleProvider(model.locale)
+        const config = await Guild.config(guild)
+        return new LocaleProvider(config.settings.locale)
     }
 
     constructor(

@@ -1,6 +1,9 @@
 import DefaultConfig from "../../../lib/Configuration"
 import DescriptiveObject from "../../../lib/DescriptiveObject"
 import { HEX_COLOR_REGEX } from "../../../lib/constraints"
+import LocaleProvider from "../../../services/LocaleProvider"
+
+const locales = LocaleProvider.getLocaleKeys()
 
 export default class Configuration extends DefaultConfig {
     static guildConfig = new DescriptiveObject({
@@ -10,6 +13,13 @@ export default class Configuration extends DefaultConfig {
                 value: "?",
                 constraints: "Cannot be empty",
                 verifyConstraints: (value) => value.length > 0
+            }),
+
+            locale: new DescriptiveObject({
+                description: `Locale of the guild (used for translations). Available locales: ${locales.join(", ")}`,
+                value: LocaleProvider.defaultLocale,
+                constraints: `Must be one of: ${locales.join(", ")}`,
+                verifyConstraints: (value) => locales.includes(value)
             }),
 
             userRole: new DescriptiveObject({
