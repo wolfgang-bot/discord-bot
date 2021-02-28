@@ -29,6 +29,7 @@ class Module extends EventEmitter {
     static args: Argument[]
     static isGlobal: boolean = false
     static isPrivate: boolean = false
+    static isStatic: boolean = false
     static guildIds: string[]
     static commands?: Command[]
     

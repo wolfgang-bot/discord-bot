@@ -44,3 +44,7 @@ export function guilds(guildIds: string[]) {
         module.guildIds = guildIds
     }
 }
+
+export function _static(module: typeof Module) {
+    module.isStatic = true
+}

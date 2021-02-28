@@ -64,6 +64,20 @@ class ModuleRegistry {
     }
 
     /**
+     * Check if a module is protected
+     */
+    static isProtectedModule(module: typeof Module) {
+        return module.isGlobal || module.isPrivate || module.isStatic
+    }
+
+    /**
+     * Get modules that are not protected
+     */
+    static getPublicModules() {
+        return this.modules.filter(module => !this.isProtectedModule(module))
+    }
+
+    /**
      * Get a module class from a database model
      */
     static getModule(model: ModuleModel) {

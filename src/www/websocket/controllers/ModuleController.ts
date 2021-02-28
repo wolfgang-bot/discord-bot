@@ -10,7 +10,7 @@ export default class ModuleController extends WebSocketController {
      * Get all modules available to the requesting user
      */
     getModules(send: Function) {
-        const modules = ModuleRegistry.modules.filter(module => !module.isPrivate && !module.isGlobal)
+        const modules = ModuleRegistry.getPublicModules()
         modules.forEach(module => ModuleRegistry.translate(module))
 
         send(success(modules))

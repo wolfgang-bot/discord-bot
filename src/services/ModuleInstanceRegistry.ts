@@ -142,7 +142,7 @@ class ModuleInstanceRegistry {
 
         const module = ModuleInstanceRegistry.moduleRegistry.getModule(model)
 
-        if (module.isGlobal) {
+        if (ModuleInstanceRegistry.moduleRegistry.isProtectedModule(module)) {
             throw locale.translate("error_illegal_invocation")
         }
 

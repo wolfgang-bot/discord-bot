@@ -13,7 +13,7 @@ export default class ModulesEmbed extends BaseEmbed {
     ) {
         super(config)
 
-        const modules = ModuleRegistry.modules.filter(module => !module.isGlobal)
+        const modules = ModuleRegistry.getPublicModules()
         const moduleInstances = Object.values(ModuleInstanceRegistry.instances[guild.id] || {})
 
         this.setTitle(locale.translate("embed_modules_list_title"))
