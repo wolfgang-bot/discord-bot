@@ -129,7 +129,7 @@ class ModuleInstanceRegistry {
     /**
      * Start a module from arguments
      */
-    async startModule(client: Discord.Client, model: ModuleModel, args: string[]) {
+    async startModule(client: Discord.Client, model: ModuleModel, args: string[], isUserInvocation = true) {
         /**
          * Validate invocation
          */
@@ -142,7 +142,7 @@ class ModuleInstanceRegistry {
 
         const module = ModuleInstanceRegistry.moduleRegistry.getModule(model)
 
-        if (ModuleInstanceRegistry.moduleRegistry.isProtectedModule(module)) {
+        if (ModuleInstanceRegistry.moduleRegistry.isProtectedModule(module) && isUserInvocation) {
             throw locale.translate("error_illegal_invocation")
         }
 
@@ -195,8 +195,14 @@ class ModuleInstanceRegistry {
             `module_id = '${model.id}' AND guild_id = ${this.guild.id}`
         ) as ModuleInstanceModel
 
+        const locale = await LocaleProvider.guild(this.guild)
+        
+        const module = ModuleInstanceRegistry.moduleRegistry.getModule(model)
+        if (module.isStatic) {
+            throw locale.translate("error_module_doest_not_exist", module.key)
+        }
+
         if (!moduleInstance) {
-            const locale = await LocaleProvider.guild(this.guild)
             throw locale.translate("error_module_not_running")
         }
 
@@ -210,14 +216,19 @@ class ModuleInstanceRegistry {
     /**
      * Restart a module's instance
      */
-    async restartModule(module: ModuleModel) {
-        const model = await ModuleInstanceModel.where(`module_id = '${module.id}' AND guild_id = '${this.guild.id}'`) as ModuleInstanceModel
+    async restartModule(moduleModel: ModuleModel) {
+        const locale = await LocaleProvider.guild(this.guild)
 
-        if (!model) {
-            const locale = await LocaleProvider.guild(this.guild)
-            throw locale.translate("error_module_not_running")
+        const module = ModuleInstanceRegistry.moduleRegistry.getModule(moduleModel)
+        if (module.isStatic) {
+            throw locale.translate("error_module_doest_not_exist", module.key)
         }
 
+        const model = await ModuleInstanceModel.where(`module_id = '${moduleModel.id}' AND guild_id = '${this.guild.id}'`) as ModuleInstanceModel
+
+        if (!model) {
+            throw locale.translate("error_module_not_running")
+        }
         const instance = this.instances[model.id]
 
         await instance._stop()
@@ -247,6 +258,23 @@ class ModuleInstanceRegistry {
         ModuleInstanceRegistry.registerInstance({ guild: this.guild, instance, model })
 
         return instance
+    }
+
+    /**
+     * Start all static modules for a guild
+     */
+    async startStaticModules(client: Discord.Client) {
+        const modules = ModuleInstanceRegistry.moduleRegistry.modules.filter(
+            module => module.isStatic
+        )
+
+        const models = await Promise.all(modules.map(
+            async module => await ModuleModel.findBy("key", module.key) as ModuleModel
+        ))
+
+        await Promise.all(models.map(
+            model => this.startModule(client, model, [], false)
+        ))
     }
 }
 

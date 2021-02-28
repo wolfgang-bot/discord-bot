@@ -6,6 +6,7 @@ import User from "../../../models/Guild"
 import Member from "../../../models/Member"
 import StatisticsManager from "./StatisticsManager"
 import RootCommandGroup from "../commands"
+import ModuleInstanceRegistry from "../../../services/ModuleInstanceRegistry"
 
 class EventManager extends Manager {
     statistics: StatisticsManager = new StatisticsManager()
@@ -33,7 +34,8 @@ class EventManager extends Manager {
         await model.store()
 
         CommandRegistry.registerGroupForGuild(guild, new RootCommandGroup())
-
+        await  ModuleInstanceRegistry.guild(guild).startStaticModules(this.context.client)
+        
         await guild.members.fetch()
 
         // Store all members / users of the guild in the database
