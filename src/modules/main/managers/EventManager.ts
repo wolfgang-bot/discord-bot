@@ -4,10 +4,25 @@ import CommandRegistry from "../../../services/CommandRegistry"
 import Guild from "../../../models/Guild"
 import User from "../../../models/Guild"
 import Member from "../../../models/Member"
-import StatisticsManager from "./StatisticsManager"
+import StatisticsManager from "./Statistics"
 import RootCommandGroup from "../commands"
 import ModuleInstanceRegistry from "../../../services/ModuleInstanceRegistry"
 import { parseArguments } from "../../../utils"
+import LocaleProvider from "../../../services/LocaleProvider"
+import SetupEmbed from "../embeds/SetupEmbed"
+
+function getFirstTextChannel(guild: Discord.Guild) {
+    return guild.channels.cache.find(channel => channel.type === "text") as Discord.TextChannel
+}
+
+async function withLoadingIndicator(channel: Discord.TextChannel, callback: () => Promise<void> | void) {
+    const locale = await LocaleProvider.guild(channel.guild)
+    const config = await Guild.config(channel.guild)
+    
+    const message = await channel.send(new SetupEmbed(config, locale, 0))
+    await callback()
+    await message.edit(new SetupEmbed(config, locale, 1))
+}
 
 class EventManager extends Manager {
     statistics: StatisticsManager = new StatisticsManager()
@@ -36,33 +51,35 @@ class EventManager extends Manager {
     }
 
     async handleGuildCreate(guild: Discord.Guild) {
-        const model = new Guild({ id: guild.id })
-        await model.store()
-
-        CommandRegistry.registerGroupForGuild(guild, new RootCommandGroup())
-        await  ModuleInstanceRegistry.guild(guild).startStaticModules(this.context.client)
-        
-        await guild.members.fetch()
-
-        // Store all members / users of the guild in the database
-        await Promise.all(guild.members.cache.map(async member => {
-            if (member.user.bot) {
-                return
-            }
-
-            let user = await User.findBy("id", member.user.id)
-
-            if (!user) {
-                user = new User({ id: member.user.id })
-                await user.store()
-            }
-
-            const model = new Member({
-                user_id: user.id,
-                guild_id: guild.id
-            })
+        await withLoadingIndicator(getFirstTextChannel(guild), async () => {
+            const model = new Guild({ id: guild.id })
             await model.store()
-        }))
+
+            CommandRegistry.registerGroupForGuild(guild, new RootCommandGroup())
+            await ModuleInstanceRegistry.guild(guild).startStaticModules(this.context.client)
+
+            await guild.members.fetch()
+
+            // Store all members / users of the guild in the database
+            await Promise.all(guild.members.cache.map(async member => {
+                if (member.user.bot) {
+                    return
+                }
+
+                let user = await User.findBy("id", member.user.id)
+
+                if (!user) {
+                    user = new User({ id: member.user.id })
+                    await user.store()
+                }
+
+                const model = new Member({
+                    user_id: user.id,
+                    guild_id: guild.id
+                })
+                await model.store()
+            }))
+        })
     }
 
     async handleGuildDelete(guild: Discord.Guild) {

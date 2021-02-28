@@ -30,7 +30,6 @@ class Guild extends Model implements GuildModelValues {
         let model = await Guild.findBy("id", guild.id) as Guild
         
         if (!model) {
-            console.trace(`Guild '${guild.id}' - '${guild.name}' is not available`)
             return getDefaultConfig()
         }
 
