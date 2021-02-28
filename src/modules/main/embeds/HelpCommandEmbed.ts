@@ -23,7 +23,7 @@ export default class HelpCommandEmbed extends BaseEmbed {
         this.addFields([
             {
                 name: locale.translate("embed_help_command_usage"),
-                value: makeCodeblock(`${process.env.DISCORD_BOT_PREFIX}${command.getCallableName()} ${args || subCommands || ""}`)
+                value: makeCodeblock(`${config.settings.commandPrefix}${command.getCallableName()} ${args || subCommands || ""}`)
             },
             {
                 name: locale.translate("embed_help_command_permissions"),

@@ -7,15 +7,21 @@ import Member from "../../../models/Member"
 import StatisticsManager from "./StatisticsManager"
 import RootCommandGroup from "../commands"
 import ModuleInstanceRegistry from "../../../services/ModuleInstanceRegistry"
+import { parseArguments } from "../../../utils"
 
 class EventManager extends Manager {
     statistics: StatisticsManager = new StatisticsManager()
 
     async handleMessage(message: Discord.Message) {
         if (!message.author.bot) {
-            if (message.content.startsWith(process.env.DISCORD_BOT_PREFIX)) {
+            const config = await Guild.config(message.guild)
+            
+            if (message.content.startsWith(config.settings.commandPrefix)) {
                 try {
-                    await CommandRegistry.guild(message.guild).run(message)
+                    const args = parseArguments(
+                        message.content.substring(config.settings.commandPrefix.length)
+                    )
+                    await CommandRegistry.guild(message.guild).run(message, args)
                 } catch (error) {
                     if (process.env.NODE_ENV === "development") {
                         console.error(error)

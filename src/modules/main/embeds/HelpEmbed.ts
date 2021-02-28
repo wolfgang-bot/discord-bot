@@ -8,7 +8,7 @@ export default class HelpEmbed extends BaseEmbed {
         super(config)
 
         this.setTitle(locale.translate("embed_help_title"))
-            .setDescription(locale.translate("embed_help_desc", process.env.DISCORD_BOT_PREFIX))
+            .setDescription(locale.translate("embed_help_desc", config.settings.commandPrefix))
 
         Object.entries(groups).forEach(([group, commands]) => {
             const commandNames = commands.map(command => command.name).join("\n")

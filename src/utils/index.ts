@@ -21,7 +21,6 @@ export function makeCodeblock(str: string) {
 export function parseArguments(content: string) {
     // Sanitize input
     content = content
-        .replace(process.env.DISCORD_BOT_PREFIX, "")
         .trim()
         .replace(/\s+/g, " ")
 

@@ -1,7 +1,6 @@
 import Discord from "discord.js"
 import Command from "./Command"
 import LocaleProvider from "../services/LocaleProvider"
-import { parseArguments } from "../utils"
 
 export type CommandMap = Record<string, Command>
 
@@ -23,17 +22,12 @@ class CommandGroup extends Command {
     /**
      * Run a command by parsing the message's content
      */
-    async run(message: Discord.Message, args?: string[]) {
+    async run(message: Discord.Message, args: string[]) {
         if (!message.guild) {
             throw "Commands are only available on servers"
         }
         
         const locale = await LocaleProvider.guild(message.guild)
-
-        // Parse the arguments and get command
-        if (!args) {
-            args = parseArguments(message.content)
-        }
 
         const commandName = args.shift()
         const command = commandName ? this.get(commandName) : this.defaultCommand

@@ -12,7 +12,7 @@ export default class ModuleHelpEmbed extends BaseEmbed {
 
         this.setTitle(locale.translate("embed_module_help_title", module.key))
             .setDescription(moduleLocale.translate(module.desc))
-            .addField(locale.translate("embed_module_help_start"), `\`\`${process.env.DISCORD_BOT_PREFIX}modules start ${module.key} ${args}\`\``)
+            .addField(locale.translate("embed_module_help_start"), `\`\`${config.settings.commandPrefix}modules start ${module.key} ${args}\`\``)
             .addField(locale.translate("embed_module_help_features"), moduleLocale.translateArray(module.features).map(e => "• " + e).join("\n"))
     }
 }
