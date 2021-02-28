@@ -9,6 +9,11 @@ import database from "../database"
 import Guild from "../models/Guild"
 import User from "../models/User"
 import Member from "../models/Member"
+import Module from "../models/Module"
+import ModuleInstance from "../models/ModuleInstance"
+import Collection from "../lib/Collection"
+import ModuleInstanceRegistry from "../services/ModuleInstanceRegistry"
+import boot from "../boot"
 dotenv.config({ path: path.join(__dirname, "..", "..", ".env")})
 
 const rl = readline.createInterface({
@@ -29,19 +34,15 @@ function question(content: string) {
 
 const client = new Discord.Client()
 
-const issues = []
-const fixes = []
+const issues: string[] = []
+const fixes: Array<() => Promise<void>> = []
 
 /**
  * Show, fix and verify issues
  */
 makeRunnable(async () => {
     // Initialize connections
-    await run(() => Promise.all([
-        database.connect(),
-        client.login(process.env.DISCORD_BOT_TOKEN),
-        ModuleRegistry.loadModules()
-    ]), "Setup", opts)
+    await run(() => boot(client), "Setup", opts)
 
     // Audit database
     await run(audit, "Audit", opts)
@@ -84,6 +85,7 @@ async function audit() {
     await auditGuilds()
     await auditUsers()
     await auditMembers()
+    await auditModuleInstances()
 }
 
 /**
@@ -173,5 +175,30 @@ async function auditMembers() {
                 })
             }
         }))
+    }))
+}
+
+/**
+ * Search for missing static instances
+ */
+async function auditModuleInstances() {
+    await Promise.all(client.guilds.cache.map(async ({ id }) => {
+        const guild = await client.guilds.fetch(id)
+
+        const staticModules = ModuleRegistry.modules.filter(module => module.isStatic)
+        const keys = staticModules.map(module => `'${module.key}'`).join(",")
+        const moduleModels = await Module.whereAll(`key IN (${keys})`) as Collection<Module>
+
+        const instances = await ModuleInstance.findAllBy("guild_id", id) as Collection<ModuleInstance>
+
+        moduleModels.forEach(module => {
+            if (!instances.some(instance => instance.module_id === module.id)) {
+                issues.push(`Missing static module instance: '${module.key}' -> '${guild.name}'`)
+
+                fixes.push(async () => {
+                    await ModuleInstanceRegistry.guild(guild).startModule(client, module, [], false)
+                })
+            }
+        })
     }))
 }
