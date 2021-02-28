@@ -97,18 +97,6 @@ class EventManager extends Manager {
             return
         }
 
-        // Fetch the "User" role
-        const config = await Guild.config(member.guild)
-        const roles = await member.guild.roles.fetch()
-        const userRole = roles.cache.find(role => role.name === config.settings.userRole)
-
-        // Assign the user role to the new user
-        if (!userRole) {
-            console.error(`The role '${config.settings.userRole}' does not exist`)
-        } else {
-            await member.roles.add(userRole)
-        }
-
         // Create user if not exists
         let user = await User.findBy("id", member.user.id)
         if (!user) {

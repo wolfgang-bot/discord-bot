@@ -30,7 +30,7 @@ export default class UserRoleModule extends Module {
     }
 
     async start() {
-        this.assignRoleToEachUser()
+        await this.assignRoleToEachUser()
         this.context.client.on("guildMemberAdd", this.handleGuildMemberAdd)
     }
 

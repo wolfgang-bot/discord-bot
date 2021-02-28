@@ -34,6 +34,26 @@ export default class GuildController extends WebSocketController {
     }
 
     /**
+     * Get the roles of a guild
+     */
+    async getRoles(guildId: string, send: Function) {
+        const guild = await Guild.findBy("id", guildId) as Guild
+
+        if (!guild) {
+            return send(error(404))
+        }
+
+        await guild.fetchDiscordGuild(this.client)
+
+        if (!await this.socket.user.isAdmin(guild)) {
+            return send(error(403))
+        }
+
+        const roles = await guild.discordGuild.roles.fetch()
+        send(success(roles.cache))
+    }
+
+    /**
      * Get member count of guild
      */
     async getMemberCount(guildId: string, send: Function) {

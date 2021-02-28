@@ -21,11 +21,6 @@ export default class Configuration extends DefaultConfig {
                 constraints: `Must be one of: ${locales.join(", ")}`,
                 verifyConstraints: (value) => locales.includes(value)
             }),
-
-            userRole: new DescriptiveObject({
-                description: "Role each user receives when joining the guild",
-                value: "User"
-            }),
             
             colors: new DescriptiveObject({
                 description: "Color theme of the bot",

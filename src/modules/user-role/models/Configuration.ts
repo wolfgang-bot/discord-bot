@@ -1,6 +1,7 @@
 import Discord from "discord.js"
 import DefaultConfig from "../../../lib/Configuration"
 import Context from "../../../lib/Context"
+import DescriptiveObject from "../../../lib/DescriptiveObject"
 
 type ConfigProps = {
     userRole: Discord.Role
@@ -21,11 +22,16 @@ export default class Configuration extends DefaultConfig implements ConfigProps 
         const userRole = await context.guild.roles.fetch(config.userRoleId)
         return new Configuration({ userRole })
     }
+
+    static guildConfig = new DescriptiveObject({
+        value: {}
+    })
     
     userRole: Discord.Role
     
     constructor(props: ConfigProps) {
         super(props)
+        this.userRole = props.userRole
     }
 
     toJSON(): ConfigJSON {

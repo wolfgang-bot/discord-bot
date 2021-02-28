@@ -28,15 +28,19 @@ class ArgumentResolver {
             switch (argument.type) {
                 case Argument.TYPES.TEXT_CHANNEL:
                     res = await this.fetchTextChannel(raw)
+                    break
     
                 case Argument.TYPES.VOICE_CHANNEL:
                     res = await this.fetchVoiceChannel(raw)
+                    break
     
                 case Argument.TYPES.CATEGORY_CHANNEL:
                     res = await this.fetchCategoryChannel(raw)
+                    break
     
                 case Argument.TYPES.ROLE:
                     res = await this.fetchRole(raw)
+                    break
     
                 default:
                     throw new Error(`The type '${argument.type}' does not exist`)
