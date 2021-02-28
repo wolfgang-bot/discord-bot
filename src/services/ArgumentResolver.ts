@@ -21,19 +21,39 @@ class ArgumentResolver {
     /**
      * Convert a text based argument (e.g. an id) to the corresponding object
      */
-    resolveArgument(argument: Argument, raw: string): Promise<ArgumentResolveTypes> {
-        switch (argument.type) {
-            case Argument.TYPES.TEXT_CHANNEL:
-                return this.fetchTextChannel(raw)
+    async resolveArgument(argument: Argument, raw: string): Promise<ArgumentResolveTypes> {
+        try {
+            let res: any
 
-            case Argument.TYPES.VOICE_CHANNEL:
-                return this.fetchVoiceChannel(raw)
+            switch (argument.type) {
+                case Argument.TYPES.TEXT_CHANNEL:
+                    res = await this.fetchTextChannel(raw)
+    
+                case Argument.TYPES.VOICE_CHANNEL:
+                    res = await this.fetchVoiceChannel(raw)
+    
+                case Argument.TYPES.CATEGORY_CHANNEL:
+                    res = await this.fetchCategoryChannel(raw)
+    
+                case Argument.TYPES.ROLE:
+                    res = await this.fetchRole(raw)
+    
+                default:
+                    throw new Error(`The type '${argument.type}' does not exist`)
+            }
 
-            case Argument.TYPES.CATEGORY_CHANNEL:
-                return this.fetchCategoryChannel(raw)
+            if (!res) {
+                throw new Error("Entity does not exist")
+            }
 
-            default:
-                throw new Error(`The type '${argument.type}' does not exist`)
+            return res
+        } catch (error) {
+            if (process.env.NODE_ENV === "development") {
+                console.log(error)
+            }
+
+            const locale = await LocaleProvider.guild(this.guild)
+            throw locale.translate("error_does_not_exist", raw)
         }
     }
 
@@ -44,8 +64,7 @@ class ArgumentResolver {
         const channel = this.guild.channels.cache.get(id)
 
         if (!channel || channel.type !== "text") {
-            const locale = await LocaleProvider.guild(this.guild)
-            throw locale.translate("error_text_channel_does_not_exist", id)
+            return
         }
 
         return channel as Discord.TextChannel
@@ -58,8 +77,7 @@ class ArgumentResolver {
         const channel = this.guild.channels.cache.get(id)
 
         if (!channel || channel.type !== "voice") {
-            const locale = await LocaleProvider.guild(this.guild)
-            throw locale.translate("error_voice_channel_does_not_exist", id)
+            return
         }
 
         return channel as Discord.VoiceChannel
@@ -72,11 +90,19 @@ class ArgumentResolver {
         const channel = this.guild.channels.cache.get(id)
 
         if (!channel || channel.type !== "category") {
-            const locale = await LocaleProvider.guild(this.guild)
-            throw locale.translate("error_category_does_not_exist", id)
+            return
         }
 
         return channel as Discord.CategoryChannel
+    }
+
+    /**
+     * Fetch a role by id
+     */
+    async fetchRole(id: string) {
+        const role = this.guild.roles.cache.get(id)
+
+        return role ? role : null
     }
 }
 

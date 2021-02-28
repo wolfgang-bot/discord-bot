@@ -107,9 +107,7 @@ error_command_does_not_exist: The command '{0}' does not exist
 error_module_does_not_exist: The module '{0}' does not exist
 error_key_does_not_exist: The key '{0}' does not exist
 error_locale_does_not_exist: The locale '{0}' does not exist
-error_text_channel_does_not_exist: The text channel '{0}' does not exist
-error_voice_channel_does_not_exist: The voice channel '{0}' does not exist
-error_category_does_not_exist: The category '{0}' does not exist
+error_does_not_exist: "'{0}' doest not exist"
 
 # Misc
 error_missing_argument: "Missing argument: '{0}'"
