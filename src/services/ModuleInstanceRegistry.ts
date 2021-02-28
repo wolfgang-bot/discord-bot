@@ -199,7 +199,7 @@ class ModuleInstanceRegistry {
         
         const module = ModuleInstanceRegistry.moduleRegistry.getModule(model)
         if (module.isStatic) {
-            throw locale.translate("error_module_doest_not_exist", module.key)
+            throw locale.translate("error_module_does_not_exist", module.key)
         }
 
         if (!moduleInstance) {
@@ -221,7 +221,7 @@ class ModuleInstanceRegistry {
 
         const module = ModuleInstanceRegistry.moduleRegistry.getModule(moduleModel)
         if (module.isStatic) {
-            throw locale.translate("error_module_doest_not_exist", module.key)
+            throw locale.translate("error_module_does_not_exist", module.key)
         }
 
         const model = await ModuleInstanceModel.where(`module_id = '${moduleModel.id}' AND guild_id = '${this.guild.id}'`) as ModuleInstanceModel
