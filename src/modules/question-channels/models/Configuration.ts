@@ -5,22 +5,38 @@ import DescriptiveObject from "../../../lib/DescriptiveObject"
 import { emojiConstraint } from "../../../lib/constraints"
 
 type ConfigProps = {
-    channel: Discord.TextChannel
-    helpMessage: Discord.Message
-    channelName?: string
-    resolveReaction?: string
-    deleteMessage?: string
-    acceptReputation?: number
-    messageReputation?: number
-    messageReputationTimeout?: number
-    askChannelRateLimit?: number
+    channel: Discord.TextChannel,
+    helpMessage: Discord.Message,
+    channelName: string,
+    resolveReaction: string,
+    deleteMessage: string,
+    acceptReputation: number,
+    messageReputation: number,
+    messageReputationTimeout: number,
+    askChannelRateLimit: number
 }
 
-type ConfigArgs = [Discord.TextChannel, Discord.Message]
+type ConfigArgs = [
+    Discord.TextChannel,
+    string,
+    string,
+    string,
+    number,
+    number,
+    number,
+    number
+]
 
 type ConfigJSON = {
-    channelId: string
-    helpMessageId: string
+    channelId: string,
+    helpMessageId: string,
+    channelName: string,
+    resolveReaction: string,
+    deleteMessage: string,
+    acceptReputation: number,
+    messageReputation: number,
+    messageReputationTimeout: number,
+    askChannelRateLimit: number
 }
 
 export default class Configuration extends DefaultConfig implements ConfigProps {
@@ -35,53 +51,60 @@ export default class Configuration extends DefaultConfig implements ConfigProps 
     askChannelRateLimit: number
 
     static guildConfig = new DescriptiveObject({
-        value: {
-            channelName: new DescriptiveObject({
-                description: "Template for the question channel names ('{}' will be replaced by the author's username)",
-                value: "❓┃{}"
-            }),
-
-            resolveReaction: new DescriptiveObject({
-                description: "Name of the reaction a question's author has to give the to an answer to resolve the channel",
-                value: "✅",
-                ...emojiConstraint
-            }),
-
-            deleteMessage: new DescriptiveObject({
-                description: "Content of the message a question's author has to sent into the question channel to delete it",
-                value: "❌"
-            }),
-
-            acceptReputation: new DescriptiveObject({
-                description: "Amount of reputation a user receives when his message is marked as the answer",
-                value: 10
-            }),
-
-            messageReputation: new DescriptiveObject({
-                description: "Amount of reputation a user receives when sending a message into a question channel",
-                value: 1
-            }),
-
-            messageReputationTimeout: new DescriptiveObject({
-                description: "Duration of the timeout a user receives for receiving points by sending a message into a question channel (in ms)",
-                value: 7500
-            }),
-
-            askChannelRateLimit: new DescriptiveObject({
-                description: "Duration of the rate limit the ask-channel receives when initializing the module",
-                value: 300
-            })
-        }
+        value: {}
     })
 
-    static fromArgs(args: ConfigArgs) {
-        return new Configuration({ channel: args[0], helpMessage: args[1] })
+    static fromArgs([
+        channel,
+        channelName,
+        resolveReaction,
+        deleteMessage,
+        acceptReputation,
+        messageReputation,
+        messageReputationTimeout,
+        askChannelRateLimit
+    ]: ConfigArgs) {
+        if (!emojiConstraint.verifyConstraints(resolveReaction)) {
+            throw emojiConstraint.constraints
+        }
+
+        return new Configuration({
+            channel,
+            helpMessage: null,
+            channelName,
+            resolveReaction,
+            deleteMessage,
+            acceptReputation,
+            messageReputation,
+            messageReputationTimeout,
+            askChannelRateLimit
+        })
     }
 
-    static async fromJSON(context: Context, object: ConfigJSON) {
-        const channel = await context.guild.channels.cache.get(object.channelId) as Discord.TextChannel
-        const helpMessage = await channel.messages.fetch(object.helpMessageId)
-        return new Configuration({ channel, helpMessage })
+    static async fromJSON(context: Context, {
+        channelId,
+        helpMessageId,
+        channelName,
+        resolveReaction,
+        deleteMessage,
+        acceptReputation,
+        messageReputation,
+        messageReputationTimeout,
+        askChannelRateLimit
+    }: ConfigJSON) {
+        const channel = context.guild.channels.cache.get(channelId) as Discord.TextChannel
+        const helpMessage = await channel.messages.fetch(helpMessageId)
+        return new Configuration({
+            channel,
+            helpMessage,
+            channelName,
+            resolveReaction,
+            deleteMessage,
+            acceptReputation,
+            messageReputation,
+            messageReputationTimeout,
+            askChannelRateLimit
+        })
     }
 
     constructor(props: ConfigProps) {
@@ -89,12 +112,26 @@ export default class Configuration extends DefaultConfig implements ConfigProps 
 
         this.channel = props.channel
         this.helpMessage = props.helpMessage
+        this.channelName = props.channelName
+        this.resolveReaction = props.resolveReaction
+        this.deleteMessage = props.deleteMessage
+        this.acceptReputation = props.acceptReputation
+        this.messageReputation = props.messageReputation
+        this.messageReputationTimeout = props.messageReputationTimeout
+        this.askChannelRateLimit = props.askChannelRateLimit
     }
 
     toJSON(): ConfigJSON {
         return {
             channelId: this.channel.id,
-            helpMessageId: this.helpMessage.id
+            helpMessageId: this.helpMessage.id,
+            channelName: this.channelName,
+            resolveReaction: this.resolveReaction,
+            deleteMessage: this.deleteMessage,
+            acceptReputation: this.acceptReputation,
+            messageReputation: this.messageReputation,
+            messageReputationTimeout: this.messageReputationTimeout,
+            askChannelRateLimit: this.askChannelRateLimit
         }
     }
 }

@@ -28,7 +28,7 @@ export default class Configuration extends DefaultConfig implements ConfigProps 
 
     static fromArgs([parentChannel, defaultChannels, channelName]: ConfigArgs) {
         if (defaultChannels <= 0) {
-            throw new Error("Amount of voicechannels must be greater than 0")
+            throw "Amount of voicechannels must be greater than 0"
         }
 
         return new Configuration({

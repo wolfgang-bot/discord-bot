@@ -17,6 +17,34 @@ meta_features:
 arg_question_channel_display_name: Question Channel
 arg_question_channel_desc: The channel in which questions can be asked.
 
+# Channel Name
+arg_channel_name_name: Channel Name
+arg_channel_name_desc: Template for the question channel names ('{}' will be replaced by the author's username)
+
+# Resolve Reaction
+arg_resolve_reaction_name: Resolve Reaction
+arg_resolve_reaction_desc: Name of the reaction a question's author has to give to an answer to resolve the channel
+
+# Delete Message
+arg_delete_message_name: Delete Message
+arg_delete_message_desc: Content of the message a question's author has to sent into the question channel to delete it
+
+# Accept Reputation
+arg_accept_reputation_name: Accept Reputation
+arg_accept_reputation_desc: Amount of reputation a user receives when his message is marked as the answer
+
+# Message Reputation
+arg_message_reputation_name: Message Reputation
+arg_message_reputation_desc: Amount of reputation a user receives when sending a message into a question channel
+
+# Message Reputation Timeout
+arg_message_reputation_timeout_name: Message Reputation Timeout
+arg_message_reputation_timeout_desc: Duration of the timeout a user receives for receiving points by sending a message into a question channel (in ms)
+
+# Ask Channel Rate Limit
+arg_ask_channel_rate_limit_name: Ask Channel Rate Limit
+arg_ask_channel_rate_limit_desc: Duration of the rate limit the ask-channel receives when initializing the module
+
 #
 # Embeds
 #

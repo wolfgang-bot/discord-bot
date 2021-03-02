@@ -20,16 +20,15 @@ type ActiveChannelsMap = {
 }
 
 class ChannelManager extends Manager {
-    channel: Discord.TextChannel
+    config: Configuration
     guildConfig: any
     activeChannels: ActiveChannelsMap = {}
     timeoutUsers: Set<string> = new Set
-    config: Configuration
 
     constructor(context: Context, config: Configuration) {
         super(context)
 
-        this.channel = config.channel
+        this.config = config
 
         this.handleMessage = this.handleMessage.bind(this)
         this.handleReaction = this.handleReaction.bind(this)
@@ -41,7 +40,7 @@ class ChannelManager extends Manager {
         }
 
         // Create a new question channel
-        if (message.channel.id === this.channel.id) {
+        if (message.channel.id === this.config.channel.id) {
             await this.createChannel(message)
             return
         }
@@ -140,11 +139,11 @@ class ChannelManager extends Manager {
         const channelName = this.config.channelName.replace(/{}/g, message.author.username)
         const lines = message.content.split("\n")
         const channelOptions = {
-            parent: this.channel.parent.id,
+            parent: this.config.channel.parent.id,
             reason: `Question Channels Module: Channel Manager (Invoked by '${message.author.username}' - '${message.author.id}')`,
             topic: lines.length > 1 ? lines[0] : ""
         }
-        const newChannel = await this.channel.guild.channels.create(channelName, channelOptions)
+        const newChannel = await this.config.channel.guild.channels.create(channelName, channelOptions)
         
         // Send message of user as embed into new channel
         const question = await newChannel.send(new QuestionEmbed(this.guildConfig, locale, message))
@@ -194,7 +193,6 @@ class ChannelManager extends Manager {
     
     async init() {
         this.guildConfig = await Guild.config(this.context.guild)
-        this.config = this.guildConfig["question-channels"]
 
         await this.loadActiveChannels()
 
