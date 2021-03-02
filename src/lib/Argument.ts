@@ -8,10 +8,11 @@ export enum TYPES {
 }
 
 export type ArgumentProps = {
-    type: TYPES
-    key: string
-    name: string
-    desc: string
+    type: TYPES,
+    key: string,
+    name: string,
+    desc: string,
+    defaultValue?: any
 }
 
 class Argument implements ArgumentProps {
@@ -19,6 +20,7 @@ class Argument implements ArgumentProps {
     key: string
     name: string
     desc: string
+    defaultValue?: any
     
     static TYPES = TYPES
 
@@ -27,6 +29,7 @@ class Argument implements ArgumentProps {
         this.key = props.key
         this.name = props.name
         this.desc = props.desc
+        this.defaultValue = props.defaultValue
     }
 
     clone() {
@@ -34,7 +37,8 @@ class Argument implements ArgumentProps {
             type: this.type,
             key: this.key,
             name: this.name,
-            desc: this.desc
+            desc: this.desc,
+            defaultValue: this.defaultValue
         })
     }
 }

@@ -20,13 +20,15 @@ import VoiceChannelManager from "./managers/VoiceChannelManager"
     type: ARGUMENT_TYPES.NUMBER,
     key: "amount_of_voicechannels",
     name: "arg_amount_of_voicechannels_name",
-    desc: "arg_amount_of_voicechannels_desc"
+    desc: "arg_amount_of_voicechannels_desc",
+    defaultValue: 3
 })
 @argument({
     type: ARGUMENT_TYPES.STRING,
     key: "channel_name",
     name: "arg_channel_name_name",
-    desc: "arg_channel_name_desc"
+    desc: "arg_channel_name_desc",
+    defaultValue: "🔊┃voice {}"
 })
 class DynamicVoicechannelsModule extends Module {
     static makeConfigFromArgs = Configuration.fromArgs
