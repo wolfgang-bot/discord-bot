@@ -26,6 +26,10 @@ class ArgumentResolver {
             let res: any
 
             switch (argument.type) {
+                case Argument.TYPES.NUMBER:
+                    res = parseInt(raw)
+                    break
+
                 case Argument.TYPES.TEXT_CHANNEL:
                     res = await this.fetchTextChannel(raw)
                     break
@@ -46,7 +50,7 @@ class ArgumentResolver {
                     throw new Error(`The type '${argument.type}' does not exist`)
             }
 
-            if (!res) {
+            if (!res && res !== 0) {
                 throw new Error("Entity does not exist")
             }
 

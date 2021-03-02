@@ -5,8 +5,9 @@ abstract class Manager {
     context: Context
     config: Configuration
 
-    constructor(context: Context) {
+    constructor(context: Context, config?: Configuration) {
         this.context = context
+        this.config = config
     }
 
     abstract init(): Promise<void>

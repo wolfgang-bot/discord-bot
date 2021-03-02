@@ -13,7 +13,7 @@ export function argument(props: ArgumentProps) {
         if (!module.args) {
             module.args = []
         }
-        module.args.push(new Argument(props))
+        module.args.unshift(new Argument(props))
     }
 }
 
