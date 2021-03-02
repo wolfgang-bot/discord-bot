@@ -22,6 +22,12 @@ import VoiceChannelManager from "./managers/VoiceChannelManager"
     name: "arg_amount_of_voicechannels_name",
     desc: "arg_amount_of_voicechannels_desc"
 })
+@argument({
+    type: ARGUMENT_TYPES.STRING,
+    key: "channel_name",
+    name: "arg_channel_name_name",
+    desc: "arg_channel_name_desc"
+})
 class DynamicVoicechannelsModule extends Module {
     static makeConfigFromArgs = Configuration.fromArgs
     static makeConfigFromJSON = Configuration.fromJSON

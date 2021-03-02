@@ -6,14 +6,15 @@ import DescriptiveObject from "../../../lib/DescriptiveObject"
 type ConfigProps = {
     parentChannel: Discord.CategoryChannel
     defaultChannels: number
-    channelName?: string
+    channelName: string
 }
 
-type ConfigArgs = [Discord.CategoryChannel, number]
+type ConfigArgs = [Discord.CategoryChannel, number, string]
 
 type ConfigJSON = {
     parentChannelId: string,
-    defaultChannels: number
+    defaultChannels: number,
+    channelName: string
 }
 
 export default class Configuration extends DefaultConfig implements ConfigProps {
@@ -22,40 +23,46 @@ export default class Configuration extends DefaultConfig implements ConfigProps 
     channelName: string
 
     static guildConfig = new DescriptiveObject({
-        value: {
-            channelName: new DescriptiveObject({
-                description: "Template for the voice channel names ('{}' will be replaced with channels index)",
-                value: "🔊┃voice {}"
-            })
-        }
+        value: {}
     })
 
-    static fromArgs([parentChannel, defaultChannels]: ConfigArgs) {
+    static fromArgs([parentChannel, defaultChannels, channelName]: ConfigArgs) {
         if (defaultChannels <= 0) {
             throw new Error("Amount of voicechannels must be greater than 0")
         }
 
-        return new Configuration({ parentChannel, defaultChannels })
+        return new Configuration({
+            parentChannel,
+            defaultChannels,
+            channelName
+        })
     }
 
     static async fromJSON(context: Context, {
         parentChannelId,
-        defaultChannels
+        defaultChannels,
+        channelName
     }: ConfigJSON) {
         const parentChannel = context.guild.channels.cache.get(parentChannelId) as Discord.CategoryChannel
-        return new Configuration({ parentChannel, defaultChannels })
+        return new Configuration({
+            parentChannel,
+            defaultChannels,
+            channelName
+        })
     }
     
     constructor(props: ConfigProps) {
         super(props)
         this.parentChannel = props.parentChannel
         this.defaultChannels = props.defaultChannels
+        this.channelName = props.channelName
     }
 
     toJSON(): ConfigJSON {
         return {
             parentChannelId: this.parentChannel.id,
-            defaultChannels: this.defaultChannels
+            defaultChannels: this.defaultChannels,
+            channelName: this.channelName
         }
     }
 }

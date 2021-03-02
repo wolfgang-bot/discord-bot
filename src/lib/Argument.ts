@@ -1,4 +1,5 @@
 export enum TYPES {
+    STRING = "string",
     NUMBER = "number",
     TEXT_CHANNEL = "text_channel",
     VOICE_CHANNEL = "voice_channel",

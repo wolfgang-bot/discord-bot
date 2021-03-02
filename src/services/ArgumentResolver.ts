@@ -26,10 +26,14 @@ class ArgumentResolver {
             let res: any
 
             switch (argument.type) {
+                case Argument.TYPES.STRING:
+                    res = raw
+                    break
+
                 case Argument.TYPES.NUMBER:
                     res = parseInt(raw)
                     break
-
+                
                 case Argument.TYPES.TEXT_CHANNEL:
                     res = await this.fetchTextChannel(raw)
                     break
