@@ -6,13 +6,11 @@ import Configuration from "../models/Configuration"
 
 class VoiceChannelManager extends Manager {
     config: Configuration
-    parentChannel: Discord.CategoryChannel
+    otherConfig: Configuration
     channels: Discord.VoiceChannel[] = []
 
-    constructor(context: Context, parentChannel: Discord.CategoryChannel) {
-        super(context)
-
-        this.parentChannel = parentChannel
+    constructor(context: Context, config: Configuration) {
+        super(context, config)
 
         this.updateVoiceChannels = this.updateVoiceChannels.bind(this)
     }
@@ -23,15 +21,15 @@ class VoiceChannelManager extends Manager {
             .filter(channel => (
                 channel.type === "voice" &&
                 channel.parent &&
-                channel.parent.id === this.parentChannel.id
+                channel.parent.id === this.config.parentChannel.id
             )) as Discord.VoiceChannel[]
     }
 
     async createVoiceChannel(index: number) {
-        const name = this.config.channelName.replace(/{}/g, (index + 1).toString())
+        const name = this.otherConfig.channelName.replace(/{}/g, (index + 1).toString())
         const channel = await this.context.guild.channels.create(name, {
             type: "voice",
-            parent: this.parentChannel,
+            parent: this.config.parentChannel,
             position: index
         })
         this.channels[index] = channel
@@ -61,7 +59,7 @@ class VoiceChannelManager extends Manager {
     }
 
     async init() {
-        this.config = (await Guild.config(this.context.guild))["dynamic-voicechannels"]
+        this.otherConfig = (await Guild.config(this.context.guild))["dynamic-voicechannels"]
 
         this.channels = this.getVoiceChannels()
         

@@ -16,6 +16,12 @@ import VoiceChannelManager from "./managers/VoiceChannelManager"
     name: "arg_category_channel_display_name",
     desc: "arg_category_channel_desc"
 })
+@argument({
+    type: ARGUMENT_TYPES.NUMBER,
+    key: "amount_of_voicechannels",
+    name: "arg_amount_of_voicechannels_name",
+    desc: "arg_amount_of_voicechannels_desc"
+})
 class DynamicVoicechannelsModule extends Module {
     static makeConfigFromArgs = Configuration.fromArgs
     static makeConfigFromJSON = Configuration.fromJSON
@@ -24,7 +30,7 @@ class DynamicVoicechannelsModule extends Module {
     config: Configuration
 
     async start() {
-        this.voiceChannelManager = new VoiceChannelManager(this.context, this.config.parentChannel)
+        this.voiceChannelManager = new VoiceChannelManager(this.context, this.config)
         
         await this.voiceChannelManager.init()
     }
