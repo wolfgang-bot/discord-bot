@@ -2,7 +2,13 @@ import Discord from "discord.js"
 import Argument from "../lib/Argument"
 import LocaleProvider from "./LocaleProvider"
 
-export type ArgumentResolveTypes = Discord.TextChannel | Discord.VoiceChannel | Discord.CategoryChannel
+export type ArgumentResolveTypes =
+    string |
+    number |
+    Discord.TextChannel |
+    Discord.VoiceChannel |
+    Discord.CategoryChannel |
+    Discord.Role
 
 class ArgumentResolver {
     guild: Discord.Guild
@@ -21,41 +27,20 @@ class ArgumentResolver {
     /**
      * Convert a text based argument (e.g. an id) to the corresponding object
      */
-    async resolveArgument(argument: Argument, raw: string): Promise<ArgumentResolveTypes> {
+    async resolveArgument(argument: Argument, raw: string | string[]): Promise<ArgumentResolveTypes | ArgumentResolveTypes[]> {
         try {
-            let res: any
+            if (Array.isArray(raw)) {
+                if (!argument.isArray) {
+                    throw "Argument is not an array"
+                }
 
-            switch (argument.type) {
-                case Argument.TYPES.STRING:
-                    res = raw
-                    break
-
-                case Argument.TYPES.NUMBER:
-                    res = parseInt(raw)
-                    break
-                
-                case Argument.TYPES.TEXT_CHANNEL:
-                    res = await this.fetchTextChannel(raw)
-                    break
-    
-                case Argument.TYPES.VOICE_CHANNEL:
-                    res = await this.fetchVoiceChannel(raw)
-                    break
-    
-                case Argument.TYPES.CATEGORY_CHANNEL:
-                    res = await this.fetchCategoryChannel(raw)
-                    break
-    
-                case Argument.TYPES.ROLE:
-                    res = await this.fetchRole(raw)
-                    break
-    
-                default:
-                    throw new Error(`The type '${argument.type}' does not exist`)
+                return await this.resolveArray(argument, raw)
             }
 
+            const res = await this.resolveSingle(argument, raw)
+
             if (!res && res !== 0) {
-                throw new Error("Entity does not exist")
+                throw "Entity does not exist"
             }
 
             return res
@@ -65,7 +50,54 @@ class ArgumentResolver {
             }
 
             const locale = await LocaleProvider.guild(this.guild)
-            throw locale.translate("error_does_not_exist", raw)
+
+            throw locale.translate(
+                "error_does_not_exist",
+                Array.isArray(raw) ? raw.join(", ") : raw
+            )
+        }
+    }
+
+    /**
+     * Resolve an array of values
+     */
+    async resolveArray(argument: Argument, raw: string[]): Promise<ArgumentResolveTypes[]> {
+        return await Promise.all(raw.map(async value => {
+            const resolved = await this.resolveArgument(argument, value)
+
+            if (Array.isArray(resolved)) {
+                throw "Nested arrays are not supported"
+            }
+
+            return resolved
+        }))
+    }
+
+    /**
+     * Resolve a single value
+     */
+    async resolveSingle(argument: Argument, raw: string): Promise<ArgumentResolveTypes> {
+        switch (argument.type) {
+            case Argument.TYPES.STRING:
+                return raw
+
+            case Argument.TYPES.NUMBER:
+                return parseInt(raw)
+
+            case Argument.TYPES.TEXT_CHANNEL:
+                return await this.fetchTextChannel(raw)
+
+            case Argument.TYPES.VOICE_CHANNEL:
+                return await this.fetchVoiceChannel(raw)
+
+            case Argument.TYPES.CATEGORY_CHANNEL:
+                return await this.fetchCategoryChannel(raw)
+
+            case Argument.TYPES.ROLE:
+                return await this.fetchRole(raw)
+
+            default:
+                throw new Error(`The type '${argument.type}' does not exist`)
         }
     }
 

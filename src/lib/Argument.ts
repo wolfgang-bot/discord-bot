@@ -9,6 +9,7 @@ export enum TYPES {
 
 export type ArgumentProps = {
     type: TYPES,
+    isArray?: boolean,
     key: string,
     name: string,
     desc: string,
@@ -17,6 +18,7 @@ export type ArgumentProps = {
 
 class Argument implements ArgumentProps {
     type: TYPES
+    isArray: boolean = false
     key: string
     name: string
     desc: string
@@ -26,6 +28,7 @@ class Argument implements ArgumentProps {
 
     constructor(props: ArgumentProps) {
         this.type = props.type
+        this.isArray = props.isArray
         this.key = props.key
         this.name = props.name
         this.desc = props.desc
@@ -35,6 +38,7 @@ class Argument implements ArgumentProps {
     clone() {
         return new Argument({
             type: this.type,
+            isArray: this.isArray,
             key: this.key,
             name: this.name,
             desc: this.desc,
