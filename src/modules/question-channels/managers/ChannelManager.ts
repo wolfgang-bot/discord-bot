@@ -2,13 +2,13 @@ import Discord from "discord.js"
 import Context from "../../../lib/Context"
 import Manager from "../../../lib/Manager"
 import LocaleProvider from "../../../services/LocaleProvider"
-import Guild from "../../../models/Guild"
 import Module from "../../../models/Module"
 import ModuleInstance from "../../../models/ModuleInstance"
 import QuestionEmbed from "../embeds/QuestionEmbed"
 import NotificationEmbed from "../embeds/NotificationEmbed"
 import ActiveChannel, { ActiveChannelJSON } from "../models/ActiveChannel"
 import Configuration from "../models/Configuration"
+import SettingsConfig from "../../settings/models/Configuration"
 import { checkPermissions } from "../../../utils"
 
 type InstanceData = {
@@ -21,7 +21,7 @@ type ActiveChannelsMap = {
 
 class ChannelManager extends Manager {
     config: Configuration
-    guildConfig: any
+    settings: SettingsConfig
     activeChannels: ActiveChannelsMap = {}
     timeoutUsers: Set<string> = new Set
 
@@ -146,11 +146,11 @@ class ChannelManager extends Manager {
         const newChannel = await this.config.channel.guild.channels.create(channelName, channelOptions)
         
         // Send message of user as embed into new channel
-        const question = await newChannel.send(new QuestionEmbed(this.guildConfig, locale, message))
+        const question = await newChannel.send(new QuestionEmbed(this.settings, locale, message))
         await question.pin()
 
         // Send user a notification
-        await dm.send(new NotificationEmbed(this.guildConfig, locale, this.context.guild))
+        await dm.send(new NotificationEmbed(this.settings, locale, this.context.guild))
 
         this.activeChannels[newChannel.id] = new ActiveChannel({
             channel: newChannel,
@@ -192,7 +192,7 @@ class ChannelManager extends Manager {
     }
     
     async init() {
-        this.guildConfig = await Guild.config(this.context.guild)
+        this.settings = await ModuleInstance.config(this.context.guild, "settings") as SettingsConfig
 
         await this.loadActiveChannels()
 

@@ -4,7 +4,8 @@ import fetch from "node-fetch"
 import Command from "../../../lib/Command"
 import ProfileCard from "../profile-card"
 import Member from "../../../models/Member"
-import Guild from "../../../models/Guild"
+import ModuleInstance from "../../../models/ModuleInstance"
+import SettingsConfig from "../../settings/models/Configuration"
 
 export default class ProfileCommand extends Command {
     name = "profile"
@@ -22,13 +23,13 @@ export default class ProfileCommand extends Command {
 
         await member.fetchDiscordUser(message.client)
 
-        const config = await Guild.config(message.guild)
+        const settings = await ModuleInstance.config(message.guild, "settings") as SettingsConfig
 
         // Fetch avatar image
         const res = await fetch(member.discordUser.displayAvatarURL({ format: "png" }))
         const base64 = (await res.buffer()).toString("base64")
 
-        const svg = new ProfileCard(config, member, base64).toString()
+        const svg = new ProfileCard(settings, member, base64).toString()
         const buffer = Buffer.from(svg, "utf-8")
 
         const image = await sharp(buffer).png().toBuffer()

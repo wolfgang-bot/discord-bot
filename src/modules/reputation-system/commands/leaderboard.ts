@@ -4,7 +4,8 @@ import Collection from "../../../lib/Collection"
 import LocaleProvider from "../../../services/LocaleProvider"
 import Member from "../../../models/Member"
 import LeaderboardEmbed from "../embeds/LeaderboardEmbed"
-import Guild from "../../../models/Guild"
+import ModuleInstance from "../../../models/ModuleInstance"
+import SettingsConfig from "../../settings/models/Configuration"
 
 export default class LeaderboardCommand extends Command {
     name = "leaderboard"
@@ -19,8 +20,8 @@ export default class LeaderboardCommand extends Command {
 
         await members.mapAsync(member => member.fetchDiscordUser(message.client))
 
-        const config = await Guild.config(message.guild)
+        const settings = await ModuleInstance.config(message.guild, "settings") as SettingsConfig
 
-        await message.channel.send(new LeaderboardEmbed(config, locale, members))
+        await message.channel.send(new LeaderboardEmbed(settings, locale, members))
     }
 }

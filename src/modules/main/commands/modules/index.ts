@@ -1,6 +1,5 @@
 import Discord from "discord.js"
 import CommandGroup from "../../../../lib/CommandGroup"
-import ConfigCommand from "./config"
 import HelpCommand from "./help"
 import ListCommand from "./list"
 import StartCommand from "./start"
@@ -17,7 +16,6 @@ export default class ModulesCommandGroup extends CommandGroup {
 
     constructor() {
         super([
-            new ConfigCommand(),
             new HelpCommand(),
             new ListCommand(),
             new StartCommand(),

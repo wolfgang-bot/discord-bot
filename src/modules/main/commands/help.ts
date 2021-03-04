@@ -5,7 +5,8 @@ import CommandRegistry from "../../../services/CommandRegistry"
 import LocaleProvider from "../../../services/LocaleProvider"
 import HelpEmbed from "../embeds/HelpEmbed"
 import HelpCommandEmbed from "../embeds/HelpCommandEmbed"
-import Guild from "../../../models/Guild"
+import SettingsConfig from "../../../modules/settings/models/Configuration"
+import ModuleInstance from "../../../models/ModuleInstance"
 
 export default class HelpCommand extends Command {
     name = "help"
@@ -14,14 +15,14 @@ export default class HelpCommand extends Command {
     arguments = "command_help_args"
 
     async run(message: Discord.Message, args: string[]) {
-        const config = await Guild.config(message.guild)
+        const settings = await ModuleInstance.config(message.guild, "settings") as SettingsConfig
         const locale = await LocaleProvider.guild(message.guild)
 
         let embed: HelpEmbed | HelpCommandEmbed
 
         if (!args[0]) {
             const groups = CommandRegistry.guild(message.guild).getGroups()
-            embed = new HelpEmbed(config, locale, groups)
+            embed = new HelpEmbed(settings, locale, groups)
         } else {
             let command: Command = CommandRegistry.guild(message.guild)
 
@@ -40,7 +41,7 @@ export default class HelpCommand extends Command {
                 return
             }
 
-            embed = new HelpCommandEmbed(config, locale, command)
+            embed = new HelpCommandEmbed(settings, locale, command)
         }
 
         await message.channel.send(embed)

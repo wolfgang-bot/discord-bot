@@ -5,7 +5,8 @@ import LocaleProvider from "../../services/LocaleProvider"
 import Configuration from "./models/Configuration"
 import ChannelManager from "./managers/ChannelManager"
 import HelpEmbed from "./embeds/HelpEmbed"
-import Guild from "../../models/Guild"
+import ModuleInstance from "../../models/ModuleInstance"
+import SettingsConfig from "../settings/models/Configuration"
 
 @module({
     key: "question-channels",
@@ -78,12 +79,12 @@ class QuestionChannelsModule extends Module {
     async start() {
         this.channelManager = new ChannelManager(this.context, this.config)
 
-        const guildConfig = await Guild.config(this.context.guild)
+        const settings = await ModuleInstance.config(this.context.guild, "settings") as SettingsConfig
         const locale = (await LocaleProvider.guild(this.context.guild)).scope("question-channels")
 
         // Send help embed into channel if hasn't already
         if (!this.config.helpMessage) {
-            this.config.helpMessage = await this.config.channel.send(new HelpEmbed(guildConfig, locale))
+            this.config.helpMessage = await this.config.channel.send(new HelpEmbed(settings, locale))
         }
 
         await this.config.channel.setRateLimitPerUser(this.config.askChannelRateLimit)

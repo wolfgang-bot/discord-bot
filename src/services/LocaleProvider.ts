@@ -3,7 +3,8 @@ import fs from "fs"
 import glob from "glob-promise"
 import yaml from "yaml"
 import Discord from "discord.js"
-import Guild from "../models/Guild"
+import ModuleInstance from "../models/ModuleInstance"
+import SettingsConfig from "../modules/settings/models/Configuration"
 
 type ScopeMap = {
     [scope: string]: LocaleMap
@@ -88,8 +89,8 @@ class LocaleProvider {
      * Create an instance of this class which uses the guild's language stored in the database
      */
     static async guild(guild: Discord.Guild) {
-        const config = await Guild.config(guild)
-        return new LocaleProvider(config.settings.locale)
+        const settings = await ModuleInstance.config(guild, "settings") as SettingsConfig
+        return new LocaleProvider(settings.locale)
     }
 
     constructor(

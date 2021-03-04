@@ -8,7 +8,8 @@ export type ArgumentResolveTypes =
     Discord.TextChannel |
     Discord.VoiceChannel |
     Discord.CategoryChannel |
-    Discord.Role
+    Discord.Role |
+    ArgumentResolveTypes[]
 
 class ArgumentResolver {
     guild: Discord.Guild
@@ -27,7 +28,7 @@ class ArgumentResolver {
     /**
      * Convert a text based argument (e.g. an id) to the corresponding object
      */
-    async resolveArgument(argument: Argument, raw: string | string[]): Promise<ArgumentResolveTypes | ArgumentResolveTypes[]> {
+    async resolveArgument(argument: Argument, raw: string | string[]): Promise<ArgumentResolveTypes> {
         try {
             if (Array.isArray(raw)) {
                 if (!argument.isArray) {
@@ -37,7 +38,9 @@ class ArgumentResolver {
                 return await this.resolveArray(argument, raw)
             }
 
-            const res = await this.resolveSingle(argument, raw)
+            const res = argument.isSelect ?
+                await this.resolveSelect(argument, raw) :
+                await this.resolveSingle(argument, raw)
 
             if (!res && res !== 0) {
                 throw "Entity does not exist"
@@ -61,16 +64,21 @@ class ArgumentResolver {
     /**
      * Resolve an array of values
      */
-    async resolveArray(argument: Argument, raw: string[]): Promise<ArgumentResolveTypes[]> {
-        return await Promise.all(raw.map(async value => {
-            const resolved = await this.resolveArgument(argument, value)
+    async resolveArray(argument: Argument, raw: string[]) {
+        return await Promise.all(raw.map(async value => (
+            await this.resolveArgument(argument, value)
+        )))
+    }
 
-            if (Array.isArray(resolved)) {
-                throw "Nested arrays are not supported"
-            }
+    /**
+     * Resolve an argument tagged as select
+     */
+    async resolveSelect(argument: Argument, raw: string) {
+        if (!argument.selectOptions.includes(raw)) {
+            return
+        }
 
-            return resolved
-        }))
+        return this.resolveSingle(argument, raw)
     }
 
     /**

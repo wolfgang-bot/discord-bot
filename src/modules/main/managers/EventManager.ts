@@ -10,6 +10,8 @@ import ModuleInstanceRegistry from "../../../services/ModuleInstanceRegistry"
 import { parseArguments } from "../../../utils"
 import LocaleProvider from "../../../services/LocaleProvider"
 import SetupEmbed from "../embeds/SetupEmbed"
+import ModuleInstance from "../../../models/ModuleInstance"
+import SettingsConfig from "../../settings/models/Configuration"
 
 function getFirstTextChannel(guild: Discord.Guild) {
     return guild.channels.cache.find(channel => channel.type === "text") as Discord.TextChannel
@@ -17,7 +19,7 @@ function getFirstTextChannel(guild: Discord.Guild) {
 
 async function withLoadingIndicator(channel: Discord.TextChannel, callback: () => Promise<void> | void) {
     const locale = await LocaleProvider.guild(channel.guild)
-    const config = await Guild.config(channel.guild)
+    const config = await ModuleInstance.config(channel.guild, "settings") as SettingsConfig
     
     const message = await channel.send(new SetupEmbed(config, locale, 0))
     await callback()
@@ -29,12 +31,12 @@ class EventManager extends Manager {
 
     async handleMessage(message: Discord.Message) {
         if (!message.author.bot) {
-            const config = await Guild.config(message.guild)
+            const settings = await ModuleInstance.config(message.guild, "settings") as SettingsConfig
             
-            if (message.content.startsWith(config.settings.commandPrefix)) {
+            if (message.content.startsWith(settings.commandPrefix)) {
                 try {
                     const args = parseArguments(
-                        message.content.substring(config.settings.commandPrefix.length)
+                        message.content.substring(settings.commandPrefix.length)
                     )
                     await CommandRegistry.guild(message.guild).run(message, args)
                 } catch (error) {

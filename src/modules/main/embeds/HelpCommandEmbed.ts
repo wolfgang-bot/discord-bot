@@ -3,10 +3,11 @@ import Command from "../../../lib/Command"
 import LocaleProvider from "../../../services/LocaleProvider"
 import CommandGroup from "../../../lib/CommandGroup"
 import { makeCodeblock } from "../../../utils"
+import SettingsConfig from "../../settings/models/Configuration"
 
 export default class HelpCommandEmbed extends BaseEmbed {
-    constructor(config, locale: LocaleProvider, command: Command) {
-        super(config)
+    constructor(settings: SettingsConfig, locale: LocaleProvider, command: Command) {
+        super(settings)
 
         const moduleLocale = locale.scope(command.getModule())
 
@@ -23,7 +24,7 @@ export default class HelpCommandEmbed extends BaseEmbed {
         this.addFields([
             {
                 name: locale.translate("embed_help_command_usage"),
-                value: makeCodeblock(`${config.settings.commandPrefix}${command.getCallableName()} ${args || subCommands || ""}`)
+                value: makeCodeblock(`${settings.commandPrefix}${command.getCallableName()} ${args || subCommands || ""}`)
             },
             {
                 name: locale.translate("embed_help_command_permissions"),

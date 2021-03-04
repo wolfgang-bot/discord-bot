@@ -1,16 +1,10 @@
 import Discord from "discord.js"
 import LocaleProvider from "../services/LocaleProvider"
-import defaultConfigRaw from "../config/default"
+import SettingsModule from "../modules/settings"
 
-let config: any
-
-function getConfig() {
-    if (!config) {
-        config = defaultConfigRaw.toVanillaObject()
-    }
-
-    return config
-}
+const defaultCommandPrefix = SettingsModule.args.find(
+    arg => arg.key === "command_prefix"
+).defaultValue
 
 abstract class Command {
     abstract name: string
@@ -77,7 +71,7 @@ abstract class Command {
     getUsage() {
         const args = this.arguments &&
             new LocaleProvider().scope(this.module).translate(this.arguments)
-        return `${getConfig().settings.commandPrefix}${this.getCallableName()} ${args || ""}`.trim()
+        return `${defaultCommandPrefix}${this.getCallableName()} ${args || ""}`.trim()
     }
 
     toJSON() {

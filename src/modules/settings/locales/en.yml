@@ -4,3 +4,19 @@
 
 meta_name: Settings
 meta_desc: Provides guild-specific settings for the bot.
+
+#
+# Arguments
+#
+
+# Command Prefix
+arg_command_prefix_name: Command Prefix
+arg_command_prefix_desc: Prefix needed to run commands
+
+# Locale
+arg_locale_prefix_name: Locale
+arg_locale_prefix_desc: Locale of the guild (used for translations)
+
+# Color Primary
+arg_color_primary_name: Color Primary
+arg_color_primary_desc: Primary color of the color theme (used in embeds)

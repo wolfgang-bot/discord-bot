@@ -4,7 +4,8 @@ import ModuleRegistry from "../../../../services/ModuleRegistry"
 import LocaleProvider from "../../../../services/LocaleProvider"
 import ModuleHelpEmbed from "../../embeds/ModuleHelpEmbed"
 import Module from "../../../../models/Module"
-import Guild from "../../../../models/Guild"
+import SettingsConfig from "../../../settings/models/Configuration"
+import ModuleInstance from "../../../../models/ModuleInstance"
 
 export default class HelpCommand extends Command {
     name = "help"
@@ -27,7 +28,7 @@ export default class HelpCommand extends Command {
         }
 
         const module = ModuleRegistry.getModule(model)
-        const config = await Guild.config(message.guild)
-        await message.channel.send(new ModuleHelpEmbed(config, locale, module))
+        const settings = await ModuleInstance.config(message.guild, "settings") as SettingsConfig
+        await message.channel.send(new ModuleHelpEmbed(settings, locale, module))
     }
 }

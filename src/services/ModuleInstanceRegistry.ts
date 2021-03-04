@@ -272,9 +272,11 @@ class ModuleInstanceRegistry {
             async module => await ModuleModel.findBy("key", module.key) as ModuleModel
         ))
 
-        await Promise.all(models.map(
-            model => this.startModule(client, model, [], false)
-        ))
+        await Promise.all(models.map(model => {
+            const module = ModuleInstanceRegistry.moduleRegistry.getModule(model)
+            const args = module.args.map(arg => arg.defaultValue)
+            return this.startModule(client, model, args, false)
+        }))
     }
 }
 

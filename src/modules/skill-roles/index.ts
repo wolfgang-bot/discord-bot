@@ -2,12 +2,13 @@ import Module from "../../lib/Module"
 import { module, argument } from "../../lib/decorators"
 import { TYPES as ARGUMENT_TYPES } from "../../lib/Argument"
 import LocaleProvider from "../../services/LocaleProvider"
-import Guild from "../../models/Guild"
 import Configuration from "./models/Configuration"
 import EmojiManager from "./managers/EmojiManager"
 import RoleManager from "./managers/RoleManager"
 import ReactionManager from "./managers/ReactionManager"
 import RoleEmbed from "./embeds/RoleEmbed"
+import ModuleInstance from "../../models/ModuleInstance"
+import SettingsConfig from "../settings/models/Configuration"
 
 @module({
     key: "skill-roles",
@@ -36,10 +37,10 @@ export default class RoleManagerModule extends Module {
         this.reactionManager = new ReactionManager(this.context, this.config, this.emojiManager, this.roleManager)
 
         if (!this.config.roleMessage) {
-            const guildConfig = await Guild.config(this.context.guild)
+            const settings = await ModuleInstance.config(this.context.guild, "settings") as SettingsConfig
             const locale = (await LocaleProvider.guild(this.context.guild)).scope("skill-roles")
 
-            this.config.roleMessage = await this.config.channel.send(new RoleEmbed(guildConfig, locale))
+            this.config.roleMessage = await this.config.channel.send(new RoleEmbed(settings, locale))
             this.reactionManager.setMessage(this.config.roleMessage)
         }
 

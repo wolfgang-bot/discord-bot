@@ -1,10 +1,11 @@
 import { MessageEmbed } from "discord.js"
+import SettingsConfig from "../modules/settings/models/Configuration"
 
 class BaseEmbed extends MessageEmbed {
-    constructor(config) {
+    constructor(settings: SettingsConfig) {
         super()
 
-        this.setColor(config.settings.colors.primary)
+        this.setColor(settings.colorPrimary)
     }
 }
 

@@ -23,6 +23,14 @@ class ModuleInstance extends Model implements ModuleInstanceModelValues {
     guild: Guild
     discordUser: Discord.User
 
+    static async config(guild: Discord.Guild | Guild, key: string) {
+        const module = await Module.findBy("key", key)
+        const instance = await ModuleInstance.where(`
+            guild_id='${guild.id}' AND module_id='${module.id}'`
+        ) as ModuleInstance
+        return instance.config
+    }
+
     constructor(values: ModuleInstanceModelValues) {
         super({
             table: "module_instances",
