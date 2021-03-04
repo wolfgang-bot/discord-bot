@@ -4,18 +4,48 @@ import Context from "../../../lib/Context"
 import DescriptiveObject from "../../../lib/DescriptiveObject"
 import { emojiConstraint } from "../../../lib/constraints"
 
-type ConfigProps = {
-    channel: Discord.TextChannel
-    roles?: string[]
-    roleColors?: string[]
-    roleThresholds?: number[]
-    levelUpReactionEmoji?: string
+function hasSameLength(...arrays: any[][]) {
+    return arrays.some(array => !arrays.some(
+        _array => array.length !== _array.length
+    ))
 }
 
-type ConfigArgs = [Discord.TextChannel]
+function someEmpty(...arrays: any[][]) {
+    return arrays.some(array => array.length === 0)
+}
+
+function everyGreaterThanZero(array: number[]) {
+    return array.every(value => value > 0)
+}
+
+function everyGreaterThanPreceeding(array: number[]) {
+    return array.every((value, i) => (
+        i === 0 ? true : value > array[i - 1]
+    ))
+}
+
+type ConfigProps = {
+    channel: Discord.TextChannel
+    roles: string[]
+    roleColors: string[]
+    roleThresholds: number[]
+    levelUpReactionEmoji: string
+}
+
+type ConfigArgs = [
+    Discord.TextChannel,
+    string[],
+    string[],
+    number[],
+    string
+]
 
 type ConfigJSON = {
-    channelId: string
+    channelId: string,
+    roles: string[],
+    roleColors: string[],
+    roleThresholds: number[],
+    levelUpReactionEmoji: string
 }
 
 export default class Configuration extends DefaultConfig implements ConfigProps {
@@ -26,65 +56,69 @@ export default class Configuration extends DefaultConfig implements ConfigProps 
     levelUpReactionEmoji: string
 
     static guildConfig = new DescriptiveObject({
-        value: {
-            roles: new DescriptiveObject({
-                description: "Level Roles which are assigned to a user who reaches the level",
-                value: ["Bronze", "Silber", "Gold", "Platin", "Diamant"],
-                constraints: "Must have the same amount of items as 'Role Colors' and 'Role Thresholds'",
-                verifyConstraints: (value: string[], config) => (
-                    value.length > 0 &&
-                    value.length === config["reputation-system"].roleColors.length &&
-                    value.length === config["reputation-system"].roleThresholds.length
-                )
-            }),
-
-            roleColors: new DescriptiveObject({
-                description: "Color of each level role",
-                value: ["#E67E22", "#ffffff", "#F0C410", "#607d8b", "#3498DB"],
-                constraints: "Must have the same amount of items as 'Roles' and 'Role Thresholds'",
-                verifyConstraints: (value: string[], config) => (
-                    value.length > 0 &&
-                    value.length === config["reputation-system"].roles.length &&
-                    value.length === config["reputation-system"].roleThresholds.length
-                )
-            }),
-
-            roleThresholds: new DescriptiveObject({
-                description: "Amount of reputation needed to reach the levels",
-                value: [10, 100, 500, 1000, 2500],
-                constraints: "Must have the same amount of items as 'Roles' and 'Role Colors'",
-                verifyConstraints: (value: string[], config) => (
-                    value.length > 0 &&
-                    value.length === config["reputation-system"].roles.length &&
-                    value.length === config["reputation-system"].roleColors.length
-                )
-            }),
-
-            levelUpReactionEmoji: new DescriptiveObject({
-                description: "Emoji of the reaction which is added to the 'level up' announcements",
-                value: "💯",
-                ...emojiConstraint
-            })
-        }
+        value: {}
     })
 
-    static fromArgs(args: ConfigArgs) {
-        return new Configuration({ channel: args[0] })
+    static fromArgs([
+        channel,
+        roles,
+        roleColors,
+        roleThresholds,
+        levelUpReactionEmoji
+    ]: ConfigArgs) {
+        if (
+            !hasSameLength(roles, roleColors, roleThresholds) ||
+            someEmpty(roles, roleColors, roleThresholds)
+        ) {
+            throw "roles, role_colors and role_thresholds must have the same length"
+        }
+
+        if (!everyGreaterThanZero(roleThresholds)) {
+            throw "Role thresholds must be greater than 0"
+        }
+
+        if (!everyGreaterThanPreceeding(roleThresholds)) {
+            throw "Every role threshold must be greater than the preceeding one"
+        }
+
+        if (!emojiConstraint.verifyConstraints(levelUpReactionEmoji)) {
+            throw emojiConstraint.constraints
+        }
+
+        return new Configuration({
+            channel,
+            roles,
+            roleColors,
+            roleThresholds,
+            levelUpReactionEmoji
+        })
     }
 
-    static async fromJSON(context: Context, object: ConfigJSON) {
-        const channel = context.guild.channels.cache.get(object.channelId) as Discord.TextChannel
-        return new Configuration({ channel })
+    static async fromJSON(context: Context, {
+        channelId,
+        ...values
+    }: ConfigJSON) {
+        const channel = context.guild.channels.cache.get(channelId) as Discord.TextChannel
+        return new Configuration({ channel, ...values })
     }
 
     constructor(props: ConfigProps) {
         super(props)
+
         this.channel = props.channel
+        this.roles = props.roles
+        this.roleColors = props.roleColors
+        this.roleThresholds = props.roleThresholds
+        this.levelUpReactionEmoji = props.levelUpReactionEmoji
     }
 
     toJSON(): ConfigJSON {
         return {
-            channelId: this.channel.id
+            channelId: this.channel.id,
+            roles: this.roles,
+            roleColors: this.roleColors,
+            roleThresholds: this.roleThresholds,
+            levelUpReactionEmoji: this.levelUpReactionEmoji
         }
     }
 }

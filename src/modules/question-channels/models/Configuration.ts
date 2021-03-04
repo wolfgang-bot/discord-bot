@@ -84,26 +84,14 @@ export default class Configuration extends DefaultConfig implements ConfigProps 
     static async fromJSON(context: Context, {
         channelId,
         helpMessageId,
-        channelName,
-        resolveReaction,
-        deleteMessage,
-        acceptReputation,
-        messageReputation,
-        messageReputationTimeout,
-        askChannelRateLimit
+        ...values
     }: ConfigJSON) {
         const channel = context.guild.channels.cache.get(channelId) as Discord.TextChannel
         const helpMessage = await channel.messages.fetch(helpMessageId)
         return new Configuration({
             channel,
             helpMessage,
-            channelName,
-            resolveReaction,
-            deleteMessage,
-            acceptReputation,
-            messageReputation,
-            messageReputationTimeout,
-            askChannelRateLimit
+            ...values
         })
     }
 

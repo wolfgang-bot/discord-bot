@@ -9,14 +9,14 @@ import { getLevel } from "../../../utils"
 import Configuration from "../models/Configuration"
 
 export default class ReputationManager extends Manager {
-    channel: Discord.TextChannel
     guildConfig
     config: Configuration
     roles: Discord.Role[] = []
 
     constructor(context: Context, config: Configuration) {
         super(context)
-        this.channel = config.channel
+
+        this.config = config
 
         this.handleReputationAdd = this.handleReputationAdd.bind(this)
     }
@@ -92,14 +92,13 @@ export default class ReputationManager extends Manager {
     async announceLevelUp(user: Discord.User, newLevel: number) {
         const locale = (await LocaleProvider.guild(this.context.guild)).scope("reputation-system")
 
-        const message = await this.channel.send(new LevelUpEmbed(this.guildConfig, locale, user, newLevel))
+        const message = await this.config.channel.send(new LevelUpEmbed(this.guildConfig, locale, user, newLevel))
         
         await message.react(this.config.levelUpReactionEmoji)
     }
 
     async init() {
         this.guildConfig = await Guild.config(this.context.guild)
-        this.config = this.guildConfig["reputation-system"]
 
         await this.createRoles()
         
