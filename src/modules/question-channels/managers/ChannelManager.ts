@@ -150,7 +150,10 @@ class ChannelManager extends Manager {
         await question.pin()
 
         // Send user a notification
-        await dm.send(new NotificationEmbed(this.settings, locale, this.context.guild))
+        await dm.send(new NotificationEmbed(this.settings, locale, {
+            guild: this.context.guild,
+            config: this.config
+        }))
 
         this.activeChannels[newChannel.id] = new ActiveChannel({
             channel: newChannel,
