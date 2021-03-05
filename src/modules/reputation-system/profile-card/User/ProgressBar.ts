@@ -1,6 +1,7 @@
 import SVGComponent from "../../../../lib/SVGComponent"
 import Member from "../../../../models/Member"
 import { Theme } from "../ProfileCard"
+import ReputationSystemConfig from "../../models/Configuration"
 
 export default class ProgressBar extends SVGComponent {
     member: Member
@@ -11,7 +12,7 @@ export default class ProgressBar extends SVGComponent {
     fill: string = "#080D14"
     fillOverlay: string = "#5C6FF4"
 
-    constructor(config, theme: Theme, member: Member, width: number, progress: number) {
+    constructor(config: ReputationSystemConfig, theme: Theme, member: Member, width: number, progress: number) {
         super()
         this.member = member
         this.width = width

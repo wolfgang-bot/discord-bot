@@ -14,6 +14,8 @@ type ConfigJSON = {
 }
 
 export default class Configuration extends DefaultConfig implements ConfigProps {
+    userRole: Discord.Role
+    
     static fromArgs(args: ConfigArgs) {
         return new Configuration({ userRole: args[0] })
     }
@@ -26,8 +28,6 @@ export default class Configuration extends DefaultConfig implements ConfigProps 
     static guildConfig = new DescriptiveObject({
         value: {}
     })
-    
-    userRole: Discord.Role
     
     constructor(props: ConfigProps) {
         super(props)

@@ -4,14 +4,15 @@ import ModuleInstanceRegistry from "../../../services/ModuleInstanceRegistry"
 import LocaleProvider from "../../../services/LocaleProvider"
 import Guild from "../../../models/Guild"
 import { makeCodeblock, makeURL } from "../../../utils"
+import SettingsConfig from "../../settings/models/Configuration"
 
 export default class ModulesEmbed extends BaseEmbed {
     constructor(
-        config,
+        settings: SettingsConfig,
         locale: LocaleProvider,
         { guild }: { guild: Guild }
     ) {
-        super(config)
+        super(settings)
 
         const modules = ModuleRegistry.getPublicModules()
         const moduleInstances = Object.values(ModuleInstanceRegistry.instances[guild.id] || {})

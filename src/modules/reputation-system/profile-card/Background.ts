@@ -1,10 +1,11 @@
 import SVGComponent from "../../../lib/SVGComponent"
 import { Theme } from "./ProfileCard"
+import ReputationSystemConfig from "../models/Configuration"
 
 export default class Background extends SVGComponent {
     theme: Theme
 
-    constructor(config, theme: Theme) {
+    constructor(config: ReputationSystemConfig, theme: Theme) {
         super()
         this.theme = theme
     }

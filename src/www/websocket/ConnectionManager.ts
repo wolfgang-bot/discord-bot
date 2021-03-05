@@ -3,7 +3,6 @@ import { AuthorizedSocket } from "./SocketManager"
 import StreamManager from "./StreamManager"
 import GuildController from "./controllers/GuildController"
 import ModuleController from "./controllers/ModuleController"
-import ConfigController from "./controllers/ConfigController"
 import SubscriptionController from "./controllers/SubscriptionController"
 
 export default class ConnectionManager {
@@ -12,7 +11,6 @@ export default class ConnectionManager {
 
     guildController: GuildController
     moduleController: ModuleController
-    configController: ConfigController
     subscriptionController: SubscriptionController
 
     streamManager: StreamManager
@@ -25,7 +23,6 @@ export default class ConnectionManager {
 
         this.guildController = new GuildController(client, socket)
         this.moduleController = new ModuleController(client, socket)
-        this.configController = new ConfigController(client, socket)
         this.subscriptionController = new SubscriptionController(client, socket, this.streamManager)
 
         this.attachReceivers()
@@ -36,9 +33,6 @@ export default class ConnectionManager {
         this.socket.on("get:guild/member-count",        this.guildController.getMemberCount.bind(this.guildController))
         this.socket.on("get:guild/channels",            this.guildController.getChannels.bind(this.guildController))
         this.socket.on("get:guild/roles",               this.guildController.getRoles.bind(this.guildController))
-
-        this.socket.on("get:config-descriptive",        this.configController.getConfigDescriptive.bind(this.configController))
-        this.socket.on("post:config",                   this.configController.updateConfig.bind(this.configController))
 
         this.socket.on("get:modules",                   this.moduleController.getModules.bind(this.moduleController))
         this.socket.on("get:module-instances",          this.moduleController.getInstances.bind(this.moduleController))

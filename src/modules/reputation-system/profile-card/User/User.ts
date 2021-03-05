@@ -4,14 +4,15 @@ import { Theme } from "../ProfileCard"
 import Avatar from "./Avatar"
 import Username from "./Username"
 import LevelProgress from "./LevelProgress"
+import ReputationSystemConfig from "../../models/Configuration"
 
 export default class User extends SVGComponent {
-    config
+    config: ReputationSystemConfig
     theme: Theme
     member: Member
     avatarURI: string
 
-    constructor(config, theme: Theme, member: Member, avatarURI: string) {
+    constructor(config: ReputationSystemConfig, theme: Theme, member: Member, avatarURI: string) {
         super()
         this.config = config
         this.theme = theme

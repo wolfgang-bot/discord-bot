@@ -3,6 +3,7 @@ import Member from "../../../models/Member"
 import Background from "./Background"
 import User from "./User/User"
 import { getLevel } from "../../../utils"
+import ReputationSystemConfig from "../models/Configuration"
 
 export type Theme = {
     spacing: number
@@ -17,14 +18,14 @@ export type Theme = {
 }
 
 export default class ProfileCard extends SVGComponent {
-    config: any
+    config: ReputationSystemConfig
     member: Member
     avatarURI: string
     level: number
     width: number
     theme: Theme
 
-    constructor(config, member: Member, avatarURI: string) {
+    constructor(config: ReputationSystemConfig, member: Member, avatarURI: string) {
         super()
 
         this.config = config
@@ -47,7 +48,7 @@ export default class ProfileCard extends SVGComponent {
             }
         }
 
-        this.theme.palette.primary = this.level !== -1 ? this.config["reputation-system"].roleColors[this.level] : this.theme.palette.secondary
+        this.theme.palette.primary = this.level !== -1 ? this.config.roleColors[this.level] : this.theme.palette.secondary
         
         this.theme.width = this.width - this.theme.spacing * 2
     }

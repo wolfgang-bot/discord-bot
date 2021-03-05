@@ -1,11 +1,12 @@
 import SVGComponent from "../../../../lib/SVGComponent"
 import { Theme } from "../ProfileCard"
+import ReputationSystemConfig from "../../models/Configuration"
 
 export default class Avatar extends SVGComponent {
     uri: string
     size: number = 64
 
-    constructor(config, theme: Theme, uri: string) {
+    constructor(config: ReputationSystemConfig, theme: Theme, uri: string) {
         super()
         this.uri = uri
     }

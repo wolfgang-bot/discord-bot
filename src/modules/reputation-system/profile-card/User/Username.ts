@@ -1,13 +1,14 @@
 import SVGComponent from "../../../../lib/SVGComponent"
 import Member from "../../../../models/Member"
 import { Theme } from "../ProfileCard"
+import ReputationSystemConfig from "../../models/Configuration"
 
 export default class Username extends SVGComponent {
     theme: Theme
     member: Member
     fontSize: number = 22
     
-    constructor(config, theme: Theme, member: Member) {
+    constructor(config: ReputationSystemConfig, theme: Theme, member: Member) {
         super()
         this.theme = theme
         this.member = member

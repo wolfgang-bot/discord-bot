@@ -2,20 +2,21 @@ import SVGComponent from "../../../../lib/SVGComponent"
 import Member from "../../../../models/Member"
 import { Theme } from "../ProfileCard"
 import { getLevel } from "../../../../utils"
+import ReputationSystemConfig from "../../models/Configuration"
 
 export default class Rank extends SVGComponent {
-    config
+    config: ReputationSystemConfig
     theme: Theme
     fontSize: number = 16
     rankName: string
 
-    constructor(config, theme: Theme, member: Member) {
+    constructor(config: ReputationSystemConfig, theme: Theme, member: Member) {
         super()
         this.config = config
         this.theme = theme
 
         const level = getLevel(this.config, member.reputation)
-        this.rankName = config["reputation-system"].roles[level] || ""
+        this.rankName = config.roles[level] || ""
     }
     
     getWidth() {

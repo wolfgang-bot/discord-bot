@@ -2,6 +2,7 @@ import SVGComponent from "../../../../lib/SVGComponent"
 import Member from "../../../../models/Member"
 import { Theme } from "../ProfileCard"
 import { getLevel } from "../../../../utils"
+import ReputationSystemConfig from "../../models/Configuration"
 
 export default class Reputation extends SVGComponent {
     config
@@ -11,17 +12,15 @@ export default class Reputation extends SVGComponent {
     fontSize: number = 12
     opacity: number = .5
 
-    constructor(config, theme: Theme, member: Member) {
+    constructor(config: ReputationSystemConfig, theme: Theme, member: Member) {
         super()
         this.config = config
         this.theme = theme
         this.member = member
 
-        const moduleConfig = config["reputation-system"]
-
         const level = getLevel(this.config, member.reputation)
-        const nextLevel = Math.min(level + 1, moduleConfig.roleThresholds.length - 1)
-        this.nextLevelReputation = moduleConfig.roleThresholds[nextLevel]
+        const nextLevel = Math.min(level + 1, this.config.roleThresholds.length - 1)
+        this.nextLevelReputation = this.config.roleThresholds[nextLevel]
     }
 
     getWidth() {

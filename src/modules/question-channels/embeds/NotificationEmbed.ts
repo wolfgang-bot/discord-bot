@@ -1,10 +1,11 @@
 import Discord from "discord.js"
 import BaseEmbed from "../../../lib/BaseEmbed"
 import LocaleProvider from "../../../services/LocaleProvider"
+import SettingsConfig from "../../settings/models/Configuration"
 
 export default class NotificationEmbed extends BaseEmbed {
-    constructor(config, locale: LocaleProvider, guild: Discord.Guild) {
-        super(config)
+    constructor(settings: SettingsConfig, locale: LocaleProvider, guild: Discord.Guild) {
+        super(settings)
 
         this.setTitle(locale.translate("embed_notification_title", guild.name))
             .addFields([

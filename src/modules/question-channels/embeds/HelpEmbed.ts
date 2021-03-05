@@ -1,9 +1,10 @@
 import BaseEmbed from "../../../lib/BaseEmbed"
 import LocaleProvider from "../../../services/LocaleProvider"
+import SettingsConfig from "../../settings/models/Configuration"
 
 export default class HelpEmbed extends BaseEmbed {
-    constructor(config, locale: LocaleProvider) {
-        super(config)
+    constructor(settings: SettingsConfig, locale: LocaleProvider) {
+        super(settings)
 
         this.setTitle(locale.translate("embed_help_title"))
             .addFields([

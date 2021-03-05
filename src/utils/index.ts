@@ -1,5 +1,6 @@
 import Discord from "discord.js"
 import User from "../models/User"
+import ReputationSystemConfig from "../modules/reputation-system/models/Configuration"
 
 // Blank character which is not the "whitespace" character (used in discord embeds to make indents)
 const BLANK = "\u200B"
@@ -64,10 +65,10 @@ export function parseArguments(content: string) {
 /**
  * Get the corresponding level to an amount of reputation
  */
-export function getLevel(config, reputation: number) {
+export function getLevel(config: ReputationSystemConfig, reputation: number) {
     let level = -1
 
-    for (let threshold of config["reputation-system"].roleThresholds as number[]) {
+    for (let threshold of config.roleThresholds as number[]) {
         if (reputation >= threshold) {
             level++
         } else {
@@ -86,138 +87,10 @@ export function space(length: number) {
 }
 
 /**
- * Check recursively if a key exists in an object
- */
-export function existsInObject(object: object, key: string) {
-    for (let _key in object) {
-        if (_key === key) {
-            return true
-        }
-
-        if (object[_key].constructor.name === "Object" && existsInObject(object[_key], key)) {
-            return true
-        }
-    }
-
-    return false
-}
-
-/**
- * Convert a string to the requested data-type
- * Supported data-types: String, Number, Array
- */
-export function convertDatatype(input: string, datatype: "String" | "Number" | "Array") {
-    if (datatype === "String") {
-        return input
-    }
-
-    if (datatype === "Number") {
-        const number = parseFloat(input)
-
-        if (isNaN(number)) {
-            throw "Not a number"
-        }
-
-        return number
-    }
-
-    if (datatype === "Array") {
-        return input.split(" ")
-    }
-
-    throw new Error(`Unsupported datatype: "${datatype}"`)
-}
-
-/**
- * Check recursively if two objects have the same keys and every value has
- * the same type.
- */
-export function compareStructure(object1: object, object2: object) {
-    // Collect keys from both objects
-    const keys = new Set(Object.keys(object1).concat(Object.keys(object2)))
-
-    for (let key of keys) {
-        // Verify existance
-        if (!(key in object1) || !(key in object2)) {
-            return false
-        }
-
-        // Verify that values are defined
-        // TODO: Allow null and undefined
-        if (
-            object1[key] === null || object1[key] === undefined ||
-            object2[key] === null || object2[key] === undefined
-        ) {
-            return false
-        }
-
-        // Verify data-type
-        if (object1[key].constructor.name !== object2[key].constructor.name) {
-            return false
-        }
-
-        // Verify array element's datatype
-        if (object1[key].constructor.name === "Array") {
-            for (let value of object1[key]) {
-                if (value.constructor.name !== object2[key][0].constructor.name) {
-                    return false
-                }
-            }
-        }
-
-        // Verify recursively if the sub-objects have the same structure
-        if (object1[key].constructor.name === "Object" && !compareStructure(object1[key], object2[key])) {
-            return false
-        }
-    }
-
-    return true
-}
-
-/**
  * Create a URL from a path with respect to the env variables
  */
 export function makeURL(path: string) {
     return `${process.env.PROTOCOL}://${process.env.HOST}${process.env.PUBLIC_PORT ? ":" + process.env.PUBLIC_PORT : ""}${path}`
-}
-
-/**
- * Recursively transfer the values from one object to another object.
- * 
- * Example:
- *
- * from = {
- *     a: "abc",
- *     b: {
- *     },
- *     d: 789
- * }
- *
- *
- * to = {
- *     a: "xyz", // Set to "abc"
- *     b: {
- *         c: 456 // Do nothing
- *     }
- * }
- */
-export function transferValues(from: object, to: object): object {
-    const result = {}
-
-    function _transfer(from: object = {}, to: object, result: object) {
-        Object.keys(to).forEach(key => {
-            if (to[key].constructor.name === "Object") {
-                result[key] = {}
-                _transfer(from[key], to[key], result[key])
-            } else {
-                result[key] = typeof from[key] !== "undefined" ? from[key] : to[key]
-            }
-        })
-    }
-
-    _transfer(from, to, result)
-
-    return result
 }
 
 /**

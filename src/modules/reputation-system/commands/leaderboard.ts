@@ -6,6 +6,7 @@ import Member from "../../../models/Member"
 import LeaderboardEmbed from "../embeds/LeaderboardEmbed"
 import ModuleInstance from "../../../models/ModuleInstance"
 import SettingsConfig from "../../settings/models/Configuration"
+import ReputationSystemConfig from "../models/Configuration"
 
 export default class LeaderboardCommand extends Command {
     name = "leaderboard"
@@ -21,7 +22,8 @@ export default class LeaderboardCommand extends Command {
         await members.mapAsync(member => member.fetchDiscordUser(message.client))
 
         const settings = await ModuleInstance.config(message.guild, "settings") as SettingsConfig
+        const config = await ModuleInstance.config(message.guild, "reputation-system") as ReputationSystemConfig
 
-        await message.channel.send(new LeaderboardEmbed(settings, locale, members))
+        await message.channel.send(new LeaderboardEmbed(settings, locale, { members, config }))
     }
 }

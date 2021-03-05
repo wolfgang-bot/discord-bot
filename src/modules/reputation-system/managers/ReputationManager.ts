@@ -4,14 +4,12 @@ import Context from "../../../lib/Context"
 import LocaleProvider from "../../../services/LocaleProvider"
 import LevelUpEmbed from "./../embeds/LevelUpEmbed"
 import Member from "../../../models/Member"
-import Guild from "../../../models/Guild"
 import { getLevel } from "../../../utils"
 import Configuration from "../models/Configuration"
 import SettingsConfig from "../../settings/models/Configuration"
 import ModuleInstance from "../../../models/ModuleInstance"
 
 export default class ReputationManager extends Manager {
-    settings: SettingsConfig
     config: Configuration
     roles: Discord.Role[] = []
 
@@ -38,13 +36,13 @@ export default class ReputationManager extends Manager {
             await model.store()
         }
 
-        const prevLevel = getLevel(this.settings, model.reputation)
+        const prevLevel = getLevel(this.config, model.reputation)
 
         model.reputation += amount
 
         await model.update()
 
-        const newLevel = getLevel(this.settings, model.reputation)
+        const newLevel = getLevel(this.config, model.reputation)
 
         if (newLevel > prevLevel) {
             await Promise.all([
@@ -93,15 +91,18 @@ export default class ReputationManager extends Manager {
 
     async announceLevelUp(user: Discord.User, newLevel: number) {
         const locale = (await LocaleProvider.guild(this.context.guild)).scope("reputation-system")
+        const settings = await ModuleInstance.config(this.context.guild, "settings") as SettingsConfig
 
-        const message = await this.config.channel.send(new LevelUpEmbed(this.settings, locale, user, newLevel))
+        const message = await this.config.channel.send(new LevelUpEmbed(settings, locale, {
+            user,
+            level: newLevel,
+            config: this.config
+        }))
         
         await message.react(this.config.levelUpReactionEmoji)
     }
 
     async init() {
-        this.settings = await ModuleInstance.config(this.context.guild, "settings") as SettingsConfig
-
         await this.createRoles()
         
         this.context.client.on("reputationAdd", this.handleReputationAdd)
