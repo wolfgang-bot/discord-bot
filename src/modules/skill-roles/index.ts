@@ -10,6 +10,17 @@ import RoleEmbed from "./embeds/RoleEmbed"
 import ModuleInstance from "../../models/ModuleInstance"
 import SettingsConfig from "../settings/models/Configuration"
 
+const roles = [
+    "Javascript",
+    "Python",
+    "React",
+    "Vue",
+    "Angular",
+    "Linux",
+    "Java",
+    "Cpp"
+]
+
 @module({
     key: "skill-roles",
     name: "meta_name",
@@ -21,6 +32,30 @@ import SettingsConfig from "../settings/models/Configuration"
     key: "roles_channel_id",
     name: "arg_roles_channel_display_name",
     desc: "arg_roles_channel_desc",
+})
+@argument({
+    type: ARGUMENT_TYPES.STRING,
+    key: "emoji_prefix",
+    defaultValue: "skill_",
+    name: "arg_emoji_prefix_name",
+    desc: "arg_emoji_prefix_desc"
+})
+@argument({
+    type: ARGUMENT_TYPES.STRING,
+    key: "role_color",
+    defaultValue: "AQUA",
+    name: "arg_role_color_name",
+    desc: "arg_role_color_desc"
+})
+@argument({
+    type: ARGUMENT_TYPES.STRING,
+    key: "roles",
+    defaultValue: roles,
+    isArray: true,
+    isSelect: true,
+    selectOptions: roles,
+    name: "arg_roles_name",
+    desc: "arg_roles_desc"
 })
 export default class RoleManagerModule extends Module {
     static makeConfigFromArgs = Configuration.fromArgs
@@ -41,7 +76,6 @@ export default class RoleManagerModule extends Module {
             const locale = (await LocaleProvider.guild(this.context.guild)).scope("skill-roles")
 
             this.config.roleMessage = await this.config.channel.send(new RoleEmbed(settings, locale))
-            this.reactionManager.setMessage(this.config.roleMessage)
         }
 
         await Promise.all([

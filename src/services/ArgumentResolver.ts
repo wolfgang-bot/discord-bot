@@ -35,6 +35,10 @@ class ArgumentResolver {
                     throw "Argument is not an array"
                 }
 
+                if (raw.length === 0) {
+                    throw "Arguments of type array cannot be empty"
+                }
+
                 return await this.resolveArray(argument, raw)
             }
 

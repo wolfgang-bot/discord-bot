@@ -1,92 +1,72 @@
 import Discord from "discord.js"
-import path from "path"
-import glob from "glob-promise"
 import DefaultConfig from "../../../lib/Configuration"
 import Context from "../../../lib/Context"
 import DescriptiveObject from "../../../lib/DescriptiveObject"
 import { COLOR_REGEX } from "../../../lib/constraints"
 
-const ICONS_DIR = path.join(__dirname, "..", "assets", "icons")
-
-const icons = glob.sync("*.png", { cwd: ICONS_DIR }).map(filename => filename.replace(".png", ""))
-
 type ConfigProps = {
-    channel: Discord.TextChannel
-    roleMessage?: Discord.Message
-    emojiPrefix?: string
-    roleColor?: string
-    roles?: string[]
+    roleMessage?: Discord.Message,
+    channel: Discord.TextChannel,
+    emojiPrefix: string,
+    roleColor: string,
+    roles: string[]
 }
 
-type ConfigArgs = [Discord.TextChannel]
+type ConfigArgs = [Discord.TextChannel, string, string, string[]]
 
 type ConfigJSON = {
-    channelId: string
-    roleMessageId: string
+    roleMessageId: string,
+    channelId: string,
+    emojiPrefix: string,
+    roleColor: string,
+    roles: string[]
 }
 
 export default class Configuration extends DefaultConfig implements ConfigProps {
-    channel: Discord.TextChannel
     roleMessage: Discord.Message
+    channel: Discord.TextChannel
     emojiPrefix: string
     roleColor: string
     roles: string[]
 
     static guildConfig = new DescriptiveObject({
-        value: {
-            emojiPrefix: new DescriptiveObject({
-                description: "Prefix of the role names",
-                value: "skill_"
-            }),
-
-            roleColor: new DescriptiveObject({
-                description: "Color of the roles (Discord color names allowed)",
-                value: "AQUA",
-                constraints: "Must be a valid color",
-                verifyConstraints: (value: string) => COLOR_REGEX.test(value)
-            }),
-
-            roles: new DescriptiveObject({
-                description: "Names of the roles which will be created",
-                value: [
-                    "Javascript",
-                    "Python",
-                    "React",
-                    "Vue",
-                    "Angular",
-                    "Linux",
-                    "Java",
-                    "Cpp"
-                ],
-                constraints: `Available roles: ${icons.map(e => `'${e}'`).join(", ")}`,
-                verifyConstraints: (value: string[]) => (
-                    value.length > 0 &&
-                    value.every(name => icons.includes(name.toLowerCase()))
-                )
-            })
-        }
+        value: {}
     })
 
-    static fromArgs(args: ConfigArgs) {
-        return new Configuration({ channel: args[0] })
+    static fromArgs([channel, emojiPrefix, roleColor, roles]: ConfigArgs) {
+        if (!COLOR_REGEX.test(roleColor)) {
+            throw "'Role Color' must be a valid color code"
+        }
+
+        return new Configuration({ channel, emojiPrefix, roleColor, roles })
     }
 
-    static async fromJSON(context: Context, object: ConfigJSON) {
-        const channel = context.guild.channels.cache.get(object.channelId) as Discord.TextChannel
-        const roleMessage = await channel.messages.fetch(object.roleMessageId)
-        return new Configuration({ channel, roleMessage })
+    static async fromJSON(context: Context, {
+        channelId,
+        roleMessageId,
+        ...json
+    }: ConfigJSON) {
+        const channel = context.guild.channels.cache.get(channelId) as Discord.TextChannel
+        const roleMessage = await channel.messages.fetch(roleMessageId)
+        return new Configuration({ channel, roleMessage, ...json })
     }
 
     constructor(props: ConfigProps) {
         super(props)
         this.channel = props.channel
         this.roleMessage = props.roleMessage
+        this.emojiPrefix = props.emojiPrefix
+        this.roleColor = props.roleColor
+        this.roles = props.roles
     }
 
     toJSON(): ConfigJSON {
         return {
             channelId: this.channel.id,
-            roleMessageId: this.roleMessage.id
+            roleMessageId: this.roleMessage.id,
+            emojiPrefix: this.emojiPrefix,
+            roleColor: this.roleColor,
+            roles: this.roles
         }
     }
 }

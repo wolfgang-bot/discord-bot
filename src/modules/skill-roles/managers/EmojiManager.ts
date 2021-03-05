@@ -2,7 +2,6 @@ import Discord from "discord.js"
 import glob from "glob-promise"
 import path from "path"
 import Manager from "../../../lib/Manager"
-import Guild from "../../../models/Guild"
 import Configuration from "../models/Configuration"
 
 const ICONS_DIR = path.join(__dirname, "..", "assets", "icons")
@@ -66,8 +65,6 @@ export default class EmojiManager extends Manager {
     }
 
     async init() {
-        this.config = (await Guild.config(this.context.guild))["skill-roles"]
-        
         await this.createEmojis()
     }
 

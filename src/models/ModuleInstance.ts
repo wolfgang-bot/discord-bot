@@ -28,6 +28,12 @@ class ModuleInstance extends Model implements ModuleInstanceModelValues {
         const instance = await ModuleInstance.where(`
             guild_id='${guild.id}' AND module_id='${module.id}'`
         ) as ModuleInstance
+
+        if (!instance) {
+            console.warn(`Could not find config of module '${key}' for guild '${guild.id}'`)
+            return
+        }
+
         return instance.config
     }
 

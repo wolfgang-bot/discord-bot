@@ -8,6 +8,7 @@ import ModuleInstanceModel from "../models/ModuleInstance"
 import LocaleProvider from "./LocaleProvider"
 import ArgumentResolver, { ArgumentResolveTypes } from "./ArgumentResolver"
 import type ModuleRegistry from "./ModuleRegistry"
+import Argument from "../lib/Argument"
 
 type GuildInstancesMap = {
     [guildId: string]: InstancesMap
@@ -133,29 +134,41 @@ class ModuleInstanceRegistry {
         /**
          * Validate invocation
          */
-        const locale = await LocaleProvider.guild(this.guild)
-        const moduleLocale = locale.scope(model.key)
-
-        if (await this.isLoaded(model)) {
-            throw locale.translate("error_module_running")
-        }
-
         const module = ModuleInstanceRegistry.moduleRegistry.getModule(model)
 
-        if (ModuleInstanceRegistry.moduleRegistry.isProtectedModule(module) && isUserInvocation) {
-            throw locale.translate("error_illegal_invocation")
+        if (isUserInvocation) {
+            const locale = await LocaleProvider.guild(this.guild)
+    
+            if (await this.isLoaded(model)) {
+                throw locale.translate("error_module_running")
+            }
+    
+            if (ModuleInstanceRegistry.moduleRegistry.isProtectedModule(module) && isUserInvocation) {
+                throw locale.translate("error_illegal_invocation")
+            }
         }
 
         /**
          * Convert arguments to objects (e.g. text channel id -> text channel)
          */
-        const resolvedArgs: ArgumentResolveTypes[] = await Promise.all(module.args.map((argument, i) => {
-            if (!args[i]) {
-                throw locale.translate("error_missing_argument", moduleLocale.translate(argument.name))
-            }
+        let validateArgFn: Function = () => {}
 
-            return ArgumentResolver.guild(this.guild).resolveArgument(argument, args[i])
-        }))
+        if (isUserInvocation) {
+            const locale = await LocaleProvider.guild(this.guild)
+            const moduleLocale = locale.scope(module.key)
+            validateArgFn = async (argument: Argument, i: number) => {
+                if (!args[i]) {
+                    throw locale.translate("error_missing_argument", moduleLocale.translate(argument.name))
+                }
+            }
+        }
+
+        const resolvedArgs: ArgumentResolveTypes[] = await Promise.all(module.args.map(
+            async (argument, i) => {
+                await validateArgFn(argument, i)
+                return ArgumentResolver.guild(this.guild).resolveArgument(argument, args[i])
+            }
+        ))
 
         /**
          * Create the instance
@@ -163,10 +176,6 @@ class ModuleInstanceRegistry {
         const context = new Context({ client, guild: this.guild, module })
         const config = module.makeConfigFromArgs(resolvedArgs)
         const instance = new module(context, config)
-
-        if (!instance) {
-            throw locale.translate("error_illegal_invocation")
-        }
 
         const instanceModel = new ModuleInstanceModel({
             module_id: model.id,

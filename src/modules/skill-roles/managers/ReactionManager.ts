@@ -14,12 +14,10 @@ export default class ReactionManager extends Manager {
     emojiManager: EmojiManager
     roleManager: RoleManager
     reactions: ReactionMap
-    message: Discord.Message
 
     constructor(context: Context, config: Configuration, emojiManager: EmojiManager, roleManager: RoleManager) {
         super(context)
         this.config = config
-        this.message = config.roleMessage
         this.emojiManager = emojiManager
         this.roleManager = roleManager
 
@@ -29,17 +27,15 @@ export default class ReactionManager extends Manager {
         this.handleReactionRemove = this.handleReactionRemove.bind(this)
     }
 
-    setMessage(message: Discord.Message) {
-        this.message = message
-    }
-
     async createReactions() {
         const roles = Object.keys(this.roleManager.getRoles())
 
         await Promise.all(roles.map(async roleName => {
             const emojiName = this.emojiManager.makeEmojiName(roleName)
 
-            let reaction = this.message.reactions.cache.find(reaction => reaction.emoji.name === emojiName)
+            let reaction = this.config.roleMessage.reactions.cache.find(
+                reaction => reaction.emoji.name === emojiName
+            )
 
             if (!reaction) {
                 const emoji = this.emojiManager.getEmojis()[roleName]
@@ -49,7 +45,7 @@ export default class ReactionManager extends Manager {
                     return
                 }
 
-                reaction = await this.message.react(emoji)
+                reaction = await this.config.roleMessage.react(emoji)
             }
 
             this.reactions[roleName] = reaction
@@ -61,7 +57,7 @@ export default class ReactionManager extends Manager {
             return
         }
 
-        if (reaction.message.id === this.message.id) {
+        if (reaction.message.id === this.config.roleMessage.id) {
             const member = await this.context.guild.members.fetch(user)
             
             const roleName = this.emojiManager.getRoleFromEmoji(reaction.emoji)
@@ -76,7 +72,7 @@ export default class ReactionManager extends Manager {
             return
         }
 
-        if (reaction.message.id === this.message.id) {
+        if (reaction.message.id === this.config.roleMessage.id) {
             const member = await this.context.guild.members.fetch(user)
 
             const roleName = this.emojiManager.getRoleFromEmoji(reaction.emoji)

@@ -43,8 +43,6 @@ export default class RoleManagaer extends Manager {
     }
 
     async init() {
-        this.config = (await Guild.config(this.context.guild))["skill-roles"]
-
         await this.createRoles()
     }
 

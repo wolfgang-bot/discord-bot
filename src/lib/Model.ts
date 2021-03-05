@@ -53,7 +53,7 @@ abstract class Model {
     /**
      * Executes Model.whereAll with the given arguments and returns the first result
      */
-    static async where(...args: Parameters<typeof Model.whereAll>): Promise<Model> {
+    static async where(...args: Parameters<typeof Model.whereAll>): Promise<Model | undefined> {
         return (await Model.whereAll.apply(this, args))[0]
     }
 

@@ -10,10 +10,6 @@ function hasSameLength(...arrays: any[][]) {
     ))
 }
 
-function someEmpty(...arrays: any[][]) {
-    return arrays.some(array => array.length === 0)
-}
-
 function everyGreaterThanZero(array: number[]) {
     return array.every(value => value > 0)
 }
@@ -66,10 +62,7 @@ export default class Configuration extends DefaultConfig implements ConfigProps 
         roleThresholds,
         levelUpReactionEmoji
     ]: ConfigArgs) {
-        if (
-            !hasSameLength(roles, roleColors, roleThresholds) ||
-            someEmpty(roles, roleColors, roleThresholds)
-        ) {
+        if (!hasSameLength(roles, roleColors, roleThresholds)) {
             throw "roles, role_colors and role_thresholds must have the same length"
         }
 
