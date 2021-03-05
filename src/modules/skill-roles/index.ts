@@ -67,8 +67,8 @@ export default class RoleManagerModule extends Module {
     reactionManager: ReactionManager
     
     async start() {
-        this.emojiManager = new EmojiManager(this.context)
-        this.roleManager = new RoleManager(this.context)
+        this.emojiManager = new EmojiManager(this.context, this.config)
+        this.roleManager = new RoleManager(this.context, this.config)
         this.reactionManager = new ReactionManager(this.context, this.config, this.emojiManager, this.roleManager)
 
         if (!this.config.roleMessage) {

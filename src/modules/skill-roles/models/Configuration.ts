@@ -4,6 +4,10 @@ import Context from "../../../lib/Context"
 import DescriptiveObject from "../../../lib/DescriptiveObject"
 import { COLOR_REGEX } from "../../../lib/constraints"
 
+function hasDuplicates(array: any[]) {
+    return new Set(array).size !== array.length
+}
+
 type ConfigProps = {
     roleMessage?: Discord.Message,
     channel: Discord.TextChannel,
@@ -36,6 +40,10 @@ export default class Configuration extends DefaultConfig implements ConfigProps 
     static fromArgs([channel, emojiPrefix, roleColor, roles]: ConfigArgs) {
         if (!COLOR_REGEX.test(roleColor)) {
             throw "'Role Color' must be a valid color code"
+        }
+
+        if (hasDuplicates(roles)) {
+            throw "'Roles' cannot contain duplicates"
         }
 
         return new Configuration({ channel, emojiPrefix, roleColor, roles })
