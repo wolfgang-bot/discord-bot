@@ -17,7 +17,7 @@ import ProfileCommand from "./commands/profile"
 })
 @argument({
     type: ARGUMENT_TYPES.TEXT_CHANNEL,
-    key: "notifications_channel_id",
+    key: "channel",
     name: "arg_notifications_channel_display_name",
     desc: "arg_notifications_channel_desc",
 })
@@ -32,7 +32,7 @@ import ProfileCommand from "./commands/profile"
 @argument({
     type: ARGUMENT_TYPES.STRING,
     isArray: true,
-    key: "role_colors",
+    key: "roleColors",
     name: "arg_role_colors_name",
     desc: "arg_role_colors_desc",
     defaultValue: ["#E67E22", "#ffffff", "#F0C410", "#607d8b", "#3498DB"]
@@ -40,21 +40,20 @@ import ProfileCommand from "./commands/profile"
 @argument({
     type: ARGUMENT_TYPES.NUMBER,
     isArray: true,
-    key: "role_thresholds",
+    key: "roleThresholds",
     name: "arg_role_thresholds_name",
     desc: "arg_role_thresholds_desc",
     defaultValue: [10, 100, 500, 1000, 2500]
 })
 @argument({
     type: ARGUMENT_TYPES.STRING,
-    key: "level_up_reaction_emoji",
+    key: "levelUpReactionEmoji",
     name: "arg_level_up_reaction_emoji_name",
     desc: "arg_level_up_reaction_emoji_desc",
     defaultValue: "💯"
 })
 export default class ReputationSystemModule extends Module {
-    static makeConfigFromArgs = Configuration.fromArgs
-    static makeConfigFromJSON = Configuration.fromJSON
+    static config = Configuration
     static commands = ReputationSystemModule.createCommands()
 
     config: Configuration
