@@ -12,27 +12,26 @@ import VoiceChannelManager from "./managers/VoiceChannelManager"
 })
 @argument({
     type: ARGUMENT_TYPES.CATEGORY_CHANNEL,
-    key: "category_id",
+    key: "parentChannel",
     name: "arg_category_channel_display_name",
     desc: "arg_category_channel_desc"
 })
 @argument({
     type: ARGUMENT_TYPES.NUMBER,
-    key: "amount_of_voicechannels",
+    key: "defaultChannels",
     name: "arg_amount_of_voicechannels_name",
     desc: "arg_amount_of_voicechannels_desc",
     defaultValue: 3
 })
 @argument({
     type: ARGUMENT_TYPES.STRING,
-    key: "channel_name",
+    key: "channelName",
     name: "arg_channel_name_name",
     desc: "arg_channel_name_desc",
     defaultValue: "🔊┃voice {}"
 })
 class DynamicVoicechannelsModule extends Module {
-    static makeConfigFromArgs = Configuration.fromArgs
-    static makeConfigFromJSON = Configuration.fromJSON
+    static config = Configuration
 
     voiceChannelManager: VoiceChannelManager
     config: Configuration
