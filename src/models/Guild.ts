@@ -13,6 +13,7 @@ class Guild extends Model implements GuildModelValues {
         table: "guilds"
     }
     discordGuild: Discord.Guild
+    id: string
 
     constructor(values: GuildModelValues) {
         super({

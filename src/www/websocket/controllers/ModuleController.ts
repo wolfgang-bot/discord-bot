@@ -212,9 +212,7 @@ export default class ModuleController extends WebSocketController {
             return send(error(404, "Module not found"))
         }
 
-        const instanceModel = await ModuleInstance.where(`
-            module_id='${moduleModel.id}' AND guild_id='${guild.id}'
-        `) as ModuleInstance
+        const instanceModel = await ModuleInstance.findByGuildAndModuleKey(guild, moduleModel.key)
 
         if (!instanceModel) {
             return send(error(404, "Instance not found"))

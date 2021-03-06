@@ -192,12 +192,14 @@ async function auditModuleInstances() {
         const instances = await ModuleInstance.findAllBy("guild_id", id) as Collection<ModuleInstance>
 
         moduleModels.forEach(moduleModel => {
-            if (!instances.some(instance => instance.module_id === moduleModel.id)) {
+            if (!instances.some(instance => instance.module_key === moduleModel.key)) {
                 issues.push(`Missing static module instance: '${moduleModel.key}' -> '${guild.name}'`)
 
                 fixes.push(async () => {
                     const module = ModuleRegistry.getModule(moduleModel)
-                    const args = module.args.map(arg => arg.defaultValue)
+                    const args = Object.fromEntries(
+                        module.args.map(arg => [arg.key, arg.defaultValue])
+                    )
                     await ModuleInstanceRegistry.guild(guild).startModule(client, moduleModel, args, false)
                 })
             }

@@ -5,7 +5,7 @@ import Context from "../lib/Context"
 
 export type ModuleInstanceModelValues = {
     id?: string
-    module_id: string
+    module_key: string
     guild_id: string
     config: object
     data?: any
@@ -16,7 +16,8 @@ class ModuleInstance extends Model implements ModuleInstanceModelValues {
         model: ModuleInstance,
         table: "module_instances"
     }
-    module_id: string
+    id: string
+    module_key: string
     guild_id: string
     config: object
     data: any
@@ -25,9 +26,8 @@ class ModuleInstance extends Model implements ModuleInstanceModelValues {
     discordUser: Discord.User
 
     static async findByGuildAndModuleKey(guild: Discord.Guild | Guild, key: string) {
-        const module = await Module.findBy("key", key)
         return await ModuleInstance.where(`
-            guild_id='${guild.id}' AND module_id='${module.id}'`
+            guild_id='${guild.id}' AND module_key='${key}'`
         ) as ModuleInstance
     }
 
@@ -49,7 +49,7 @@ class ModuleInstance extends Model implements ModuleInstanceModelValues {
     constructor(values: ModuleInstanceModelValues) {
         super({
             table: "module_instances",
-            columns: ["id", "module_id", "guild_id", "config", "data"],
+            columns: ["id", "module_key", "guild_id", "config", "data"],
             defaultValues: {
                 id: uuid,
                 data: {}
@@ -63,7 +63,7 @@ class ModuleInstance extends Model implements ModuleInstanceModelValues {
     }
 
     async fetchModule() {
-        this.module = await Module.findBy("id", this.module_id) as Module
+        this.module = await Module.findBy("key", this.module_key) as Module
     }
 
     async fetchGuild() {

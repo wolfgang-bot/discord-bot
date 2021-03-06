@@ -14,6 +14,7 @@ class User extends Model implements UserModelValues {
         model: User,
         table: "users"
     }
+    id: string
     access_token?: string
     refresh_token?: string
     discordUser: Discord.User | APIUser = null

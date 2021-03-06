@@ -123,9 +123,7 @@ class ModuleInstanceRegistry {
      * Check if a module is loaded for this guild
      */
     async isLoaded(model: ModuleModel) {
-        const moduleInstance = await ModuleInstanceModel.where(
-            `module_id = '${model.id}' AND guild_id = '${this.guild.id}'`
-        )
+        const moduleInstance = await ModuleInstanceModel.findByGuildAndModuleKey(this.guild, model.key)
         return !!moduleInstance
     }
 
@@ -160,7 +158,7 @@ class ModuleInstanceRegistry {
         const instance = new module(context, config)
 
         const instanceModel = new ModuleInstanceModel({
-            module_id: model.id,
+            module_key: model.key,
             guild_id: this.guild.id,
             config: instance.getConfig()
         })
@@ -182,9 +180,7 @@ class ModuleInstanceRegistry {
      * Stop the module's instance from this guild
      */
     async stopModule(model: ModuleModel) {
-        const moduleInstance = await ModuleInstanceModel.where(
-            `module_id = '${model.id}' AND guild_id = ${this.guild.id}`
-        ) as ModuleInstanceModel
+        const moduleInstance = await ModuleInstanceModel.findByGuildAndModuleKey(this.guild, model.key)
 
         const locale = await LocaleProvider.guild(this.guild)
         
@@ -215,7 +211,7 @@ class ModuleInstanceRegistry {
             throw locale.translate("error_module_does_not_exist", module.key)
         }
 
-        const model = await ModuleInstanceModel.where(`module_id = '${moduleModel.id}' AND guild_id = '${this.guild.id}'`) as ModuleInstanceModel
+        const model = await ModuleInstanceModel.findByGuildAndModuleKey(this.guild, moduleModel.key)
 
         if (!model) {
             throw locale.translate("error_module_not_running")
@@ -256,7 +252,7 @@ class ModuleInstanceRegistry {
      * Update the configuration of a model
      */
     async updateConfig(model: ModuleInstanceModel, newConfigJSON: object) {
-        const moduleModel = await ModuleModel.findBy("id", model.module_id) as ModuleModel
+        const moduleModel = await ModuleModel.findBy("key", model.module_key) as ModuleModel
         const module = ModuleInstanceRegistry.moduleRegistry.getModule(moduleModel)
         const instance = this.instances[model.id]
 
@@ -282,7 +278,9 @@ class ModuleInstanceRegistry {
 
         await Promise.all(models.map(model => {
             const module = ModuleInstanceRegistry.moduleRegistry.getModule(model)
-            const args = module.args.map(arg => arg.defaultValue)
+            const args = Object.fromEntries(
+                module.args.map(arg => [arg.key, arg.defaultValue])
+            )
             return this.startModule(client, model, args, false)
         }))
     }

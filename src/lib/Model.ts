@@ -25,7 +25,7 @@ abstract class Model {
     static context: ModelContext
     private table: string
     private columns: string[]
-    id: string
+    pkColumn = "id"
 
     abstract init(...args: any[]): void | Promise<void>
 
@@ -97,7 +97,7 @@ abstract class Model {
      * Update the model in the database
      */
     async update() {
-        const query = `UPDATE ${this.table} SET ${this.columns.map(col => `${col} = ?`).join(", ")} WHERE id = '${this.id}'`
+        const query = `UPDATE ${this.table} SET ${this.columns.map(col => `${col} = ?`).join(", ")} WHERE ${this.pkColumn} = '${this[this.pkColumn]}'`
         await database.run(query, this.getColumns())
     }
 
@@ -105,7 +105,7 @@ abstract class Model {
      * Delete the model from the database
      */
     async delete() {
-        const query = `DELETE FROM ${this.table} WHERE id = '${this.id}'`
+        const query = `DELETE FROM ${this.table} WHERE ${this.pkColumn} = '${this[this.pkColumn]}'`
         await database.run(query)
     }
 
@@ -130,10 +130,6 @@ abstract class Model {
      * Create a model
      */
     constructor(props: ModelProps) {
-        if (!props.columns.includes("id")) {
-            throw new Error("Every model must have a column: 'id'")
-        }
-
         this.table = props.table
         this.columns = props.columns
 

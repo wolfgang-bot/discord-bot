@@ -14,6 +14,7 @@ class Member extends Model implements MemberModelValues {
         model: Member,
         table: "members"
     }
+    id: string
     user_id: string
     guild_id: string
     reputation: number

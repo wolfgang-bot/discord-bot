@@ -68,7 +68,7 @@ class EventManager extends Manager {
                     return
                 }
 
-                let user = await User.findBy("id", member.user.id)
+                let user = await User.findBy("id", member.user.id) as User
 
                 if (!user) {
                     user = new User({ id: member.user.id })

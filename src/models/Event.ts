@@ -28,6 +28,7 @@ class Event<TMeta = undefined> extends Model implements EventModelValues<TMeta> 
         model: Event,
         table: "events"
     }
+    id: string
     type: EVENT_TYPES
     timestamp: number
     guild_id?: string

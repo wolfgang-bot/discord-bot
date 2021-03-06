@@ -2,7 +2,6 @@ import Discord from "discord.js"
 import Context from "../../../lib/Context"
 import Manager from "../../../lib/Manager"
 import LocaleProvider from "../../../services/LocaleProvider"
-import Module from "../../../models/Module"
 import ModuleInstance from "../../../models/ModuleInstance"
 import QuestionEmbed from "../embeds/QuestionEmbed"
 import NotificationEmbed from "../embeds/NotificationEmbed"
@@ -165,7 +164,7 @@ class ChannelManager extends Manager {
     }
 
     async storeActiveChannels() {
-        const instance = await this.fetchInstance()
+        const instance = await ModuleInstance.findByContext(this.context)
 
         instance.data.activeChannels = this.activeChannels
 
@@ -173,7 +172,7 @@ class ChannelManager extends Manager {
     }
 
     async loadActiveChannels() {
-        const instance = await this.fetchInstance()
+        const instance = await ModuleInstance.findByContext(this.context)
 
         const { activeChannels } = instance.data as InstanceData
 
@@ -187,11 +186,6 @@ class ChannelManager extends Manager {
                 this.activeChannels[id] = new ActiveChannel({ channel, message, user })
             }))
         }
-    }
-
-    async fetchInstance() {
-        const module = await Module.findBy("key", this.context.module.key)
-        return await ModuleInstance.where(`module_id = '${module.id}' AND guild_id = '${this.context.guild.id}'`) as ModuleInstance
     }
     
     async init() {
