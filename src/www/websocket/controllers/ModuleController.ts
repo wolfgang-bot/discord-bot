@@ -45,8 +45,8 @@ export default class ModuleController extends WebSocketController {
     /**
      * Start a module for a guild
      */
-    async startInstance(guildId: string, moduleKey: string, args: string[], send: Function) {
-        if (!args || args.constructor.name !== "Array") {
+    async startInstance(guildId: string, moduleKey: string, args: Record<string, any>, send: Function) {
+        if (!args || typeof args !== "object") {
             return send(error(400))
         }
 
@@ -227,7 +227,7 @@ export default class ModuleController extends WebSocketController {
         try {
             await ModuleInstanceRegistry
                 .guild(guild.discordGuild)
-                .updateConfig(this.client, instanceModel, newConfig)
+                .updateConfig(instanceModel, newConfig)
         } catch (err) {
             if (process.env.NODE_ENV === "development") {
                 console.error(err)

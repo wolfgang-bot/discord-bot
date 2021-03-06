@@ -21,6 +21,7 @@ type ModuleTranslations = {
 class Module extends EventEmitter {
     static STATES = STATES
     static translations: ModuleTranslations
+    static config: typeof Configuration
 
     static key: string
     static internalName: string
@@ -36,14 +37,6 @@ class Module extends EventEmitter {
     context: Context
     config: Configuration
     state: STATES
-
-    static makeConfigFromArgs(args: any[]) {
-        return new Configuration({})
-    }
-
-    static async makeConfigFromJSON(context: Context, object: object) {
-        return new Configuration({})
-    }
 
     constructor(context: Context, config?: Configuration) {
         super()

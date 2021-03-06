@@ -132,7 +132,7 @@ class ModuleInstanceRegistry {
     /**
      * Start a module from arguments
      */
-    async startModule(client: Discord.Client, model: ModuleModel, args: string[], isUserInvocation = true) {
+    async startModule(client: Discord.Client, model: ModuleModel, args: Record<string, any>, isUserInvocation = true) {
         /**
          * Validate invocation
          */
@@ -151,32 +151,12 @@ class ModuleInstanceRegistry {
         }
 
         /**
-         * Convert arguments to objects (e.g. text channel id -> text channel)
-         */
-        let validateArgFn: Function = () => {}
-
-        if (isUserInvocation) {
-            const locale = await LocaleProvider.guild(this.guild)
-            const moduleLocale = locale.scope(module.key)
-            validateArgFn = async (argument: Argument, i: number) => {
-                if (!args[i]) {
-                    throw locale.translate("error_missing_argument", moduleLocale.translate(argument.name))
-                }
-            }
-        }
-
-        const resolvedArgs: ArgumentResolveTypes[] = await Promise.all(module.args.map(
-            async (argument, i) => {
-                await validateArgFn(argument, i)
-                return ArgumentResolver.guild(this.guild).resolveArgument(argument, args[i])
-            }
-        ))
-
-        /**
          * Create the instance
          */
+        const configValues = await this.resolveArgumentsToConfig(module, args, { shouldValidate: isUserInvocation })
+
+        const config = new module.config(configValues)
         const context = new Context({ client, guild: this.guild, module })
-        const config = module.makeConfigFromArgs(resolvedArgs)
         const instance = new module(context, config)
 
         const instanceModel = new ModuleInstanceModel({
@@ -260,8 +240,9 @@ class ModuleInstanceRegistry {
         await model.fetchModule()
         const module = ModuleInstanceRegistry.moduleRegistry.getModule(model.module)
 
+        const configValues = await this.resolveArgumentsToConfig(module, model.config)
+        const config = new module.config(configValues)
         const context = new Context({ client, guild: this.guild, module })
-        const config = await module.makeConfigFromJSON(context, model.config)
         const instance = new module(context, config)
 
         await instance._start()
@@ -274,13 +255,13 @@ class ModuleInstanceRegistry {
     /**
      * Update the configuration of a model
      */
-    async updateConfig(client: Discord.Client, model: ModuleInstanceModel, newConfigJSON: object) {
+    async updateConfig(model: ModuleInstanceModel, newConfigJSON: object) {
         const moduleModel = await ModuleModel.findBy("id", model.module_id) as ModuleModel
         const module = ModuleInstanceRegistry.moduleRegistry.getModule(moduleModel)
         const instance = this.instances[model.id]
 
-        const context = new Context({ client, guild: this.guild, module })
-        const newConfig = await module.makeConfigFromJSON(context, newConfigJSON)
+        const newConfigValues = await this.resolveArgumentsToConfig(module, newConfigJSON)
+        const newConfig = new module.config(newConfigValues)
 
         instance.config = newConfig
         model.config = newConfig
@@ -304,6 +285,42 @@ class ModuleInstanceRegistry {
             const args = module.args.map(arg => arg.defaultValue)
             return this.startModule(client, model, args, false)
         }))
+    }
+
+    /**
+     * Convert arguments to objects (e.g. text channel id -> text channel)
+     */
+    async resolveArgumentsToConfig(module: typeof Module, args: Record<string, any>, options: {
+        shouldValidate?: boolean
+    } = {}) {
+        options = {
+            shouldValidate: true,
+            ...options
+        }
+
+        let validateArgFn: Function = () => { }
+
+        if (options) {
+            const locale = await LocaleProvider.guild(this.guild)
+            const moduleLocale = locale.scope(module.key)
+            validateArgFn = (argument: Argument) => {
+                if (!args[argument.key]) {
+                    throw locale.translate("error_missing_argument", moduleLocale.translate(argument.name))
+                }
+            }
+        }
+
+        const resolvedArgs: Record<string, ArgumentResolveTypes> = Object.fromEntries(
+            await Promise.all(module.args.map(
+                async (argument) => {
+                    validateArgFn(argument)
+                    const value = await ArgumentResolver.guild(this.guild).resolveArgument(argument, args[argument.key])
+                    return [argument.key, value]
+                }
+            ))
+        )
+
+        return resolvedArgs
     }
 }
 
