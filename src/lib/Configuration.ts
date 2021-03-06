@@ -12,10 +12,6 @@ class Configuration {
     }
 
     constructor(props: object) {}
-    
-    toJSON(): object {
-        return {}
-    }
 }
 
 export default Configuration

@@ -1,3 +1,4 @@
+import Discord from "discord.js"
 import Module from "../../lib/Module"
 import { module, argument } from "../../lib/decorators"
 import { TYPES as ARGUMENT_TYPES } from "../../lib/Argument"
@@ -16,75 +17,80 @@ import SettingsConfig from "../settings/models/Configuration"
 })
 @argument({
     type: ARGUMENT_TYPES.TEXT_CHANNEL,
-    key: "question_channel_id",
+    key: "channel",
     name: "arg_question_channel_display_name",
     desc: "arg_question_channel_desc",
 })
 @argument({
     type: ARGUMENT_TYPES.STRING,
-    key: "channel_name",
+    key: "channelName",
     name: "arg_channel_name_name",
     desc: "arg_channel_name_desc",
     defaultValue: "❓┃{}",
 })
 @argument({
     type: ARGUMENT_TYPES.STRING,
-    key: "resolve_reaction",
+    key: "resolveReaction",
     name: "arg_resolve_reaction_name",
     desc: "arg_resolve_reaction_desc",
     defaultValue: "✅"
 })
 @argument({
     type: ARGUMENT_TYPES.STRING,
-    key: "delete_message",
+    key: "deleteMessage",
     name: "arg_delete_message_name",
     desc: "arg_delete_message_desc",
     defaultValue: "❌"
 })
 @argument({
     type: ARGUMENT_TYPES.NUMBER,
-    key: "accept_reputation",
+    key: "acceptReputation",
     name: "arg_accept_reputation_name",
     desc: "arg_accept_reputation_desc",
     defaultValue: 10
 })
 @argument({
     type: ARGUMENT_TYPES.NUMBER,
-    key: "message_reputation",
+    key: "messageReputation",
     name: "arg_message_reputation_name",
     desc: "arg_message_reputation_desc",
     defaultValue: 1
 })
 @argument({
     type: ARGUMENT_TYPES.NUMBER,
-    key: "message_reputation_timeout",
+    key: "messageReputationTimeout",
     name: "arg_message_reputation_timeout_name",
     desc: "arg_message_reputation_timeout_desc",
     defaultValue: 7500
 })
 @argument({
     type: ARGUMENT_TYPES.NUMBER,
-    key: "ask_channel_rate_limit",
+    key: "askChannelRateLimit",
     name: "arg_ask_channel_rate_limit_name",
     desc: "arg_ask_channel_rate_limit_desc",
     defaultValue: 300
 })
 class QuestionChannelsModule extends Module {
-    static makeConfigFromArgs = Configuration.fromArgs
-    static makeConfigFromJSON = Configuration.fromJSON
+    static config = Configuration
 
     config: Configuration
     channelManager: ChannelManager
+    helpMessage: Discord.Message
 
     async start() {
         this.channelManager = new ChannelManager(this.context, this.config)
 
+        const instance = await ModuleInstance.findByGuildAndModuleKey(this.context.guild, this.context.module.key)
         const settings = await ModuleInstance.config(this.context.guild, "settings") as SettingsConfig
         const locale = (await LocaleProvider.guild(this.context.guild)).scope("question-channels")
 
         // Send help embed into channel if hasn't already
-        if (!this.config.helpMessage) {
-            this.config.helpMessage = await this.config.channel.send(new HelpEmbed(settings, locale))
+        if (!instance.data.helpMessage) {
+            this.helpMessage = await this.config.channel.send(new HelpEmbed(settings, locale))
+            instance.data.helpMessage = this.helpMessage.id
+            await instance.update()
+        } else {
+            this.helpMessage = await this.config.channel.messages.fetch(instance.data.helpMessage)
         }
 
         await this.config.channel.setRateLimitPerUser(this.config.askChannelRateLimit)
@@ -93,13 +99,16 @@ class QuestionChannelsModule extends Module {
     }
 
     async stop() {
+        const instance = await ModuleInstance.findByGuildAndModuleKey(this.context.guild, this.context.module.key)
+
+        delete instance.data.helpMessage
+
         await Promise.all([
-            this.config.helpMessage.delete(),
+            this.helpMessage.delete(),
+            instance.update(),
             this.config.channel.setRateLimitPerUser(0),
             this.channelManager.delete()
         ])
-
-        delete this.config.helpMessage
     }
 
     getConfig() {

@@ -28,4 +28,11 @@ export default class Configuration extends DefaultConfig implements ConfigProps 
             throw "Amount of voicechannels must be greater than 0"
         }
     }
+
+    toJSON() {
+        return {
+            ...this,
+            parentChannel: this.parentChannel.id
+        }
+    }
 }

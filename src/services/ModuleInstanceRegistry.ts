@@ -171,9 +171,9 @@ class ModuleInstanceRegistry {
             model: instanceModel
         })
 
-        await instance._start()
-
         await instanceModel.store()
+        
+        await instance._start()
 
         return instance
     }
