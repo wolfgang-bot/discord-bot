@@ -123,7 +123,9 @@ class ModuleInstanceRegistry {
      * Check if a module is loaded for this guild
      */
     async isLoaded(model: ModuleModel) {
-        const moduleInstance = await ModuleInstanceModel.where(`module_id = '${model.id}' AND guild_id = '${this.guild.id}'`)
+        const moduleInstance = await ModuleInstanceModel.where(
+            `module_id = '${model.id}' AND guild_id = '${this.guild.id}'`
+        )
         return !!moduleInstance
     }
 
@@ -267,6 +269,22 @@ class ModuleInstanceRegistry {
         ModuleInstanceRegistry.registerInstance({ guild: this.guild, instance, model })
 
         return instance
+    }
+
+    /**
+     * Update the configuration of a model
+     */
+    async updateConfig(client: Discord.Client, model: ModuleInstanceModel, newConfigJSON: object) {
+        const moduleModel = await ModuleModel.findBy("id", model.module_id) as ModuleModel
+        const module = ModuleInstanceRegistry.moduleRegistry.getModule(moduleModel)
+        const instance = this.instances[model.id]
+
+        const context = new Context({ client, guild: this.guild, module })
+        const newConfig = await module.makeConfigFromJSON(context, newConfigJSON)
+
+        instance.config = newConfig
+        model.config = newConfig
+        await model.update()
     }
 
     /**

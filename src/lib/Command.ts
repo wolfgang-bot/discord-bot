@@ -3,7 +3,7 @@ import LocaleProvider from "../services/LocaleProvider"
 import SettingsModule from "../modules/settings"
 
 const defaultCommandPrefix = SettingsModule.args.find(
-    arg => arg.key === "command_prefix"
+    arg => arg.key === "commandPrefix"
 ).defaultValue
 
 abstract class Command {

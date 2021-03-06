@@ -14,7 +14,7 @@ enum STATES {
 type ModuleTranslations = {
     name: string
     desc: string
-    features: string[]
+    features?: string[]
     args: Argument[]
 }
 
@@ -25,7 +25,7 @@ class Module extends EventEmitter {
     static key: string
     static internalName: string
     static desc: string
-    static features: string
+    static features?: string
     static args: Argument[]
     static isGlobal: boolean = false
     static isPrivate: boolean = false
@@ -91,7 +91,8 @@ class Module extends EventEmitter {
         return {
             moduleKey: this.context.module.key,
             guildId: this.context.guild.id,
-            state: this.state
+            state: this.state,
+            config: this.config
         }
     }
 
@@ -100,6 +101,7 @@ class Module extends EventEmitter {
             key: this.key,
             isGlobal: this.isGlobal,
             isPrivate: this.isPrivate,
+            isStatic: this.isStatic,
             translations: this.translations
         }
     }

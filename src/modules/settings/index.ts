@@ -12,7 +12,7 @@ import LocaleProvider from "../../services/LocaleProvider"
 @_static
 @argument({
     type: ARGUMENT_TYPES.STRING,
-    key: "command_prefix",
+    key: "commandPrefix",
     defaultValue: "?",
     name: "arg_command_prefix_name",
     desc: "arg_command_prefix_desc"
@@ -23,12 +23,12 @@ import LocaleProvider from "../../services/LocaleProvider"
     isSelect: true,
     selectOptions: LocaleProvider.getLocaleKeys(),
     defaultValue: LocaleProvider.defaultLocale,
-    name: "arg_command_prefix_name",
-    desc: "arg_command_prefix_desc"
+    name: "arg_locale_name",
+    desc: "arg_locale_desc"
 })
 @argument({
     type: ARGUMENT_TYPES.STRING,
-    key: "color_primary",
+    key: "colorPrimary",
     defaultValue: "#3f51b5",
     name: "arg_color_primary_name",
     desc: "arg_color_primary_desc"

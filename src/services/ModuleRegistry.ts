@@ -66,15 +66,16 @@ class ModuleRegistry {
     /**
      * Check if a module is protected
      */
-    static isProtectedModule(module: typeof Module) {
-        return module.isGlobal || module.isPrivate || module.isStatic
+    static isProtectedModule(module: typeof Module, opts: { includeStatic?: boolean } = {}) {
+        const newOpts = { includeStatic: false, ...opts }
+        return module.isGlobal || module.isPrivate || (!newOpts.includeStatic && module.isStatic)
     }
 
     /**
      * Get modules that are not protected
      */
-    static getPublicModules() {
-        return this.modules.filter(module => !this.isProtectedModule(module))
+    static getPublicModules(opts?: { includeStatic?: boolean }) {
+        return this.modules.filter(module => !this.isProtectedModule(module, opts))
     }
 
     /**
@@ -113,7 +114,7 @@ class ModuleRegistry {
 
             desc: moduleLocale.translate(module.desc),
 
-            features: moduleLocale.translateArray(module.features),
+            features: module.features ? moduleLocale.translateArray(module.features) : null,
             
             args: module.args.map(arg => {
                 const newArg = arg.clone()

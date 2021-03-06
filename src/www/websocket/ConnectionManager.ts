@@ -39,6 +39,7 @@ export default class ConnectionManager {
         this.socket.on("post:module-instances/start",   this.moduleController.startInstance.bind(this.moduleController))
         this.socket.on("post:module-instances/stop",    this.moduleController.stopInstance.bind(this.moduleController))
         this.socket.on("post:module-instances/restart", this.moduleController.restartInstance.bind(this.moduleController))
+        this.socket.on("post:module-instances/config",   this.moduleController.updateConfig.bind(this.moduleController))
 
         this.socket.on("post:stream/subscribe",         this.subscriptionController.subscribe.bind(this.subscriptionController))
         this.socket.on("post:stream/unsubscribe",       this.subscriptionController.unsubscribe.bind(this.subscriptionController))
