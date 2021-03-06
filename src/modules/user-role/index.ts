@@ -13,13 +13,12 @@ import Context from "../../lib/Context"
 })
 @argument({
     type: ARGUMENT_TYPES.ROLE,
-    key: "user_role_id",
+    key: "userRole",
     name: "arg_user_role_name",
     desc: "arg_user_role_desc"
 })
 export default class UserRoleModule extends Module {
-    static makeConfigFromArgs = Configuration.fromArgs
-    static makeConfigFromJSON = Configuration.fromJSON
+    static config = Configuration
 
     config: Configuration
 
