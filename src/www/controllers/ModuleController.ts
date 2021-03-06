@@ -6,7 +6,7 @@ export default class ModuleController {
      * Get all modules available to the requesting user
      */
     static getModules(req: Request, res: Response) {
-        const modules = ModuleRegistry.getPublicModules()
+        const modules = ModuleRegistry.getPublicModules({ includeStatic: true })
         modules.forEach(module => ModuleRegistry.translate(module))
 
         res.send(modules)
