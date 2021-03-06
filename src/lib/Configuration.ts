@@ -1,17 +1,11 @@
-import Context from "./Context"
-
 class Configuration {
     static guildConfig: object
 
-    static fromArgs(args: any[]) {
-        return new Configuration({})
+    constructor(props: object) {
+        for (let key in props) {
+            this[key] = props[key]
+        }
     }
-
-    static async fromJSON(context: Context, object: object) {
-        return new Configuration({})
-    }
-
-    constructor(props: object) {}
 }
 
 export default Configuration

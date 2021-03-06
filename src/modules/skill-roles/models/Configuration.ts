@@ -26,11 +26,6 @@ export default class Configuration extends DefaultConfig implements ConfigProps 
     constructor(props: ConfigProps) {
         super(props)
 
-        this.channel = props.channel
-        this.emojiPrefix = props.emojiPrefix
-        this.roleColor = props.roleColor
-        this.roles = props.roles
-
         if (!COLOR_REGEX.test(this.roleColor)) {
             throw "'Role Color' must be a valid color code"
         }

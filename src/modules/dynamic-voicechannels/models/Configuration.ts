@@ -20,10 +20,6 @@ export default class Configuration extends DefaultConfig implements ConfigProps 
     constructor(props: ConfigProps) {
         super(props)
 
-        this.parentChannel = props.parentChannel
-        this.defaultChannels = props.defaultChannels
-        this.channelName = props.channelName
-
         if (this.defaultChannels <= 0) {
             throw "Amount of voicechannels must be greater than 0"
         }

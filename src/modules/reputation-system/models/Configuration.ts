@@ -41,12 +41,6 @@ export default class Configuration extends DefaultConfig implements ConfigProps 
     constructor(props: ConfigProps) {
         super(props)
 
-        this.channel = props.channel
-        this.roles = props.roles
-        this.roleColors = props.roleColors
-        this.roleThresholds = props.roleThresholds
-        this.levelUpReactionEmoji = props.levelUpReactionEmoji
-
         if (!hasSameLength(this.roles, this.roleColors, this.roleThresholds)) {
             throw "roles, role_colors and role_thresholds must have the same length"
         }

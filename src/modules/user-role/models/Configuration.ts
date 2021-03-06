@@ -13,12 +13,6 @@ export default class Configuration extends DefaultConfig implements ConfigProps 
         value: {}
     })
     
-    constructor(props: ConfigProps) {
-        super(props)
-
-        this.userRole = props.userRole
-    }
-
     toJSON() {
         return {
             ...this,

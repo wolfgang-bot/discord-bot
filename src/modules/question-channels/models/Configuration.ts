@@ -31,15 +31,6 @@ export default class Configuration extends DefaultConfig implements ConfigProps 
     constructor(props: ConfigProps) {
         super(props)
 
-        this.channel = props.channel
-        this.channelName = props.channelName
-        this.resolveReaction = props.resolveReaction
-        this.deleteMessage = props.deleteMessage
-        this.acceptReputation = props.acceptReputation
-        this.messageReputation = props.messageReputation
-        this.messageReputationTimeout = props.messageReputationTimeout
-        this.askChannelRateLimit = props.askChannelRateLimit
-
         if (!emojiConstraint.verifyConstraints(this.resolveReaction)) {
             throw emojiConstraint.constraints
         }

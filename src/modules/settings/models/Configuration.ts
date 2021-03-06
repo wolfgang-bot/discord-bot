@@ -19,10 +19,6 @@ export default class Configuration extends DefaultConfig implements ConfigProps 
 
     constructor(props: ConfigProps) {
         super(props)
-
-        this.commandPrefix = props.commandPrefix
-        this.locale = props.locale
-        this.colorPrimary = props.colorPrimary
         
         if (!HEX_COLOR_REGEX.test(this.colorPrimary)) {
             throw "'Color Primary' must be a valid hexadecimal color"
