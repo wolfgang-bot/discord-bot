@@ -300,7 +300,7 @@ class ModuleInstanceRegistry {
 
         let validateArgFn: Function = () => { }
 
-        if (options) {
+        if (options.shouldValidate) {
             const locale = await LocaleProvider.guild(this.guild)
             const moduleLocale = locale.scope(module.key)
             validateArgFn = (argument: Argument) => {
