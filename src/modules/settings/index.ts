@@ -34,8 +34,7 @@ import LocaleProvider from "../../services/LocaleProvider"
     desc: "arg_color_primary_desc"
 })
 export default class SettingsModule extends Module {
-    static makeConfigFromArgs = Configuration.fromArgs
-    static makeConfigFromJSON = Configuration.fromJSON
+    static config = Configuration
 
     async start() {}
     async stop() {}
