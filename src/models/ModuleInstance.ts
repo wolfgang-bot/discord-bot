@@ -1,6 +1,7 @@
 import { v4 as uuid } from "uuid"
 import Discord from "discord.js"
 import Model from "../lib/Model"
+import Context from "../lib/Context"
 
 export type ModuleInstanceModelValues = {
     id?: string
@@ -28,6 +29,10 @@ class ModuleInstance extends Model implements ModuleInstanceModelValues {
         return await ModuleInstance.where(`
             guild_id='${guild.id}' AND module_id='${module.id}'`
         ) as ModuleInstance
+    }
+
+    static findByContext(context: Context) {
+        return this.findByGuildAndModuleKey(context.guild, context.module.key)
     }
 
     static async config(guild: Discord.Guild | Guild, key: string) {
@@ -80,3 +85,4 @@ export default ModuleInstance
 
 import Module from "./Module"
 import Guild from "./Guild"
+

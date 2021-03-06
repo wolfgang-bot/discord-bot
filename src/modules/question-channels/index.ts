@@ -80,18 +80,7 @@ class QuestionChannelsModule extends Module {
     async start() {
         this.channelManager = new ChannelManager(this.context, this.config)
 
-        const instance = await ModuleInstance.findByGuildAndModuleKey(this.context.guild, this.context.module.key)
-        const settings = await ModuleInstance.config(this.context.guild, "settings") as SettingsConfig
-        const locale = (await LocaleProvider.guild(this.context.guild)).scope("question-channels")
-
-        // Send help embed into channel if hasn't already
-        if (!instance.data.helpMessage) {
-            this.helpMessage = await this.config.channel.send(new HelpEmbed(settings, locale))
-            instance.data.helpMessage = this.helpMessage.id
-            await instance.update()
-        } else {
-            this.helpMessage = await this.config.channel.messages.fetch(instance.data.helpMessage)
-        }
+        await this.fetchHelpMessage()
 
         await this.config.channel.setRateLimitPerUser(this.config.askChannelRateLimit)
 
@@ -99,7 +88,7 @@ class QuestionChannelsModule extends Module {
     }
 
     async stop() {
-        const instance = await ModuleInstance.findByGuildAndModuleKey(this.context.guild, this.context.module.key)
+        const instance = await ModuleInstance.findByContext(this.context)
 
         delete instance.data.helpMessage
 
@@ -111,8 +100,18 @@ class QuestionChannelsModule extends Module {
         ])
     }
 
-    getConfig() {
-        return this.config
+    async fetchHelpMessage() {
+        const instance = await ModuleInstance.findByContext(this.context)
+        const settings = await ModuleInstance.config(this.context.guild, "settings") as SettingsConfig
+        const locale = (await LocaleProvider.guild(this.context.guild)).scope("question-channels")
+        
+        if (!instance.data.helpMessage) {
+            this.helpMessage = await this.config.channel.send(new HelpEmbed(settings, locale))
+            instance.data.helpMessage = this.helpMessage.id
+            await instance.update()
+        } else {
+            this.helpMessage = await this.config.channel.messages.fetch(instance.data.helpMessage)
+        }
     }
 }
 

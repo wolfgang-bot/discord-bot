@@ -1,3 +1,4 @@
+import Discord from "discord.js"
 import Module from "../../lib/Module"
 import { module, argument } from "../../lib/decorators"
 import { TYPES as ARGUMENT_TYPES } from "../../lib/Argument"
@@ -29,20 +30,20 @@ const roles = [
 })
 @argument({
     type: ARGUMENT_TYPES.TEXT_CHANNEL,
-    key: "roles_channel_id",
+    key: "channel",
     name: "arg_roles_channel_display_name",
     desc: "arg_roles_channel_desc",
 })
 @argument({
     type: ARGUMENT_TYPES.STRING,
-    key: "emoji_prefix",
+    key: "emojiPrefix",
     defaultValue: "skill_",
     name: "arg_emoji_prefix_name",
     desc: "arg_emoji_prefix_desc"
 })
 @argument({
     type: ARGUMENT_TYPES.STRING,
-    key: "role_color",
+    key: "roleColor",
     defaultValue: "AQUA",
     name: "arg_role_color_name",
     desc: "arg_role_color_desc"
@@ -58,25 +59,24 @@ const roles = [
     desc: "arg_roles_desc"
 })
 export default class RoleManagerModule extends Module {
-    static makeConfigFromArgs = Configuration.fromArgs
-    static makeConfigFromJSON = Configuration.fromJSON
+    static config = Configuration
 
     config: Configuration
     emojiManager: EmojiManager
     roleManager: RoleManager
     reactionManager: ReactionManager
+    roleMessage: Discord.Message
     
     async start() {
+        await this.fetchRoleMessage()
+
         this.emojiManager = new EmojiManager(this.context, this.config)
         this.roleManager = new RoleManager(this.context, this.config)
-        this.reactionManager = new ReactionManager(this.context, this.config, this.emojiManager, this.roleManager)
-
-        if (!this.config.roleMessage) {
-            const settings = await ModuleInstance.config(this.context.guild, "settings") as SettingsConfig
-            const locale = (await LocaleProvider.guild(this.context.guild)).scope("skill-roles")
-
-            this.config.roleMessage = await this.config.channel.send(new RoleEmbed(settings, locale))
-        }
+        this.reactionManager = new ReactionManager(this.context, this.config, {
+            emojiManager: this.emojiManager,
+            roleManager: this.roleManager,
+            roleMessage: this.roleMessage
+        })
 
         await Promise.all([
             this.emojiManager.init(),
@@ -87,17 +87,31 @@ export default class RoleManagerModule extends Module {
     }
 
     async stop() {
+        const instance = await ModuleInstance.findByContext(this.context)
+
+        delete instance.data.roleMessage
+        
         await Promise.all([
-            this.config.roleMessage.delete(),
+            this.roleMessage.delete(),
             this.emojiManager.delete(),
             this.roleManager.delete(),
-            this.reactionManager.delete()
+            this.reactionManager.delete(),
+            instance.update()
         ])
-        
-        delete this.config.roleMessage
     }
 
-    getConfig() {
-        return this.config
+    async fetchRoleMessage() {
+        const instance = await ModuleInstance.findByContext(this.context)
+        
+        if (!instance.data.roleMessage) {
+            const settings = await ModuleInstance.config(this.context.guild, "settings") as SettingsConfig
+            const locale = (await LocaleProvider.guild(this.context.guild)).scope("skill-roles")
+
+            this.roleMessage = await this.config.channel.send(new RoleEmbed(settings, locale))
+            instance.data.roleMessage = this.roleMessage.id
+            await instance.update()
+        } else {
+            this.roleMessage = await this.config.channel.messages.fetch(instance.data.roleMessage)
+        }
     }
 }

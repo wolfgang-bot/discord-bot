@@ -23,9 +23,4 @@ export default class Module {
      * Code which reverts the actions done in module.start should go here.
      */
     async stop() { }
-
-    /**
-     * Get the configuration object of the module from which it can be restored.
-     */
-    getConfig() { }
 }
