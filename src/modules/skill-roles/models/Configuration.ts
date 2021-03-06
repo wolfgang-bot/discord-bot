@@ -1,6 +1,5 @@
 import Discord from "discord.js"
 import DefaultConfig from "../../../lib/Configuration"
-import DescriptiveObject from "../../../lib/DescriptiveObject"
 import { COLOR_REGEX } from "../../../lib/constraints"
 
 function hasDuplicates(array: any[]) {
@@ -18,10 +17,6 @@ export default class Configuration extends DefaultConfig implements ConfigProps 
     emojiPrefix: string
     roleColor: string
     roles: string[]
-
-    static guildConfig = new DescriptiveObject({
-        value: {}
-    })
     
     constructor(props: ConfigProps) {
         super(props)

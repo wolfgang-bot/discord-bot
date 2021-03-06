@@ -3,10 +3,8 @@ import path from "path"
 import Discord from "discord.js"
 import Module from "../lib/Module"
 import Collection from "../lib/Collection"
-import Configuration from "../lib/Configuration"
 import ModuleModel from "../models/Module"
 import LocaleProvider from "./LocaleProvider"
-import defaultConfig from "../config/default"
 import ModuleInstanceRegistry from "./ModuleInstanceRegistry"
 
 const MODULES_DIR = path.join(__dirname, "..", "modules")
@@ -37,30 +35,7 @@ class ModuleRegistry {
             ).default as typeof Module
 
             ModuleRegistry.modules.push(module)
-
-            if (!module.isGlobal) {
-                ModuleRegistry.addModuleConfigToDefaultConfig(module)
-            }
         }))
-    }
-
-    /**
-     * Add a module's guild configuration to the default config
-     */
-    static addModuleConfigToDefaultConfig(module: typeof Module) {
-        try {
-            const moduleConfig = require(
-                path.join(MODULES_DIR, module.key, "models", "Configuration.ts")
-            ).default as typeof Configuration
-            
-            defaultConfig.value[module.key] = moduleConfig.guildConfig
-        } catch (error) {
-            if (process.env.NODE_ENV === "development") {
-                console.error(error)
-            }
-
-            throw new Error(`Failed to load config from module '${module.key}'`)
-        }
     }
 
     /**

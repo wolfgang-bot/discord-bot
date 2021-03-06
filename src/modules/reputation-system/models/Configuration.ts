@@ -1,6 +1,5 @@
 import Discord from "discord.js"
 import DefaultConfig from "../../../lib/Configuration"
-import DescriptiveObject from "../../../lib/DescriptiveObject"
 import { emojiConstraint } from "../../../lib/constraints"
 
 function hasSameLength(...arrays: any[][]) {
@@ -33,10 +32,6 @@ export default class Configuration extends DefaultConfig implements ConfigProps 
     roleColors: string[]
     roleThresholds: number[]
     levelUpReactionEmoji: string
-
-    static guildConfig = new DescriptiveObject({
-        value: {}
-    })
 
     constructor(props: ConfigProps) {
         super(props)

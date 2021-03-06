@@ -1,6 +1,5 @@
 import Discord from "discord.js"
 import DefaultConfig from "../../../lib/Configuration"
-import DescriptiveObject from "../../../lib/DescriptiveObject"
 import { emojiConstraint } from "../../../lib/constraints"
 
 type ConfigProps = {
@@ -23,10 +22,6 @@ export default class Configuration extends DefaultConfig implements ConfigProps 
     messageReputation: number
     messageReputationTimeout: number
     askChannelRateLimit: number
-
-    static guildConfig = new DescriptiveObject({
-        value: {}
-    })
 
     constructor(props: ConfigProps) {
         super(props)

@@ -1,21 +1,10 @@
 import Discord from "discord.js"
 import Model from "../lib/Model"
 import ModuleInstanceRegistry from "../services/ModuleInstanceRegistry"
-import defaultConfigRaw from "../config/default"
 
 export type GuildModelValues = {
     id: string
     config?: any
-}
-
-let defaultConfig: object
-
-function getDefaultConfig() {
-    if (!defaultConfig) {
-        defaultConfig = defaultConfigRaw.toVanillaObject()
-    }
-
-    return defaultConfig
 }
 
 class Guild extends Model implements GuildModelValues {
@@ -23,26 +12,12 @@ class Guild extends Model implements GuildModelValues {
         model: Guild,
         table: "guilds"
     }
-    config: any
     discordGuild: Discord.Guild
-
-    static async config(guild: Discord.Guild) {
-        let model = await Guild.findBy("id", guild.id) as Guild
-        
-        if (!model) {
-            return getDefaultConfig()
-        }
-
-        return model.config
-    }
 
     constructor(values: GuildModelValues) {
         super({
             table: "guilds",
-            columns: ["id", "config"],
-            defaultValues: {
-                config: getDefaultConfig()
-            },
+            columns: ["id"],
             values
         })
 
@@ -67,11 +42,7 @@ class Guild extends Model implements GuildModelValues {
         super.delete()
     }
     
-    init() {
-        if (typeof this.config === "string") {
-            this.config = JSON.parse(this.config)
-        }
-    }
+    init() {}
 }
 
 export default Guild

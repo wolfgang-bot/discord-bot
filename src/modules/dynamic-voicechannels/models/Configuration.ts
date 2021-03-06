@@ -1,6 +1,5 @@
 import Discord from "discord.js"
 import DefaultConfig from "../../../lib/Configuration"
-import DescriptiveObject from "../../../lib/DescriptiveObject"
 
 type ConfigProps = {
     parentChannel: Discord.CategoryChannel
@@ -12,10 +11,6 @@ export default class Configuration extends DefaultConfig implements ConfigProps 
     parentChannel: Discord.CategoryChannel
     defaultChannels: number
     channelName: string
-
-    static guildConfig = new DescriptiveObject({
-        value: {}
-    })
     
     constructor(props: ConfigProps) {
         super(props)
