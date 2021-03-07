@@ -49,16 +49,16 @@ export default class SocketManager {
             return next(new Error("Unauthorized"))
         }
 
-        const { token } = socket.handshake.auth
-
-        const userId = await OAuthServiceProvider.verifyToken(token)
-        const user = await User.findBy("id", userId) as User
-
-        if (!user) {
-            return next(new Error("Unauthorized"))
-        }
-
         try {
+            const { token } = socket.handshake.auth
+
+            const userId = await OAuthServiceProvider.verifyToken(token)
+            const user = await User.findBy("id", userId) as User
+
+            if (!user) {
+                return next(new Error("Unauthorized"))
+            }
+
             const [discordUser, guilds] = await Promise.all([
                 OAuthServiceProvider.fetchProfile(user.access_token),
                 this.fetchGuilds(user)
