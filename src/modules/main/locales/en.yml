@@ -6,49 +6,6 @@
 command_help_desc: Shows information about the available commands
 command_help_args: "[command, [sub-command, [...]]]"
 
-# modules
-command_modules_desc: Manages the modules
-
-# modules help
-command_modules_help_desc: Shows information about a module
-command_modules_help_args: "<module>"
-
-# modules list
-command_modules_list_desc: Shows the available and the active modules
-
-# modules start
-command_modules_start_desc: Starts a module
-command_modules_start_args: "<module> [parameter, ...]"
-
-# modules stop
-command_modules_stop_desc: Stops a module
-command_modules_stop_args: <module>
-
-# modules restart
-command_modules_restart_desc: Restarts a module
-command_modules_restart_args: <module>
-
-# modules config
-command_modules_config_desc: Manages the module configurations
-
-# modules config get
-command_modules_config_get_desc: Shows the configuration of a module
-command_modules_config_get_args: <module>
-
-# modules config get
-command_modules_config_set_desc: Changes the configuration of a module
-command_modules_config_set_args: <module> <key> <value>
-
-# locale
-command_locale_desc: Manages the locale
-
-# locale get
-command_locale_get_desc: Get the locale
-
-# locale set
-command_locale_set_desc: Set the locale
-command_locale_set_args: <locale_code>
-
 #
 # Embeds
 #
@@ -62,36 +19,6 @@ embed_help_command_title: "Help: {0}"
 embed_help_command_usage: Usage
 embed_help_command_permissions: Required Permissions
 embed_help_command_alias: Alias
-
-# Module Config
-embed_module_config_title: "Configuration for: {0}"
-embed_module_config_field: |
-    *Key: {0}*
-    *{1}*
-    ```
-    {2}
-    ```
-
-# Module Help
-embed_module_help_title: "Module: {0}"
-embed_module_help_start: Start
-embed_module_help_features: Features
-
-# Modules List
-embed_modules_list_title: Modules
-embed_modules_list_dashboard: Dashboard
-embed_modules_list_available: Available
-embed_modules_list_active: Active
-
-# Locale
-embed_locale_title: Locale
-embed_locale_desc: "**Active:** *{0}*"
-
-embed_locale_field_available_title: Available
-embed_locale_field_available_content: |
-    ```
-    {0}
-    ```
 
 # Setup
 embed_setup_title: Setup
