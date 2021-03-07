@@ -8,10 +8,9 @@ import Configuration from "./models/Configuration"
     desc: "meta_desc",
     features: "meta_features"
 })
-export default class Module {
-    static makeConfigFromArgs = Configuration.fromArgs
-    static makeConfigFromJSON = Configuration.fromJSON
-    
+export default class MyModule extends Module {
+    static config = Configuration
+
     /**
      * Starts the module.
      * Code which needs to be run whenever the module is loaded should go here.
