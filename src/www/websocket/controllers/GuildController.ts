@@ -1,10 +1,29 @@
+import Discord from "discord.js"
 import WebSocketController from "../../../lib/WebSocketController"
 import { success, error } from "../responses"
 import Guild from "../../../models/Guild"
+import { AuthorizedSocket } from "../SocketManager"
+import ValidationPipeline, {
+    GuildExistsValidator,
+    GuildAvailableValidator,
+    GuildAdminValidator
+} from "../../../lib/ValidationPipeline"
 
 export default class GuildController extends WebSocketController {
+    validationPipeline: ValidationPipeline
+
+    constructor(client: Discord.Client, socket: AuthorizedSocket) {
+        super(client, socket)
+
+        this.validationPipeline = new ValidationPipeline(client, [
+            new GuildExistsValidator(error(404)),
+            new GuildAvailableValidator(error(404)),
+            new GuildAdminValidator(error(403))
+        ])
+    }
+
     /**
-     * Forward request to the OAuthController.getGuilds method
+     * Get guilds from the authorized user
      */
     async getGuilds(send: Function) {
         const guilds = Object.values(this.socket.guilds)
@@ -18,17 +37,18 @@ export default class GuildController extends WebSocketController {
      * Get the channels (text, voice, category, ...) of a guild
      */
     async getChannels(guildId: string, send: Function) {
+        const error = await this.validationPipeline.validate({
+            guildId,
+            user: this.socket.user
+        })
+
+        if (error) {
+            send(error)
+            return
+        }
+
         const guild = await Guild.findBy("id", guildId) as Guild
-
-        if (!guild) {
-            return send(error(404))
-        }
-
         await guild.fetchDiscordGuild(this.client)
-
-        if (!await this.socket.user.isAdmin(guild)) {
-            return send(error(403))
-        }
 
         send(success(guild.discordGuild.channels.cache))
     }
@@ -37,19 +57,21 @@ export default class GuildController extends WebSocketController {
      * Get the roles of a guild
      */
     async getRoles(guildId: string, send: Function) {
-        const guild = await Guild.findBy("id", guildId) as Guild
+        const error = await this.validationPipeline.validate({
+            guildId,
+            user: this.socket.user
+        })
 
-        if (!guild) {
-            return send(error(404))
+        if (error) {
+            send(error)
+            return
         }
 
+        const guild = await Guild.findBy("id", guildId) as Guild
         await guild.fetchDiscordGuild(this.client)
 
-        if (!await this.socket.user.isAdmin(guild)) {
-            return send(error(403))
-        }
-
         const roles = await guild.discordGuild.roles.fetch()
+
         send(success(roles.cache))
     }
 
@@ -57,16 +79,17 @@ export default class GuildController extends WebSocketController {
      * Get member count of guild
      */
     async getMemberCount(guildId: string, send: Function) {
-        const guild = await this.client.guilds.fetch(guildId)
+        const error = await this.validationPipeline.validate({
+            guildId,
+            user: this.socket.user
+        })
+
+        if (error) {
+            send(error)
+            return
+        }
         
-        if (!guild || !guild.available) {
-            return send(error(404))
-        }
-
-        if (!this.socket.user.isAdmin(guild)) {
-            return send(error(403))
-        }
-
+        const guild = await this.client.guilds.fetch(guildId)
         send(success(guild.memberCount))
     }
 }
