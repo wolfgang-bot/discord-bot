@@ -20,11 +20,6 @@ embed_help_command_usage: Usage
 embed_help_command_permissions: Required Permissions
 embed_help_command_alias: Alias
 
-# Setup
-embed_setup_title: Setup
-embed_setup_desc_0: Will be ready in a few seconds. Turn up! 🔥⚡
-embed_setup_desc_1: Ready to go 🚀🚀🚀
-
 #
 # Errors
 #

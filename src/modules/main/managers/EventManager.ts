@@ -8,7 +8,6 @@ import StatisticsManager from "./Statistics"
 import RootCommandGroup from "../commands"
 import ModuleInstanceRegistry from "../../../services/ModuleInstanceRegistry"
 import { parseArguments } from "../../../utils"
-import LocaleProvider from "../../../services/LocaleProvider"
 import SetupEmbed from "../embeds/SetupEmbed"
 import ModuleInstance from "../../../models/ModuleInstance"
 import SettingsConfig from "../../settings/models/Configuration"
@@ -18,12 +17,9 @@ function getFirstTextChannel(guild: Discord.Guild) {
 }
 
 async function withLoadingIndicator(channel: Discord.TextChannel, callback: () => Promise<void> | void) {
-    const locale = await LocaleProvider.guild(channel.guild)
-    const config = await ModuleInstance.config(channel.guild, "settings") as SettingsConfig
-    
-    const message = await channel.send(new SetupEmbed(config, locale, 0))
+    const message = await channel.send(new SetupEmbed(0))
     await callback()
-    await message.edit(new SetupEmbed(config, locale, 1))
+    await message.edit(new SetupEmbed(1))
 }
 
 class EventManager extends Manager {

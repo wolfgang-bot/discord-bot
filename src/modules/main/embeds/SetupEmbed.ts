@@ -1,12 +1,14 @@
-import BaseEmbed from "../../../lib/BaseEmbed"
-import LocaleProvider from "../../../services/LocaleProvider"
-import SettingsConfig from "../../settings/models/Configuration"
+import { MessageEmbed } from "discord.js"
 
-export default class SetupEmbed extends BaseEmbed {
-    constructor(settings: SettingsConfig, locale: LocaleProvider, state: 0 | 1) {
-        super(settings)
+export default class SetupEmbed extends MessageEmbed {
+    constructor(state: 0 | 1) {
+        super()
 
-        this.setTitle(locale.translate("embed_setup_title"))
-            .setDescription(locale.translate("embed_setup_desc_" + state))
+        this.setTitle("Setup")
+            .setDescription(
+                state === 0 ?
+                "Will be ready in a few seconds. Turn up! 🔥⚡" :
+                "Ready to go 🚀🚀🚀"
+            )
     }
 }
