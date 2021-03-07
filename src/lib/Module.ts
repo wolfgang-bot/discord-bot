@@ -118,7 +118,7 @@ class Module extends EventEmitter {
             desc: this.desc,
             features: this.features,
             args: this.args,
-            commands: this.commands,
+            commands: this.createCommands(),
             isGlobal: this.isGlobal,
             isPrivate: this.isPrivate,
             isStatic: this.isStatic
