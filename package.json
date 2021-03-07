@@ -21,7 +21,6 @@
   "dependencies": {
     "bcrypt": "^5.0.0",
     "chalk": "^4.1.0",
-    "cors": "^2.8.5",
     "discord.js": "^12.4.1",
     "dotenv": "^8.2.0",
     "emoji-regex": "^9.2.0",

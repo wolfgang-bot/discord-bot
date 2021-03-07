@@ -12,12 +12,7 @@ export type AuthorizedRequest = Request & {
 const app = express()
 const server = http.createServer(app)
 const websocket = new WebSocketServer(server, {
-    serveClient: false,
-
-    cors: process.env.NODE_ENV === "development" ? {
-        origin: "*",
-        methods: ["GET", "POST"]
-    } : {}
+    serveClient: false
 })
 
 export default async function start(client: Discord.Client) {

@@ -2,7 +2,6 @@ import Discord from "discord.js"
 import express from "express"
 import { Server as WebSocketServer } from "socket.io"
 import path from "path"
-import cors from "cors"
 import routes from "../routes"
 import SocketManager from "../websocket/SocketManager"
 
@@ -20,10 +19,6 @@ export default async function boot({ app, websocket, client }: BootProps) {
 }
 
 function setupExpress(app: express.Application) {
-    if (process.env.NODE_ENV === "development") {
-        app.use(cors())
-    }
-
     // Set pug as template engine
     app.set("view engine", "pug")
     app.set("views", path.join(__dirname, "..", "views"))
