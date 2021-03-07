@@ -10,7 +10,7 @@ rootRouter.use("/storage", storage)
 
 // Proxy frontend server
 rootRouter.use("/", createProxyMiddleware({
-    target: `http://localhost:/${process.env.FRONTEND_PORT}`,
+    target: `http://localhost:${process.env.FRONTEND_PORT}/`,
     // ws: true -> Crashes the dev-server when reloading via nodemon in combination with socket.io websocket
 }))
 
