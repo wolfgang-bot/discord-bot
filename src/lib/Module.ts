@@ -3,6 +3,7 @@ import Configuration from "./Configuration"
 import Argument from "./Argument"
 import Context from "./Context"
 import Command from "./Command"
+import CommandRegistry from "../services/CommandRegistry"
 
 enum STATES {
     ACTIVE,
@@ -11,32 +12,33 @@ enum STATES {
     STOPPING
 }
 
-type ModuleTranslations = {
-    name: string
-    desc: string
-    features?: string[]
-    args: Argument[]
-}
-
 class Module extends EventEmitter {
     static STATES = STATES
-    static translations: ModuleTranslations
     static config: typeof Configuration
 
     static key: string
     static internalName: string
     static desc: string
-    static features?: string
+    static features?: string[]
     static args: Argument[]
+    static commands: (new () => Command)[]
     static isGlobal: boolean = false
     static isPrivate: boolean = false
     static isStatic: boolean = false
     static guildIds: string[]
-    static commands?: Command[]
     
     context: Context
     config: Configuration
     state: STATES
+    commands: Command[]
+
+    static createCommands() {
+        return this.commands.map(command => {
+            const instance = new command()
+            instance.module = this.key
+            return instance
+        })
+    }
 
     constructor(context: Context, config?: Configuration) {
         super()
@@ -76,11 +78,28 @@ class Module extends EventEmitter {
         this.emit("update", newState)
     }
 
+    /**
+     * Register commands of this module to guild's command group
+     */
+    registerCommands() {
+        CommandRegistry.guild(this.context.guild).register(this.commands)
+    }
+
+    /**
+     * Unregister commands from 'registerCommands'
+     */
+    unregisterCommands() {
+        CommandRegistry.guild(this.context.guild).unregister(this.commands)
+    }
+
     getConfig() {
         return this.config
     }
 
-    toJSON(): object {
+    /**
+     * Convert an nstance of this module to JSON
+     */
+    toJSON() {
         return {
             moduleKey: this.context.module.key,
             guildId: this.context.guild.id,
@@ -89,13 +108,20 @@ class Module extends EventEmitter {
         }
     }
 
+    /**
+     * Convert this module to JSON
+     */
     static toJSON() {
         return {
             key: this.key,
+            name: this.internalName,
+            desc: this.desc,
+            features: this.features,
+            args: this.args,
+            commands: this.commands,
             isGlobal: this.isGlobal,
             isPrivate: this.isPrivate,
-            isStatic: this.isStatic,
-            translations: this.translations
+            isStatic: this.isStatic
         }
     }
 }

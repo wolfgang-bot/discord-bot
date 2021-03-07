@@ -13,8 +13,6 @@ export default class ModuleController extends WebSocketController {
      */
     getModules(send: Function) {
         const modules = ModuleRegistry.getPublicModules({ includeStatic: true })
-        modules.forEach(module => ModuleRegistry.translate(module))
-
         send(success(modules))
     }
 

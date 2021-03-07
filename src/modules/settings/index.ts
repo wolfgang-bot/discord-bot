@@ -6,16 +6,16 @@ import LocaleProvider from "../../services/LocaleProvider"
 
 @module({
     key: "settings",
-    name: "meta_name",
-    desc: "meta_desc"
+    name: "Settings",
+    desc: "Provides guild-specific settings for the bot."
 })
 @_static
 @argument({
     type: ARGUMENT_TYPES.STRING,
     key: "commandPrefix",
     defaultValue: "?",
-    name: "arg_command_prefix_name",
-    desc: "arg_command_prefix_desc"
+    name: "Command Prefix",
+    desc: "Prefix needed to run commands"
 })
 @argument({
     type: ARGUMENT_TYPES.STRING,
@@ -23,15 +23,15 @@ import LocaleProvider from "../../services/LocaleProvider"
     isSelect: true,
     selectOptions: LocaleProvider.getLocaleKeys(),
     defaultValue: LocaleProvider.defaultLocale,
-    name: "arg_locale_name",
-    desc: "arg_locale_desc"
+    name: "Locale",
+    desc: "Locale of the guild (used for translations)"
 })
 @argument({
     type: ARGUMENT_TYPES.STRING,
     key: "colorPrimary",
     defaultValue: "#3f51b5",
-    name: "arg_color_primary_name",
-    desc: "arg_color_primary_desc"
+    name: "Color Primary",
+    desc: "Primary color of the color theme (used in embeds)"
 })
 export default class SettingsModule extends Module {
     static config = Configuration

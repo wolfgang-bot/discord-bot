@@ -7,8 +7,6 @@ export default class ModuleController {
      */
     static getModules(req: Request, res: Response) {
         const modules = ModuleRegistry.getPublicModules({ includeStatic: true })
-        modules.forEach(module => ModuleRegistry.translate(module))
-
         res.send(modules)
     }
 }

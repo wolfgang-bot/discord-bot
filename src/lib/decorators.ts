@@ -1,11 +1,12 @@
 import Module from "./Module"
 import Argument, { ArgumentProps } from "./Argument"
+import Command from "./Command"
 
 type ModuleProps = {
     key: string,
     name: string,
     desc?: string,
-    features?: string
+    features?: string[]
 }
 
 export function argument(props: ArgumentProps) {
@@ -14,6 +15,15 @@ export function argument(props: ArgumentProps) {
             module.args = []
         }
         module.args.unshift(new Argument(props))
+    }
+}
+
+export function command(command: new () => Command) {
+    return (module: typeof Module) => {
+        if (!module.commands) {
+            module.commands = []
+        }
+        module.commands.unshift(command)
     }
 }
 
@@ -26,6 +36,10 @@ export function module(props: ModuleProps) {
 
         if (!module.args) {
             module.args = []
+        }
+
+        if (!module.commands) {
+            module.commands = []
         }
 
         if (!module.guildIds) {

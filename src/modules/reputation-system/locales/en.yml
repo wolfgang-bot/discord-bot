@@ -64,3 +64,4 @@ embed_levelup_desc: |
 #
 
 error_textchannel_does_not_exist: The textchannel does not exist
+error_not_registered: You are not registered

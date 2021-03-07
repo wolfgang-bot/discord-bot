@@ -6,6 +6,7 @@ import ProfileCard from "../profile-card"
 import Member from "../../../models/Member"
 import ModuleInstance from "../../../models/ModuleInstance"
 import ReputationSystemConfig from "../models/Configuration"
+import LocaleProvider from "../../../services/LocaleProvider"
 
 export default class ProfileCommand extends Command {
     name = "profile"
@@ -15,9 +16,10 @@ export default class ProfileCommand extends Command {
 
     async run(message: Discord.Message) {
         const member = await Member.where(`user_id = '${message.author.id}' AND guild_id = '${message.guild.id}'`) as Member
+        const locale = (await LocaleProvider.guild(message.guild)).scope("reputation-system")
 
         if (!member) {
-            await message.channel.send("Du bist nicht registriert.")
+            await message.channel.send(locale.translate("error_not_registered"))
             return
         }
 

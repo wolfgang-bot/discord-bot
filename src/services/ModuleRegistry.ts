@@ -4,7 +4,6 @@ import Discord from "discord.js"
 import Module from "../lib/Module"
 import Collection from "../lib/Collection"
 import ModuleModel from "../models/Module"
-import LocaleProvider from "./LocaleProvider"
 import ModuleInstanceRegistry from "./ModuleInstanceRegistry"
 
 const MODULES_DIR = path.join(__dirname, "..", "modules")
@@ -79,40 +78,12 @@ class ModuleRegistry {
     }
 
     /**
-     * Fill a module's translation map
-     */
-    static translate(module: typeof Module) {
-        const moduleLocale = new LocaleProvider().scope(module.key)
-
-        module.translations = {
-            name: moduleLocale.translate(module.internalName),
-
-            desc: moduleLocale.translate(module.desc),
-
-            features: module.features ? moduleLocale.translateArray(module.features) : null,
-            
-            args: module.args.map(arg => {
-                const newArg = arg.clone()
-
-                newArg.name = moduleLocale.translate(arg.name)
-                newArg.desc = moduleLocale.translate(arg.desc)
-
-                return newArg
-            })
-        }
-    }
-
-    /**
      * Get all commands from all modules combined
      */
     static getAllCommands() {
-        return this.modules.reduce((commands, module) => {
-            if (module.commands) {
-                commands.push(...module.commands)
-            }
-
-            return commands
-        }, [])
+        return this.modules
+            .map(module => module.createCommands())
+            .flat()
     }
 }
 

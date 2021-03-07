@@ -11,63 +11,67 @@ import SettingsConfig from "../settings/models/Configuration"
 
 @module({
     key: "question-channels",
-    name: "meta_name",
-    desc: "meta_desc",
-    features: "meta_features"
+    name: "Question Channels",
+    desc: "Manages textchannels used for answering questions.",
+    features: [
+        "Creates a textchannel for a user when he asks a question in the question channel.",
+        "Removes a textchannel when the creator marks a message as the answer or the question as irrelevant.",
+        "Integrates with the 'reputation-system' module."
+    ]
 })
 @argument({
     type: ARGUMENT_TYPES.TEXT_CHANNEL,
     key: "channel",
-    name: "arg_question_channel_display_name",
-    desc: "arg_question_channel_desc",
+    name: "Question Channel",
+    desc: "The channel in which questions can be asked.",
 })
 @argument({
     type: ARGUMENT_TYPES.STRING,
     key: "channelName",
-    name: "arg_channel_name_name",
-    desc: "arg_channel_name_desc",
+    name: "Channel Name",
+    desc: "Template for the question channel names ('{}' will be replaced by the author's username)",
     defaultValue: "❓┃{}",
 })
 @argument({
     type: ARGUMENT_TYPES.STRING,
     key: "resolveReaction",
-    name: "arg_resolve_reaction_name",
-    desc: "arg_resolve_reaction_desc",
+    name: "Resolve Reaction",
+    desc: "Name of the reaction a question's author has to give to an answer to resolve the channel",
     defaultValue: "✅"
 })
 @argument({
     type: ARGUMENT_TYPES.STRING,
     key: "deleteMessage",
-    name: "arg_delete_message_name",
-    desc: "arg_delete_message_desc",
+    name: "Delete Message",
+    desc: "Content of the message a question's author has to sent into the question channel to delete it",
     defaultValue: "❌"
 })
 @argument({
     type: ARGUMENT_TYPES.NUMBER,
     key: "acceptReputation",
-    name: "arg_accept_reputation_name",
-    desc: "arg_accept_reputation_desc",
+    name: "Accept Reputation",
+    desc: "Amount of reputation a user receives when his message is marked as the answer",
     defaultValue: 10
 })
 @argument({
     type: ARGUMENT_TYPES.NUMBER,
     key: "messageReputation",
-    name: "arg_message_reputation_name",
-    desc: "arg_message_reputation_desc",
+    name: "Message Reputation",
+    desc: "Amount of reputation a user receives when sending a message into a question channel",
     defaultValue: 1
 })
 @argument({
     type: ARGUMENT_TYPES.NUMBER,
     key: "messageReputationTimeout",
-    name: "arg_message_reputation_timeout_name",
-    desc: "arg_message_reputation_timeout_desc",
+    name: "Message Reputation Timeout",
+    desc: "Duration of the timeout a user receives for receiving points by sending a message into a question channel (in ms)",
     defaultValue: 7500
 })
 @argument({
     type: ARGUMENT_TYPES.NUMBER,
     key: "askChannelRateLimit",
-    name: "arg_ask_channel_rate_limit_name",
-    desc: "arg_ask_channel_rate_limit_desc",
+    name: "Ask Channel Rate Limit",
+    desc: "Duration of the rate limit the ask-channel receives when initializing the module",
     defaultValue: 300
 })
 class QuestionChannelsModule extends Module {

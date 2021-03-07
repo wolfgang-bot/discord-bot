@@ -6,28 +6,32 @@ import VoiceChannelManager from "./managers/VoiceChannelManager"
 
 @module({
     key: "dynamic-voicechannels",
-    name: "meta_name",
-    desc: "meta_desc",
-    features: "meta_features"
+    name: "Dynamic Voicechannels",
+    desc: "Ensures that there always is an empty voicechannel.",
+    features: [
+        "Creates a predefined amount of persistant voicechannels in the given category.",
+        "Creates a new voicechannels if there is at least one member in every other voicechannel.",
+        "Removes the dynamically created voicechannels if they are not needed anymore."
+    ]
 })
 @argument({
     type: ARGUMENT_TYPES.CATEGORY_CHANNEL,
     key: "parentChannel",
-    name: "arg_category_channel_display_name",
-    desc: "arg_category_channel_desc"
+    name: "Category",
+    desc: "The category in which the voicechannels will be created"
 })
 @argument({
     type: ARGUMENT_TYPES.NUMBER,
     key: "defaultChannels",
-    name: "arg_amount_of_voicechannels_name",
-    desc: "arg_amount_of_voicechannels_desc",
+    name: "Amount Of Voicechannels",
+    desc: "The amount of persistant channels",
     defaultValue: 3
 })
 @argument({
     type: ARGUMENT_TYPES.STRING,
     key: "channelName",
-    name: "arg_channel_name_name",
-    desc: "arg_channel_name_desc",
+    name: "Channel Name",
+    desc: "Template for the voice channel names ('{}' will be replaced by a channel's index)",
     defaultValue: "🔊┃voice {}"
 })
 class DynamicVoicechannelsModule extends Module {

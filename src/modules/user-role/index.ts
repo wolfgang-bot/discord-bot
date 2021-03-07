@@ -7,15 +7,18 @@ import Context from "../../lib/Context"
 
 @module({
     key: "user-role",
-    name: "meta_name",
-    desc: "meta_desc",
-    features: "meta_features"
+    name: "User Role",
+    desc: "Gives a role to each user",
+    features: [
+        "Assigns a role to each existing user on startup",
+        "Assigns a role to each user who joins the guild"
+    ]
 })
 @argument({
     type: ARGUMENT_TYPES.ROLE,
     key: "userRole",
-    name: "arg_user_role_name",
-    desc: "arg_user_role_desc"
+    name: "User Role",
+    desc: "The role which will be assigned to each user"
 })
 export default class UserRoleModule extends Module {
     static config = Configuration

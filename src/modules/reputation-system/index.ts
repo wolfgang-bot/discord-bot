@@ -1,8 +1,7 @@
 import Module from "../../lib/Module"
-import { module, argument } from "../../lib/decorators"
+import { module, argument, command } from "../../lib/decorators"
 import { TYPES as ARGUMENT_TYPES } from "../../lib/Argument"
 import Context from "../../lib/Context"
-import Command from "../../lib/Command"
 import CommandRegistry from "../../services/CommandRegistry"
 import Configuration from "./models/Configuration"
 import ReputationManager from "./managers/ReputationManager"
@@ -11,21 +10,25 @@ import ProfileCommand from "./commands/profile"
 
 @module({
     key: "reputation-system",
-    name: "meta_name",
-    desc: "meta_desc",
-    features: "meta_features"
+    name: "Reputation System",
+    desc: "Manages the reputation and the level roles of the users.",
+    features: [
+        "Creates a new role for every level with a unique color.",
+        "Allows other modules to give reputation to specific users.",
+        "Sends a message into the notifications channel when a user reaches the next level."
+    ]
 })
 @argument({
     type: ARGUMENT_TYPES.TEXT_CHANNEL,
     key: "channel",
-    name: "arg_notifications_channel_display_name",
+    name: "Notifications Channel",
     desc: "arg_notifications_channel_desc",
 })
 @argument({
     type: ARGUMENT_TYPES.STRING,
     isArray: true,
     key: "roles",
-    name: "arg_roles_name",
+    name: "Roles",
     desc: "arg_roles_desc",
     defaultValue: ["Bronze", "Silver", "Gold", "Platinum", "Diamond"]
 })
@@ -33,7 +36,7 @@ import ProfileCommand from "./commands/profile"
     type: ARGUMENT_TYPES.STRING,
     isArray: true,
     key: "roleColors",
-    name: "arg_role_colors_name",
+    name: "Role Colors",
     desc: "arg_role_colors_desc",
     defaultValue: ["#E67E22", "#ffffff", "#F0C410", "#607d8b", "#3498DB"]
 })
@@ -41,57 +44,41 @@ import ProfileCommand from "./commands/profile"
     type: ARGUMENT_TYPES.NUMBER,
     isArray: true,
     key: "roleThresholds",
-    name: "arg_role_thresholds_name",
+    name: "Role Thresholds",
     desc: "arg_role_thresholds_desc",
     defaultValue: [10, 100, 500, 1000, 2500]
 })
 @argument({
     type: ARGUMENT_TYPES.STRING,
     key: "levelUpReactionEmoji",
-    name: "arg_level_up_reaction_emoji_name",
+    name: "Level Up Reaction Emoji",
     desc: "arg_level_up_reaction_emoji_desc",
     defaultValue: "💯"
 })
+@command(LeaderboardCommand)
+@command(ProfileCommand)
 export default class ReputationSystemModule extends Module {
     static config = Configuration
-    static commands = ReputationSystemModule.createCommands()
 
     config: Configuration
     reputationManager: ReputationManager
-    commands: Command[]
-
-    static createCommands() {
-        const commands: Command[] = [
-            new LeaderboardCommand(),
-            new ProfileCommand()
-        ]
-
-        commands.forEach(command => command.module = "reputation-system")
-
-        return commands
-    }
 
     constructor(context: Context, config: Configuration) {
         super(context, config)
-
         this.commands = ReputationSystemModule.createCommands()
     }
 
     async start() {
-        this.reputationManager = new ReputationManager(this.context, this.config)
+        this.registerCommands()
 
-        CommandRegistry.guild(this.context.guild).register(this.commands)
-        
+        this.reputationManager = new ReputationManager(this.context, this.config)
         await this.reputationManager.init()
     }
     
     async stop() {
+        this.unregisterCommands()
+
         CommandRegistry.guild(this.context.guild).unregister(this.commands)
-
         await this.reputationManager.delete()
-    }
-
-    getConfig() {
-        return this.config
     }
 }

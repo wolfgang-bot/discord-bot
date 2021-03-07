@@ -1,34 +1,4 @@
 #
-# Meta
-#
-
-meta_name: Skill Roles
-meta_desc: Creates a message whose reactions are used to assign the skill-roles.
-meta_features:
-    - Creates the skill-roles and one emoji per role.
-    - Sends a messages into the roles channel which has one reaction per role used to assign it.
-
-#
-# Arguments
-#
-
-# Roles Channel
-arg_roles_channel_display_name: Roles Channel
-arg_roles_channel_desc: The channel in which the reaction-roles message will be sent.
-
-# Emoji Prefix
-arg_emoji_prefix_name: Emoji Prefix
-arg_emoji_prefix_desc: Prefix of the role names
-
-# Role Color
-arg_role_color_name: Role Color
-arg_role_color_desc: Color of the roles (Discord color names allowed)
-
-# Roles
-arg_roles_name: Roles
-arg_roles_desc: Names of the roles which will be created
-
-#
 # Embeds
 #
 

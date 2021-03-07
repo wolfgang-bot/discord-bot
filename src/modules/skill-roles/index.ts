@@ -24,29 +24,32 @@ const roles = [
 
 @module({
     key: "skill-roles",
-    name: "meta_name",
-    desc: "meta_desc",
-    features: "meta_features"
+    name: "Skill Roles",
+    desc: "Creates a message with reaction-roles.",
+    features: [
+        "Creates the skill-roles and one emoji per role.",
+        "Sends a messages into the roles channel which has one reaction per role used to assign it."
+    ]
 })
 @argument({
     type: ARGUMENT_TYPES.TEXT_CHANNEL,
     key: "channel",
-    name: "arg_roles_channel_display_name",
-    desc: "arg_roles_channel_desc",
+    name: "Roles Channel",
+    desc: "The channel in which the reaction-roles message will be sent.",
 })
 @argument({
     type: ARGUMENT_TYPES.STRING,
     key: "emojiPrefix",
     defaultValue: "skill_",
-    name: "arg_emoji_prefix_name",
-    desc: "arg_emoji_prefix_desc"
+    name: "Emoji Prefix",
+    desc: "Prefix of the role names"
 })
 @argument({
     type: ARGUMENT_TYPES.STRING,
     key: "roleColor",
     defaultValue: "AQUA",
-    name: "arg_role_color_name",
-    desc: "arg_role_color_desc"
+    name: "Role Color",
+    desc: "Color of the roles (Discord color names allowed)"
 })
 @argument({
     type: ARGUMENT_TYPES.STRING,
@@ -55,8 +58,8 @@ const roles = [
     isArray: true,
     isSelect: true,
     selectOptions: roles,
-    name: "arg_roles_name",
-    desc: "arg_roles_desc"
+    name: "Roles",
+    desc: "Names of the roles which will be created"
 })
 export default class RoleManagerModule extends Module {
     static config = Configuration
