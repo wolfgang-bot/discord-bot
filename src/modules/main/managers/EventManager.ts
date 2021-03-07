@@ -143,8 +143,13 @@ class EventManager extends Manager {
             return
         }
 
+        // User joined the voicechannel
+        if (!oldState.channelID && newState.channelID) {
+            await this.statistics.registerVoiceChannelJoinEvent(newState)
+        }
+
         // User left the voicechannel (not by moving into another channel)
-        if (!newState.channelID) {
+        if (oldState.channelID && !newState.channelID) {
             await this.statistics.registerVoiceChannelLeaveEvent(newState)
         }
     }
