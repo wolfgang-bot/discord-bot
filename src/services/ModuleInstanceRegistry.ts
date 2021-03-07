@@ -171,7 +171,14 @@ class ModuleInstanceRegistry {
 
         await instanceModel.store()
         
-        await instance._start()
+        try {
+            await instance._start()
+        } catch (error) {
+            console.error(`Error starting instance '${module.key}' for guild '${this.guild.name}' ('${this.guild.id}')`, error)
+            await instanceModel.delete()
+            ModuleInstanceRegistry.unregisterInstance({ guild: this.guild, model: instanceModel })
+            throw error
+        }
 
         return instance
     }
@@ -193,10 +200,16 @@ class ModuleInstanceRegistry {
             throw locale.translate("error_module_not_running")
         }
 
-        await this.instances[moduleInstance.id]._stop()
-
+        try {
+            await this.instances[moduleInstance.id]._stop()
+        } catch (error) {
+            console.error(`Error stoppping instance '${module.key}' for guild '${this.guild.name}' ('${this.guild.id}')`, error)
+            ModuleInstanceRegistry.unregisterInstance({ guild: this.guild, model: moduleInstance })
+            await moduleInstance.delete()
+            throw error
+        }
+        
         ModuleInstanceRegistry.unregisterInstance({ guild: this.guild, model: moduleInstance })
-
         await moduleInstance.delete()
     }
 
