@@ -8,7 +8,7 @@ export abstract class Validator {
     constructor(protected error: any) {}
 }
 
-export default class ValidationPipeline {
+export class ValidationPipeline {
     constructor(
         private client: Discord.Client,
         private validators: Validator[]
@@ -23,6 +23,13 @@ export default class ValidationPipeline {
             } catch (error) {
                 return error
             }
+        }
+    }
+
+    bind(fn: Function, getArgs: (...args: any[]) => object) {
+        return async (...args: any[]) => {
+            let error = await this.validate(getArgs(...args))
+            fn(error, ...args)
         }
     }
 }

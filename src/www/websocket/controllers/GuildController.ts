@@ -3,11 +3,12 @@ import WebSocketController from "../../../lib/WebSocketController"
 import { success, error } from "../responses"
 import Guild from "../../../models/Guild"
 import { AuthorizedSocket } from "../SocketManager"
-import ValidationPipeline, {
+import {
+    ValidationPipeline,
     GuildExistsValidator,
     GuildAvailableValidator,
     GuildAdminValidator
-} from "../../../lib/ValidationPipeline"
+} from "../../../lib/Validation"
 
 export default class GuildController extends WebSocketController {
     validationPipeline: ValidationPipeline
@@ -20,6 +21,15 @@ export default class GuildController extends WebSocketController {
             new GuildAvailableValidator(error(404)),
             new GuildAdminValidator(error(403))
         ])
+
+        const makeArgs = (guildId: string) => ({
+            guildId,
+            user: this.socket.user
+        })
+
+        this.getChannels = this.validationPipeline.bind(this.getChannels.bind(this), makeArgs)
+        this.getRoles = this.validationPipeline.bind(this.getRoles.bind(this), makeArgs)
+        this.getMemberCount = this.validationPipeline.bind(this.getMemberCount.bind(this), makeArgs)
     }
 
     /**
@@ -36,14 +46,9 @@ export default class GuildController extends WebSocketController {
     /**
      * Get the channels (text, voice, category, ...) of a guild
      */
-    async getChannels(guildId: string, send: Function) {
-        const error = await this.validationPipeline.validate({
-            guildId,
-            user: this.socket.user
-        })
-
-        if (error) {
-            send(error)
+    async getChannels(validationError: object | void, guildId: string, send: Function) {
+        if (validationError) {
+            send(validationError)
             return
         }
 
@@ -56,14 +61,9 @@ export default class GuildController extends WebSocketController {
     /**
      * Get the roles of a guild
      */
-    async getRoles(guildId: string, send: Function) {
-        const error = await this.validationPipeline.validate({
-            guildId,
-            user: this.socket.user
-        })
-
-        if (error) {
-            send(error)
+    async getRoles(validationError: object | void, guildId: string, send: Function) {
+        if (validationError) {
+            send(validationError)
             return
         }
 
@@ -78,14 +78,9 @@ export default class GuildController extends WebSocketController {
     /**
      * Get member count of guild
      */
-    async getMemberCount(guildId: string, send: Function) {
-        const error = await this.validationPipeline.validate({
-            guildId,
-            user: this.socket.user
-        })
-
-        if (error) {
-            send(error)
+    async getMemberCount(validationError: object | void, guildId: string, send: Function) {
+        if (validationError) {
+            send(validationError)
             return
         }
         
