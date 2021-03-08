@@ -12,8 +12,23 @@ import SetupEmbed from "../embeds/SetupEmbed"
 import ModuleInstance from "../../../models/ModuleInstance"
 import SettingsConfig from "../../settings/models/Configuration"
 
-function getFirstTextChannel(guild: Discord.Guild) {
-    return guild.channels.cache.find(channel => channel.type === "text") as Discord.TextChannel
+function isTextChannel(channel: Discord.GuildChannel): channel is Discord.TextChannel {
+    return channel.type === "text"
+}
+
+async function getFirstTextChannel(client: Discord.Client, guild: Discord.Guild) {
+    for (let [_, channel] of guild.channels.cache) {
+        if (!isTextChannel(channel)) {
+            continue
+        }
+
+        const permissions = channel.permissionsFor(client.user)
+        if (!permissions.has("SEND_MESSAGES")) {
+            continue
+        }
+
+        return channel
+    }
 }
 
 async function withLoadingIndicator(channel: Discord.TextChannel, callback: () => Promise<void> | void) {
@@ -49,7 +64,7 @@ class EventManager extends Manager {
     }
 
     async handleGuildCreate(guild: Discord.Guild) {
-        await withLoadingIndicator(getFirstTextChannel(guild), async () => {
+        const initGuild = async () => {
             const model = new Guild({ id: guild.id })
             await model.store()
 
@@ -77,7 +92,15 @@ class EventManager extends Manager {
                 })
                 await model.store()
             }))
-        })
+        }
+
+        const channel = await getFirstTextChannel(this.context.client, guild)
+
+        if (channel) {
+            await withLoadingIndicator(channel, initGuild)
+        } else {
+            await initGuild()
+        }
     }
 
     async handleGuildDelete(guild: Discord.Guild) {
