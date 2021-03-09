@@ -10,6 +10,14 @@ export abstract class Validator {
     constructor(public error: ValidationError) {}
     
     abstract run(client: Discord.Client, input: object): Promise<object | void>
+
+    protected assert(values: Record<string, any>) {
+        for (let key in values) {
+            if (values[key] === undefined || values[key] === null) {
+                throw new Error(`Missing value for key: '${key}'`)
+            }
+        }
+    }
 }
 
 export class ValidationPipeline {
@@ -67,6 +75,8 @@ export class GuildExistsValidator extends Validator {
 
 export class GuildAvailableValidator extends Validator {
     async run(client: Discord.Client, { guild }: { guild: Guild }) {
+        this.assert({ guild })
+
         await guild.fetchDiscordGuild(client)
 
         if (!guild.discordGuild.available) {
@@ -80,6 +90,8 @@ export class GuildAdminValidator extends Validator {
         guild: Guild,
         user: User
     }) {
+        this.assert({ guild, user })
+
         if (!await user.isAdmin(guild)) {
             throw this.error
         }
@@ -100,6 +112,8 @@ export class ModuleExistsValidator extends Validator {
 
 export class ModuleInstanceExistsValidator extends Validator {
     async run(client: Discord.Client, { guild, moduleKey }) {
+        this.assert({ guild })
+
         const instance = await ModuleInstance.findByGuildAndModuleKey(guild, moduleKey)
 
         if (!instance) {
