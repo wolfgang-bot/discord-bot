@@ -1,11 +1,15 @@
 import Discord from "discord.js"
 import User from "../models/User"
 import Guild from "../models/Guild"
+import Module from "../models/Module"
+import ModuleInstance from "../models/ModuleInstance"
+
+export type ValidationError = object | void
 
 export abstract class Validator {
-    abstract run(client: Discord.Client, input: object): Promise<object>
-
-    constructor(protected error: any) {}
+    constructor(public error: ValidationError) {}
+    
+    abstract run(client: Discord.Client, input: object): Promise<object | void>
 }
 
 export class ValidationPipeline {
@@ -19,9 +23,14 @@ export class ValidationPipeline {
 
         for (let validator of this.validators) {
             try {
-                Object.assign(args, await validator.run(this.client, args))
+                const result = await validator.run(this.client, args)
+                Object.assign(args, result || {})
             } catch (error) {
-                return error
+                if (process.env.NODE_ENV === "development") {
+                    console.log(error)
+                }
+                
+                return validator.error
             }
         }
     }
@@ -31,6 +40,16 @@ export class ValidationPipeline {
             let error = await this.validate(getArgs(...args))
             fn(error, ...args)
         }
+    }
+
+    clone() {
+        return new ValidationPipeline(this.client, [...this.validators])
+    }
+
+    extend(validators: Validator[]) {
+        const clonedPipeline = this.clone()
+        clonedPipeline.validators.push(...validators)
+        return clonedPipeline
     }
 }
 
@@ -53,8 +72,6 @@ export class GuildAvailableValidator extends Validator {
         if (!guild.discordGuild.available) {
             throw this.error
         }
-
-        return { guild }
     }
 }
 
@@ -66,7 +83,29 @@ export class GuildAdminValidator extends Validator {
         if (!await user.isAdmin(guild)) {
             throw this.error
         }
+    }
+}
 
-        return { guild, user }
+export class ModuleExistsValidator extends Validator {
+    async run(client: Discord.Client, { moduleKey }: { moduleKey: string }) {
+        const module = await Module.findBy("key", moduleKey)
+
+        if (!module) {
+            throw this.error
+        }
+
+        return { module }
+    }
+}
+
+export class ModuleInstanceExistsValidator extends Validator {
+    async run(client: Discord.Client, { guild, moduleKey }) {
+        const instance = await ModuleInstance.findByGuildAndModuleKey(guild, moduleKey)
+
+        if (!instance) {
+            throw this.error
+        }
+
+        return { instance }
     }
 }

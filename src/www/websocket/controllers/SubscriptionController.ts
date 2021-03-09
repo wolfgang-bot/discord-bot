@@ -43,6 +43,11 @@ export default class SubscriptionController extends WebSocketController {
         }
 
         const guild = await this.client.guilds.fetch(args.guildId)
+
+        if (!guild) {
+            return send(error(404))
+        }
+
         if (!this.socket.user.isAdmin(guild)) {
             return send(error(403))
         }

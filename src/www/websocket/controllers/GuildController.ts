@@ -7,7 +7,8 @@ import {
     ValidationPipeline,
     GuildExistsValidator,
     GuildAvailableValidator,
-    GuildAdminValidator
+    GuildAdminValidator,
+    ValidationError
 } from "../../../lib/Validation"
 
 export default class GuildController extends WebSocketController {
@@ -46,7 +47,7 @@ export default class GuildController extends WebSocketController {
     /**
      * Get the channels (text, voice, category, ...) of a guild
      */
-    async getChannels(validationError: object | void, guildId: string, send: Function) {
+    async getChannels(validationError: ValidationError, guildId: string, send: Function) {
         if (validationError) {
             send(validationError)
             return
@@ -61,7 +62,7 @@ export default class GuildController extends WebSocketController {
     /**
      * Get the roles of a guild
      */
-    async getRoles(validationError: object | void, guildId: string, send: Function) {
+    async getRoles(validationError: ValidationError, guildId: string, send: Function) {
         if (validationError) {
             send(validationError)
             return
@@ -78,7 +79,7 @@ export default class GuildController extends WebSocketController {
     /**
      * Get member count of guild
      */
-    async getMemberCount(validationError: object | void, guildId: string, send: Function) {
+    async getMemberCount(validationError: ValidationError, guildId: string, send: Function) {
         if (validationError) {
             send(validationError)
             return
