@@ -2,9 +2,7 @@ import Discord from "discord.js"
 import { Server, Socket } from "socket.io"
 import OAuthServiceProvider from "../services/OAuthServiceProvider"
 import User from "../../models/User"
-import Guild from "../../models/Guild"
 import ConnectionManager from "./ConnectionManager"
-import { ExtendedAPIGuild } from "../services/OAuthServiceProvider"
 
 export type AuthorizedSocket = Socket & {
     handshake: {
@@ -13,7 +11,6 @@ export type AuthorizedSocket = Socket & {
         }
     }
     user: User
-    guilds: Record<string, ExtendedAPIGuild>
 }
 
 export default class SocketManager {
@@ -59,14 +56,8 @@ export default class SocketManager {
                 return next(new Error("Unauthorized"))
             }
 
-            const [discordUser, guilds] = await Promise.all([
-                OAuthServiceProvider.fetchProfile(user.access_token),
-                this.fetchGuilds(user)
-            ])
-
-            user.discordUser = discordUser
+            user.discordUser = await OAuthServiceProvider.fetchProfile(user.access_token)
             socket.user = user
-            socket.guilds = guilds
         } catch (error) {
             if (process.env.NODE_ENV === "development") {
                 console.error(error)
@@ -76,29 +67,5 @@ export default class SocketManager {
         }
 
         next()
-    }
-
-    async fetchGuilds(user: User) {
-        const guilds = await OAuthServiceProvider.fetchGuilds(user.access_token)
-
-        // Filter guilds where the user is an admin
-        const filtered = guilds.filter(guild => {
-            return new Discord.Permissions(guild.permissions as string as Discord.PermissionResolvable)
-                .has("ADMINISTRATOR")
-        })
-
-        // Mark guilds which are registered by the bot
-        await Promise.all(filtered.map(async guild => {
-            const model = await Guild.findBy("id", guild.id)
-            guild.isActive = !!model
-        }))
-
-        const guildsMap: Record<string, ExtendedAPIGuild> = {}
-
-        filtered.forEach(guild => {
-            guildsMap[guild.id] = guild
-        })
-
-        return guildsMap
     }
 }
