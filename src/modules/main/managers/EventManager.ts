@@ -44,7 +44,10 @@ class EventManager extends Manager {
         if (!message.author.bot) {
             const settings = await ModuleInstance.config(message.guild, "settings") as SettingsConfig
             
-            if (message.content.startsWith(settings.commandPrefix)) {
+            if (
+                message.content.startsWith(settings.commandPrefix) &&
+                message.content.trim().length > settings.commandPrefix.length
+            ) {
                 try {
                     const args = parseArguments(
                         message.content.substring(settings.commandPrefix.length)
