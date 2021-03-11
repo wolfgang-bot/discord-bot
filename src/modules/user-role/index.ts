@@ -20,6 +20,13 @@ import Context from "../../lib/Context"
     name: "User Role",
     desc: "The role which will be assigned to each user"
 })
+@argument({
+    type: ARGUMENT_TYPES.BOOLEAN,
+    key: "assignRoleToEachUser",
+    name: "Assign Role",
+    desc: "Assign the role to each user on startup",
+    defaultValue: true
+})
 export default class UserRoleModule extends Module {
     static config = Configuration
 
@@ -32,7 +39,10 @@ export default class UserRoleModule extends Module {
     }
 
     async start() {
-        await this.assignRoleToEachUser()
+        if (this.config.assignRoleToEachUser) {
+            await this.assignRoleToEachUser()
+        }
+
         this.context.client.on("guildMemberAdd", this.handleGuildMemberAdd)
     }
 
