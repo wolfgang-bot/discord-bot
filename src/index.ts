@@ -12,8 +12,6 @@ log.setLevel(
     log.levels.INFO
 )
 
-log.debug("Debug test")
-
 const client = new Discord.Client()
 
 boot(client).then(() => {
