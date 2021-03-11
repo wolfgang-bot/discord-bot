@@ -6,7 +6,6 @@ import Context from "../lib/Context"
 import BroadcastChannel from "../services/BroadcastChannel"
 import ModuleModel from "../models/Module"
 import ModuleInstanceModel from "../models/ModuleInstance"
-import LocaleProvider from "./LocaleProvider"
 import ArgumentResolver, { ArgumentResolveTypes } from "./ArgumentResolver"
 import type ModuleRegistry from "./ModuleRegistry"
 import Argument from "../lib/Argument"
@@ -137,16 +136,12 @@ class ModuleInstanceRegistry {
          */
         const module = ModuleInstanceRegistry.moduleRegistry.getModule(model)
 
-        if (isUserInvocation) {
-            const locale = await LocaleProvider.guild(this.guild)
-    
-            if (await this.isLoaded(model)) {
-                throw locale.translate("error_module_running")
-            }
-    
-            if (ModuleInstanceRegistry.moduleRegistry.isProtectedModule(module) && isUserInvocation) {
-                throw locale.translate("error_illegal_invocation")
-            }
+        if (await this.isLoaded(model)) {
+            throw "The module is already running"
+        }
+
+        if (ModuleInstanceRegistry.moduleRegistry.isProtectedModule(module) && isUserInvocation) {
+            throw "Illegal invocation"
         }
 
         /**
@@ -189,16 +184,15 @@ class ModuleInstanceRegistry {
      */
     async stopModule(model: ModuleModel) {
         const moduleInstance = await ModuleInstanceModel.findByGuildAndModuleKey(this.guild, model.key)
-
-        const locale = await LocaleProvider.guild(this.guild)
         
         const module = ModuleInstanceRegistry.moduleRegistry.getModule(model)
+
         if (module.isStatic) {
-            throw locale.translate("error_module_does_not_exist", module.key)
+            throw "Module does not exist"
         }
 
         if (!moduleInstance) {
-            throw locale.translate("error_module_not_running")
+            throw "Module is not running"
         }
 
         try {
@@ -218,17 +212,16 @@ class ModuleInstanceRegistry {
      * Restart a module's instance
      */
     async restartModule(moduleModel: ModuleModel) {
-        const locale = await LocaleProvider.guild(this.guild)
-
         const module = ModuleInstanceRegistry.moduleRegistry.getModule(moduleModel)
+
         if (module.isStatic) {
-            throw locale.translate("error_module_does_not_exist", module.key)
+            throw "Module does not exist"
         }
 
         const model = await ModuleInstanceModel.findByGuildAndModuleKey(this.guild, moduleModel.key)
 
         if (!model) {
-            throw locale.translate("error_module_not_running")
+            throw "Module is not running"
         }
         const instance = this.instances[model.id]
 
@@ -313,11 +306,9 @@ class ModuleInstanceRegistry {
         let validateArgFn: Function = () => { }
 
         if (options.shouldValidate) {
-            const locale = await LocaleProvider.guild(this.guild)
-            const moduleLocale = locale.scope(module.key)
             validateArgFn = (argument: Argument) => {
                 if (!args[argument.key]) {
-                    throw locale.translate("error_missing_argument", moduleLocale.translate(argument.name))
+                    throw `Missing argument: ${argument.name}`
                 }
             }
         }
