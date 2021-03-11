@@ -1,4 +1,5 @@
 import { RowDataPacket } from "mysql2"
+import log from "loglevel"
 import Collection from "./Collection"
 import database from "../database"
 
@@ -140,7 +141,7 @@ abstract class Model {
         // Fill empty values with default values
         for (let key in props.defaultValues) {
             if (!this.columns.includes(key)) {
-                console.error(`Unknown column '${key}'. Default values are ment to fill empty columns`)
+                log.error(`Unknown column '${key}'. Default values are ment to fill empty columns`)
             }
 
             if (!this[key]) {

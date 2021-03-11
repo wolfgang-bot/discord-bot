@@ -1,6 +1,7 @@
 import { Request, Response } from "express"
 import path from "path"
 import fs from "fs"
+import log from "loglevel"
 import ModuleRegistry from "../../services/ModuleRegistry"
 
 const ICON_FILE_NAME = "icon.png"
@@ -33,10 +34,7 @@ export default class StorageController {
 
             fs.createReadStream(filePath).pipe(res)
         } catch (error) {
-            if (process.env.NODE_ENV === "development") {
-                console.error(error)
-            }
-
+            log.debug(error)
             res.sendStatus(500)
         }
     }

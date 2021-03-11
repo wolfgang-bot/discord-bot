@@ -1,4 +1,5 @@
 import Discord from "discord.js"
+import log from "loglevel"
 import Argument from "../lib/Argument"
 import LocaleProvider from "./LocaleProvider"
 
@@ -52,9 +53,7 @@ class ArgumentResolver {
 
             return res
         } catch (error) {
-            if (process.env.NODE_ENV === "development") {
-                console.log(error)
-            }
+            log.debug(error)
 
             const locale = await LocaleProvider.guild(this.guild)
 

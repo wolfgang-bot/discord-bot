@@ -1,5 +1,6 @@
 import Discord from "discord.js"
 import { Server, Socket } from "socket.io"
+import log from "loglevel"
 import OAuthServiceProvider from "../services/OAuthServiceProvider"
 import User from "../../models/User"
 import ConnectionManager from "./ConnectionManager"
@@ -28,7 +29,7 @@ export default class SocketManager {
 
         this.server.on("connection", (socket: AuthorizedSocket) => {
             if (process.env.NODE_ENV === "development") {
-                console.log("Connection", socket.id)
+                log.info("Connection", socket.id)
             }
 
             const connection = new ConnectionManager(socket, this.client)
@@ -59,10 +60,7 @@ export default class SocketManager {
             user.discordUser = await OAuthServiceProvider.fetchProfile(user.access_token)
             socket.user = user
         } catch (error) {
-            if (process.env.NODE_ENV === "development") {
-                console.error(error)
-            }
-
+            log.debug(error)
             return next(new Error("Invalid token"))
         }
 

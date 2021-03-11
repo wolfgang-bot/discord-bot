@@ -1,4 +1,5 @@
 import Discord from "discord.js"
+import log from "loglevel"
 import User from "../models/User"
 import Guild from "../models/Guild"
 import Module from "../models/Module"
@@ -34,10 +35,7 @@ export class ValidationPipeline {
                 const result = await validator.run(this.client, args)
                 Object.assign(args, result || {})
             } catch (error) {
-                if (process.env.NODE_ENV === "development") {
-                    console.log(error)
-                }
-                
+                log.debug(error)
                 return validator.error
             }
         }

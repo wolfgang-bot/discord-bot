@@ -1,6 +1,7 @@
 import Discord from "discord.js"
 import express, { Request } from "express"
 import http from "http"
+import log from "loglevel"
 import { Server as WebSocketServer } from "socket.io"
 import User from "../models/User"
 import boot from "./boot"
@@ -20,6 +21,6 @@ export default async function start(client: Discord.Client) {
 
     // Start server on port specified in .env
     server.listen(process.env.PORT, () => {
-        console.log("Server is running on port", process.env.PORT)
+        log.info("Server is running on port", process.env.PORT)
     })
 }

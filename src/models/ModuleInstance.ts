@@ -1,5 +1,6 @@
 import { v4 as uuid } from "uuid"
 import Discord from "discord.js"
+import log from "loglevel"
 import Model from "../lib/Model"
 import Context from "../lib/Context"
 
@@ -39,7 +40,7 @@ class ModuleInstance extends Model implements ModuleInstanceModelValues {
         const instance = await this.findByGuildAndModuleKey(guild, key)
 
         if (!instance) {
-            console.warn(`Could not find config of module '${key}' for guild '${guild.id}'`)
+            log.warn(`Could not find config of module '${key}' for guild '${guild.id}'`)
             return
         }
 

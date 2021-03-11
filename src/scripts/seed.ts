@@ -3,9 +3,10 @@ import MultiProgress from "multi-progress"
 import type ProgressBar from "progress"
 import chalk from "chalk"
 import { performance } from "perf_hooks"
+import dotenv from "dotenv"
+import log from "loglevel"
 import database from "../database"
 import seed from "../database/seeders"
-import dotenv from "dotenv"
 dotenv.config({ path: path.join(__dirname, "..", "..", ".env") })
 
 const tables = process.argv.slice(2)
@@ -33,7 +34,7 @@ function createProgressBar(label: string, length: number) {
     await database.connect()
 
     for (let table of tables) {
-        console.log(`Seed table: ${table}`)
+        log.info(`Seed table: ${table}`)
 
         await seed(table, (event: any) => {
             if (event.type === "init") {
@@ -47,5 +48,5 @@ function createProgressBar(label: string, length: number) {
     let elapsed = (performance.now() - t0)
     elapsed = Math.floor(elapsed * 100) / 100
     elapsed /= 1000
-    console.log(chalk.cyan(`Executed in ${elapsed}s`))
+    log.info(chalk.cyan(`Executed in ${elapsed}s`))
 })()

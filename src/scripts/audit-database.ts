@@ -4,6 +4,7 @@ import chalk from "chalk"
 import readline from "readline"
 import { makeRunnable, run } from "@m.moelter/task-runner"
 import dotenv from "dotenv"
+import log from "loglevel"
 import ModuleRegistry from "../services/ModuleRegistry"
 import database from "../database"
 import Guild from "../models/Guild"
@@ -93,13 +94,13 @@ async function audit() {
  */
 function logIssues() {
     if (issues.length > 0) {
-        console.log(chalk.bold(`${issues.length} issues found:`))
+        log.info(chalk.bold(`${issues.length} issues found:`))
     
         issues.forEach(message => {
-            console.log(chalk.red(message))
+            log.info(chalk.red(message))
         })
     } else {
-        console.log(chalk.green("No issues found"))
+        log.info(chalk.green("No issues found"))
     }
 }
 

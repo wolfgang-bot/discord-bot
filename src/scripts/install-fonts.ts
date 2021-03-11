@@ -2,6 +2,7 @@ import fs from "fs"
 import path from "path"
 import util from "util"
 import chalk from "chalk"
+import log from "loglevel"
 import child_process from "child_process"
 import { makeRunnable, run } from "@m.moelter/task-runner"
 
@@ -19,11 +20,11 @@ makeRunnable(async () => {
     await run(() => exec("fc-cache -f -v"), "Update font cache")
 
     if (installed.length > 0) {
-        console.log(chalk.green(`Successfully installed: ${installed.join(", ")}`))
+        log.info(chalk.green(`Successfully installed: ${installed.join(", ")}`))
     }
 
     if (failed.length > 0) {
-        console.log(chalk.red(`Failed to install: ${failed.join(", ")}`))
+        log.info(chalk.red(`Failed to install: ${failed.join(", ")}`))
     }
 })()
 

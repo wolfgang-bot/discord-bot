@@ -1,4 +1,5 @@
 import Discord from "discord.js"
+import log from "loglevel"
 import WebSocketController from "../../../lib/WebSocketController"
 import StreamManager, { EVENT_STREAMS, SubscriptionArgs } from "../StreamManager"
 import { AuthorizedSocket } from "../SocketManager"
@@ -56,7 +57,7 @@ export default class SubscriptionController extends WebSocketController {
             forwardedFunction(args)
             send(success())
         } catch (error) {
-            console.log(error)
+            log.debug(error)
             return send(error(500))
         }
     }

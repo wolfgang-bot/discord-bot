@@ -3,6 +3,7 @@ import fetch from "node-fetch"
 import jwt from "jsonwebtoken"
 import config from "../config"
 import { makeURL } from "../../utils"
+import log from "loglevel"
 
 export type ExtendedAPIGuild = APIGuild & {
     isActive?: boolean
@@ -50,7 +51,7 @@ export default class OAuthServiceProvider {
             })
                 .then(res => {
                     if (res.status !== 200) {
-                        console.log(res)
+                        log.debug(res)
                         return reject(res)
                     }
 

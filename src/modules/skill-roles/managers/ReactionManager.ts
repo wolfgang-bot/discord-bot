@@ -1,4 +1,5 @@
 import Discord from "discord.js"
+import log from "loglevel"
 import Context from "../../../lib/Context"
 import Manager from "../../../lib/Manager"
 import Configuration from "../models/Configuration"
@@ -47,7 +48,7 @@ export default class ReactionManager extends Manager {
                 const emoji = this.emojiManager.getEmojis()[roleName]
 
                 if (!emoji) {
-                    console.error(`Emoji for role '${roleName}' is not available`)
+                    log.error(`Emoji for role '${roleName}' is not available`)
                     return
                 }
 

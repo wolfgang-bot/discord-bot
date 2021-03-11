@@ -1,4 +1,5 @@
 import Discord from "discord.js"
+import log from "loglevel"
 import Manager from "../../../lib/Manager"
 import CommandRegistry from "../../../services/CommandRegistry"
 import Guild from "../../../models/Guild"
@@ -54,10 +55,7 @@ class EventManager extends Manager {
                     )
                     await CommandRegistry.guild(message.guild).run(message, args)
                 } catch (error) {
-                    if (process.env.NODE_ENV === "development") {
-                        console.error(error)
-                    }
-
+                    log.debug(error)
                     await message.channel.send(typeof error === "string" ? error : "Internal Server Error")
                 }
             } else {

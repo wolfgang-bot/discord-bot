@@ -2,6 +2,7 @@ import { Response } from "express"
 import OAuthServiceProvider from "../services/OAuthServiceProvider"
 import User from "../../models/User"
 import { AuthorizedRequest } from "../server"
+import log from "loglevel"
 
 export default class OAuthController {
     /**
@@ -34,7 +35,7 @@ export default class OAuthController {
 
             res.render("oauth-receiver", { error: false, data: { token, user } })
         } catch (error) {
-            console.error(error)
+            log.error(error)
 
             res.render("oauth-receiver", { error: true })
         }

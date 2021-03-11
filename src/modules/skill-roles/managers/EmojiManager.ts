@@ -1,5 +1,6 @@
 import Discord from "discord.js"
 import glob from "glob-promise"
+import log from "loglevel"
 import path from "path"
 import Manager from "../../../lib/Manager"
 import Configuration from "../models/Configuration"
@@ -38,7 +39,7 @@ export default class EmojiManager extends Manager {
                 const icon = icons.find(filename => filename.toLowerCase().startsWith(name.toLowerCase()))
 
                 if (!icon) {
-                    console.error(`Missing icon for emoji ${name}`)
+                    log.error(`Missing icon for emoji ${name}`)
                     return
                 }
 

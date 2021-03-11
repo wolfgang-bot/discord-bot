@@ -1,4 +1,5 @@
 import Discord from "discord.js"
+import log from "loglevel"
 import Module from "../lib/Module"
 import Collection from "../lib/Collection"
 import Context from "../lib/Context"
@@ -174,7 +175,7 @@ class ModuleInstanceRegistry {
         try {
             await instance._start()
         } catch (error) {
-            console.error(`Error starting instance '${module.key}' for guild '${this.guild.name}' ('${this.guild.id}')`, error)
+            log.error(`Error starting instance '${module.key}' for guild '${this.guild.name}' ('${this.guild.id}')`, error)
             await instanceModel.delete()
             ModuleInstanceRegistry.unregisterInstance({ guild: this.guild, model: instanceModel })
             throw error
@@ -203,7 +204,7 @@ class ModuleInstanceRegistry {
         try {
             await this.instances[moduleInstance.id]._stop()
         } catch (error) {
-            console.error(`Error stoppping instance '${module.key}' for guild '${this.guild.name}' ('${this.guild.id}')`, error)
+            log.error(`Error stoppping instance '${module.key}' for guild '${this.guild.name}' ('${this.guild.id}')`, error)
             ModuleInstanceRegistry.unregisterInstance({ guild: this.guild, model: moduleInstance })
             await moduleInstance.delete()
             throw error

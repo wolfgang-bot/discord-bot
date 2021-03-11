@@ -1,4 +1,5 @@
 import { Response } from "express"
+import log from "loglevel"
 import OAuthServiceProvider from "../services/OAuthServiceProvider"
 import User from "../../models/User"
 import { AuthorizedRequest } from "../server"
@@ -39,10 +40,7 @@ export default class ProtectMiddleware {
 
             req.user = user
         } catch (error) {
-            if (process.env.NODE_ENV === "development") {
-                console.error(error)
-            }
-
+            log.debug(error)
             return res.status(401).send({ error: "Invalid token" })
         }
 

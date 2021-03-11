@@ -1,4 +1,5 @@
 import Discord from "discord.js"
+import log from "loglevel"
 import WebSocketController from "../../../lib/WebSocketController"
 import ModuleRegistry from "../../../services/ModuleRegistry"
 import ModuleInstanceRegistry from "../../../services/ModuleInstanceRegistry"
@@ -115,10 +116,7 @@ export default class ModuleController extends WebSocketController {
         try {
             await ModuleInstanceRegistry.guild(guild.discordGuild).startModule(this.client, module, args)
         } catch (err) {
-            if (process.env.NODE_ENV === "development") {
-                console.error(err)
-            }
-
+            log.debug(err)
             return this.sendError(send, err)
         }
 
@@ -147,10 +145,7 @@ export default class ModuleController extends WebSocketController {
         try {
             await ModuleInstanceRegistry.guild(guild.discordGuild).stopModule(module)
         } catch (err) {
-            if (process.env.NODE_ENV === "development") {
-                console.error(err)
-            }
-
+            log.debug(err)
             return this.sendError(send, err)
         }
 
@@ -179,10 +174,7 @@ export default class ModuleController extends WebSocketController {
         try {
             await ModuleInstanceRegistry.guild(guild.discordGuild).restartModule(module)
         } catch (err) {
-            if (process.env.NODE_ENV === "development") {
-                console.error(err)
-            }
-
+            log.debug(err)
             return this.sendError(send, err)
         }
 
@@ -218,10 +210,7 @@ export default class ModuleController extends WebSocketController {
                 .guild(guild.discordGuild)
                 .updateConfig(instanceModel, newConfig)
         } catch (err) {
-            if (process.env.NODE_ENV === "development") {
-                console.error(err)
-            }
-
+            log.debug(err)
             return this.sendError(send, err)
         }
 
