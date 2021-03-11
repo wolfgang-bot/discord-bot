@@ -307,7 +307,7 @@ class ModuleInstanceRegistry {
 
         if (options.shouldValidate) {
             validateArgFn = (argument: Argument) => {
-                if (!args[argument.key]) {
+                if (typeof args[argument.key] === "undefined") {
                     throw `Missing argument: ${argument.name}`
                 }
             }

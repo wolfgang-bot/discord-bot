@@ -1,11 +1,12 @@
 import Discord from "discord.js"
 import log from "loglevel"
-import Argument from "../lib/Argument"
+import Argument, { TYPES } from "../lib/Argument"
 import LocaleProvider from "./LocaleProvider"
 
 export type ArgumentResolveTypes =
     string |
     number |
+    boolean |
     Discord.TextChannel |
     Discord.VoiceChannel |
     Discord.CategoryChannel |
@@ -14,6 +15,15 @@ export type ArgumentResolveTypes =
 
 class ArgumentResolver {
     guild: Discord.Guild
+    resolverMap: Record<TYPES, (raw: any) => Promise<ArgumentResolveTypes>> = {
+        [TYPES.STRING]: this.resolveString,
+        [TYPES.NUMBER]: this.resolveNumber,
+        [TYPES.BOOLEAN]: this.resolveBoolean,
+        [TYPES.TEXT_CHANNEL]: this.resolveTextChannel,
+        [TYPES.VOICE_CHANNEL]: this.resolveVoiceChannel,
+        [TYPES.CATEGORY_CHANNEL]: this.resolveCategoryChannel,
+        [TYPES.ROLE]: this.resolveRole
+    }
 
     /**
      * Create an ArgumentResolver instance bound to a guild
@@ -26,10 +36,18 @@ class ArgumentResolver {
         this.guild = guild
     }
 
+    isValidEntity(entity: any) {
+        return (
+            entity !== undefined &&
+            entity !== null &&
+            !Number.isNaN(entity)
+        )
+    }
+
     /**
      * Convert a text based argument (e.g. an id) to the corresponding object
      */
-    async resolveArgument(argument: Argument, raw: string | string[]): Promise<ArgumentResolveTypes> {
+    async resolveArgument(argument: Argument, raw: any | any[]): Promise<ArgumentResolveTypes> {
         try {
             if (Array.isArray(raw)) {
                 if (!argument.isArray) {
@@ -47,7 +65,7 @@ class ArgumentResolver {
                 await this.resolveSelect(argument, raw) :
                 await this.resolveSingle(argument, raw)
 
-            if (!res && res !== 0) {
+            if (!this.isValidEntity(res)) {
                 throw "Entity does not exist"
             }
 
@@ -87,35 +105,44 @@ class ArgumentResolver {
     /**
      * Resolve a single value
      */
-    async resolveSingle(argument: Argument, raw: string): Promise<ArgumentResolveTypes> {
-        switch (argument.type) {
-            case Argument.TYPES.STRING:
-                return raw
+    async resolveSingle(argument: Argument, raw: any): Promise<ArgumentResolveTypes> {
+        const resolver = this.resolverMap[argument.type]
 
-            case Argument.TYPES.NUMBER:
-                return parseInt(raw)
+        if (!resolver) {
+            throw new Error(`The type '${argument.type}' does not exist`)
+        }
 
-            case Argument.TYPES.TEXT_CHANNEL:
-                return await this.fetchTextChannel(raw)
+        return await resolver.call(this, raw)
+    }
 
-            case Argument.TYPES.VOICE_CHANNEL:
-                return await this.fetchVoiceChannel(raw)
+    async resolveString(raw: any) {
+        if (typeof raw !== "string") {
+            return
+        }
 
-            case Argument.TYPES.CATEGORY_CHANNEL:
-                return await this.fetchCategoryChannel(raw)
+        return raw
+    }
 
-            case Argument.TYPES.ROLE:
-                return await this.fetchRole(raw)
+    async resolveNumber(raw: any) {
+        if (typeof raw === "string") {
+            return parseInt(raw)
+        }
 
-            default:
-                throw new Error(`The type '${argument.type}' does not exist`)
+        if (typeof raw === "number") {
+            return raw
+        }
+    }
+
+    async resolveBoolean(raw: any) {
+        if (typeof raw === "boolean") {
+            return raw
         }
     }
 
     /**
      * Fetch a text channel by id
      */
-    async fetchTextChannel(id: string) {
+    async resolveTextChannel(id: string) {
         const channel = this.guild.channels.cache.get(id)
 
         if (!channel || channel.type !== "text") {
@@ -128,7 +155,7 @@ class ArgumentResolver {
     /**
      * Fetch a voice channel by id
      */
-    async fetchVoiceChannel(id: string) {
+    async resolveVoiceChannel(id: string) {
         const channel = this.guild.channels.cache.get(id)
 
         if (!channel || channel.type !== "voice") {
@@ -141,7 +168,7 @@ class ArgumentResolver {
     /**
      * Fetch a category channel by id
      */
-    async fetchCategoryChannel(id: string) {
+    async resolveCategoryChannel(id: string) {
         const channel = this.guild.channels.cache.get(id)
 
         if (!channel || channel.type !== "category") {
@@ -154,10 +181,10 @@ class ArgumentResolver {
     /**
      * Fetch a role by id
      */
-    async fetchRole(id: string) {
+    async resolveRole(id: string) {
         const role = this.guild.roles.cache.get(id)
 
-        return role ? role : null
+        return role ? role : undefined
     }
 }
 

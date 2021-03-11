@@ -1,6 +1,7 @@
 export enum TYPES {
     STRING = "string",
     NUMBER = "number",
+    BOOLEAN = "boolean",
     TEXT_CHANNEL = "text_channel",
     VOICE_CHANNEL = "voice_channel",
     CATEGORY_CHANNEL = "category_channel",
@@ -27,8 +28,6 @@ class Argument implements ArgumentProps {
     desc: string
     defaultValue?: any
     selectOptions?: any[]
-    
-    static TYPES = TYPES
 
     constructor(props: ArgumentProps) {
         if (props.isSelect && !props.selectOptions) {
