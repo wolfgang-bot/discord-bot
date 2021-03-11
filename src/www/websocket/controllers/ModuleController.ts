@@ -40,12 +40,14 @@ export default class ModuleController extends WebSocketController {
             new ModuleInstanceExistsValidator(error(404, "Instance not found"))
         ])
 
-        const makeGuildArgs = (guildId) => ({ guildId, user: this.socket.user })
-
-        const makeModuleArgs = (guildId: string, moduleKey: string) => ({
+        const makeGuildArgs = ({ guildId }) => ({
             guildId,
-            moduleKey,
             user: this.socket.user
+        })
+
+        const makeModuleArgs = ({ guildId, moduleKey }) => ({
+            ...makeGuildArgs({ guildId }),
+            moduleKey
         })
 
         this.getInstances = this.guildValidationPipeline.bind(this.getInstances.bind(this), makeGuildArgs)
@@ -71,7 +73,7 @@ export default class ModuleController extends WebSocketController {
     /**
      * Get all modules available to the requesting user
      */
-    getModules(send: Function) {
+    getModules(_arg: object, send: Function) {
         const modules = ModuleRegistry.getPublicModules({ includeStatic: true })
         send(success(modules))
     }
@@ -79,7 +81,9 @@ export default class ModuleController extends WebSocketController {
     /**
      * Get the module instances of a guild
      */
-    async getInstances(validationError: ValidationError, guildId: string, send: Function) {
+    async getInstances(validationError: ValidationError, { guildId }: {
+        guildId: string
+    }, send: Function) {
         if (validationError) {
             send(validationError)
             return
@@ -94,9 +98,11 @@ export default class ModuleController extends WebSocketController {
      */
     async startInstance(
         validationError: ValidationError,
-        guildId: string,
-        moduleKey: string,
-        args: Record<string, any>,
+        { guildId, moduleKey, args }: {
+            guildId: string,
+            moduleKey: string,
+            args: Record<string, any>
+        },
         send: Function
     ) {
         if (validationError) {
@@ -128,8 +134,11 @@ export default class ModuleController extends WebSocketController {
      */
     async stopInstance(
         validationError: ValidationError,
-        guildId: string,
-        moduleKey: string,
+        { guildId, moduleKey }:
+        {
+            guildId: string,
+            moduleKey: string
+        },
         send: Function
     ) {
         if (validationError) {
@@ -157,8 +166,10 @@ export default class ModuleController extends WebSocketController {
      */
     async restartInstance(
         validationError: ValidationError,
-        guildId: string,
-        moduleKey: string,
+        { guildId, moduleKey }: {
+            guildId: string,
+            moduleKey: string
+        },
         send: Function
     ) {
         if (validationError) {
@@ -186,9 +197,11 @@ export default class ModuleController extends WebSocketController {
      */
     async updateConfig(
         validationError: ValidationError,
-        guildId: string,
-        moduleKey: string,
-        newConfig: object,
+        { guildId, moduleKey, newConfig }: {
+            guildId: string,
+            moduleKey: string,
+            newConfig: object
+        },
         send: Function
     ) {
         if (validationError) {

@@ -14,30 +14,27 @@ export default class SubscriptionController extends WebSocketController {
         super(client, socket)
     }
 
-    subscribe(eventStream: EVENT_STREAMS, args: SubscriptionArgs, send: Function) {
-        this.forwardEvent(this.streamManager.subscribe.bind(this.streamManager), eventStream, args, send)
+    subscribe(args: SubscriptionArgs, send: Function) {
+        this.forwardEvent(this.streamManager.subscribe.bind(this.streamManager), args, send)
     }
 
-    unsubscribe(eventStream: EVENT_STREAMS, args: SubscriptionArgs, send: Function) {
-        this.forwardEvent(this.streamManager.unsubscribe.bind(this.streamManager), eventStream, args, send)
+    unsubscribe(args: SubscriptionArgs, send: Function) {
+        this.forwardEvent(this.streamManager.unsubscribe.bind(this.streamManager), args, send)
     }
 
-    pause(eventStream: EVENT_STREAMS, args: SubscriptionArgs, send: Function) {
-        this.forwardEvent(this.streamManager.pause.bind(this.streamManager), eventStream, args, send)
+    pause(args: SubscriptionArgs, send: Function) {
+        this.forwardEvent(this.streamManager.pause.bind(this.streamManager), args, send)
     }
 
-    resume(eventStream: EVENT_STREAMS, args: SubscriptionArgs, send: Function) {
-        this.forwardEvent(this.streamManager.resume.bind(this.streamManager), eventStream, args, send)
+    resume(args: SubscriptionArgs, send: Function) {
+        this.forwardEvent(this.streamManager.resume.bind(this.streamManager), args, send)
     }
 
     async forwardEvent(
         forwardedFunction: (args: SubscriptionArgs) => void,
-        eventStream: EVENT_STREAMS,
         args: SubscriptionArgs,
         send: Function
     ) {
-        args.eventStream = eventStream
-
         if (!args.eventStream || !args.guildId) {
             send = arguments[arguments.length - 1]
             return send(error(400))

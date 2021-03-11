@@ -24,7 +24,7 @@ export default class GuildController extends WebSocketController {
             new GuildAdminValidator(error(403))
         ])
 
-        const makeArgs = (guildId: string) => ({
+        const makeArgs = ({ guildId }) => ({
             guildId,
             user: this.socket.user
         })
@@ -37,7 +37,7 @@ export default class GuildController extends WebSocketController {
     /**
      * Get guilds from the authorized user
      */
-    async getGuilds(send: Function) {
+    async getGuilds(_arg: object, send: Function) {
         const guilds = await OAuthServiceProvider.fetchGuilds(this.socket.user.access_token)
 
         // Filter guilds where the user is an admin
@@ -61,7 +61,9 @@ export default class GuildController extends WebSocketController {
     /**
      * Get the channels (text, voice, category, ...) of a guild
      */
-    async getChannels(validationError: ValidationError, guildId: string, send: Function) {
+    async getChannels(validationError: ValidationError, { guildId }: {
+        guildId: string
+    }, send: Function) {
         if (validationError) {
             send(validationError)
             return
@@ -76,7 +78,9 @@ export default class GuildController extends WebSocketController {
     /**
      * Get the roles of a guild
      */
-    async getRoles(validationError: ValidationError, guildId: string, send: Function) {
+    async getRoles(validationError: ValidationError, { guildId }: {
+        guildId: string
+    }, send: Function) {
         if (validationError) {
             send(validationError)
             return
@@ -93,7 +97,9 @@ export default class GuildController extends WebSocketController {
     /**
      * Get member count of guild
      */
-    async getMemberCount(validationError: ValidationError, guildId: string, send: Function) {
+    async getMemberCount(validationError: ValidationError, { guildId }: {
+        guildId: string
+    }, send: Function) {
         if (validationError) {
             send(validationError)
             return
