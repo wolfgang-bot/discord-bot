@@ -1,4 +1,4 @@
-import emojiRegex from "emoji-regex/RGI_Emoji.js"
+import emojiRegex from "emoji-regex/RGI_Emoji"
 
 // Match hex colors
 export const HEX_COLOR_REGEX = /^#([0-9a-fA-F]{3}){1,2}$/
