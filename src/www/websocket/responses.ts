@@ -1,3 +1,5 @@
+import log from "loglevel"
+
 const HTTPStatusCodes: Record<number, string> = {
     400: "Bad Request",
     403: "Forbidden",
@@ -27,6 +29,10 @@ export function error(status: number | string, message?: any): {
 } {
     if (typeof status === "number") {
         if (!message) {
+            if (!(status in HTTPStatusCodes)) {
+                log.warn(`No message for http status ${status}`)
+            }
+
             message = HTTPStatusCodes[status]
         }
 

@@ -3,7 +3,7 @@ export enum READING_STATES {
     PAUSED
 }
 
-export abstract class Readable<T> {
+export abstract class Readable<T> {    
     destStreams: Writable<T>[] = []
     state: READING_STATES = READING_STATES.PAUSED
     buffer: T[] = []

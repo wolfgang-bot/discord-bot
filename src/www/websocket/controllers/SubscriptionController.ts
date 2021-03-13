@@ -4,6 +4,7 @@ import WebSocketController from "../../../lib/WebSocketController"
 import StreamManager, { EVENT_STREAMS, SubscriptionArgs } from "../StreamManager"
 import { AuthorizedSocket } from "../SocketManager"
 import { success, error } from "../responses"
+import StreamAuthorizer from "../StreamAuthorizer"
 
 export default class SubscriptionController extends WebSocketController {
     constructor(
@@ -15,19 +16,35 @@ export default class SubscriptionController extends WebSocketController {
     }
 
     subscribe(args: SubscriptionArgs, send: Function) {
-        this.forwardEvent(this.streamManager.subscribe.bind(this.streamManager), args, send)
+        this.forwardEvent(
+            this.streamManager.subscribe.bind(this.streamManager),
+            args,
+            send
+        )
     }
 
     unsubscribe(args: SubscriptionArgs, send: Function) {
-        this.forwardEvent(this.streamManager.unsubscribe.bind(this.streamManager), args, send)
+        this.forwardEvent(
+            this.streamManager.unsubscribe.bind(this.streamManager),
+            args,
+            send
+        )
     }
 
     pause(args: SubscriptionArgs, send: Function) {
-        this.forwardEvent(this.streamManager.pause.bind(this.streamManager), args, send)
+        this.forwardEvent(
+            this.streamManager.pause.bind(this.streamManager),
+            args,
+            send
+        )
     }
 
     resume(args: SubscriptionArgs, send: Function) {
-        this.forwardEvent(this.streamManager.resume.bind(this.streamManager), args, send)
+        this.forwardEvent(
+            this.streamManager.resume.bind(this.streamManager),
+            args,
+            send
+        )
     }
 
     async forwardEvent(
@@ -40,14 +57,14 @@ export default class SubscriptionController extends WebSocketController {
             return send(error(400))
         }
 
-        const guild = await this.client.guilds.fetch(args.guildId)
+        const streamAuthorizer = new StreamAuthorizer(
+            this.client,
+            this.socket.user
+        )
+        const authErrorCode = await streamAuthorizer.authorize(args)
 
-        if (!guild) {
-            return send(error(404))
-        }
-
-        if (!this.socket.user.isAdmin(guild)) {
-            return send(error(403))
+        if (authErrorCode) {
+            return send(error(authErrorCode))
         }
 
         try {

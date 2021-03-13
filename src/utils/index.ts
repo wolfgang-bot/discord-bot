@@ -102,7 +102,7 @@ export async function checkPermissions(guild: Discord.Guild, user: User | Discor
 }
 
 /**
- * Check if a user is an admin of the bot
+ * Check if a user-id corresponds to a user who is an admin of the bot
  */
 export function isBotAdmin(userId: string) {
     return process.env.ADMIN_USER_IDS

@@ -9,7 +9,7 @@ import VoiceStream from "./streams/VoiceStream"
 
 export type SubscriptionArgs = {
     eventStream: EVENT_STREAMS,
-    guildId: string
+    guildId?: string
 }
 
 export enum EVENT_STREAMS {
@@ -19,7 +19,7 @@ export enum EVENT_STREAMS {
     VOICE = "voice"
 }
 
-const STREAMS: Record<EVENT_STREAMS, new (guildId: string) => Readable<any>> = {
+const streams: Record<EVENT_STREAMS, new (guildId: string) => Readable<any>> = {
     [EVENT_STREAMS.MODULE_INSTANCES]: ModuleInstanceStream,
     [EVENT_STREAMS.MEMBERS]: MemberStream,
     [EVENT_STREAMS.MESSAGES]: MessageStream,
@@ -32,7 +32,7 @@ export default class StreamManager {
     constructor(public client: Discord.Client, public socket: AuthorizedSocket) {}
 
     subscribe(args: SubscriptionArgs) {
-        const eventStream = new STREAMS[args.eventStream](args.guildId)
+        const eventStream = new streams[args.eventStream](args.guildId)
         const socketStream = new SocketStream(this.socket, args)
 
         if (!this.streams[args.guildId]) {
