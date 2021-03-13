@@ -11,30 +11,6 @@ meta_features:
     - "Creates the commands: 'leaderboard' and 'profile'"
 
 #
-# Arguments
-#
-
-# Notifications Channel
-arg_notifications_channel_display_name: Notifications Channel
-arg_notifications_channel_desc: The channel in which notifications like level ups will be sent.
-
-# Roles
-arg_roles_name: Roles
-arg_roles_desc: Level Roles which are assigned to a user who reaches the level
-
-# Role Colors
-arg_role_colors_name: Role Colors
-arg_role_colors_desc: Color of each level role
-
-# Role Thresholds
-arg_role_thresholds_name: Role Thresholds
-arg_role_thresholds_desc: Amount of reputation needed to reach the levels
-
-# Level Up Reaction
-arg_level_up_reaction_emoji_name: Level Up Reaction Emoji
-arg_level_up_reaction_emoji_desc: Emoji of the reaction which is added to the 'level up' announcements
-
-#
 # Commands
 #
 

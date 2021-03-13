@@ -22,14 +22,14 @@ import ProfileCommand from "./commands/profile"
     type: ARGUMENT_TYPES.TEXT_CHANNEL,
     key: "channel",
     name: "Notifications Channel",
-    desc: "arg_notifications_channel_desc",
+    desc: "The channel in which notifications like level ups will be sent",
 })
 @argument({
     type: ARGUMENT_TYPES.STRING,
     isArray: true,
     key: "roles",
     name: "Roles",
-    desc: "arg_roles_desc",
+    desc: "Level Roles which are assigned to a user who reaches the level",
     defaultValue: ["Bronze", "Silver", "Gold", "Platinum", "Diamond"]
 })
 @argument({
@@ -37,7 +37,7 @@ import ProfileCommand from "./commands/profile"
     isArray: true,
     key: "roleColors",
     name: "Role Colors",
-    desc: "arg_role_colors_desc",
+    desc: "Color of each level role",
     defaultValue: ["#E67E22", "#ffffff", "#F0C410", "#607d8b", "#3498DB"]
 })
 @argument({
@@ -45,14 +45,14 @@ import ProfileCommand from "./commands/profile"
     isArray: true,
     key: "roleThresholds",
     name: "Role Thresholds",
-    desc: "arg_role_thresholds_desc",
+    desc: "Amount of reputation needed to reach the levels",
     defaultValue: [10, 100, 500, 1000, 2500]
 })
 @argument({
     type: ARGUMENT_TYPES.STRING,
     key: "levelUpReactionEmoji",
     name: "Level Up Reaction Emoji",
-    desc: "arg_level_up_reaction_emoji_desc",
+    desc: "Emoji of the reaction which is added to the 'level up' announcements",
     defaultValue: "💯"
 })
 @command(LeaderboardCommand)

@@ -24,7 +24,7 @@ import Context from "../../lib/Context"
     type: ARGUMENT_TYPES.BOOLEAN,
     key: "assignRoleToEachUser",
     name: "Assign Role",
-    desc: "Assign the role to each user on startup",
+    desc: "Assign the role to each user",
     defaultValue: true
 })
 export default class UserRoleModule extends Module {
