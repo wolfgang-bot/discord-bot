@@ -19,8 +19,8 @@ const streamAuthMethods: Record<EVENT_STREAMS, AUTH_METHODS> = {
 
 export default class StreamAuthorizer {
     authMethodsMap: Record<AUTH_METHODS, AuthFunction> = {
-        [AUTH_METHODS.GUILD_ADMIN]: this.authorizeGuildAdmin.bind(this),
-        [AUTH_METHODS.BOT_ADMIN]: this.authorizeBotAdmin.bind(this)
+        [AUTH_METHODS.GUILD_ADMIN]: this.isGuildAdmin,
+        [AUTH_METHODS.BOT_ADMIN]: this.isBotAdmin
     }
 
     constructor(
@@ -30,10 +30,10 @@ export default class StreamAuthorizer {
 
     async authorize(args: SubscriptionArgs) {
         const authMethod = streamAuthMethods[args.eventStream]
-        return await this.authMethodsMap[authMethod](args)
+        return await this.authMethodsMap[authMethod].call(this, args)
     }
 
-    async authorizeGuildAdmin(args: SubscriptionArgs) {
+    async isGuildAdmin(args: SubscriptionArgs) {
         const guild = await this.client.guilds.fetch(args.guildId)
 
         if (!guild) {
@@ -45,7 +45,7 @@ export default class StreamAuthorizer {
         }
     }
 
-    async authorizeBotAdmin() {
+    async isBotAdmin() {
         if (!isBotAdmin(this.user.id)) {
             return 403
         }

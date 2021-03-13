@@ -14,52 +14,74 @@ type VoiceChannelConnection = {
 export default class StatisticsManager {
     voiceChannelConnections: Record<string, VoiceChannelConnection> = {}
 
-    private async registerEvent<TMeta = undefined>({ getData, broadcastEvent }: {
-        getData: () => EventModelValues<TMeta>,
+    private async registerEvent<TMeta = undefined>({ data, broadcastEvent }: {
+        data: EventModelValues<TMeta>,
         broadcastEvent?: string
     }) {
-        const event = new Event(getData())
+        const event = new Event(data)
         await event.store()
         if (broadcastEvent) {
             BroadcastChannel.emit(`statistics/${broadcastEvent}`, event)
         }
     }
 
+    async registerGuildAddEvent(guild: Discord.Guild) {
+        await this.registerEvent({
+            data: {
+                type: EVENT_TYPES.GUILD_ADD,
+                timestamp: Date.now(),
+                guild_id: guild.id
+            },
+            broadcastEvent: "guild-add"
+        })
+    }
+
+    async registerGuildRemoveEvent(guild: Discord.Guild) {
+        await this.registerEvent({
+            data: {
+                type: EVENT_TYPES.GUILD_REMOVE,
+                timestamp: Date.now(),
+                guild_id: guild.id
+            },
+            broadcastEvent: "guild-remove"
+        })
+    }
+
     async registerGuildMemberAddEvent(guild: Discord.Guild) {
         await this.registerEvent<GuildMemberEventMeta>({
-            getData: () => ({
+            data: {
                 type: EVENT_TYPES.GUILD_MEMBER_ADD,
                 timestamp: Date.now(),
                 guild_id: guild.id,
                 meta: {
                     memberCount: guild.memberCount
                 }
-            }),
+            },
             broadcastEvent: "guild-member-add"
         })
     }
 
     async registerGuildMemberRemoveEvent(guild: Discord.Guild) {
         await this.registerEvent<GuildMemberEventMeta>({
-            getData: () => ({
+            data: {
                 type: EVENT_TYPES.GUILD_MEMBER_REMOVE,
                 timestamp: Date.now(),
                 guild_id: guild.id,
                 meta: {
                     memberCount: guild.memberCount
                 }
-            }),
+            },
             broadcastEvent: "guild-member-remove"
         })
     }
 
     async registerMessageSendEvent(guild: Discord.Guild) {
         await this.registerEvent({
-            getData: () => ({
+            data: {
                 type: EVENT_TYPES.MESSAGE_SEND,
                 timestamp: Date.now(),
                 guild_id: guild.id
-            }),
+            },
             broadcastEvent: "message-send"
         })
     }
@@ -74,14 +96,14 @@ export default class StatisticsManager {
         const timestamp = Date.now()
 
         await this.registerEvent<VoiceChannelLeaveEventMeta>({
-            getData: () => ({
+            data: {
                 type: EVENT_TYPES.VOICECHANNEL_LEAVE,
                 timestamp,
                 guild_id: voiceState.guild.id,
                 meta: {
                     duration: timestamp - this.voiceChannelConnections[voiceState.sessionID].joinedAt
                 }
-            }),
+            },
             broadcastEvent: "guild-channel-leave"
         })
 

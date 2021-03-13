@@ -95,6 +95,8 @@ class EventManager extends Manager {
             }))
         }
 
+        await this.statistics.registerGuildAddEvent(guild)
+
         const channel = await getFirstTextChannel(this.context.client, guild)
 
         if (channel) {
@@ -106,12 +108,14 @@ class EventManager extends Manager {
 
     async handleGuildDelete(guild: Discord.Guild) {
         const model = await Guild.findBy("id", guild.id)
-
+        
         if (model) {
             await model.delete()
         }
-
+        
         CommandRegistry.unregisterGuild(guild)
+
+        await this.statistics.registerGuildRemoveEvent(guild)
     }
 
     async handleGuildMemberAdd(member: Discord.GuildMember) {
@@ -125,7 +129,7 @@ class EventManager extends Manager {
             user = new User({ id: member.user.id })
             await user.store()
         }
-
+        
         // Create member for user
         const model = new Member({
             user_id: member.user.id,

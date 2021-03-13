@@ -2,6 +2,8 @@ import { v4 as uuid } from "uuid"
 import Model from "../lib/Model"
 
 export enum EVENT_TYPES {
+    GUILD_ADD,
+    GUILD_REMOVE,
     GUILD_MEMBER_ADD,
     GUILD_MEMBER_REMOVE,
     MESSAGE_SEND,
