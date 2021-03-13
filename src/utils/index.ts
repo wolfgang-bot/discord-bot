@@ -100,3 +100,12 @@ export async function checkPermissions(guild: Discord.Guild, user: User | Discor
     const member = await guild.members.fetch(user.id)
     return member.hasPermission(permissions)
 }
+
+/**
+ * Check if a user is an admin of the bot
+ */
+export function isBotAdmin(userId: string) {
+    return process.env.ADMIN_USER_IDS
+        .split(",")
+        .includes(userId)
+}

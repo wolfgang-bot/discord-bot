@@ -1,7 +1,7 @@
 import Discord from "discord.js"
 import { APIUser } from "discord-api-types/v8"
 import Model from "../lib/Model"
-import { checkPermissions } from "../utils"
+import { checkPermissions, isBotAdmin } from "../utils"
 
 export type UserModelValues = {
     id: string
@@ -18,6 +18,7 @@ class User extends Model implements UserModelValues {
     access_token?: string
     refresh_token?: string
     discordUser: Discord.User | APIUser = null
+    isBotAdmin: boolean
 
     constructor(values: UserModelValues) {
         super({
@@ -25,6 +26,8 @@ class User extends Model implements UserModelValues {
             columns: ["id", "access_token", "refresh_token"],
             values
         })
+
+        this.isBotAdmin = isBotAdmin(this.id)
     }
 
     isAdmin(guild: Discord.Guild | Guild) {
@@ -48,9 +51,11 @@ class User extends Model implements UserModelValues {
     toJSON() {
         return {
             id: this.id,
+            isBotAdmin: this.isBotAdmin,
             username: this.discordUser?.username,
             discriminator: this.discordUser?.discriminator,
-            avatar: this.discordUser?.avatar
+            avatar: this.discordUser?.avatar,
+            locale: this.discordUser?.locale
         }
     }
 }
