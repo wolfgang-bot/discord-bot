@@ -29,9 +29,12 @@ export default class VoiceStream extends Readable<Event<VoiceChannelLeaveEventMe
         const events = await Event.whereAll(`
             type = ${EVENT_TYPES.VOICECHANNEL_LEAVE} AND
             guild_id = ${this.guildId}
-            ORDER BY timestamp ASC
+            ORDER BY timestamp DESC
             LIMIT ${config.stream.maxInitialValues}
         `) as Collection<Event<VoiceChannelLeaveEventMeta>>
+
+        events.reverse()
+
         this.push(events)
     }
 

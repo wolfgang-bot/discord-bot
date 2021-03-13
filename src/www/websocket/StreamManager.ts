@@ -2,6 +2,7 @@ import Discord from "discord.js"
 import { Readable } from "../../lib/Stream"
 import { AuthorizedSocket } from "./SocketManager"
 import SocketStream from "./streams/SocketStream"
+import GuildStream from "./streams/GuildStream"
 import ModuleInstanceStream from "./streams/ModuleInstanceStream"
 import MemberStream from "./streams/MemberStream"
 import MessageStream from "./streams/MessageStream"
@@ -13,6 +14,7 @@ export type SubscriptionArgs = {
 }
 
 export enum EVENT_STREAMS {
+    GUILDS = "guilds",
     MODULE_INSTANCES = "module-instances",
     MEMBERS = "members",
     MESSAGES = "messages",
@@ -20,6 +22,7 @@ export enum EVENT_STREAMS {
 }
 
 const streams: Record<EVENT_STREAMS, new (guildId: string) => Readable<any>> = {
+    [EVENT_STREAMS.GUILDS]: GuildStream,
     [EVENT_STREAMS.MODULE_INSTANCES]: ModuleInstanceStream,
     [EVENT_STREAMS.MEMBERS]: MemberStream,
     [EVENT_STREAMS.MESSAGES]: MessageStream,

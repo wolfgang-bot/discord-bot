@@ -52,7 +52,7 @@ export default class SubscriptionController extends WebSocketController {
         args: SubscriptionArgs,
         send: Function
     ) {
-        if (!args.eventStream || !args.guildId) {
+        if (typeof args !== "object") {
             send = arguments[arguments.length - 1]
             return send(error(400))
         }
@@ -70,8 +70,8 @@ export default class SubscriptionController extends WebSocketController {
         try {
             forwardedFunction(args)
             send(success())
-        } catch (error) {
-            log.debug(error)
+        } catch (err) {
+            log.debug(err)
             return send(error(500))
         }
     }
