@@ -1,10 +1,10 @@
 import Collection from "../../../lib/Collection"
 import { Readable } from "../../../lib/Stream"
-import Event, { EVENT_TYPES } from "../../../models/Event"
+import Event, { EVENT_TYPES, GuildEventMeta } from "../../../models/Event"
 import BroadcastChannel from "../../../services/BroadcastChannel"
 import config from "../../config"
 
-export default class GuildStream extends Readable<Event[]> {
+export default class GuildStream extends Readable<Event<GuildEventMeta>[]> {
     constructor() {
         super()
 
@@ -23,7 +23,7 @@ export default class GuildStream extends Readable<Event[]> {
         BroadcastChannel.removeListener("statistics/guild-remove", this.handleGuildEvent)
     }
 
-    collectBuffer(buffer: Event[][]) {
+    collectBuffer(buffer: Event<GuildEventMeta>[][]) {
         return buffer.flat()
     }
 
@@ -34,14 +34,14 @@ export default class GuildStream extends Readable<Event[]> {
                 type = '${EVENT_TYPES.GUILD_REMOVE}'
             ) ORDER BY timestamp DESC
             LIMIT ${config.stream.maxInitialValues}
-        `) as Collection<Event>
+        `) as Collection<Event<GuildEventMeta>>
 
         events.reverse()
 
         this.push(events)
     }
 
-    handleGuildEvent(event: Event) {
+    handleGuildEvent(event: Event<GuildEventMeta>) {
         this.push([event])
     }
 }

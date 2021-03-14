@@ -47,5 +47,3 @@ export default Guild
 
 import Member from "./Member"
 import ModuleInstance from "./ModuleInstance"
-import Event from "./Event"
-

@@ -20,6 +20,7 @@ const MIN_AMOUNT_OF_MEMBER_EVENTS_PER_DAY = 100
 const MAX_AMOUNT_OF_MEMBER_EVENTS_PER_DAY = 300
 const MEMBER_JOIN_LEAVE_RATIO = .7
 const MEMBER_DROP_PROBABILITY = .1
+const MEMBER_NEW_USER_PROBABILITY = .97
 
 const MIN_AMOUNT_OF_MESSAGES_PER_DAY = 100
 const MAX_AMOUNT_OF_MESSAGES_PER_DAY = 300
@@ -122,17 +123,41 @@ async function generateMemberEvents(callback: ProgressCallback) {
 
     const totalAmountOfEntries = sum(amountsOfEntries)
 
+    let memberCount = INITIAL_MEMBER_COUNT
+    let userCount = 0
+
+    callback({
+        type: "init",
+        key: "Users",
+        data: memberCount
+    })
+
     callback({
         type: "init",
         key: "Members",
         data: totalAmountOfEntries
     })
 
-    let memberCount = INITIAL_MEMBER_COUNT
-    
+    const userInitTimestamp = createRandomTimestampNDaysAgo(GENERATE_DATA_FOR_DAYS - 1)
+    for (let i = 0; i < memberCount; i++) {
+        await new Event({
+            type: EVENT_TYPES.USER_ADD,
+            timestamp: userInitTimestamp + i,
+            guild_id: GUILD_ID,
+            meta: {
+                userCount: userCount++
+            }
+        }).store()
+
+        callback({
+            type: "tick",
+            key: "Users"
+        })
+    }
+
     for (let i = amountsOfEntries.length - 1; i >= 0; i--) {
         const randomFactor = Math.random() < MEMBER_DROP_PROBABILITY ? -1 : 1
-        
+
         for (let j = 0; j < amountsOfEntries[i]; j++) {
             const type = Math.random() >= MEMBER_JOIN_LEAVE_RATIO * randomFactor ?
                 EVENT_TYPES.GUILD_MEMBER_REMOVE :
@@ -141,6 +166,8 @@ async function generateMemberEvents(callback: ProgressCallback) {
             const newMemberCount = type === EVENT_TYPES.GUILD_MEMBER_REMOVE ?
                 memberCount-- :
                 memberCount++
+
+            const shouldCreateUser = Math.random() <= MEMBER_NEW_USER_PROBABILITY
 
             if (newMemberCount < 0) {
                 memberCount = 0
@@ -151,14 +178,27 @@ async function generateMemberEvents(callback: ProgressCallback) {
                 continue
             }
 
+            const timestamp = createRandomTimestampNDaysAgo(i)
+
             await new Event({
                 type,
-                timestamp: createRandomTimestampNDaysAgo(i),
+                timestamp,
                 guild_id: GUILD_ID,
                 meta: {
                     memberCount: newMemberCount
                 }
             }).store()
+
+            if (shouldCreateUser) {
+                await new Event({
+                    type: EVENT_TYPES.USER_ADD,
+                    timestamp,
+                    guild_id: GUILD_ID,
+                    meta: {
+                        userCount: userCount++
+                    }
+                }).store()
+            }
 
             callback({
                 type: "tick",

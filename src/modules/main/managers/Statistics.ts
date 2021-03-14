@@ -1,13 +1,14 @@
 import Discord from "discord.js"
-import database from "../../../database"
 import Event, {
     EVENT_TYPES,
     GuildMemberEventMeta,
     VoiceChannelLeaveEventMeta,
     EventModelValues,
-    GuildEventMeta
+    GuildEventMeta,
+    UserEventMeta
 } from "../../../models/Event"
 import Guild from "../../../models/Guild"
+import User from "../../../models/User"
 import BroadcastChannel from "../../../services/BroadcastChannel"
 
 type VoiceChannelConnection = {
@@ -53,6 +54,20 @@ export default class StatisticsManager {
                 }
             },
             broadcastEvent: "guild-remove"
+        })
+    }
+
+    async registerUserAddEvent(guild: Discord.Guild) {
+        await this.registerEvent<UserEventMeta>({
+            data: {
+                type: EVENT_TYPES.USER_ADD,
+                timestamp: Date.now(),
+                guild_id: guild.id,
+                meta: {
+                    userCount: await User.getRowCount()
+                }
+            },
+            broadcastEvent: "user-add"
         })
     }
 

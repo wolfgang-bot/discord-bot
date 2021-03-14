@@ -84,7 +84,7 @@ abstract class Model {
      */
     static async getRowCount() {
         const res = await await database.get(`SELECT COUNT(*) FROM ${this.context.table}`)
-        return res["COUNT(*)"]
+        return res["COUNT(*)"] as number
     }
 
     /**

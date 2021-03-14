@@ -4,6 +4,7 @@ import Model from "../lib/Model"
 export enum EVENT_TYPES {
     GUILD_ADD,
     GUILD_REMOVE,
+    USER_ADD,
     GUILD_MEMBER_ADD,
     GUILD_MEMBER_REMOVE,
     MESSAGE_SEND,
@@ -12,6 +13,10 @@ export enum EVENT_TYPES {
 
 export type GuildEventMeta = {
     guildCount: number
+}
+
+export type UserEventMeta = {
+    userCount: number
 }
 
 export type GuildMemberEventMeta = {

@@ -3,7 +3,7 @@ import log from "loglevel"
 import Manager from "../../../lib/Manager"
 import CommandRegistry from "../../../services/CommandRegistry"
 import Guild from "../../../models/Guild"
-import User from "../../../models/Guild"
+import User from "../../../models/User"
 import Member from "../../../models/Member"
 import StatisticsManager from "./Statistics"
 import RootCommandGroup from "../commands"
@@ -84,7 +84,10 @@ class EventManager extends Manager {
 
                 if (!user) {
                     user = new User({ id: member.user.id })
-                    await user.store()
+                    await Promise.all([
+                        user.store(),
+                        this.statistics.registerUserAddEvent(guild)
+                    ])
                 }
 
                 const model = new Member({
@@ -127,7 +130,10 @@ class EventManager extends Manager {
         let user = await User.findBy("id", member.user.id)
         if (!user) {
             user = new User({ id: member.user.id })
-            await user.store()
+            await Promise.all([
+                user.store(),
+                this.statistics.registerUserAddEvent(member.guild)
+            ])
         }
         
         // Create member for user
@@ -135,9 +141,10 @@ class EventManager extends Manager {
             user_id: member.user.id,
             guild_id: member.guild.id
         })
-        await model.store()
-
-        await this.statistics.registerGuildMemberAddEvent(member.guild)
+        await Promise.all([
+            model.store(),
+            this.statistics.registerGuildMemberAddEvent(member.guild)
+        ])
     }
 
     async handleGuildMemberRemove(member: Discord.GuildMember) {
@@ -149,13 +156,6 @@ class EventManager extends Manager {
         const model = await Member.where(`user_id = '${member.user.id}' AND guild_id = '${member.guild.id}'`) as Member
         if (model) {
             await model.delete()
-        }
-
-        // Delete user from database if he doesn't belong to any member
-        const members = await Member.findAllBy("user_id", member.user.id)
-        if (members.length === 0) {
-            await model.fetchUser()
-            await model.user.delete()
         }
 
         await this.statistics.registerGuildMemberRemoveEvent(member.guild)
