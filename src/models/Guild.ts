@@ -37,9 +37,6 @@ class Guild extends Model implements GuildModelValues {
         await moduleInstances.mapAsync(instance => instance.delete())
         delete ModuleInstanceRegistry.instances[this.id]
 
-        const events = await Event.findAllBy("guild_id", this.id)
-        await events.mapAsync(event => event.delete())
-
         super.delete()
     }
     

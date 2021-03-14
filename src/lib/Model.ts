@@ -80,6 +80,14 @@ abstract class Model {
     }
 
     /**
+     * Get the amount of rows in the table
+     */
+    static async getRowCount() {
+        const res = await await database.get(`SELECT COUNT(*) FROM ${this.context.table}`)
+        return res["COUNT(*)"]
+    }
+
+    /**
      * Create models from database results
      */
     static fromRows(rows: RowDataPacket[]) {

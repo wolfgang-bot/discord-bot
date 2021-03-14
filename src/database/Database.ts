@@ -5,12 +5,9 @@ import migrate from "./migrations"
 sqlite.verbose()
 
 class Database {
-    path: string
     db: sqlite.Database
 
-    constructor(path: string) {
-        this.path = path
-    }
+    constructor(private path: string) {}
 
     connect(): Promise<void> {
         return new Promise((resolve, reject) => {
@@ -33,6 +30,15 @@ class Database {
             this.db.run(query, config, (error) => {
                 if (error) reject(error)
                 else resolve()
+            })
+        })
+    }
+
+    get(query: string, config?: any): Promise<any> {
+        return new Promise((resolve, reject) => {
+            this.db.get(query, config, (error, result) => {
+                if (error) reject(error)
+                else resolve(result)
             })
         })
     }

@@ -17,6 +17,8 @@ import ModuleInstanceRegistry from "../services/ModuleInstanceRegistry"
 import boot from "../boot"
 dotenv.config({ path: path.join(__dirname, "..", "..", ".env")})
 
+log.setLevel(log.levels.TRACE)
+
 const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout

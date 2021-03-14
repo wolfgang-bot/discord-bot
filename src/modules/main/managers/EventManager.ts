@@ -95,8 +95,6 @@ class EventManager extends Manager {
             }))
         }
 
-        await this.statistics.registerGuildAddEvent(guild)
-
         const channel = await getFirstTextChannel(this.context.client, guild)
 
         if (channel) {
@@ -104,6 +102,8 @@ class EventManager extends Manager {
         } else {
             await initGuild()
         }
+
+        await this.statistics.registerGuildAddEvent(guild)
     }
 
     async handleGuildDelete(guild: Discord.Guild) {
