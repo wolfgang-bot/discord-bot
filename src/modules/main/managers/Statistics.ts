@@ -146,7 +146,7 @@ export default class StatisticsManager {
                     instanceCount: await ModuleInstance.getRowCount()
                 }
             },
-            broadcastEvent: "instance-start"
+            broadcastEvent: "module-instance-start"
         })
     }
 
@@ -160,7 +160,7 @@ export default class StatisticsManager {
                     instanceCount: await ModuleInstance.getRowCount()
                 }
             },
-            broadcastEvent: "instance-stop"
+            broadcastEvent: "module-instance-stop"
         })
     }
 }

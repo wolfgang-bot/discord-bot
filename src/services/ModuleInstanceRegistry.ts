@@ -88,7 +88,7 @@ class ModuleInstanceRegistry {
         this.instances[guild.id][model.id] = instance
 
         instance.on("update", () => {
-            BroadcastChannel.emit("module-instances/update", instance)
+            BroadcastChannel.emit("module-instance/update", instance)
         })
     }
 

@@ -4,10 +4,11 @@ import { AuthorizedSocket } from "./SocketManager"
 import SocketStream from "./streams/SocketStream"
 import GuildStream from "./streams/GuildStream"
 import UserStream from "./streams/UserStream"
-import ModuleInstanceStream from "./streams/ModuleInstanceStream"
+import GuildModuleInstanceStream from "./streams/GuildModuleInstanceStream"
 import MemberStream from "./streams/MemberStream"
 import MessageStream from "./streams/MessageStream"
 import VoiceStream from "./streams/VoiceStream"
+import ModuleInstanceStream from "./streams/ModuleInstanceStream"
 
 export type SubscriptionArgs = {
     eventStream: EVENT_STREAMS,
@@ -18,6 +19,7 @@ export enum EVENT_STREAMS {
     GUILDS = "guilds",
     USERS = "users",
     MODULE_INSTANCES = "module-instances",
+    GUILD_MODULE_INSTANCES = "guild-module-instances",
     MEMBERS = "members",
     MESSAGES = "messages",
     VOICE = "voice"
@@ -27,6 +29,7 @@ const streams: Record<EVENT_STREAMS, new (guildId: string) => Readable<any>> = {
     [EVENT_STREAMS.GUILDS]: GuildStream,
     [EVENT_STREAMS.USERS]: UserStream,
     [EVENT_STREAMS.MODULE_INSTANCES]: ModuleInstanceStream,
+    [EVENT_STREAMS.GUILD_MODULE_INSTANCES]: GuildModuleInstanceStream,
     [EVENT_STREAMS.MEMBERS]: MemberStream,
     [EVENT_STREAMS.MESSAGES]: MessageStream,
     [EVENT_STREAMS.VOICE]: VoiceStream

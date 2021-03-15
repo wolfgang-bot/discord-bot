@@ -1,36 +1,47 @@
 import { Readable } from "../../../lib/Stream"
-import Module from "../../../lib/Module"
+import Collection from "../../../lib/Collection"
 import BroadcastChannel from "../../../services/BroadcastChannel"
-import ModuleInstanceRegistry from "../../../services/ModuleInstanceRegistry"
+import Event, { EVENT_TYPES, ModuleInstanceEventMeta } from "../../../models/Event"
+import config from "../../config"
 
-export default class ModuleInstanceStream extends Readable<Module[]> {
-    constructor(public guildId: string) {
+export default class ModuleInstanceStream extends Readable<Event<ModuleInstanceEventMeta>[]> {
+    constructor() {
         super()
 
-        this.handleInstanceUpdate = this.handleInstanceUpdate.bind(this)
+        this.handleModuleInstanceEvent = this.handleModuleInstanceEvent.bind(this)
     }
 
     construct() {
-        this.pushInitialValues()
-        BroadcastChannel.on("module-instances/update", this.handleInstanceUpdate)
-    }
-    
-    destroy() {
-        BroadcastChannel.removeListener("module-instances/update", this.handleInstanceUpdate)
+        this.pushInitialValues().then(() => {
+            BroadcastChannel.on("statistics/module-instance-start", this.handleModuleInstanceEvent)
+            BroadcastChannel.on("statistics/module-instance-stop", this.handleModuleInstanceEvent)
+        })
     }
 
-    collectBuffer(buffer: Module[][]) {
+    destroy() {
+        BroadcastChannel.removeListener("statistics/module-instance-start", this.handleModuleInstanceEvent)
+        BroadcastChannel.removeListener("statistics/module-instance-stop", this.handleModuleInstanceEvent)
+    }
+
+    collectBuffer(buffer: Event<ModuleInstanceEventMeta>[][]) {
         return buffer.flat()
     }
 
-    pushInitialValues() {
-        const instances = ModuleInstanceRegistry.getInstancesFromGuildId(this.guildId)
-        this.push(instances)
+    async pushInitialValues() {
+        const events = await Event.whereAll(`
+            (
+                type = '${EVENT_TYPES.MODULE_INSTANCE_START}' OR 
+                type = '${EVENT_TYPES.MODULE_INSTANCE_STOP}'
+            ) ORDER BY timestamp DESC
+            LIMIT ${config.stream.maxInitialValues}
+        `) as Collection<Event<ModuleInstanceEventMeta>>
+
+        events.reverse()
+
+        this.push(events)
     }
 
-    handleInstanceUpdate(instance: Module) {
-        if (instance.context.guild.id === this.guildId) {
-            this.push([instance])
-        }
+    handleModuleInstanceEvent(event: Event) {
+        this.push([event])
     }
 }
