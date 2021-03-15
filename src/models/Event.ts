@@ -5,6 +5,8 @@ export enum EVENT_TYPES {
     GUILD_ADD,
     GUILD_REMOVE,
     USER_ADD,
+    MODULE_INSTANCE_START,
+    MODULE_INSTANCE_STOP,
     GUILD_MEMBER_ADD,
     GUILD_MEMBER_REMOVE,
     MESSAGE_SEND,
@@ -17,6 +19,10 @@ export type GuildEventMeta = {
 
 export type UserEventMeta = {
     userCount: number
+}
+
+export type ModuleInstanceEventMeta = {
+    instanceCount: number
 }
 
 export type GuildMemberEventMeta = {

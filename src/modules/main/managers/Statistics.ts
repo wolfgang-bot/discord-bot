@@ -5,9 +5,11 @@ import Event, {
     VoiceChannelLeaveEventMeta,
     EventModelValues,
     GuildEventMeta,
-    UserEventMeta
+    UserEventMeta,
+    ModuleInstanceEventMeta
 } from "../../../models/Event"
 import Guild from "../../../models/Guild"
+import ModuleInstance from "../../../models/ModuleInstance"
 import User from "../../../models/User"
 import BroadcastChannel from "../../../services/BroadcastChannel"
 
@@ -132,5 +134,33 @@ export default class StatisticsManager {
         })
 
         delete this.voiceChannelConnections[voiceState.sessionID]
+    }
+
+    async registerModuleInstanceStartEvent(instance: ModuleInstance) {
+        await this.registerEvent<ModuleInstanceEventMeta>({
+            data: {
+                type: EVENT_TYPES.MODULE_INSTANCE_START,
+                timestamp: Date.now(),
+                guild_id: instance.guild_id,
+                meta: {
+                    instanceCount: await ModuleInstance.getRowCount()
+                }
+            },
+            broadcastEvent: "instance-start"
+        })
+    }
+
+    async registerModuleInstanceStopEvent(instance: ModuleInstance) {
+        await this.registerEvent<ModuleInstanceEventMeta>({
+            data: {
+                type: EVENT_TYPES.MODULE_INSTANCE_STOP,
+                timestamp: Date.now(),
+                guild_id: instance.guild_id,
+                meta: {
+                    instanceCount: await ModuleInstance.getRowCount()
+                }
+            },
+            broadcastEvent: "instance-stop"
+        })
     }
 }

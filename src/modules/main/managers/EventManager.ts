@@ -12,6 +12,7 @@ import { parseArguments } from "../../../utils"
 import SetupEmbed from "../embeds/SetupEmbed"
 import ModuleInstance from "../../../models/ModuleInstance"
 import SettingsConfig from "../../settings/models/Configuration"
+import BroadcastChannel from "../../../services/BroadcastChannel"
 
 function isTextChannel(channel: Discord.GuildChannel): channel is Discord.TextChannel {
     return channel.type === "text"
@@ -178,6 +179,14 @@ class EventManager extends Manager {
         }
     }
 
+    async handleModuleInstanceStart(instance: ModuleInstance) {
+        await this.statistics.registerModuleInstanceStartEvent(instance)
+    }
+
+    async handleModuleInstanceStop(instance: ModuleInstance) {
+        await this.statistics.registerModuleInstanceStopEvent(instance)
+    }
+
     async init() {
         const { client } = this.context
         client.on("message", this.handleMessage.bind(this))
@@ -186,6 +195,9 @@ class EventManager extends Manager {
         client.on("guildMemberAdd", this.handleGuildMemberAdd.bind(this))
         client.on("guildMemberRemove", this.handleGuildMemberRemove.bind(this))
         client.on("voiceStateUpdate", this.handleVoiceStateUpdate.bind(this))
+
+        BroadcastChannel.on("module-instance/start", this.handleModuleInstanceStart.bind(this))
+        BroadcastChannel.on("module-instance/stop", this.handleModuleInstanceStop.bind(this))
     }
 
     async delete() {

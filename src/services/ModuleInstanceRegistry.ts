@@ -176,6 +176,10 @@ class ModuleInstanceRegistry {
             throw error
         }
 
+        if (isUserInvocation) {
+            BroadcastChannel.emit("module-instance/start", instanceModel)
+        }
+
         return instance
     }
 
@@ -183,7 +187,7 @@ class ModuleInstanceRegistry {
      * Stop the module's instance from this guild
      */
     async stopModule(model: ModuleModel) {
-        const moduleInstance = await ModuleInstanceModel.findByGuildAndModuleKey(this.guild, model.key)
+        const instanceModel = await ModuleInstanceModel.findByGuildAndModuleKey(this.guild, model.key)
         
         const module = ModuleInstanceRegistry.moduleRegistry.getModule(model)
 
@@ -191,21 +195,23 @@ class ModuleInstanceRegistry {
             throw "Module does not exist"
         }
 
-        if (!moduleInstance) {
+        if (!instanceModel) {
             throw "Module is not running"
         }
 
         try {
-            await this.instances[moduleInstance.id]._stop()
+            await this.instances[instanceModel.id]._stop()
         } catch (error) {
             log.error(`Error stoppping instance '${module.key}' for guild '${this.guild.name}' ('${this.guild.id}')`, error)
-            ModuleInstanceRegistry.unregisterInstance({ guild: this.guild, model: moduleInstance })
-            await moduleInstance.delete()
+            ModuleInstanceRegistry.unregisterInstance({ guild: this.guild, model: instanceModel })
+            await instanceModel.delete()
             throw error
         }
         
-        ModuleInstanceRegistry.unregisterInstance({ guild: this.guild, model: moduleInstance })
-        await moduleInstance.delete()
+        ModuleInstanceRegistry.unregisterInstance({ guild: this.guild, model: instanceModel })
+        await instanceModel.delete()
+
+        BroadcastChannel.emit("module-instance/stop", instanceModel)
     }
 
     /**
