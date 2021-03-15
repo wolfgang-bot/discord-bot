@@ -15,7 +15,7 @@ const multiProgress = new MultiProgress()
 const bars: Record<string, ProgressBar> = {}
 
 function createProgressBar(label: string, length: number) {
-    label = label.padEnd(7, " ")
+    label = label.padEnd(8, " ")
 
     return multiProgress.newBar(
         `${label} [:bar] :percent | :etas | :current/:total | :rate/s`,

@@ -1,36 +1,42 @@
-import Event, { EVENT_TYPES } from "../../models/Event"
+import Event, { EVENT_TYPES, GuildEventMeta, GuildMemberEventMeta, UserEventMeta, VoiceChannelLeaveEventMeta } from "../../models/Event"
 import { Seeder, ProgressCallback } from "../index"
 
 const GENERATE_DATA_FOR_DAYS = 7
 const GUILD_ID = "786167187030540309"
 
-const SKIP_DAY_PROBABILITY = .1
+const SKIP_DAY_PROBABILITY = 0
+const RANDOM_TIMESTAMPS_SPREAD_IN_MILLISECONDS = 1e4
 
 const MILLISECONDS_PER_MINUTE = 60 * 1000
 const MILLISECONDS_PER_HOUR = MILLISECONDS_PER_MINUTE * 60
 const MILLISECONDS_PER_DAY = MILLISECONDS_PER_HOUR * 24
 
+// Guilds
 const MIN_AMOUNT_OF_GUILDS_PER_DAY = 10
 const MAX_AMOUNT_OF_GUILDS_PER_DAY = 50
 const GUILD_ADD_REMOVE_RATIO = .8
 const GUILD_DROP_PROBABILITY = .1
 
+// Members
 const INITIAL_MEMBER_COUNT = 1000
-const MIN_AMOUNT_OF_MEMBER_EVENTS_PER_DAY = 100
-const MAX_AMOUNT_OF_MEMBER_EVENTS_PER_DAY = 300
+const MIN_AMOUNT_OF_MEMBERS_PER_DAY = 100
+const MAX_AMOUNT_OF_MEMBERS_PER_DAY = 300
 const MEMBER_JOIN_LEAVE_RATIO = .7
 const MEMBER_DROP_PROBABILITY = .1
-const MEMBER_NEW_USER_PROBABILITY = .97
 
+// Users
+const MIN_INITIAL_USERS = MIN_AMOUNT_OF_MEMBERS_PER_DAY * .3
+const MAX_INITIAL_USERS = MAX_AMOUNT_OF_MEMBERS_PER_DAY * .7
+
+// Messages
 const MIN_AMOUNT_OF_MESSAGES_PER_DAY = 100
 const MAX_AMOUNT_OF_MESSAGES_PER_DAY = 300
 
+// Voicechat
 const MIN_AMOUNT_OF_VOICECHAT_EVENTS_PER_DAY = 1
 const MAX_AMOUNT_OF_VOICECHAT_EVENTS_PER_DAY = 10
 const MIN_VOICECHAT_DURATION_PER_EVENT = MILLISECONDS_PER_MINUTE * 1
 const MAX_VOICECHAT_DURATION_PER_EVENT = MILLISECONDS_PER_HOUR * 2
-
-const RANDOM_TIMESTAMPS_SPREAD_IN_MILLISECONDS = 1e4
 
 function random(min: number, max: number) {
     return Math.floor(Math.random() * (max - min) + min)
@@ -55,243 +61,150 @@ function sum(numbers: number[]) {
     return numbers.reduce((sum, current) => sum + current, 0)
 }
 
-/**
- * Generate guild add / remove events
- */
-async function generateGuildEvents(callback: ProgressCallback) {
-    const amountsOfEntries = randomAmountOfEntries(
-        MIN_AMOUNT_OF_GUILDS_PER_DAY,
-        MAX_AMOUNT_OF_GUILDS_PER_DAY
-    )
-
-    const totalAmountOfEntries = sum(amountsOfEntries)
-
-    callback({
-        type: "init",
-        key: "Guilds",
-        data: totalAmountOfEntries
-    })
-
-    let guildCount = 0
-
-    for (let i = amountsOfEntries.length - 1; i >= 0; i--) {
-        const randomFactor = Math.random() < GUILD_DROP_PROBABILITY ? -1 : 1
-
-        for (let j = 0; j < amountsOfEntries[i]; j++) {
-            const type = Math.random() >= GUILD_ADD_REMOVE_RATIO * randomFactor ?
-                EVENT_TYPES.GUILD_ADD :
-                EVENT_TYPES.GUILD_REMOVE
-
-            const newGuildCount = type === EVENT_TYPES.GUILD_ADD ?
-                guildCount-- :
-                guildCount++
-
-            if (newGuildCount < 0) {
-                guildCount = 0
-                callback({
-                    type: "tick",
-                    key: "Guilds"
-                })
-                continue
-            }
-
-            await new Event({
-                type,
-                timestamp: createRandomTimestampNDaysAgo(i),
-                guild_id: "123",
-                meta: {
-                    guildCount: newGuildCount
-                }
-            }).store()
-
-            callback({
-                type: "tick",
-                key: "Guilds"
-            })
-        }
+function makeDualEventsSeeder<TMeta = undefined>({
+    key,
+    types,
+    amountOfEntriesMinMax,
+    dropProbability = 0,
+    typesRatio = 1,
+    initialCount = 0,
+    guildId = GUILD_ID,
+    makeMetaValue
+}: {
+    key: string,
+    types: [EVENT_TYPES, EVENT_TYPES] | EVENT_TYPES,
+    amountOfEntriesMinMax: [number, number],
+    dropProbability?: number,
+    typesRatio?: number,
+    initialCount?: number,
+    guildId?: string,
+    makeMetaValue?: ({ count: number }) => TMeta
+}) {
+    if (!Array.isArray(types)) {
+        types = [types, types]
     }
-}
 
-/**
- * Generate guild member add / remove events
- */
-async function generateMemberEvents(callback: ProgressCallback) {
-    const amountsOfEntries = randomAmountOfEntries(
-        MIN_AMOUNT_OF_MEMBER_EVENTS_PER_DAY,
-        MAX_AMOUNT_OF_MEMBER_EVENTS_PER_DAY
-    )
+    return async (callback: ProgressCallback) => {
+        const amountsOfEntries = randomAmountOfEntries(...amountOfEntriesMinMax)
 
-    const totalAmountOfEntries = sum(amountsOfEntries)
-
-    let memberCount = INITIAL_MEMBER_COUNT
-    let userCount = 0
-
-    callback({
-        type: "init",
-        key: "Users",
-        data: memberCount
-    })
-
-    callback({
-        type: "init",
-        key: "Members",
-        data: totalAmountOfEntries
-    })
-
-    const userInitTimestamp = createRandomTimestampNDaysAgo(GENERATE_DATA_FOR_DAYS - 1)
-    for (let i = 0; i < memberCount; i++) {
-        await new Event({
-            type: EVENT_TYPES.USER_ADD,
-            timestamp: userInitTimestamp + i,
-            guild_id: GUILD_ID,
-            meta: {
-                userCount: userCount++
-            }
-        }).store()
+        const totalAmountOfEntries = sum(amountsOfEntries)
 
         callback({
-            type: "tick",
-            key: "Users"
+            type: "init",
+            key,
+            data: totalAmountOfEntries
         })
-    }
 
-    for (let i = amountsOfEntries.length - 1; i >= 0; i--) {
-        const randomFactor = Math.random() < MEMBER_DROP_PROBABILITY ? -1 : 1
+        let count = initialCount
 
-        for (let j = 0; j < amountsOfEntries[i]; j++) {
-            const type = Math.random() >= MEMBER_JOIN_LEAVE_RATIO * randomFactor ?
-                EVENT_TYPES.GUILD_MEMBER_REMOVE :
-                EVENT_TYPES.GUILD_MEMBER_ADD
+        for (let i = amountsOfEntries.length - 1; i >= 0; i--) {
+            const randomFactor = Math.random() < dropProbability ? -1 : 1
 
-            const newMemberCount = type === EVENT_TYPES.GUILD_MEMBER_REMOVE ?
-                memberCount-- :
-                memberCount++
+            for (let j = 0; j < amountsOfEntries[i]; j++) {
+                const type = Math.random() <= typesRatio * randomFactor ?
+                    types[0] :
+                    types[1]
 
-            const shouldCreateUser = Math.random() <= MEMBER_NEW_USER_PROBABILITY
-
-            if (newMemberCount < 0) {
-                memberCount = 0
-                callback({
-                    type: "tick",
-                    key: "Guilds"
-                })
-                continue
-            }
-
-            const timestamp = createRandomTimestampNDaysAgo(i)
-
-            await new Event({
-                type,
-                timestamp,
-                guild_id: GUILD_ID,
-                meta: {
-                    memberCount: newMemberCount
+                if (type === types[0]) {
+                    count++
+                } else {
+                    count--
                 }
-            }).store()
 
-            if (shouldCreateUser) {
+                if (count < 0) {
+                    count = 0
+                    callback({ type: "tick", key })
+                    continue
+                }
+
                 await new Event({
-                    type: EVENT_TYPES.USER_ADD,
-                    timestamp,
-                    guild_id: GUILD_ID,
-                    meta: {
-                        userCount: userCount++
-                    }
+                    type,
+                    timestamp: createRandomTimestampNDaysAgo(i),
+                    guild_id: guildId,
+                    meta: makeMetaValue?.({ count })
                 }).store()
-            }
 
-            callback({
-                type: "tick",
-                key: "Members"
-            })
+                callback({ type: "tick", key })
+            }
         }
     }
 }
 
-/**
- * Generate message send events
- */
-async function generateMessageEvents(callback: ProgressCallback) {
-    const amountsOfEntries = randomAmountOfEntries(
+const generateMessageEvents = makeDualEventsSeeder({
+    key: "Messages",
+    types: EVENT_TYPES.MESSAGE_SEND,
+    amountOfEntriesMinMax: [
         MIN_AMOUNT_OF_MESSAGES_PER_DAY,
         MAX_AMOUNT_OF_MESSAGES_PER_DAY
-    )
-            
-    const totalAmountOfEntries = sum(amountsOfEntries)
+    ]
+})
 
-    callback({
-        type: "init",
-        key: "Message",
-        data: totalAmountOfEntries
-    })
+const generateGuildEvents = makeDualEventsSeeder<GuildEventMeta>({
+    key: "Guilds",
+    types: [EVENT_TYPES.GUILD_ADD, EVENT_TYPES.GUILD_REMOVE],
+    amountOfEntriesMinMax: [
+        MIN_AMOUNT_OF_GUILDS_PER_DAY,
+        MAX_AMOUNT_OF_GUILDS_PER_DAY
+    ],
+    dropProbability: GUILD_DROP_PROBABILITY,
+    typesRatio: GUILD_ADD_REMOVE_RATIO,
+    guildId: "123",
+    makeMetaValue: ({ count }) => ({ guildCount: count })
+})
 
-    for (let i = 0; i < amountsOfEntries.length; i++) {
-        for (let j = 0; j < amountsOfEntries[i]; j++) {
-            await new Event({
-                type: EVENT_TYPES.MESSAGE_SEND,
-                timestamp: createRandomTimestampNDaysAgo(i),
-                guild_id: GUILD_ID
-            }).store()
+const generateUserEvents = makeDualEventsSeeder<UserEventMeta>({
+    key: "Users",
+    types: EVENT_TYPES.USER_ADD,
+    amountOfEntriesMinMax: [
+        MIN_INITIAL_USERS,
+        MAX_INITIAL_USERS
+    ],
+    makeMetaValue: ({ count }) => ({ userCount: count })
+})
 
-            callback({
-                type: "tick",
-                key: "Message"
-            })
-        }
-    }
-}
+const generateMemberEvents = makeDualEventsSeeder<GuildMemberEventMeta>({
+    key: "Members",
+    types: [EVENT_TYPES.GUILD_MEMBER_ADD, EVENT_TYPES.GUILD_MEMBER_REMOVE],
+    amountOfEntriesMinMax: [
+        MIN_AMOUNT_OF_MEMBERS_PER_DAY,
+        MAX_AMOUNT_OF_MEMBERS_PER_DAY
+    ],
+    initialCount: INITIAL_MEMBER_COUNT,
+    dropProbability: MEMBER_DROP_PROBABILITY,
+    typesRatio: MEMBER_JOIN_LEAVE_RATIO,
+    makeMetaValue: ({ count }) => ({ memberCount: count })
+})
 
-/**
- * Generate voice duration events
- */
-async function generateVoiceEvents(callback: ProgressCallback) {
-    const amountsOfEntries = randomAmountOfEntries(
+const generateVoiceEvents = makeDualEventsSeeder<VoiceChannelLeaveEventMeta>({
+    key: "Voice",
+    types: EVENT_TYPES.VOICECHANNEL_LEAVE,
+    amountOfEntriesMinMax: [
         MIN_AMOUNT_OF_VOICECHAT_EVENTS_PER_DAY,
         MAX_AMOUNT_OF_VOICECHAT_EVENTS_PER_DAY
-    )
-
-    const totalAmountOfEntries = sum(amountsOfEntries)
-
-    callback({
-        type: "init",
-        key: "Voice",
-        data: totalAmountOfEntries
+    ],
+    makeMetaValue: () => ({
+        duration: random(
+            MIN_VOICECHAT_DURATION_PER_EVENT,
+            MAX_VOICECHAT_DURATION_PER_EVENT
+        )
     })
+})
 
-    for (let i = 0; i < amountsOfEntries.length; i++) {
-        for (let j = 0; j < amountsOfEntries[i]; j++) {
-            const duration = random(
-                MIN_VOICECHAT_DURATION_PER_EVENT,
-                MAX_VOICECHAT_DURATION_PER_EVENT
-            )
-
-            await new Event({
-                type: EVENT_TYPES.VOICECHANNEL_LEAVE,
-                timestamp: createRandomTimestampNDaysAgo(i),
-                guild_id: GUILD_ID,
-                meta: {
-                    duration
-                }
-            }).store()
-
-            callback({
-                type: "tick",
-                key: "Voice"
-            })
-        }
-    }
-}
+const eventGenerators = [
+    generateGuildEvents,
+    generateUserEvents,
+    generateMemberEvents,
+    generateMessageEvents,
+    generateVoiceEvents
+]
 
 const seeder: Seeder = {
     table: "events",
 
     run: async (callback: ProgressCallback) => {
-        await Promise.all([
-            generateGuildEvents(callback),
-            generateMemberEvents(callback),
-            generateMessageEvents(callback),
-            generateVoiceEvents(callback)
-        ])
+        await Promise.all(eventGenerators.map(
+            generator => generator(callback)
+        ))
     }
 }
 

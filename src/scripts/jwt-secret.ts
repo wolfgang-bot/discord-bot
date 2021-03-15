@@ -2,6 +2,8 @@ import crypto from "crypto"
 import chalk from "chalk"
 import log from "loglevel"
 
+log.setLevel(log.levels.TRACE)
+
 const secret = crypto.randomBytes(64).toString("hex")
 
 log.info(`
