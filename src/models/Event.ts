@@ -1,5 +1,6 @@
 import { v4 as uuid } from "uuid"
 import Model from "../lib/Model"
+import Collection from "../lib/Collection"
 
 export enum EVENT_TYPES {
     GUILD_ADD,
@@ -50,6 +51,25 @@ class Event<TMeta = undefined> extends Model implements EventModelValues<TMeta> 
     timestamp: number
     guild_id?: string
     meta?: TMeta
+
+    static findByTypes<TEventMeta = undefined>(
+        types: EVENT_TYPES[],
+        { guildId, limit }: {
+            guildId?: string,
+            limit?: number
+        } = {}
+    ) {
+        const typesSelector = types
+            .map(type => `type = '${type}'`)
+            .join(" OR ")
+        
+        return Event.whereAll(`
+            (${typesSelector})
+            ${guildId ? `AND guild_id = '${guildId}'` : ""}
+            ORDER BY timestamp DESC
+            ${limit ? `LIMIT ${limit}` : ""}
+        `) as Promise<Collection<Event<TEventMeta>>>
+    }
 
     constructor(values: EventModelValues<TMeta>) {
         super({

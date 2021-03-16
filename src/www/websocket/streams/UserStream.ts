@@ -36,11 +36,11 @@ export default class UserStream extends Readable<Dataset> {
     }
 
     async pushInitialValues() {
-        const events = await Event.whereAll(`
-            type = '${EVENT_TYPES.USER_ADD}'
-            ORDER BY timestamp DESC
-            LIMIT ${config.stream.maxInitialValues}
-        `) as Collection<Event>
+        const events = await Event.findByTypes<UserEventMeta>([
+            EVENT_TYPES.USER_ADD
+        ], {
+            limit: config.stream.maxInitialValues
+        })
 
         events.reverse()
 
