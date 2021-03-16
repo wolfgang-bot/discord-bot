@@ -1,10 +1,13 @@
 import Collection from "../../../lib/Collection"
+import { OHLCDataset } from "../../../lib/datasets"
 import { Readable } from "../../../lib/Stream"
 import Event, { EVENT_TYPES, UserEventMeta } from "../../../models/Event"
 import BroadcastChannel from "../../../services/BroadcastChannel"
 import config from "../../config"
 
-export default class UserStream extends Readable<Event<UserEventMeta>[]> {
+type Dataset = OHLCDataset<Event<UserEventMeta>>
+
+export default class UserStream extends Readable<Dataset> {
     constructor() {
         super()
 
@@ -21,8 +24,15 @@ export default class UserStream extends Readable<Event<UserEventMeta>[]> {
         BroadcastChannel.removeListener("statistics/user-add", this.handleUserEvent)
     }
 
-    collectBuffer(buffer: Event<UserEventMeta>[][]) {
-        return buffer.flat()
+    collectBuffer(buffer: Dataset[]) {
+        return buffer[buffer.length - 1]
+    }
+
+    createDataset(events: Event<UserEventMeta>[]) {
+        return new OHLCDataset(
+            events,
+            events => events.map(event => event.meta.userCount)
+        )
     }
 
     async pushInitialValues() {
@@ -34,10 +44,10 @@ export default class UserStream extends Readable<Event<UserEventMeta>[]> {
 
         events.reverse()
 
-        this.push(events)
+        this.push(this.createDataset(events))
     }
 
     handleUserEvent(event: Event<UserEventMeta>) {
-        this.push([event])
+        this.push(this.createDataset([event]))
     }
 }
