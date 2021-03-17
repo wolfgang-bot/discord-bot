@@ -1,5 +1,3 @@
-import { getCurrentUNIX } from "../../utils"
-
 export type OHLCDataObject = {
     time: number,
     open: number,
@@ -73,11 +71,11 @@ export function roundToLastFullDay(timestamp: number) {
  * 
  * Output:
  * 
- * [  
- *      UNIX for 01.01.2021,  
- *      UNIX for 02.01.2021,  
- *      UNIX for 03.01.2021  
- * ]  
+ * [
+ *      UNIX for 01.01.2021,
+ *      UNIX for 02.01.2021,
+ *      UNIX for 03.01.2021
+ * ]
  */
 export function getDaysBetweenTimestamps(
     fromTimestamp: number,
@@ -104,16 +102,16 @@ export function getDaysBetweenTimestamps(
  * 
  * Input:
  * 
- * UNIX for 01.01.2021  
- * UNIX for 03.01.2021  
+ * UNIX for 01.01.2021
+ * UNIX for 03.01.2021
  * 
  * Output:
  * 
- * Map: {  
- *      [UNIX for 01.01.2021]: null,  
- *      [UNIX for 02.01.2021]: null,  
- *      [UNIX for 03.01.2021]: null  
- * }  
+ * Map: {
+ *      [UNIX for 01.01.2021]: null,
+ *      [UNIX for 02.01.2021]: null,
+ *      [UNIX for 03.01.2021]: null
+ * }
  */
 export function createEmptyDayMap<T>(
     fromTimestamp: number,
@@ -140,20 +138,20 @@ export function createEmptyDayMap<T>(
  * 
  * Input:
  * 
- * timestamps: [  
- *      UNIX between 01.01.2021 00:00:00 and 01.01.2021 23:59:59,  
- *      UNIX between 01.01.2021 00:00:00 and 01.01.2021 23:59:59,  
- *      UNIX between 01.01.2021 00:00:00 and 01.01.2021 23:59:59,  
- *      UNIX between 03.01.2021 00:00:00 and 03.01.2021 23:59:59  
- * ]  
+ * timestamps: [
+ *      UNIX between 01.01.2021 00:00:00 and 01.01.2021 23:59:59,
+ *      UNIX between 01.01.2021 00:00:00 and 01.01.2021 23:59:59,
+ *      UNIX between 01.01.2021 00:00:00 and 01.01.2021 23:59:59,
+ *      UNIX between 03.01.2021 00:00:00 and 03.01.2021 23:59:59
+ * ]
  * 
  * Output:
  * 
- * Map: {  
- *      [UNIX for 01.01.2021]: ... (default: null),  
- *      [UNIX for 02.01.2021]: ... (default: null),  
- *      [UNIX for 03.01.2021]: ... (default: null)  
- * } 
+ * Map: {
+ *      [UNIX for 01.01.2021]: ... (default: null),
+ *      [UNIX for 02.01.2021]: ... (default: null),
+ *      [UNIX for 03.01.2021]: ... (default: null)
+ * }
  */
 export function forEachDayInTimestamps<T extends TimestampObject>(
     data: T[],
@@ -169,7 +167,7 @@ export function forEachDayInTimestamps<T extends TimestampObject>(
 
     const dayMap = createEmptyDayMap<number>(
         data[0].timestamp,
-        getCurrentUNIX()
+        Date.now()
     )
 
     const days = Array.from(dayMap.keys())
@@ -197,26 +195,26 @@ export function forEachDayInTimestamps<T extends TimestampObject>(
  *
  * Input:
  * 
- * timestamps: [  
- *      UNIX between 01.01.2021 00:00:00 and 01.01.2021 23:59:59,  
- *      UNIX between 01.01.2021 00:00:00 and 01.01.2021 23:59:59,  
- *      UNIX between 01.01.2021 00:00:00 and 01.01.2021 23:59:59,  
- *      UNIX between 03.01.2021 00:00:00 and 03.01.2021 23:59:59  
- * ]  
+ * timestamps: [
+ *      UNIX between 01.01.2021 00:00:00 and 01.01.2021 23:59:59,
+ *      UNIX between 01.01.2021 00:00:00 and 01.01.2021 23:59:59,
+ *      UNIX between 01.01.2021 00:00:00 and 01.01.2021 23:59:59,
+ *      UNIX between 03.01.2021 00:00:00 and 03.01.2021 23:59:59
+ * ]
  * 
  * Output:
  * 
- * Map: {  
- *      [UNIX for 01.01.2021]: [  
- *          UNIX between 01.01.2021 00:00:00 and 01.01.2021 23:59:59,  
- *          UNIX between 01.01.2021 00:00:00 and 01.01.2021 23:59:59,  
- *          UNIX between 01.01.2021 00:00:00 and 01.01.2021 23:59:59  
- *      ],  
- *      [UNIX for 02.01.2021]: null,  
- *      [UNIX for 03.01.2021]: [  
- *          UNIX between 03.01.2021 00:00:00 and 03.01.2021 23:59:59  
- *      ]  
- * }  
+ * Map: {
+ *      [UNIX for 01.01.2021]: [
+ *          UNIX between 01.01.2021 00:00:00 and 01.01.2021 23:59:59,
+ *          UNIX between 01.01.2021 00:00:00 and 01.01.2021 23:59:59,
+ *          UNIX between 01.01.2021 00:00:00 and 01.01.2021 23:59:59
+ *      ],
+ *      [UNIX for 02.01.2021]: null,
+ *      [UNIX for 03.01.2021]: [
+ *          UNIX between 03.01.2021 00:00:00 and 03.01.2021 23:59:59
+ *      ]
+ * }
  */
 export function chunkTimestampsIntoDays<T extends TimestampObject>(data: T[]) {
     if (data.length === 0) {
@@ -225,7 +223,7 @@ export function chunkTimestampsIntoDays<T extends TimestampObject>(data: T[]) {
 
     const dayMap = createEmptyDayMap<T[]>(
         data[0].timestamp,
-        getCurrentUNIX()
+        Date.now()
     )
 
     const days = Array.from(dayMap.keys())
@@ -262,27 +260,27 @@ export function chunkTimestampsIntoDays<T extends TimestampObject>(data: T[]) {
  *
  * Input:
  *
- * Map: {  
- *      [UNIX for 01.01.2021 12:00]: [  
- *          { abc: 10 },  
- *          { abc: 5 },  
- *          { abc: 13 }  
- *      ]  
- * }  
- * (values) => ({  
- *      value: values.length,  
- *      color: "blue"  
- * })  
+ * Map: {
+ *      [UNIX for 01.01.2021 12:00]: [
+ *          { abc: 10 },
+ *          { abc: 5 },
+ *          { abc: 13 }
+ *      ]
+ * }
+ * (values) => ({
+ *      value: values.length,
+ *      color: "blue"
+ * })
  *
- * Output:  
- * 
- * [  
- *      {  
- *          time: [UNIX for 01.01.2021 12:00],  
- *          value: 3,  
- *          color: "blue"  
- *      }  
- * ]  
+ * Output:
+ *
+ * [
+ *      {
+ *          time: [UNIX for 01.01.2021 12:00],
+ *          value: 3,
+ *          color: "blue"
+ *      }
+ * ]
  */
 export function createHistogramDataset<T>(
     dayMap: DayMap<T[]>,
@@ -340,4 +338,11 @@ export function millisecondsToHours(milliseconds: number) {
 export function roundToPlaces(number: number, places: number) {
     const factor = Math.pow(10, places)
     return Math.floor(number * factor) / factor
+}
+
+/**
+ * Get the unix timestamp from a date object
+ */
+export function dateToUnix(date: Date) {
+    return Math.floor(date.getTime() / 1000)
 }
