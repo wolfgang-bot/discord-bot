@@ -1,4 +1,3 @@
-import Collection from "../../../lib/Collection"
 import { OHLCDataset } from "../../../lib/datasets"
 import { Readable } from "../../../lib/Stream"
 import Event, { EVENT_TYPES, UserEventMeta } from "../../../models/Event"

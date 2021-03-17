@@ -2,6 +2,8 @@ import Discord from "discord.js"
 import User from "../models/User"
 import ReputationSystemConfig from "../modules/reputation-system/models/Configuration"
 
+export type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>
+
 // Blank character which is not the "whitespace" character (used in discord embeds to make indents)
 const BLANK = "\u200B"
 
@@ -108,4 +110,22 @@ export function isBotAdmin(userId: string) {
     return process.env.ADMIN_USER_IDS
         .split(",")
         .includes(userId)
+}
+
+/**
+ * Convert a milliseconds timestamp to a UNIX timestamp
+ * 
+ * Background:  
+ * Date() objects return timestamps in milliseconds rather than UNIX timestamps,
+ * which are measured in seconds.
+ */
+export function msToUNIX(milliseconds: number) {
+    return Math.floor(milliseconds / 1000)
+}
+
+/**
+ * Get the current UNIX timestamp
+ */
+export function getCurrentUNIX() {
+    return msToUNIX(Date.now())
 }

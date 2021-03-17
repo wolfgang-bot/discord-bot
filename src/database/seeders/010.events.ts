@@ -1,4 +1,5 @@
 import Event, { EVENT_TYPES, GuildEventMeta, GuildMemberEventMeta, UserEventMeta, VoiceChannelLeaveEventMeta } from "../../models/Event"
+import { getCurrentUNIX } from "../../utils"
 import { Seeder, ProgressCallback } from "../index"
 
 const GENERATE_DATA_FOR_DAYS = 7
@@ -44,7 +45,7 @@ function random(min: number, max: number) {
 
 function createRandomTimestampNDaysAgo(days: number) {
     const randomOffset = random(0, RANDOM_TIMESTAMPS_SPREAD_IN_MILLISECONDS)
-    return Date.now() - days * MILLISECONDS_PER_DAY + randomOffset
+    return getCurrentUNIX() - days * MILLISECONDS_PER_DAY + randomOffset
 }
 
 function shouldGenerateData() {
