@@ -6,6 +6,7 @@ import dotenv from "dotenv"
 dotenv.config({ path: path.join(__dirname, "..", "..", ".env") })
 
 const tables = process.argv.slice(2)
+    .map(table => table.replace(/\r/, ""))
 
 makeRunnable(async () => {
     await database.connect()

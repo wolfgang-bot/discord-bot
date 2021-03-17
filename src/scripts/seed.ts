@@ -10,6 +10,7 @@ import seed from "../database/seeders"
 dotenv.config({ path: path.join(__dirname, "..", "..", ".env") })
 
 const tables = process.argv.slice(2)
+    .map(table => table.replace(/\r/, ""))
 
 const multiProgress = new MultiProgress()
 const bars: Record<string, ProgressBar> = {}

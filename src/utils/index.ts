@@ -2,6 +2,8 @@ import Discord from "discord.js"
 import User from "../models/User"
 import ReputationSystemConfig from "../modules/reputation-system/models/Configuration"
 
+export type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>
+
 // Blank character which is not the "whitespace" character (used in discord embeds to make indents)
 const BLANK = "\u200B"
 

@@ -12,6 +12,7 @@ import Guild from "../../../models/Guild"
 import ModuleInstance from "../../../models/ModuleInstance"
 import User from "../../../models/User"
 import BroadcastChannel from "../../../services/BroadcastChannel"
+import { PartialBy } from "../../../utils"
 
 type VoiceChannelConnection = {
     joinedAt: number
@@ -21,10 +22,15 @@ export default class StatisticsManager {
     voiceChannelConnections: Record<string, VoiceChannelConnection> = {}
 
     private async registerEvent<TMeta = undefined>({ data, broadcastEvent }: {
-        data: EventModelValues<TMeta>,
+        data: PartialBy<EventModelValues<TMeta>, "timestamp">,
         broadcastEvent?: string
     }) {
-        const event = new Event(data)
+        const dataWithTimestamp: EventModelValues<TMeta> = {
+            timestamp: Date.now(),
+            ...data
+        }
+
+        const event = new Event(dataWithTimestamp)
         await event.store()
         if (broadcastEvent) {
             BroadcastChannel.emit(`statistics/${broadcastEvent}`, event)
@@ -35,7 +41,6 @@ export default class StatisticsManager {
         await this.registerEvent<GuildEventMeta>({
             data: {
                 type: EVENT_TYPES.GUILD_ADD,
-                timestamp: Date.now(),
                 guild_id: guild.id,
                 meta: {
                     guildCount: await Guild.getRowCount()
@@ -49,7 +54,6 @@ export default class StatisticsManager {
         await this.registerEvent<GuildEventMeta>({
             data: {
                 type: EVENT_TYPES.GUILD_REMOVE,
-                timestamp: Date.now(),
                 guild_id: guild.id,
                 meta: {
                     guildCount: await Guild.getRowCount()
@@ -63,7 +67,6 @@ export default class StatisticsManager {
         await this.registerEvent<UserEventMeta>({
             data: {
                 type: EVENT_TYPES.USER_ADD,
-                timestamp: Date.now(),
                 guild_id: guild.id,
                 meta: {
                     userCount: await User.getRowCount()
@@ -77,7 +80,6 @@ export default class StatisticsManager {
         await this.registerEvent<GuildMemberEventMeta>({
             data: {
                 type: EVENT_TYPES.GUILD_MEMBER_ADD,
-                timestamp: Date.now(),
                 guild_id: guild.id,
                 meta: {
                     memberCount: guild.memberCount
@@ -91,7 +93,6 @@ export default class StatisticsManager {
         await this.registerEvent<GuildMemberEventMeta>({
             data: {
                 type: EVENT_TYPES.GUILD_MEMBER_REMOVE,
-                timestamp: Date.now(),
                 guild_id: guild.id,
                 meta: {
                     memberCount: guild.memberCount
@@ -105,7 +106,6 @@ export default class StatisticsManager {
         await this.registerEvent({
             data: {
                 type: EVENT_TYPES.MESSAGE_SEND,
-                timestamp: Date.now(),
                 guild_id: guild.id
             },
             broadcastEvent: "message-send"
@@ -140,7 +140,6 @@ export default class StatisticsManager {
         await this.registerEvent<ModuleInstanceEventMeta>({
             data: {
                 type: EVENT_TYPES.MODULE_INSTANCE_START,
-                timestamp: Date.now(),
                 guild_id: instance.guild_id,
                 meta: {
                     instanceCount: await ModuleInstance.getRowCount()
@@ -154,7 +153,6 @@ export default class StatisticsManager {
         await this.registerEvent<ModuleInstanceEventMeta>({
             data: {
                 type: EVENT_TYPES.MODULE_INSTANCE_STOP,
-                timestamp: Date.now(),
                 guild_id: instance.guild_id,
                 meta: {
                     instanceCount: await ModuleInstance.getRowCount()
