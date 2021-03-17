@@ -1,15 +1,15 @@
-import Collection from "../../../lib/Collection"
 import { OHLCDataset } from "../../../lib/datasets"
 import { Readable } from "../../../lib/Stream"
 import Event, { EVENT_TYPES, UserEventMeta } from "../../../models/Event"
 import BroadcastChannel from "../../../services/BroadcastChannel"
-import config from "../../config"
 
 type Dataset = OHLCDataset<Event<UserEventMeta>>
 
 export default class UserStream extends Readable<Dataset> {
+    events: Event<UserEventMeta>[]
+
     constructor() {
-        super()
+        super({ useMonoBuffer: true })
 
         this.handleUserEvent = this.handleUserEvent.bind(this)
     }
@@ -24,8 +24,8 @@ export default class UserStream extends Readable<Dataset> {
         BroadcastChannel.removeListener("statistics/user-add", this.handleUserEvent)
     }
 
-    collectBuffer(buffer: Dataset[]) {
-        return buffer[buffer.length - 1]
+    collectBuffer(buffer: Dataset) {
+        return buffer
     }
 
     createDataset(events: Event<UserEventMeta>[]) {
@@ -35,19 +35,23 @@ export default class UserStream extends Readable<Dataset> {
         )
     }
 
+    pushDataset() {
+        this.push(this.createDataset(this.events))
+    }
+
     async pushInitialValues() {
         const events = await Event.findByTypes<UserEventMeta>([
             EVENT_TYPES.USER_ADD
-        ], {
-            limit: config.stream.maxInitialValues
-        })
+        ])
 
         events.reverse()
 
-        this.push(this.createDataset(events))
+        this.events = events
+        this.pushDataset()
     }
 
     handleUserEvent(event: Event<UserEventMeta>) {
-        this.push(this.createDataset([event]))
+        this.events.push(event)
+        this.pushDataset()
     }
 }
