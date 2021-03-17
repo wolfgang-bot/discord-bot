@@ -9,6 +9,7 @@
     "reset-database": "rm src/database/db.sqlite3 && npm run migrate && npm run audit-database",
     "migrate": "ts-node src/scripts/migrate",
     "seed": "ts-node src/scripts/seed",
+    "setup-tables": "src/scripts/setup-tables.sh",
     "audit-database": "ts-node src/scripts/audit-database",
     "format-icons": "ts-node src/scripts/format-icons",
     "install-fonts": "ts-node src/scripts/install-fonts",
