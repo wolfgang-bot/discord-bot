@@ -31,7 +31,7 @@ export default class UserStream extends Readable<Dataset> {
     createDataset(events: Event<UserEventMeta>[]) {
         return new OHLCDataset(
             events,
-            events => events.map(event => event.meta.userCount)
+            (event) => event.meta.userCount
         )
     }
 

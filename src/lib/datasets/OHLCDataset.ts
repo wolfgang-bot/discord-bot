@@ -1,5 +1,5 @@
 import Dataset from "./Dataset"
-import { chunkTimestampsIntoDays, TimestampObject } from "./utils"
+import { TimestampObject } from "./utils"
 
 export type EmptyDataObject = {
     time: number
@@ -13,19 +13,21 @@ export type OHLCDataObject = EmptyDataObject | {
     close: number,
 }
 
-class OHLCDataset<T extends TimestampObject> extends Dataset<OHLCDataObject[], T> {
-    constructor(
-        data: T[],
-        private getNumericValues: (values: T[]) => number[]
-    ) {
-        super(data)
-    }
-
+/**
+ * **Open-High-Low-Close (OHLC) dataset.** Each data-object consists of the following values:  
+ * 
+ * **time**: Timestamp corresponding to the object  
+ * **open**: Opening value (the first numeric value; the close-value of the previous object)  
+ * **high**: Highest numeric value  
+ * **low**: Lowest numeric value  
+ * **close**: Closing value (the last numeric value)
+ */
+class OHLCDataset<T extends TimestampObject> extends Dataset<OHLCDataObject, T> {
     createDataObject(time: number, values: T[]): OHLCDataObject {
         if (!values || values.length === 0) {
             return { time }
         } else {
-            const newValues = this.getNumericValues(values)
+            const newValues = values.map(this.getNumericValue)
             return {
                 time,
                 open: newValues[0],
@@ -34,18 +36,6 @@ class OHLCDataset<T extends TimestampObject> extends Dataset<OHLCDataObject[], T
                 low: Math.min(...newValues)
             }
         }
-    }
-
-    createDataset() {
-        const dayMap = chunkTimestampsIntoDays(this.data)
-        
-        const dataset: OHLCDataObject[] = []
-
-        dayMap.forEach((values, time) => {
-            dataset.push(this.createDataObject(time, values))
-        })
-
-        return dataset
     }
 }
 

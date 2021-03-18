@@ -1,12 +1,19 @@
-import Collection from "../../../lib/Collection"
+import { OHLCDataset } from "../../../lib/datasets"
+import SVDataset from "../../../lib/datasets/SVDataset"
 import { Readable } from "../../../lib/Stream"
 import Event, { EVENT_TYPES, GuildEventMeta } from "../../../models/Event"
 import BroadcastChannel from "../../../services/BroadcastChannel"
-import config from "../../config"
 
-export default class GuildStream extends Readable<Event<GuildEventMeta>[]> {
+type Dataset = [
+    OHLCDataset<Event<GuildEventMeta>>,
+    SVDataset<Event<GuildEventMeta>>
+]
+
+export default class GuildStream extends Readable<Dataset> {
+    events: Event<GuildEventMeta>[] = []
+    
     constructor() {
-        super()
+        super({ useMonoBuffer: true })
 
         this.handleGuildEvent = this.handleGuildEvent.bind(this)
     }
@@ -23,25 +30,42 @@ export default class GuildStream extends Readable<Event<GuildEventMeta>[]> {
         BroadcastChannel.removeListener("statistics/guild-remove", this.handleGuildEvent)
     }
 
-    collectBuffer(buffer: Event<GuildEventMeta>[][]) {
-        return buffer.flat()
+    collectBuffer(buffer: Dataset) {
+        return buffer
+    }
+
+    createDataset(events: Event<GuildEventMeta>[]) {
+        return [
+            new OHLCDataset(
+                events,
+                (event) => event.meta.guildCount
+            ),
+            new SVDataset(
+                events,
+                null,
+                (event) => event.type === EVENT_TYPES.GUILD_ADD ? 1 : -1
+            )
+        ] as Dataset
+    }
+
+    pushDataset() {
+        this.push(this.createDataset(this.events))
     }
 
     async pushInitialValues() {
-        const events = await Event.whereAll(`
-            (
-                type = '${EVENT_TYPES.GUILD_ADD}' OR
-                type = '${EVENT_TYPES.GUILD_REMOVE}'
-            ) ORDER BY timestamp DESC
-            LIMIT ${config.stream.maxInitialValues}
-        `) as Collection<Event<GuildEventMeta>>
+        const events = await Event.findByTypes([
+            EVENT_TYPES.GUILD_ADD,
+            EVENT_TYPES.GUILD_REMOVE
+        ])
 
         events.reverse()
 
-        this.push(events)
+        this.events = events
+        this.pushDataset()
     }
 
     handleGuildEvent(event: Event<GuildEventMeta>) {
-        this.push([event])
+        this.events.push(event)
+        this.pushDataset()
     }
 }
