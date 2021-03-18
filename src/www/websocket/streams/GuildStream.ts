@@ -43,7 +43,7 @@ export default class GuildStream extends Readable<Dataset> {
             new SVDataset(
                 events,
                 null,
-                (event) => event.type === EVENT_TYPES.GUILD_ADD ? 1 : -1
+                (event) => event.type === EVENT_TYPES.GUILD_ADD
             )
         ] as Dataset
     }

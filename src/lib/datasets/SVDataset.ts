@@ -1,8 +1,6 @@
 import Dataset from "./Dataset"
 import { TimestampObject } from "./utils"
 
-type Sign = -1 | 1 | 0
-
 export type EmptyDataObject = {
     time: number
 }
@@ -10,7 +8,8 @@ export type EmptyDataObject = {
 export type SVDataObject = EmptyDataObject | {
     time: number,
     value: number,
-    trend: Sign
+    up: number,
+    down: number
 }
 
 /**
@@ -19,14 +18,14 @@ export type SVDataObject = EmptyDataObject | {
  * **time**: Timestamp corresponding to the object  
  * **value**: Numeric value; Defaults to the amount of datapoints for a timestamp
  * if the ``getNumericValue`` parameter is not defined.  
- * **trend**: Represents the trend of the "value" attribute (-1, 1 or 0);
- * The value will always be 0 if the ``getTrendValue`` parameter is not defined.
+ * **up**: Amount of positive entities  
+ * **down**: Amount of negative entities
  */
 class SVDataset<T extends TimestampObject> extends Dataset<SVDataObject, T> {
     constructor(
         data: T[],
         getNumericValue?: (value: T) => number,
-        private getTrendValue?: (value: T) => number
+        private classifyEntity?: (value: T) => boolean
     ) {
         super(data, getNumericValue)
     }
@@ -41,10 +40,20 @@ class SVDataset<T extends TimestampObject> extends Dataset<SVDataObject, T> {
             this.sum(values.map(this.getNumericValue))
     }
 
-    getTrend(values: T[]) {
-        return !this.getTrendValue ?
-            0 :
-            Math.sign(this.sum(values.map(this.getTrendValue))) as Sign
+    getAmountUp(values: T[]) {
+        return !this.classifyEntity ?
+            null :
+            this.sum(
+                values.map(this.classifyEntity)
+                .filter(Boolean)
+                .map(bool => bool ? 1 : 0)
+            )
+    }
+
+    getAmountDown(values: T[]) {
+        return !this.classifyEntity ?
+            null :
+            values.length - this.getAmountUp(values)
     }
 
     createDataObject(time: number, values: T[]): SVDataObject {
@@ -54,7 +63,8 @@ class SVDataset<T extends TimestampObject> extends Dataset<SVDataObject, T> {
             return {
                 time,
                 value: this.getValue(values),
-                trend: this.getTrend(values)
+                up: this.getAmountUp(values),
+                down: this.getAmountDown(values)
             }
         }
     }

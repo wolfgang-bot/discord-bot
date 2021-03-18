@@ -43,7 +43,7 @@ export default class ModuleInstanceStream extends Readable<Dataset> {
             new SVDataset(
                 events,
                 null,
-                (event) => event.type === EVENT_TYPES.MODULE_INSTANCE_START ? 1 : -1
+                (event) => event.type === EVENT_TYPES.MODULE_INSTANCE_START
             )
         ] as Dataset
     }
