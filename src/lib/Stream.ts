@@ -7,15 +7,15 @@ export abstract class Readable<T> {
     destStreams: Writable<T>[] = []
     state: READING_STATES = READING_STATES.PAUSED
     buffer: T[] = []
-    monoBuffer: T
+    monoBuffer: T = null
     
-    useMonoBuffer: boolean = false
+    useMonoBuffer: boolean
 
     abstract construct(): void
     abstract destroy(): void
     abstract collectBuffer(buffer: T | T[]): T
 
-    constructor({ useMonoBuffer }: {
+    constructor({ useMonoBuffer = false }: {
         useMonoBuffer?: boolean
     } = {}) {
         this.useMonoBuffer = useMonoBuffer
@@ -37,9 +37,13 @@ export abstract class Readable<T> {
 
     resume() {
         this.state = READING_STATES.FLOWING
-        if (this.buffer.length > 0) {
+        if (
+            this.useMonoBuffer && this.monoBuffer ||
+            !this.useMonoBuffer && this.buffer.length > 0
+        ) {
             this.push(this.collectBuffer(this.getBuffer()))
             this.buffer = []
+            this.monoBuffer = null
         }
     }
 

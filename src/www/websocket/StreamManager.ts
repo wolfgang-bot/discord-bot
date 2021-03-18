@@ -36,48 +36,73 @@ const streams: Record<EVENT_STREAMS, new (guildId: string) => Readable<any>> = {
 }
 
 export default class StreamManager {
+    static ADMIN_STREAM_GROUP = "admin"
+
     streams: Record<string, Partial<Record<EVENT_STREAMS, Readable<any>>>> = {}
 
     constructor(public client: Discord.Client, public socket: AuthorizedSocket) {}
 
     subscribe(args: SubscriptionArgs) {
-        const eventStream = new streams[args.eventStream](args.guildId)
-        const socketStream = new SocketStream(this.socket, args)
-
-        if (!this.streams[args.guildId]) {
-            this.streams[args.guildId] = {}
-        }
-
-        if (this.streams[args.guildId][args.eventStream]) {
+        if (this.getStream(args)) {
             throw new Error("Cannot subscribe to the same stream twice")
         }
 
-        this.streams[args.guildId][args.eventStream] = eventStream
-        
+        const eventStream = this.createStream(args)
+        const socketStream = new SocketStream(this.socket, args)        
         eventStream.pipe(socketStream)
     }
 
     unsubscribe(args: SubscriptionArgs) {
-        this.streams[args.guildId][args.eventStream].destroy()
-        delete this.streams[args.guildId][args.eventStream]
+        this.getStream(args).destroy()
+        this.deleteStream(args)
     }
 
     pause(args: SubscriptionArgs) {
-        this.streams[args.guildId][args.eventStream].pause()
+        this.getStream(args).pause()
     }
 
     resume(args: SubscriptionArgs) {
-        this.streams[args.guildId][args.eventStream].resume()
+        this.getStream(args).resume()
     }
 
     unsubscribeAll() {
-        for (let guildId in this.streams) {
-            for (let eventStream in this.streams[guildId]) {
-                this.unsubscribe({
-                    guildId,
-                    eventStream: eventStream as EVENT_STREAMS
-                })
-            }
+        this.forEachStream(stream => stream.destroy())
+        this.streams = {}
+    }
+
+    createStream(args: SubscriptionArgs) {
+        const stream = new streams[args.eventStream](args.guildId)
+        this.getGroup(args)[args.eventStream] = stream
+        return stream
+    }
+
+    getStream(args: SubscriptionArgs) {
+        return this.getGroup(args)[args.eventStream]
+    }
+
+    deleteStream(args: SubscriptionArgs) {
+        delete this.getGroup(args)[args.eventStream]
+    }
+
+    getGroup(args: SubscriptionArgs) {
+        const groupKey = this.getGroupKey(args)
+
+        if (!this.streams[groupKey]) {
+            this.streams[groupKey] = {}
         }
+        
+        return this.streams[groupKey]
+    }
+
+    getGroupKey(args: SubscriptionArgs) {
+        return args.guildId || StreamManager.ADMIN_STREAM_GROUP
+    }
+
+    forEachStream(callback: (stream: Readable<any>) => void) {
+        Object.values(this.streams).forEach(streamMap => {
+            Object.values(streamMap).forEach(stream => {
+                callback(stream)
+            })
+        })
     }
 }

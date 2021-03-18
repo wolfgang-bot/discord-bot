@@ -66,6 +66,6 @@ export default class ModuleInstanceStream extends Readable<Dataset> {
 
     handleModuleInstanceEvent(event: Event) {
         this.events.push(event)
-        this.pushDataset
+        this.pushDataset()
     }
 }
