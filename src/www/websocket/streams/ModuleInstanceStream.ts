@@ -1,12 +1,19 @@
 import { Readable } from "../../../lib/Stream"
-import Collection from "../../../lib/Collection"
 import BroadcastChannel from "../../../services/BroadcastChannel"
 import Event, { EVENT_TYPES, ModuleInstanceEventMeta } from "../../../models/Event"
-import config from "../../config"
+import { OHLCDataset } from "../../../lib/datasets"
+import SVDataset from "../../../lib/datasets/SVDataset"
 
-export default class ModuleInstanceStream extends Readable<Event<ModuleInstanceEventMeta>[]> {
+type Dataset = [
+    OHLCDataset<Event<ModuleInstanceEventMeta>>,
+    SVDataset<Event<ModuleInstanceEventMeta>>
+]
+
+export default class ModuleInstanceStream extends Readable<Dataset> {
+    events: Event<ModuleInstanceEventMeta>[]
+
     constructor() {
-        super()
+        super({ useMonoBuffer: true })
 
         this.handleModuleInstanceEvent = this.handleModuleInstanceEvent.bind(this)
     }
@@ -23,25 +30,42 @@ export default class ModuleInstanceStream extends Readable<Event<ModuleInstanceE
         BroadcastChannel.removeListener("statistics/module-instance-stop", this.handleModuleInstanceEvent)
     }
 
-    collectBuffer(buffer: Event<ModuleInstanceEventMeta>[][]) {
-        return buffer.flat()
+    collectBuffer(buffer: Dataset) {
+        return buffer
+    }
+
+    createDataset(events: Event<ModuleInstanceEventMeta>[]) {
+        return [
+            new OHLCDataset(
+                events,
+                (event) => event.meta.instanceCount
+            ),
+            new SVDataset(
+                events,
+                null,
+                (event) => event.type === EVENT_TYPES.MODULE_INSTANCE_START ? 1 : -1
+            )
+        ] as Dataset
+    }
+
+    pushDataset() {
+        this.push(this.createDataset(this.events))
     }
 
     async pushInitialValues() {
-        const events = await Event.whereAll(`
-            (
-                type = '${EVENT_TYPES.MODULE_INSTANCE_START}' OR 
-                type = '${EVENT_TYPES.MODULE_INSTANCE_STOP}'
-            ) ORDER BY timestamp DESC
-            LIMIT ${config.stream.maxInitialValues}
-        `) as Collection<Event<ModuleInstanceEventMeta>>
+        const events = await Event.findByTypes([
+            EVENT_TYPES.MODULE_INSTANCE_START,
+            EVENT_TYPES.MODULE_INSTANCE_STOP
+        ])
 
         events.reverse()
 
-        this.push(events)
+        this.events = events
+        this.pushDataset()
     }
 
     handleModuleInstanceEvent(event: Event) {
-        this.push([event])
+        this.events.push(event)
+        this.pushDataset
     }
 }
