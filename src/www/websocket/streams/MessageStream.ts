@@ -1,12 +1,15 @@
-import Collection from "../../../lib/Collection"
+import SVDataset from "../../../lib/datasets/SVDataset"
 import { Readable } from "../../../lib/Stream"
 import Event, { EVENT_TYPES } from "../../../models/Event"
 import BroadcastChannel from "../../../services/BroadcastChannel"
-import config from "../../config"
 
-export default class MessageStream extends Readable<Float64Array> {
+type Dataset = SVDataset<Event>
+
+export default class MessageStream extends Readable<Dataset> {
+    events: Event[] = []
+    
     constructor(public guildId: string) {
-        super()
+        super({ useMonoBuffer: true })
 
         this.handleMessageEvent = this.handleMessageEvent.bind(this)
     }
@@ -21,39 +24,33 @@ export default class MessageStream extends Readable<Float64Array> {
         BroadcastChannel.removeListener("statistics/message-send", this.handleMessageEvent)
     }
 
-    collectBuffer(buffer: Float64Array[]) {
-        const values = buffer.reduce(
-            (values, array) => {
-                values.push(...array)
-                return values
-            },
-            [] as number[]
-        )
+    collectBuffer(buffer: Dataset) {
+        return buffer
+    }
 
-        return new Float64Array(values)
+    createDataset(events: Event[]) {
+        return new SVDataset(events)
+    }
+
+    pushDataset() {
+        this.push(this.createDataset(this.events))
     }
 
     async pushInitialValues() {
-        const events = await Event.whereAll(`
-            type = ${EVENT_TYPES.MESSAGE_SEND} AND
-            guild_id = ${this.guildId}
-            ORDER BY timestamp DESC
-            LIMIT ${config.stream.maxInitialValues}
-        `) as Collection<Event>
-
+        const events = await Event.findByTypes([
+            EVENT_TYPES.MESSAGE_SEND
+        ])
+        
         events.reverse()
 
-        this.push(this.eventsToBinary(events))
+        this.events = events
+        this.pushDataset()
     }
 
     handleMessageEvent(event: Event) {
         if (event.guild_id === this.guildId) {
-            this.push(this.eventsToBinary([event]))
+            this.events.push(event)
+            this.pushDataset()
         }
-    }
-
-    eventsToBinary(events: Event[]) {
-        const timestamps = events.map(event => event.timestamp)
-        return new Float64Array(timestamps)
     }
 }
