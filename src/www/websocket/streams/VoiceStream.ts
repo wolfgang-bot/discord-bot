@@ -1,12 +1,15 @@
-import Collection from "../../../lib/Collection";
+import SVDataset from "../../../lib/datasets/SVDataset";
 import { Readable } from "../../../lib/Stream";
 import Event, { EVENT_TYPES, VoiceChannelLeaveEventMeta } from "../../../models/Event"
 import BroadcastChannel from "../../../services/BroadcastChannel"
-import config from "../../config"
 
-export default class VoiceStream extends Readable<Event<VoiceChannelLeaveEventMeta>[]> {
+type Dataset = SVDataset<Event<VoiceChannelLeaveEventMeta>>
+
+export default class VoiceStream extends Readable<Dataset> {
+    events: Event<VoiceChannelLeaveEventMeta>[] = []
+    
     constructor(public guildId: string) {
-        super()
+        super({ useMonoBuffer: true })
 
         this.handleVoiceEvent = this.handleVoiceEvent.bind(this)
     }
@@ -21,26 +24,36 @@ export default class VoiceStream extends Readable<Event<VoiceChannelLeaveEventMe
         BroadcastChannel.removeListener("statistics/guild-channel-leave", this.handleVoiceEvent)
     }
 
-    collectBuffer(buffer: Event<VoiceChannelLeaveEventMeta>[][]) {
-        return buffer.flat()
+    collectBuffer(buffer: Dataset) {
+        return buffer
+    }
+
+    createDataset(events: Event<VoiceChannelLeaveEventMeta>[]) {
+        return new SVDataset(
+            events,
+            (event) => event.meta.duration
+        )
+    }
+
+    pushDataset() {
+        this.push(this.createDataset(this.events))
     }
 
     async pushInitialValues() {
-        const events = await Event.whereAll(`
-            type = ${EVENT_TYPES.VOICECHANNEL_LEAVE} AND
-            guild_id = ${this.guildId}
-            ORDER BY timestamp DESC
-            LIMIT ${config.stream.maxInitialValues}
-        `) as Collection<Event<VoiceChannelLeaveEventMeta>>
+        const events = await Event.findByTypes([
+            EVENT_TYPES.VOICECHANNEL_LEAVE
+        ])
 
         events.reverse()
 
-        this.push(events)
+        this.events = events
+        this.pushDataset()
     }
 
     handleVoiceEvent(event: Event<VoiceChannelLeaveEventMeta>) {
         if (event.guild_id === this.guildId) {
-            this.push([event])
+            this.events.push(event)
+            this.pushDataset()
         }
     }
 }
