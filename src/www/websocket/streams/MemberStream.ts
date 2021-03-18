@@ -1,12 +1,19 @@
 import { Readable } from "../../../lib/Stream"
-import Collection from "../../../lib/Collection"
 import BroadcastChannel from "../../../services/BroadcastChannel"
 import Event, { EVENT_TYPES, GuildMemberEventMeta } from "../../../models/Event"
-import config from "../../config"
+import { OHLCDataset } from "../../../lib/datasets"
+import SVDataset from "../../../lib/datasets/SVDataset"
 
-export default class MembersStream extends Readable<Event<GuildMemberEventMeta>[]> {
+type Dataset = [
+    OHLCDataset<Event<GuildMemberEventMeta>>,
+    SVDataset<Event<GuildMemberEventMeta>>
+]
+
+export default class MembersStream extends Readable<Dataset> {
+    events: Event<GuildMemberEventMeta>[]
+    
     constructor(public guildId: string) {
-        super()
+        super({ useMonoBuffer: true })
 
         this.handleMembersEvent = this.handleMembersEvent.bind(this)
     }
@@ -23,28 +30,44 @@ export default class MembersStream extends Readable<Event<GuildMemberEventMeta>[
         BroadcastChannel.removeListener("statistics/guild-member-remove", this.handleMembersEvent)
     }
 
-    collectBuffer(buffer: Event<GuildMemberEventMeta>[][]) {
-        return buffer.flat()
+    collectBuffer(buffer: Dataset) {
+        return buffer
+    }
+
+    createDataset(events: Event<GuildMemberEventMeta>[]) {
+        return [
+            new OHLCDataset(
+                events,
+                (event) => event.meta.memberCount
+            ),
+            new SVDataset(
+                events,
+                null,
+                (event) => event.type === EVENT_TYPES.GUILD_MEMBER_ADD
+            )
+        ] as Dataset
+    }
+
+    pushDataset() {
+        this.push(this.createDataset(this.events))
     }
 
     async pushInitialValues() {
-        const events = await Event.whereAll(`
-            (
-                type = '${EVENT_TYPES.GUILD_MEMBER_ADD}' OR 
-                type = '${EVENT_TYPES.GUILD_MEMBER_REMOVE}'
-            ) AND guild_id = '${this.guildId}'
-            ORDER BY timestamp DESC
-            LIMIT ${config.stream.maxInitialValues}
-        `) as Collection<Event<GuildMemberEventMeta>>
+        const events = await Event.findByTypes([
+            EVENT_TYPES.GUILD_MEMBER_ADD,
+            EVENT_TYPES.GUILD_MEMBER_REMOVE
+        ])
 
         events.reverse()
 
-        this.push(events)
+        this.events = events
+        this.pushDataset()
     }
 
     handleMembersEvent(event: Event) {
         if (event.guild_id === this.guildId) {
-            this.push([event])
+            this.events.push(event)
+            this.pushDataset()
         }
     }
 }
