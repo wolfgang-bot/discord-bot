@@ -18,8 +18,8 @@ export type SVDataObject = EmptyDataObject | {
  * **time**: Timestamp corresponding to the object  
  * **value**: Numeric value; Defaults to the amount of datapoints for a timestamp
  * if the ``getNumericValue`` parameter is not defined.  
- * **up**: Amount of positive entities  
- * **down**: Amount of negative entities
+ * **up**: Amount of entities classified as positive  
+ * **down**: Amount of entities classified as negative
  */
 class SVDataset<T extends TimestampObject> extends Dataset<SVDataObject, T> {
     constructor(
