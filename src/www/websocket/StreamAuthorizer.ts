@@ -1,12 +1,7 @@
 import Discord from "discord.js"
 import User from "../../models/User"
 import { isBotAdmin } from "../../utils"
-import { EVENT_STREAMS, SubscriptionArgs } from "./StreamManager"
-
-export enum AUTH_METHODS {
-    GUILD_ADMIN,
-    BOT_ADMIN,
-}
+import { AUTH_METHODS, EVENT_STREAMS, SubscriptionArgs } from "./types"
 
 type AuthFunction = (args: SubscriptionArgs) => Promise<number | void>
 

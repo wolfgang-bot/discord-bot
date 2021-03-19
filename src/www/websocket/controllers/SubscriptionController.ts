@@ -1,23 +1,24 @@
 import Discord from "discord.js"
 import log from "loglevel"
 import WebSocketController from "../../../lib/WebSocketController"
-import StreamManager, { EVENT_STREAMS, SubscriptionArgs } from "../StreamManager"
+import StreamSubscriber from "../StreamSubscriber"
 import { AuthorizedSocket } from "../SocketManager"
 import { success, error } from "../responses"
 import StreamAuthorizer from "../StreamAuthorizer"
+import { SubscriptionArgs } from "../types"
 
 export default class SubscriptionController extends WebSocketController {
     constructor(
         client: Discord.Client,
         socket: AuthorizedSocket,
-        private streamManager: StreamManager
+        private streamSubscriber: StreamSubscriber
     ) {
         super(client, socket)
     }
 
     subscribe(args: SubscriptionArgs, send: Function) {
         this.forwardEvent(
-            this.streamManager.subscribe.bind(this.streamManager),
+            this.streamSubscriber.subscribe.bind(this.streamSubscriber),
             args,
             send
         )
@@ -25,7 +26,7 @@ export default class SubscriptionController extends WebSocketController {
 
     unsubscribe(args: SubscriptionArgs, send: Function) {
         this.forwardEvent(
-            this.streamManager.unsubscribe.bind(this.streamManager),
+            this.streamSubscriber.unsubscribe.bind(this.streamSubscriber),
             args,
             send
         )
@@ -33,7 +34,7 @@ export default class SubscriptionController extends WebSocketController {
 
     pause(args: SubscriptionArgs, send: Function) {
         this.forwardEvent(
-            this.streamManager.pause.bind(this.streamManager),
+            this.streamSubscriber.pause.bind(this.streamSubscriber),
             args,
             send
         )
@@ -41,7 +42,7 @@ export default class SubscriptionController extends WebSocketController {
 
     resume(args: SubscriptionArgs, send: Function) {
         this.forwardEvent(
-            this.streamManager.resume.bind(this.streamManager),
+            this.streamSubscriber.resume.bind(this.streamSubscriber),
             args,
             send
         )

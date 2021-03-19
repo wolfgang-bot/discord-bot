@@ -1,6 +1,6 @@
 import Discord from "discord.js"
 import { AuthorizedSocket } from "./SocketManager"
-import StreamManager from "./StreamManager"
+import StreamSubscriber from "./StreamSubscriber"
 import GuildController from "./controllers/GuildController"
 import ModuleController from "./controllers/ModuleController"
 import SubscriptionController from "./controllers/SubscriptionController"
@@ -13,17 +13,17 @@ export default class ConnectionManager {
     moduleController: ModuleController
     subscriptionController: SubscriptionController
 
-    streamManager: StreamManager
+    streamSubscriber: StreamSubscriber
 
     constructor(socket: AuthorizedSocket, client: Discord.Client) {
         this.socket = socket
         this.client = client
 
-        this.streamManager = new StreamManager(client, socket)
+        this.streamSubscriber = new StreamSubscriber(client, socket)
 
         this.guildController = new GuildController(client, socket)
         this.moduleController = new ModuleController(client, socket)
-        this.subscriptionController = new SubscriptionController(client, socket, this.streamManager)
+        this.subscriptionController = new SubscriptionController(client, socket, this.streamSubscriber)
 
         this.attachReceivers()
     }
@@ -48,6 +48,6 @@ export default class ConnectionManager {
     }
 
     destroy() {
-        this.streamManager.unsubscribeAll()
+        this.streamSubscriber.unsubscribeAll()
     }
 }

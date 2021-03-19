@@ -1,6 +1,6 @@
 import { Writable } from "../../../lib/Stream"
 import { AuthorizedSocket } from "../SocketManager"
-import { SubscriptionArgs } from "../StreamManager"
+import { SubscriptionArgs } from "../types"
 
 export default class SocketWriteStream<T> extends Writable<T> {
     constructor(public socket: AuthorizedSocket, public args: SubscriptionArgs) {
