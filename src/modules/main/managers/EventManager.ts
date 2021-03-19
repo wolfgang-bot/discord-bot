@@ -6,38 +6,11 @@ import Guild from "../../../models/Guild"
 import User from "../../../models/User"
 import Member from "../../../models/Member"
 import StatisticsManager from "./Statistics"
-import RootCommandGroup from "../commands"
-import ModuleInstanceRegistry from "../../../services/ModuleInstanceRegistry"
 import { parseArguments } from "../../../utils"
-import SetupEmbed from "../embeds/SetupEmbed"
 import ModuleInstance from "../../../models/ModuleInstance"
 import SettingsConfig from "../../settings/models/Configuration"
 import BroadcastChannel from "../../../services/BroadcastChannel"
-
-function isTextChannel(channel: Discord.GuildChannel): channel is Discord.TextChannel {
-    return channel.type === "text"
-}
-
-async function getFirstTextChannel(client: Discord.Client, guild: Discord.Guild) {
-    for (let [_, channel] of guild.channels.cache) {
-        if (!isTextChannel(channel)) {
-            continue
-        }
-
-        const permissions = channel.permissionsFor(client.user)
-        if (!permissions.has("SEND_MESSAGES")) {
-            continue
-        }
-
-        return channel
-    }
-}
-
-async function withLoadingIndicator(channel: Discord.TextChannel, callback: () => Promise<void> | void) {
-    const message = await channel.send(new SetupEmbed(0))
-    await callback()
-    await message.edit(new SetupEmbed(1))
-}
+import GuildSetup from "./GuildSetup"
 
 class EventManager extends Manager {
     statistics: StatisticsManager = new StatisticsManager()
@@ -66,47 +39,13 @@ class EventManager extends Manager {
     }
 
     async handleGuildCreate(guild: Discord.Guild) {
-        const initGuild = async () => {
-            const model = new Guild({ id: guild.id })
-            await model.store()
+        const setup = new GuildSetup(this.context.client, guild)
 
-            CommandRegistry.registerGroupForGuild(guild, new RootCommandGroup())
-            await ModuleInstanceRegistry.guild(guild).startStaticModules(this.context.client)
+        setup.on("user/create", () => {
+            this.statistics.registerUserAddEvent(guild)
+        })
 
-            await guild.members.fetch()
-
-            // Store all members / users of the guild in the database
-            await Promise.all(guild.members.cache.map(async member => {
-                if (member.user.bot) {
-                    return
-                }
-
-                let user = await User.findBy("id", member.user.id) as User
-
-                if (!user) {
-                    user = new User({ id: member.user.id })
-                    await Promise.all([
-                        user.store(),
-                        this.statistics.registerUserAddEvent(guild)
-                    ])
-                }
-
-                const model = new Member({
-                    user_id: user.id,
-                    guild_id: guild.id
-                })
-                await model.store()
-            }))
-        }
-
-        const channel = await getFirstTextChannel(this.context.client, guild)
-
-        if (channel) {
-            await withLoadingIndicator(channel, initGuild)
-        } else {
-            await initGuild()
-        }
-
+        await setup.run()
         await this.statistics.registerGuildAddEvent(guild)
     }
 
