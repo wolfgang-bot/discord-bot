@@ -50,7 +50,8 @@ class EventManager extends Manager {
     }
 
     async handleGuildDelete(guild: Discord.Guild) {
-        const model = await Guild.findBy("id", guild.id)
+        const model = await Guild.findBy("id", guild.id) as Guild
+        BroadcastChannel.emit("guild/delete", model)
         
         if (model) {
             await model.delete()

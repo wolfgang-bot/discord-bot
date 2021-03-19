@@ -9,6 +9,7 @@ const streamAuthMethods: Record<EVENT_STREAMS, AUTH_METHODS> = {
     [EVENT_STREAMS.GUILDS]: AUTH_METHODS.BOT_ADMIN,
     [EVENT_STREAMS.USERS]: AUTH_METHODS.BOT_ADMIN,
     [EVENT_STREAMS.MODULE_INSTANCES]: AUTH_METHODS.BOT_ADMIN,
+    [EVENT_STREAMS.USER_GUILDS]: AUTH_METHODS.NO_AUTH,
     [EVENT_STREAMS.GUILD_MODULE_INSTANCES]: AUTH_METHODS.GUILD_ADMIN,
     [EVENT_STREAMS.MEMBERS]: AUTH_METHODS.GUILD_ADMIN,
     [EVENT_STREAMS.MESSAGES]: AUTH_METHODS.GUILD_ADMIN,
@@ -18,7 +19,8 @@ const streamAuthMethods: Record<EVENT_STREAMS, AUTH_METHODS> = {
 export default class StreamAuthorizer {
     authMethodsMap: Record<AUTH_METHODS, AuthFunction> = {
         [AUTH_METHODS.GUILD_ADMIN]: this.isGuildAdmin,
-        [AUTH_METHODS.BOT_ADMIN]: this.isBotAdmin
+        [AUTH_METHODS.BOT_ADMIN]: this.isBotAdmin,
+        [AUTH_METHODS.NO_AUTH]: () => Promise.resolve()
     }
 
     constructor(

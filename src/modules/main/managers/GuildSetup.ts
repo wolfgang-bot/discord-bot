@@ -7,6 +7,7 @@ import CommandRegistry from "../../../services/CommandRegistry"
 import ModuleInstanceRegistry from "../../../services/ModuleInstanceRegistry"
 import RootCommandGroup from "../commands"
 import SetupEmbed from "../embeds/SetupEmbed"
+import BroadcastChannel from "../../../services/BroadcastChannel"
 
 export default class GuildSetup extends EventEmitter {
     constructor(
@@ -27,8 +28,9 @@ export default class GuildSetup extends EventEmitter {
     }
 
     async setupGuild() {
-        const model = new Guild({ id: this.guild.id })
+        const model = new Guild({ id: this.guild.id }) as Guild
         await model.store()
+        BroadcastChannel.emit("guild/create", model)
 
         CommandRegistry.registerGroupForGuild(this.guild, new RootCommandGroup())
         await ModuleInstanceRegistry.guild(this.guild).startStaticModules(this.client)
