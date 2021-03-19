@@ -29,7 +29,6 @@ export default class ConnectionManager {
     }
 
     attachReceivers() {
-        this.socket.on("get:guilds",                    this.guildController.getGuilds.bind(this.guildController))
         this.socket.on("get:guild/member-count",        this.guildController.getMemberCount.bind(this.guildController))
         this.socket.on("get:guild/channels",            this.guildController.getChannels.bind(this.guildController))
         this.socket.on("get:guild/roles",               this.guildController.getRoles.bind(this.guildController))

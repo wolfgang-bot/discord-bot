@@ -2,7 +2,6 @@ import Discord from "discord.js"
 import WebSocketController from "../../../lib/WebSocketController"
 import { success, error } from "../responses"
 import Guild from "../../../models/Guild"
-import OAuthServiceProvider from "../../services/OAuthServiceProvider"
 import { AuthorizedSocket } from "../SocketManager"
 import {
     ValidationPipeline,
@@ -32,30 +31,6 @@ export default class GuildController extends WebSocketController {
         this.getChannels = this.validationPipeline.bind(this.getChannels.bind(this), makeArgs)
         this.getRoles = this.validationPipeline.bind(this.getRoles.bind(this), makeArgs)
         this.getMemberCount = this.validationPipeline.bind(this.getMemberCount.bind(this), makeArgs)
-    }
-
-    /**
-     * Get guilds from the authorized user
-     */
-    async getGuilds(_arg: object, send: Function) {
-        const guilds = await OAuthServiceProvider.fetchGuilds(this.socket.user.access_token)
-
-        // Filter guilds where the user is an admin
-        const adminGuilds = guilds.filter(guild => {
-            return new Discord.Permissions(guild.permissions as string as Discord.PermissionResolvable)
-                .has("ADMINISTRATOR")
-        })
-
-        // Check for each guild if it's registered
-        await Promise.all(adminGuilds.map(async guild => {
-            const model = await Guild.findBy("id", guild.id)
-            guild.isActive = !!model
-        }))
-
-        // Sort active guilds to the top
-        adminGuilds.sort((a, b) => (b.isActive as unknown as number) - (a.isActive as unknown as number))
-
-        send(success(adminGuilds))
     }
 
     /**
