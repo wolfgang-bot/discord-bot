@@ -1,8 +1,7 @@
 import { Readable } from "../../../lib/Stream"
 import BroadcastChannel from "../../../services/BroadcastChannel"
 import Event, { EVENT_TYPES, ModuleInstanceEventMeta } from "../../../models/Event"
-import { OHLCDataset } from "../../../lib/datasets"
-import SVDataset from "../../../lib/datasets/SVDataset"
+import { OHLCDataset, SVDataset } from "../../../lib/datasets"
 
 type Dataset = [
     OHLCDataset<Event<ModuleInstanceEventMeta>>,

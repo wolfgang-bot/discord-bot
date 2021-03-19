@@ -1,5 +1,5 @@
-import SVDataset from "../../../lib/datasets/SVDataset";
-import { Readable } from "../../../lib/Stream";
+import { SVDataset } from "../../../lib/datasets"
+import { Readable } from "../../../lib/Stream"
 import Event, { EVENT_TYPES, VoiceChannelLeaveEventMeta } from "../../../models/Event"
 import BroadcastChannel from "../../../services/BroadcastChannel"
 

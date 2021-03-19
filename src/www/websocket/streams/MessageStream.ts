@@ -1,4 +1,4 @@
-import SVDataset from "../../../lib/datasets/SVDataset"
+import { SVDataset } from "../../../lib/datasets"
 import { Readable } from "../../../lib/Stream"
 import Event, { EVENT_TYPES } from "../../../models/Event"
 import BroadcastChannel from "../../../services/BroadcastChannel"

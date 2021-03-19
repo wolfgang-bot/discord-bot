@@ -1,5 +1,4 @@
-import { OHLCDataset } from "../../../lib/datasets"
-import SVDataset from "../../../lib/datasets/SVDataset"
+import { OHLCDataset, SVDataset } from "../../../lib/datasets"
 import { Readable } from "../../../lib/Stream"
 import Event, { EVENT_TYPES, GuildEventMeta } from "../../../models/Event"
 import BroadcastChannel from "../../../services/BroadcastChannel"
