@@ -2,9 +2,14 @@ import { Readable } from "../../../lib/Stream"
 import Module from "../../../lib/Module"
 import BroadcastChannel from "../../../services/BroadcastChannel"
 import ModuleInstanceRegistry from "../../../services/ModuleInstanceRegistry"
+import { AuthorizedSocket } from "../SocketManager"
+import { SubscriptionArgs } from "../types"
 
 export default class GuildModuleInstanceStream extends Readable<Module[]> {
-    constructor(public guildId: string) {
+    constructor(
+        public socket: AuthorizedSocket,
+        public args: SubscriptionArgs
+    ) {
         super()
 
         this.handleInstanceUpdate = this.handleInstanceUpdate.bind(this)
@@ -24,12 +29,12 @@ export default class GuildModuleInstanceStream extends Readable<Module[]> {
     }
 
     pushInitialValues() {
-        const instances = ModuleInstanceRegistry.getInstancesFromGuildId(this.guildId)
+        const instances = ModuleInstanceRegistry.getInstancesFromGuildId(this.args.guildId)
         this.push(instances)
     }
 
     handleInstanceUpdate(instance: Module) {
-        if (instance.context.guild.id === this.guildId) {
+        if (instance.context.guild.id === this.args.guildId) {
             this.push([instance])
         }
     }

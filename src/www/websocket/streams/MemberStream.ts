@@ -2,6 +2,8 @@ import { Readable } from "../../../lib/Stream"
 import BroadcastChannel from "../../../services/BroadcastChannel"
 import Event, { EVENT_TYPES, GuildMemberEventMeta } from "../../../models/Event"
 import { OHLCDataset, SVDataset } from "../../../lib/datasets"
+import { AuthorizedSocket } from "../SocketManager"
+import { SubscriptionArgs } from "../types"
 
 type Dataset = [
     OHLCDataset<Event<GuildMemberEventMeta>>,
@@ -11,7 +13,10 @@ type Dataset = [
 export default class MembersStream extends Readable<Dataset> {
     events: Event<GuildMemberEventMeta>[]
     
-    constructor(public guildId: string) {
+    constructor(
+        public socket: AuthorizedSocket,
+        public args: SubscriptionArgs
+    ) {
         super({ useMonoBuffer: true })
 
         this.handleMembersEvent = this.handleMembersEvent.bind(this)
@@ -64,7 +69,7 @@ export default class MembersStream extends Readable<Dataset> {
     }
 
     handleMembersEvent(event: Event) {
-        if (event.guild_id === this.guildId) {
+        if (event.guild_id === this.args.guildId) {
             this.events.push(event)
             this.pushDataset()
         }

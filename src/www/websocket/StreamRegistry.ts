@@ -7,11 +7,17 @@ import MessageStream from "./streams/MessageStream"
 import VoiceStream from "./streams/VoiceStream"
 import ModuleInstanceStream from "./streams/ModuleInstanceStream"
 import { EVENT_STREAMS, SubscriptionArgs } from "./types"
+import { AuthorizedSocket } from "./SocketManager"
+import UserGuildStream from "./streams/UserGuildStream"
 
-const streams: Record<EVENT_STREAMS, new (guildId: string) => Readable<any>> = {
+const streams: Record<
+    EVENT_STREAMS,
+    new (socket: AuthorizedSocket, args: SubscriptionArgs) => Readable<any>
+> = {
     [EVENT_STREAMS.GUILDS]: GuildStream,
     [EVENT_STREAMS.USERS]: UserStream,
     [EVENT_STREAMS.MODULE_INSTANCES]: ModuleInstanceStream,
+    [EVENT_STREAMS.USER_GUILDS]: UserGuildStream,
     [EVENT_STREAMS.GUILD_MODULE_INSTANCES]: GuildModuleInstanceStream,
     [EVENT_STREAMS.MEMBERS]: MemberStream,
     [EVENT_STREAMS.MESSAGES]: MessageStream,
@@ -23,8 +29,8 @@ export default class StreamRegistry {
 
     streams: Record<string, Partial<Record<EVENT_STREAMS, Readable<any>>>> = {}
 
-    createStream(args: SubscriptionArgs) {
-        const stream = new streams[args.eventStream](args.guildId)
+    createStream(socket: AuthorizedSocket, args: SubscriptionArgs) {
+        const stream = new streams[args.eventStream](socket, args)
         this.getGroup(args)[args.eventStream] = stream
         return stream
     }

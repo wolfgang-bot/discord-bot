@@ -11,7 +11,7 @@ export default class StreamManager {
 
     subscribe(args: SubscriptionArgs) {
         this.assertStreamDoesNotExist(args)
-        const eventStream = this.streamRegistry.createStream(args)
+        const eventStream = this.streamRegistry.createStream(this.socket, args)
         const socketStream = new SocketStream(this.socket, args)        
         eventStream.pipe(socketStream)
     }

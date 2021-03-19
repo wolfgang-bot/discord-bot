@@ -2,13 +2,18 @@ import { SVDataset } from "../../../lib/datasets"
 import { Readable } from "../../../lib/Stream"
 import Event, { EVENT_TYPES } from "../../../models/Event"
 import BroadcastChannel from "../../../services/BroadcastChannel"
+import { AuthorizedSocket } from "../SocketManager"
+import { SubscriptionArgs } from "../types"
 
 type Dataset = SVDataset<Event>
 
 export default class MessageStream extends Readable<Dataset> {
     events: Event[] = []
     
-    constructor(public guildId: string) {
+    constructor(
+        public socket: AuthorizedSocket,
+        public args: SubscriptionArgs
+    ) {
         super({ useMonoBuffer: true })
 
         this.handleMessageEvent = this.handleMessageEvent.bind(this)
@@ -48,7 +53,7 @@ export default class MessageStream extends Readable<Dataset> {
     }
 
     handleMessageEvent(event: Event) {
-        if (event.guild_id === this.guildId) {
+        if (event.guild_id === this.args.guildId) {
             this.events.push(event)
             this.pushDataset()
         }
