@@ -1,6 +1,6 @@
 import Discord from "discord.js"
 import { Readable } from "../../../lib/Stream"
-import Guild from "../../../models/Guild"
+import Guild, { GUILD_STATUS } from "../../../models/Guild"
 import OAuthServiceProvider, { ExtendedAPIGuild } from "../../services/OAuthServiceProvider"
 import { AuthorizedSocket } from "../SocketManager"
 import { SubscriptionArgs } from "../types"
@@ -15,20 +15,21 @@ export default class UserGuildStream extends Readable<ExtendedAPIGuild[]> {
     ) {
         super()
 
-        this.handleGuildCreate = this.handleGuildCreate.bind(this)
-        this.handleGuildDelete = this.handleGuildDelete.bind(this)
+        this.handleGuildEvent = this.handleGuildEvent.bind(this)
     }
     
     construct() {
         this.pushInitialValues().then(() => {
-            BroadcastChannel.addListener("guild/create", this.handleGuildCreate)
-            BroadcastChannel.addListener("guild/delete", this.handleGuildDelete)
+            BroadcastChannel.addListener("guild/create", this.handleGuildEvent)
+            BroadcastChannel.addListener("guild/update", this.handleGuildEvent)
+            BroadcastChannel.addListener("guild/delete", this.handleGuildEvent)
         })
     }
     
     destroy() {
-        BroadcastChannel.removeListener("guild/create", this.handleGuildCreate)
-        BroadcastChannel.removeListener("guild/delete", this.handleGuildDelete)
+        BroadcastChannel.removeListener("guild/create", this.handleGuildEvent)
+        BroadcastChannel.removeListener("guild/update", this.handleGuildEvent)
+        BroadcastChannel.removeListener("guild/delete", this.handleGuildEvent)
     }
 
     collectBuffer(buffer: ExtendedAPIGuild[][]) {
@@ -46,16 +47,9 @@ export default class UserGuildStream extends Readable<ExtendedAPIGuild[]> {
         this.pushGuilds()
     }
 
-    handleGuildCreate(guild: Guild) {
-        if (guild.id in this.guilds && !this.guilds[guild.id].isActive) {
-            this.guilds[guild.id].isActive = true
-            this.pushGuilds()
-        }
-    }
-
-    handleGuildDelete(guild: Guild) {
-        if (guild.id in this.guilds && this.guilds[guild.id].isActive) {
-            this.guilds[guild.id].isActive = false
+    handleGuildEvent(guild: Guild) {
+        if (guild.id in this.guilds) {
+            this.guilds[guild.id].status = guild.status
             this.pushGuilds()
         }
     }
@@ -76,14 +70,18 @@ export default class UserGuildStream extends Readable<ExtendedAPIGuild[]> {
     }
 
     async withActiveAttribute(guild: ExtendedAPIGuild) {
-        const model = await Guild.findBy("id", guild.id)
+        const model = await Guild.findBy("id", guild.id) as Guild
         return {
             ...guild,
-            isActive: !!model
+            status: model ? model.status : GUILD_STATUS.INACTIVE
         } as ExtendedAPIGuild
     }
 
     sortGuildsByActiveAttribute(guilds: ExtendedAPIGuild[]) {
-        guilds.sort((a, b) => (b.isActive ? 1 : 0) - (a.isActive ? 1 : 0))
+        const getPosition = (guild: ExtendedAPIGuild) => (
+            guild.status === GUILD_STATUS.INACTIVE ? 0 : 1
+        )
+
+        guilds.sort((a, b) => getPosition(b) - getPosition(a))
     }
 }

@@ -3,8 +3,15 @@ import Model from "../lib/Model"
 import ModuleInstanceRegistry from "../services/ModuleInstanceRegistry"
 
 export type GuildModelValues = {
-    id: string
+    id: string,
+    status?: GUILD_STATUS,
     config?: any
+}
+
+export enum GUILD_STATUS {
+    INACTIVE,
+    PENDING,
+    ACTIVE
 }
 
 class Guild extends Model implements GuildModelValues {
@@ -14,12 +21,16 @@ class Guild extends Model implements GuildModelValues {
     }
     discordGuild: Discord.Guild
     id: string
+    status: GUILD_STATUS
 
     constructor(values: GuildModelValues) {
         super({
             table: "guilds",
-            columns: ["id"],
-            values
+            columns: ["id", "status"],
+            values,
+            defaultValues: {
+                status: GUILD_STATUS.PENDING
+            }
         })
 
         this.discordGuild = null

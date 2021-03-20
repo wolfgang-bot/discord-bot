@@ -7,7 +7,7 @@ import dotenv from "dotenv"
 import log from "loglevel"
 import ModuleRegistry from "../services/ModuleRegistry"
 import database from "../database"
-import Guild from "../models/Guild"
+import Guild, { GUILD_STATUS } from "../models/Guild"
 import User from "../models/User"
 import Member from "../models/Member"
 import Module from "../models/Module"
@@ -120,7 +120,10 @@ async function auditGuilds() {
             issues.push(`Missing guild: '${guild.name}' ('${guild.id}')`)
 
             fixes.push(() => {
-                const model = new Guild({ id })
+                const model = new Guild({
+                    id,
+                    status: GUILD_STATUS.ACTIVE
+                })
                 return model.store()
             })
         }

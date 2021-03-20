@@ -4,7 +4,8 @@ const migrate: Migration = {
     table: "guilds",
 
     columns: [
-        "id varchar(255) PRIMARY KEY"
+        "id varchar(255) PRIMARY KEY",
+        "status int NOT NULL"
     ]
 }
 

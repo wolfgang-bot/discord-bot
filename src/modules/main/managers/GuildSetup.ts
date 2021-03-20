@@ -1,6 +1,6 @@
 import Discord from "discord.js"
 import { EventEmitter } from "events"
-import Guild from "../../../models/Guild"
+import Guild, { GUILD_STATUS } from "../../../models/Guild"
 import Member from "../../../models/Member"
 import User from "../../../models/User"
 import CommandRegistry from "../../../services/CommandRegistry"
@@ -28,9 +28,7 @@ export default class GuildSetup extends EventEmitter {
     }
 
     async setupGuild() {
-        const model = new Guild({ id: this.guild.id }) as Guild
-        await model.store()
-        BroadcastChannel.emit("guild/create", model)
+        const guildModel = await this.storeGuild(this.guild)
 
         CommandRegistry.registerGroupForGuild(this.guild, new RootCommandGroup())
         await ModuleInstanceRegistry.guild(this.guild).startStaticModules(this.client)
@@ -38,6 +36,21 @@ export default class GuildSetup extends EventEmitter {
         await this.guild.members.fetch()
 
         await Promise.all(this.guild.members.cache.map(this.storeMember.bind(this)))
+
+        guildModel.status = GUILD_STATUS.ACTIVE
+        await this.updateGuild(guildModel)
+    }
+
+    async storeGuild(guild: Discord.Guild) {
+        const model = new Guild({ id: guild.id }) as Guild
+        await model.store()
+        BroadcastChannel.emit("guild/create", model)
+        return model
+    }
+
+    async updateGuild(model: Guild) {
+        await model.update()
+        BroadcastChannel.emit("guild/update", model)
     }
 
     async storeMember(member: Discord.GuildMember) {

@@ -2,7 +2,7 @@ import Discord from "discord.js"
 import log from "loglevel"
 import Manager from "../../../lib/Manager"
 import CommandRegistry from "../../../services/CommandRegistry"
-import Guild from "../../../models/Guild"
+import Guild, { GUILD_STATUS } from "../../../models/Guild"
 import User from "../../../models/User"
 import Member from "../../../models/Member"
 import StatisticsManager from "./Statistics"
@@ -51,6 +51,7 @@ class EventManager extends Manager {
 
     async handleGuildDelete(guild: Discord.Guild) {
         const model = await Guild.findBy("id", guild.id) as Guild
+        model.status = GUILD_STATUS.INACTIVE
         BroadcastChannel.emit("guild/delete", model)
         
         if (model) {

@@ -4,9 +4,10 @@ import jwt from "jsonwebtoken"
 import config from "../config"
 import { makeURL } from "../../utils"
 import log from "loglevel"
+import { GUILD_STATUS } from "../../models/Guild"
 
 export type ExtendedAPIGuild = APIGuild & {
-    isActive?: boolean
+    status?: GUILD_STATUS
 }
 
 export default class OAuthServiceProvider {
