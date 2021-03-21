@@ -6,6 +6,9 @@
 command_help_desc: Shows information about the available commands
 command_help_args: "[command, [sub-command, [...]]]"
 
+# dashboard
+command_dashboard_desc: Shows the link to the guild's dashboard
+
 #
 # Embeds
 #
