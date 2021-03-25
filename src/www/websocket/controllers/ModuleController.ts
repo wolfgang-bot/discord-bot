@@ -247,6 +247,13 @@ export default class ModuleController extends WebSocketController {
             return send(error(400, "New config is not an object"))
         }
 
+        const model = await Module.findBy("key", moduleKey) as Module
+        const module = ModuleRegistry.getModule(model)
+
+        if (!module.canUpdateConfig) {
+            return send(error(400, "Cannot update configuration"))
+        }
+
         const guild = await Guild.findBy("id", guildId) as Guild
         await guild.fetchDiscordGuild(this.client)
 

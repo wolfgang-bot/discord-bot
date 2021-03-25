@@ -62,3 +62,7 @@ export function guilds(guildIds: string[]) {
 export function _static(module: typeof Module) {
     module.isStatic = true
 }
+
+export function canUpdateConfig(module: typeof Module) {
+    module.canUpdateConfig = true
+}

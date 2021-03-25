@@ -26,6 +26,7 @@ class Module extends EventEmitter {
     static isPrivate: boolean = false
     static isStatic: boolean = false
     static guildIds: string[]
+    static canUpdateConfig: boolean = false
     
     context: Context
     config: Configuration

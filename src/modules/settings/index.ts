@@ -1,5 +1,5 @@
 import Module from "../../lib/Module"
-import { module, _static, argument } from "../../lib/decorators"
+import { module, _static, argument, canUpdateConfig } from "../../lib/decorators"
 import { TYPES as ARGUMENT_TYPES } from "../../lib/Argument"
 import Configuration from "./models/Configuration"
 import LocaleProvider from "../../services/LocaleProvider"
@@ -10,6 +10,7 @@ import LocaleProvider from "../../services/LocaleProvider"
     desc: "Provides guild-specific settings for the bot."
 })
 @_static
+@canUpdateConfig
 @argument({
     type: ARGUMENT_TYPES.STRING,
     key: "commandPrefix",
