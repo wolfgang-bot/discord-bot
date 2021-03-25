@@ -1,6 +1,8 @@
 import Discord from "discord.js"
 import DefaultConfig from "../../../lib/Configuration"
 
+const MAX_AMOUNT_OF_CHANNELS = 20
+
 type ConfigProps = {
     parentChannel: Discord.CategoryChannel
     defaultChannels: number
@@ -16,7 +18,11 @@ export default class Configuration extends DefaultConfig implements ConfigProps 
         super(props)
 
         if (this.defaultChannels <= 0) {
-            throw "Amount of voicechannels must be greater than 0"
+            throw "'Amount of voicechannels' must be greater than 0"
+        }
+        
+        if (this.defaultChannels > MAX_AMOUNT_OF_CHANNELS) {
+            throw `'Amount of voicechannels' cannot be larger than ${MAX_AMOUNT_OF_CHANNELS}`
         }
     }
 
