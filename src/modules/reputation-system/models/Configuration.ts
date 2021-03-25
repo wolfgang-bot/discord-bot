@@ -1,5 +1,5 @@
 import Discord from "discord.js"
-import DefaultConfig from "../../../lib/Configuration"
+import DefaultConfig, { Validator } from "../../../lib/Configuration"
 import { emojiConstraint } from "../../../lib/constraints"
 
 function hasSameLength(...arrays: any[][]) {
@@ -33,24 +33,42 @@ export default class Configuration extends DefaultConfig implements ConfigProps 
     roleThresholds: number[]
     levelUpReactionEmoji: string
 
+    static validators: Validator<ConfigProps>[] = [
+        {
+            key: "roles",
+            validate: (props) => hasSameLength(props.roles, props.roleColors, props.roleThresholds),
+            message: "'Roles', 'Role Colors' and 'Role Thresholds' must have the same length"
+        },
+        {
+            key: "roleColors",
+            validate: (props) => hasSameLength(props.roles, props.roleColors, props.roleThresholds),
+            message: "'Roles', 'Role Colors' and 'Role Thresholds' must have the same length"
+        },
+        {
+            key: "roleThresholds",
+            validate: (props) => hasSameLength(props.roles, props.roleColors, props.roleThresholds),
+            message: "'Roles', 'Role Colors' and 'Role Thresholds' must have the same length"
+        },
+        {
+            key: "roleThresholds",
+            validate: (props) => everyGreaterThanZero(props.roleThresholds),
+            message: "Each value must be greater than 0"
+        },
+        {
+            key: "roleThresholds",
+            validate: (props) => everyGreaterThanPreceeding(props.roleThresholds),
+            message: "Each value must be greater than the preceeding one"
+        },
+        {
+            key: "levelUpReactionEmoji",
+            validate: (props) => emojiConstraint.verifyConstraints(props.levelUpReactionEmoji),
+            message: emojiConstraint.constraints
+        }
+    ]
+
     constructor(props: ConfigProps) {
         super(props)
-
-        if (!hasSameLength(this.roles, this.roleColors, this.roleThresholds)) {
-            throw "roles, role_colors and role_thresholds must have the same length"
-        }
-
-        if (!everyGreaterThanZero(this.roleThresholds)) {
-            throw "Role thresholds must be greater than 0"
-        }
-
-        if (!everyGreaterThanPreceeding(this.roleThresholds)) {
-            throw "Every role threshold must be greater than the preceeding one"
-        }
-
-        if (!emojiConstraint.verifyConstraints(this.levelUpReactionEmoji)) {
-            throw emojiConstraint.constraints
-        }
+        Configuration.validate(props)
     }
 
     toJSON() {

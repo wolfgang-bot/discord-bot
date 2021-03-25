@@ -1,5 +1,5 @@
 import Discord from "discord.js"
-import DefaultConfig from "../../../lib/Configuration"
+import DefaultConfig, { Validator } from "../../../lib/Configuration"
 import { COLOR_REGEX } from "../../../lib/constraints"
 
 function hasDuplicates(array: any[]) {
@@ -17,17 +17,23 @@ export default class Configuration extends DefaultConfig implements ConfigProps 
     emojiPrefix: string
     roleColor: string
     roles: string[]
+
+    static validators: Validator<ConfigProps>[] = [
+        {
+            key: "roleColor",
+            validate: (props) => COLOR_REGEX.test(props.roleColor),
+            message: "Must be a valid color code"
+        },
+        {
+            key: "roles",
+            validate: (props) => !hasDuplicates(props.roles),
+            message: "Cannot contain duplicates"
+        }
+    ]
     
     constructor(props: ConfigProps) {
         super(props)
-
-        if (!COLOR_REGEX.test(this.roleColor)) {
-            throw "'Role Color' must be a valid color code"
-        }
-
-        if (hasDuplicates(this.roles)) {
-            throw "'Roles' cannot contain duplicates"
-        }
+        Configuration.validate(props)
     }
 
     toJSON() {

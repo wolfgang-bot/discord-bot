@@ -51,8 +51,12 @@ export default class ModuleController extends WebSocketController {
             moduleKey
         })
 
-        this.getInstances = this.guildValidationPipeline.bind(this.getInstances.bind(this), makeGuildArgs)
+        this.validateArguments = new ValidationPipeline(client, [
+            new ModuleExistsValidator(error(404, "Module not found"))
+        ]).bind(this.validateArguments.bind(this), makeModuleArgs)
         
+        this.getInstances = this.guildValidationPipeline.bind(this.getInstances.bind(this), makeGuildArgs)
+
         this.startInstance = this.moduleValidationPipeline.bind(this.startInstance.bind(this), makeModuleArgs)
         this.stopInstance = this.moduleValidationPipeline.bind(this.stopInstance.bind(this), makeModuleArgs)
         this.restartInstance = this.moduleValidationPipeline.bind(this.restartInstance.bind(this), makeModuleArgs)
@@ -92,6 +96,35 @@ export default class ModuleController extends WebSocketController {
 
         const instances = ModuleInstanceRegistry.getInstancesFromGuildId(guildId)
         send(success(instances))
+    }
+
+    /**
+     * Validate a module's configuration arguments
+     */
+    async validateArguments(validationError: ValidationError, { moduleKey, args }: {
+        moduleKey: string,
+        args: Record<string, any>
+    }, send: Function) {
+        if (validationError) {
+            send(validationError)
+            return
+        }
+
+        if (!args || typeof args !== "object") {
+            return send(error(400))
+        }
+
+        const model = await Module.findBy("key", moduleKey) as Module
+        const module = ModuleRegistry.getModule(model)
+
+        try {
+            module.config.validate(args)
+        } catch (err) {
+            log.debug(err)
+            this.sendError(send, err)
+        }
+
+        return send(success())
     }
 
     /**

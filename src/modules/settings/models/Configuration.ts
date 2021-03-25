@@ -1,4 +1,4 @@
-import DefaultConfig from "../../../lib/Configuration"
+import DefaultConfig, { Validator } from "../../../lib/Configuration"
 import { HEX_COLOR_REGEX } from "../../../lib/constraints"
 
 const COMMAND_PREFIX_MAX_LENGTH = 8
@@ -14,15 +14,26 @@ export default class Configuration extends DefaultConfig implements ConfigProps 
     locale: string
     colorPrimary: string
 
+    static validators: Validator<ConfigProps>[] = [
+        {
+            key: "commandPrefix",
+            validate: (props) => props.commandPrefix.length > 0,
+            message: "Cannot be empty"
+        },
+        {
+            key: "commandPrefix",
+            validate: (props) => props.commandPrefix.length <= COMMAND_PREFIX_MAX_LENGTH,
+            message: `Cannot be longer than ${COMMAND_PREFIX_MAX_LENGTH} characters`
+        },
+        {
+            key: "colorPrimary",
+            validate: (props) => HEX_COLOR_REGEX.test(props.colorPrimary),
+            message: "Must be a valid hexadecimal color"
+        }
+    ]
+
     constructor(props: ConfigProps) {
         super(props)
-        
-        if (this.commandPrefix.length > COMMAND_PREFIX_MAX_LENGTH) {
-            throw `'Command Prefix' cannot be longer than ${COMMAND_PREFIX_MAX_LENGTH} characters`
-        }
-
-        if (!HEX_COLOR_REGEX.test(this.colorPrimary)) {
-            throw "'Color Primary' must be a valid hexadecimal color"
-        }
+        Configuration.validate(props)
     }
 }

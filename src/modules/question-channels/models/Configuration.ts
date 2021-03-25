@@ -1,5 +1,5 @@
 import Discord from "discord.js"
-import DefaultConfig from "../../../lib/Configuration"
+import DefaultConfig, { Validator } from "../../../lib/Configuration"
 import { emojiConstraint } from "../../../lib/constraints"
 
 type ConfigProps = {
@@ -23,12 +23,17 @@ export default class Configuration extends DefaultConfig implements ConfigProps 
     messageReputationTimeout: number
     askChannelRateLimit: number
 
+    static validators: Validator<ConfigProps>[] = [
+        {
+            key: "resolveReaction",
+            validate: (props) => emojiConstraint.verifyConstraints(props.resolveReaction),
+            message: emojiConstraint.constraints
+        }
+    ]
+
     constructor(props: ConfigProps) {
         super(props)
-
-        if (!emojiConstraint.verifyConstraints(this.resolveReaction)) {
-            throw emojiConstraint.constraints
-        }
+        Configuration.validate(props)
     }
 
     toJSON() {
