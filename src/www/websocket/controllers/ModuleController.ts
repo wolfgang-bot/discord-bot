@@ -50,13 +50,10 @@ export default class ModuleController extends WebSocketController {
             ...makeGuildArgs({ guildId }),
             moduleKey
         })
-
-        this.validateArguments = new ValidationPipeline(client, [
-            new ModuleExistsValidator(error(404, "Module not found"))
-        ]).bind(this.validateArguments.bind(this), makeModuleArgs)
         
         this.getInstances = this.guildValidationPipeline.bind(this.getInstances.bind(this), makeGuildArgs)
 
+        this.validateArguments = this.moduleValidationPipeline.bind(this.validateArguments.bind(this), makeModuleArgs)
         this.startInstance = this.moduleValidationPipeline.bind(this.startInstance.bind(this), makeModuleArgs)
         this.stopInstance = this.moduleValidationPipeline.bind(this.stopInstance.bind(this), makeModuleArgs)
         this.restartInstance = this.moduleValidationPipeline.bind(this.restartInstance.bind(this), makeModuleArgs)
@@ -101,10 +98,14 @@ export default class ModuleController extends WebSocketController {
     /**
      * Validate a module's configuration arguments
      */
-    async validateArguments(validationError: ValidationError, { moduleKey, args }: {
-        moduleKey: string,
-        args: Record<string, any>
-    }, send: Function) {
+    async validateArguments(
+        validationError: ValidationError,
+        { guildId, moduleKey, args }: {
+            moduleKey: string,
+            guildId: string,
+            args: Record<string, any>
+        },
+        send: Function) {
         if (validationError) {
             send(validationError)
             return
@@ -116,9 +117,16 @@ export default class ModuleController extends WebSocketController {
 
         const model = await Module.findBy("key", moduleKey) as Module
         const module = ModuleRegistry.getModule(model)
+        
+        const guild = await Guild.findBy("id", guildId) as Guild
+        await guild.fetchDiscordGuild(this.client)
+
+        const config = await ModuleInstanceRegistry
+            .guild(guild.discordGuild)
+            .resolveArgumentsToConfig(module, args)
 
         try {
-            module.config.validate(args)
+            module.config.validate(config)
         } catch (err) {
             log.debug(err)
             this.sendError(send, err)
