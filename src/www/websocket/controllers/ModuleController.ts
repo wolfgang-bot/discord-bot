@@ -17,6 +17,7 @@ import {
     ValidationError
 } from "../../../lib/Validation"
 import { AuthorizedSocket } from "../SocketManager"
+import { ValidationError as ConfigValidationError } from "../../../lib/Configuration"
 
 export default class ModuleController extends WebSocketController {
     guildValidationPipeline: ValidationPipeline
@@ -63,7 +64,7 @@ export default class ModuleController extends WebSocketController {
      * Decide whether to forward an error to the client or to send an error "500"
      */
     private sendError(send: Function, err: any) {
-        if (typeof err === "string") {
+        if (typeof err === "string" || err instanceof ConfigValidationError) {
             send(error(400, err))
         } else {
             send(error(500))
