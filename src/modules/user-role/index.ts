@@ -53,11 +53,17 @@ export default class UserRoleModule extends Module {
     async assignRoleToEachUser() {
         const members = await this.context.guild.members.fetch()
         await Promise.all(members.map(
-            member => member.roles.add(this.config.userRole)
+            member => this.assignRoleToMember(member, this.config.userRole)
         ))
     }
 
     async handleGuildMemberAdd(member: Discord.GuildMember) {
-        await member.roles.add(this.config.userRole)
+        await this.assignRoleToMember(member, this.config.userRole)
+    }
+
+    async assignRoleToMember(member: Discord.GuildMember, role: Discord.Role) {
+        if (!member.user.bot) {
+            await member.roles.add(role)
+        }
     }
 }
