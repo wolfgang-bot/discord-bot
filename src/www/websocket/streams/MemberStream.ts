@@ -60,7 +60,9 @@ export default class MembersStream extends Readable<Dataset> {
         const events = await Event.findByTypes([
             EVENT_TYPES.GUILD_MEMBER_ADD,
             EVENT_TYPES.GUILD_MEMBER_REMOVE
-        ])
+        ], {
+            guildId: this.args.guildId
+        })
 
         events.reverse()
 

@@ -44,7 +44,9 @@ export default class MessageStream extends Readable<Dataset> {
     async pushInitialValues() {
         const events = await Event.findByTypes([
             EVENT_TYPES.MESSAGE_SEND
-        ])
+        ], {
+            guildId: this.args.guildId
+        })
         
         events.reverse()
 

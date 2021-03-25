@@ -47,7 +47,9 @@ export default class VoiceStream extends Readable<Dataset> {
     async pushInitialValues() {
         const events = await Event.findByTypes([
             EVENT_TYPES.VOICECHANNEL_LEAVE
-        ])
+        ], {
+            guildId: this.args.guildId
+        })
 
         events.reverse()
 
