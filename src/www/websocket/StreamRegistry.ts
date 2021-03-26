@@ -1,3 +1,4 @@
+import Discord from "discord.js"
 import { Readable } from "../../lib/Stream"
 import GuildStream from "./streams/GuildStream"
 import UserStream from "./streams/UserStream"
@@ -12,7 +13,7 @@ import UserGuildStream from "./streams/UserGuildStream"
 
 const streams: Record<
     EVENT_STREAMS,
-    new (socket: AuthorizedSocket, args: SubscriptionArgs) => Readable<any>
+    new (client: Discord.Client, socket: AuthorizedSocket, args: SubscriptionArgs) => Readable<any>
 > = {
     [EVENT_STREAMS.GUILDS]: GuildStream,
     [EVENT_STREAMS.USERS]: UserStream,
@@ -29,8 +30,10 @@ export default class StreamRegistry {
 
     streams: Record<string, Partial<Record<EVENT_STREAMS, Readable<any>>>> = {}
 
+    constructor(public client: Discord.Client) {}
+
     createStream(socket: AuthorizedSocket, args: SubscriptionArgs) {
-        const stream = new streams[args.eventStream](socket, args)
+        const stream = new streams[args.eventStream](this.client, socket, args)
         this.getGroup(args)[args.eventStream] = stream
         return stream
     }

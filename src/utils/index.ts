@@ -111,3 +111,11 @@ export function isBotAdmin(userId: string) {
         .split(",")
         .includes(userId)
 }
+
+/**
+ * Filter with async support
+ */
+export async function filterAsync<T>(array: T[], filterFn: (value: T) => Promise<boolean>) {
+    const filter = await Promise.all(array.map(filterFn))
+    return array.filter((_, i) => filter[i])
+}

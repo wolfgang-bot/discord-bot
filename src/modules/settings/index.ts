@@ -28,6 +28,15 @@ import LocaleProvider from "../../services/LocaleProvider"
     desc: "Locale of the guild (used for translations)"
 })
 @argument({
+    type: ARGUMENT_TYPES.ROLE,
+    key: "adminRoles",
+    defaultValue: [],
+    isArray: true,
+    allowEmptyArray: true,
+    name: "Admin Roles",
+    desc: "Roles which can administrate the bot"
+})
+@argument({
     type: ARGUMENT_TYPES.STRING,
     key: "colorPrimary",
     defaultValue: "#3f51b5",

@@ -26,7 +26,7 @@ class ModuleInstance extends Model implements ModuleInstanceModelValues {
     guild: Guild
     discordUser: Discord.User
 
-    static async findByGuildAndModuleKey(guild: Discord.Guild | Guild, key: string) {
+    static async findByGuildAndModuleKey(guild: Discord.Guild | Guild | ExtendedAPIGuild, key: string) {
         return await ModuleInstance.where(`
             guild_id='${guild.id}' AND module_key='${key}'`
         ) as ModuleInstance
@@ -36,7 +36,7 @@ class ModuleInstance extends Model implements ModuleInstanceModelValues {
         return this.findByGuildAndModuleKey(context.guild, context.module.key)
     }
 
-    static async config(guild: Discord.Guild | Guild, key: string) {
+    static async config(guild: Discord.Guild | Guild | ExtendedAPIGuild, key: string) {
         const instance = await this.findByGuildAndModuleKey(guild, key)
 
         if (!instance) {
@@ -86,4 +86,5 @@ export default ModuleInstance
 
 import Module from "./Module"
 import Guild from "./Guild"
+import { ExtendedAPIGuild } from "../www/services/OAuthServiceProvider"
 

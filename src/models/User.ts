@@ -2,6 +2,7 @@ import Discord from "discord.js"
 import { APIUser } from "discord-api-types/v8"
 import Model from "../lib/Model"
 import { checkPermissions, isBotAdmin } from "../utils"
+import { ConfigJSON as SettingsConfigJSON } from "../modules/settings/models/Configuration"
 
 export type UserModelValues = {
     id: string
@@ -30,7 +31,7 @@ class User extends Model implements UserModelValues {
         this.isBotAdmin = isBotAdmin(this.id)
     }
 
-    isAdmin(guild: Discord.Guild | Guild) {
+    async isAdmin(guild: Discord.Guild | Guild) {
         if (guild instanceof Guild) {
             if (!guild.discordGuild) {
                 throw new Error(`Discord guild for guild '${guild.id}' is not available`)
@@ -39,7 +40,16 @@ class User extends Model implements UserModelValues {
             guild = guild.discordGuild
         }
 
-        return checkPermissions(guild, this, ["ADMINISTRATOR"])
+        if (await checkPermissions(guild, this, ["ADMINISTRATOR"])) {
+            return true
+        }
+
+        const [member, settings] = await Promise.all([
+            guild.members.fetch(this.id),
+            ModuleInstance.config(guild, "settings")
+        ]) as [Discord.GuildMember, SettingsConfigJSON]
+
+        return settings.adminRoles.some(id => member.roles.cache.has(id))
     }
     
     init() {}
@@ -63,3 +73,4 @@ class User extends Model implements UserModelValues {
 export default User
 
 import Guild from "./Guild"
+import ModuleInstance from "./ModuleInstance"

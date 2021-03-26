@@ -5,11 +5,13 @@ import OAuthServiceProvider, { ExtendedAPIGuild } from "../../services/OAuthServ
 import { AuthorizedSocket } from "../SocketManager"
 import { SubscriptionArgs } from "../types"
 import BroadcastChannel from "../../../services/BroadcastChannel"
+import { filterAsync } from "../../../utils"
 
 export default class UserGuildStream extends Readable<ExtendedAPIGuild[]> {
     guilds: Record<string, ExtendedAPIGuild> = {}
     
     constructor(
+        public client: Discord.Client,
         public socket: AuthorizedSocket,
         public args: SubscriptionArgs
     ) {
@@ -55,21 +57,27 @@ export default class UserGuildStream extends Readable<ExtendedAPIGuild[]> {
     }
 
     async fetchGuilds() {
-        const guilds = await Promise.all(
-            (await OAuthServiceProvider.fetchGuilds(this.socket.user.access_token))
-                .filter(this.isGuildAdmin)
-                .map(this.withActiveAttribute)
-        )
-
-        guilds.forEach(guild => this.guilds[guild.id] = guild)
+        const guilds = await OAuthServiceProvider.fetchGuilds(this.socket.user.access_token)
+        const adminGuilds = await filterAsync(guilds, this.isGuildAdmin.bind(this))
+        const withStatus = await Promise.all(adminGuilds.map(this.withStatus))
+        withStatus.forEach(guild => this.guilds[guild.id] = guild)
     }
 
-    isGuildAdmin(guild: ExtendedAPIGuild) {
-        return new Discord.Permissions(guild.permissions as string as Discord.PermissionResolvable)
-            .has("ADMINISTRATOR")
+    async isGuildAdmin(guild: ExtendedAPIGuild) {
+        const model = await Guild.findBy("id", guild.id) as Guild
+
+        if (!model) {
+            return new Discord.Permissions(
+                guild.permissions as string as Discord.PermissionResolvable
+            ).has("ADMINISTRATOR")
+        }
+
+        await model.fetchDiscordGuild(this.client)
+
+        return await this.socket.user.isAdmin(model)
     }
 
-    async withActiveAttribute(guild: ExtendedAPIGuild) {
+    async withStatus(guild: ExtendedAPIGuild) {
         const model = await Guild.findBy("id", guild.id) as Guild
         return {
             ...guild,

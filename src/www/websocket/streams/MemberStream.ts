@@ -1,3 +1,4 @@
+import Discord from "discord.js"
 import { Readable } from "../../../lib/Stream"
 import BroadcastChannel from "../../../services/BroadcastChannel"
 import Event, { EVENT_TYPES, GuildMemberEventMeta } from "../../../models/Event"
@@ -14,6 +15,7 @@ export default class MembersStream extends Readable<Dataset> {
     events: Event<GuildMemberEventMeta>[]
     
     constructor(
+        public client: Discord.Client,
         public socket: AuthorizedSocket,
         public args: SubscriptionArgs
     ) {

@@ -1,3 +1,4 @@
+import Discord from "discord.js"
 import DefaultConfig, { Validator } from "../../../lib/Configuration"
 import { HEX_COLOR_REGEX } from "../../../lib/constraints"
 
@@ -6,13 +7,19 @@ const COMMAND_PREFIX_MAX_LENGTH = 8
 type ConfigProps = {
     commandPrefix: string,
     locale: string,
-    colorPrimary: string
+    colorPrimary: string,
+    adminRoles: Discord.Role[]
+}
+
+export type ConfigJSON = Omit<ConfigProps, "adminRoles"> & {
+    adminRoles: string[]
 }
 
 export default class Configuration extends DefaultConfig implements ConfigProps {
     commandPrefix: string
     locale: string
     colorPrimary: string
+    adminRoles: Discord.Role[]
 
     static validators: Validator<ConfigProps>[] = [
         {
@@ -35,5 +42,12 @@ export default class Configuration extends DefaultConfig implements ConfigProps 
     constructor(props: ConfigProps) {
         super(props)
         Configuration.validate(props)
+    }
+
+    toJSON() {
+        return {
+            ...this,
+            adminRoles: this.adminRoles.map(role => role.id)
+        }
     }
 }

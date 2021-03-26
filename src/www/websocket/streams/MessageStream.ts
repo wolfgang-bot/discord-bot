@@ -1,3 +1,4 @@
+import Discord from "discord.js"
 import { SVDataset } from "../../../lib/datasets"
 import { Readable } from "../../../lib/Stream"
 import Event, { EVENT_TYPES } from "../../../models/Event"
@@ -11,6 +12,7 @@ export default class MessageStream extends Readable<Dataset> {
     events: Event[] = []
     
     constructor(
+        public client: Discord.Client,
         public socket: AuthorizedSocket,
         public args: SubscriptionArgs
     ) {

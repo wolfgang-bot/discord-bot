@@ -5,9 +5,11 @@ import SocketStream from "./streams/SocketStream"
 import { SubscriptionArgs } from "./types"
 
 export default class StreamManager {
-    streamRegistry: StreamRegistry = new StreamRegistry()
+    streamRegistry: StreamRegistry
 
-    constructor(public client: Discord.Client, public socket: AuthorizedSocket) {}
+    constructor(public client: Discord.Client, public socket: AuthorizedSocket) {
+        this.streamRegistry = new StreamRegistry(client)
+    }
 
     subscribe(args: SubscriptionArgs) {
         this.assertStreamDoesNotExist(args)

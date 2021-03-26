@@ -8,7 +8,7 @@ import NotificationEmbed from "../embeds/NotificationEmbed"
 import ActiveChannel, { ActiveChannelJSON } from "../models/ActiveChannel"
 import Configuration from "../models/Configuration"
 import SettingsConfig from "../../settings/models/Configuration"
-import { checkPermissions } from "../../../utils"
+import User from "../../../models/User"
 
 type InstanceData = {
     activeChannels: ActiveChannelsMap
@@ -63,9 +63,11 @@ class ChannelManager extends Manager {
     
             // Delete channel
             if (message.content.trim() === this.config.deleteMessage) {
+                const userModel = await User.findBy("id", message.author.id) as User
+
                 if (
                     message.author.id === activeChannel.user.id || // User is the question channel's creator
-                    await checkPermissions(this.context.guild, message.author, ["ADMINISTRATOR"]) // User is administrator
+                    await userModel.isAdmin(this.context.guild) // User is administrator
                 ) {
                     await this.deleteChannel(activeChannel.channel)
                 }

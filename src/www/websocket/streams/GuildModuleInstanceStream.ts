@@ -1,3 +1,4 @@
+import Discord from "discord.js"
 import { Readable } from "../../../lib/Stream"
 import Module from "../../../lib/Module"
 import BroadcastChannel from "../../../services/BroadcastChannel"
@@ -7,6 +8,7 @@ import { SubscriptionArgs } from "../types"
 
 export default class GuildModuleInstanceStream extends Readable<Module[]> {
     constructor(
+        public client: Discord.Client,
         public socket: AuthorizedSocket,
         public args: SubscriptionArgs
     ) {
