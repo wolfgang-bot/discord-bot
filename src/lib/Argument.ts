@@ -16,7 +16,8 @@ export type ArgumentProps = {
     name: string,
     desc: string,
     defaultValue?: any,
-    selectOptions?: any[]
+    selectOptions?: any[],
+    allowEmptyArray?: boolean
 }
 
 class Argument implements ArgumentProps {
@@ -28,6 +29,7 @@ class Argument implements ArgumentProps {
     desc: string
     defaultValue?: any
     selectOptions?: any[]
+    allowEmptyArray?: boolean = false
 
     constructor(props: ArgumentProps) {
         if (props.isSelect && !props.selectOptions) {
@@ -42,6 +44,7 @@ class Argument implements ArgumentProps {
         this.desc = props.desc
         this.defaultValue = props.defaultValue
         this.selectOptions = props.selectOptions
+        this.allowEmptyArray = props.allowEmptyArray
     }
 
     clone() {
@@ -53,7 +56,8 @@ class Argument implements ArgumentProps {
             name: this.name,
             desc: this.desc,
             defaultValue: this.defaultValue,
-            selectOptions: this.selectOptions
+            selectOptions: this.selectOptions,
+            allowEmptyArray: this.allowEmptyArray
         })
     }
 }
