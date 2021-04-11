@@ -1,0 +1,9 @@
+node_modules/
+*.sqlite3
+.idea/
+dist/
+docs/
+guild/
+invite.txt
+requirements.txt
+.env.example

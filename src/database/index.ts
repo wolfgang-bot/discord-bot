@@ -1,4 +1,3 @@
-import path from "path"
 import Database from "./Database"
 
 export type ProgressCallback = (event: {
@@ -17,6 +16,7 @@ export type Seeder = {
     run: (callback: ProgressCallback) => Promise<void> | void
 }
 
-const DATABASE_PATH = path.join(__dirname, "db.sqlite3")
+const DEFAULT_PATH = "/etc/discord-bot/db.sqlite3"
+const DATABASE_PATH = process.env.SQLITE_DB_PATH || DEFAULT_PATH
 
 export default new Database(DATABASE_PATH)
