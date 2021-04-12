@@ -16,7 +16,4 @@ export type Seeder = {
     run: (callback: ProgressCallback) => Promise<void> | void
 }
 
-const DEFAULT_PATH = "/etc/discord-bot/db.sqlite3"
-const DATABASE_PATH = process.env.SQLITE_DB_PATH || DEFAULT_PATH
-
-export default new Database(DATABASE_PATH)
+export default new Database(process.env.SQLITE_DB_PATH)
