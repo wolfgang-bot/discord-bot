@@ -4,10 +4,10 @@ import type ProgressBar from "progress"
 import chalk from "chalk"
 import { performance } from "perf_hooks"
 import dotenv from "dotenv"
+dotenv.config({ path: path.join(__dirname, "..", "..", ".env") })
 import log from "loglevel"
 import database from "../database"
 import seed from "../database/seeders"
-dotenv.config({ path: path.join(__dirname, "..", "..", ".env") })
 
 const tables = process.argv.slice(2)
     .map(table => table.replace(/\r/, ""))
