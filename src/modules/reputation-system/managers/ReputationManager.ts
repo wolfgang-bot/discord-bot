@@ -8,6 +8,7 @@ import { getLevel } from "../../../utils"
 import Configuration from "../models/Configuration"
 import SettingsConfig from "../../settings/models/Configuration"
 import ModuleInstance from "../../../models/ModuleInstance"
+import BroadcastChannel from "../../../services/BroadcastChannel"
 
 export default class ReputationManager extends Manager {
     config: Configuration
@@ -105,12 +106,12 @@ export default class ReputationManager extends Manager {
     async init() {
         await this.createRoles()
         
-        this.context.client.on("reputationAdd", this.handleReputationAdd)
+        BroadcastChannel.on("reputationAdd", this.handleReputationAdd)
     }
 
     async delete() {
         await this.deleteRoles()
         
-        this.context.client.removeListener("reputationAdd", this.handleReputationAdd)
+        BroadcastChannel.removeListener("reputationAdd", this.handleReputationAdd)
     }
 }

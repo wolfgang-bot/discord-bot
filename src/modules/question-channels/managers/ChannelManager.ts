@@ -9,6 +9,7 @@ import ActiveChannel, { ActiveChannelJSON } from "../models/ActiveChannel"
 import Configuration from "../models/Configuration"
 import SettingsConfig from "../../settings/models/Configuration"
 import User from "../../../models/User"
+import BroadcastChannel from "../../../services/BroadcastChannel"
 
 type InstanceData = {
     activeChannels: ActiveChannelsMap
@@ -52,7 +53,7 @@ class ChannelManager extends Manager {
                 message.author.id !== activeChannel.user.id && // User is not the question channel's creator 
                 !this.timeoutUsers.has(message.author.id) // User is not throttled
             ) {
-                this.context.client.emit("reputationAdd", message.member, this.config.messageReputation)
+                BroadcastChannel.emit("reputationAdd", message.member, this.config.messageReputation)
     
                 this.timeoutUsers.add(message.author.id)
     
@@ -111,7 +112,7 @@ class ChannelManager extends Manager {
             return
         }
 
-        this.context.client.emit("reputationAdd", reaction.message.member, this.config.acceptReputation)
+        BroadcastChannel.emit("reputationAdd", reaction.message.member, this.config.acceptReputation)
 
         await this.deleteChannel(channel)
     }
