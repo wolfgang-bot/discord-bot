@@ -47,5 +47,11 @@ error_too_many_questions: |
     ```
     {0}
     ```
+error_too_many_channels: |
+    The server reached it's maximum of ``{0}`` active questions. Ask an admin to increase the limit or wait until a question resolves.
+    Here is your question, in case you want to ask it again later:
+    ```
+    {1}
+    ```
 error_message_from_bot: You cannot mark a message of a bot as the answer.
 error_own_message: You cannot mark your own message as the answer.

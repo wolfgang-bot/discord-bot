@@ -74,6 +74,13 @@ import SettingsConfig from "../settings/models/Configuration"
     desc: "Duration of the rate limit the ask-channel receives when initializing the module",
     defaultValue: 300
 })
+@argument({
+    type: ARGUMENT_TYPES.NUMBER,
+    key: "maxChannels",
+    name: "Active Channels Limit",
+    desc: "Maximum amount of active channels",
+    defaultValue: 30
+})
 class QuestionChannelsModule extends Module {
     static config = Configuration
 

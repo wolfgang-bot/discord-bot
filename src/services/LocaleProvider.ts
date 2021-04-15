@@ -124,7 +124,7 @@ class LocaleProvider {
     /**
      * Get the translation of a key by looking into the language specific translations
      */
-    private translateAnyType(key: string, ...args: string[]) {
+    private translateAnyType(key: string, ...args: (string | number)[]) {
         let value = this.translations[key]
         
         // Fallback to default locale
@@ -142,18 +142,18 @@ class LocaleProvider {
          */
         const insertArgs = (value: string) => {
             return args.reduce((value, arg, i) => {
-                return value.replace(new RegExp(`\\{${i}\\}`, "g"), arg)
-            }, value)
+                return value.toString().replace(new RegExp(`\\{${i}\\}`, "g"), arg.toString())
+            }, value) as string
         }
 
-        if (value.constructor.name === "Array") {
+        if (Array.isArray(value)) {
             // Insert arguments into every translation in the "value" array
             for (let i = 0; i < value.length; i++) {
-                (value as string[])[i] = insertArgs(value[i])
+                value[i] = insertArgs(value[i])
             }
         } else {
             // Insert arguments into the translation
-            value = insertArgs(value as string)
+            value = insertArgs(value)
         }
 
         return value

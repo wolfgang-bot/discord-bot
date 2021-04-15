@@ -117,6 +117,11 @@ class ChannelManager extends Manager {
         await this.deleteChannel(channel)
     }
 
+    canCreateChannel() {
+        const activeChannelsCount = Object.keys(this.activeChannels).length
+        return activeChannelsCount < this.config.maxChannels
+    }
+
     async deleteChannel(channel: Discord.TextChannel) {
         await channel.delete()
         delete this.activeChannels[channel.id]
@@ -134,6 +139,12 @@ class ChannelManager extends Manager {
         const channels = Object.values(this.activeChannels) as ActiveChannel[]
         if (channels.some(({ user }) => user.id === message.author.id)) {
             await dm.send(locale.translate("error_too_many_questions", message.content))
+            return
+        }
+
+        // Check if channel can be created
+        if (!this.canCreateChannel()) {
+            await dm.send(locale.translate("error_too_many_channels", this.config.maxChannels, message.content))
             return
         }
         
