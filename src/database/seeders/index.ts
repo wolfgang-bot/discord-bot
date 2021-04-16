@@ -4,6 +4,7 @@ import { Seeder } from "../index"
 
 async function run(
     table?: string,
+    args?: any[],
     callback?: (event: any) => void
 ) {
     let seeders: Seeder[] = (await glob("*.ts", { cwd: __dirname }))
@@ -23,7 +24,7 @@ async function run(
             continue
         }
 
-        await seeder.run(callback)
+        await seeder.run(args, callback)
     }
 }
 

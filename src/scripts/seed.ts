@@ -9,8 +9,8 @@ import log from "loglevel"
 import database from "../database"
 import seed from "../database/seeders"
 
-const tables = process.argv.slice(2)
-    .map(table => table.replace(/\r/, ""))
+const table = process.argv[2].replace(/\r/, "")
+const args = process.argv.slice(3)
 
 const multiProgress = new MultiProgress()
 const bars: Record<string, ProgressBar> = {}
@@ -34,17 +34,15 @@ function createProgressBar(label: string, length: number) {
 
     await database.connect()
 
-    for (let table of tables) {
-        log.info(`Seed table: ${table}`)
+    log.info(`Seed table: ${table}`)
 
-        await seed(table, (event: any) => {
-            if (event.type === "init") {
-                bars[event.key] = createProgressBar(event.key, event.data)
-            } else if (event.type === "tick") {
-                bars[event.key].tick()
-            }
-        })
-    }
+    await seed(table, args, (event: any) => {
+        if (event.type === "init") {
+            bars[event.key] = createProgressBar(event.key, event.data)
+        } else if (event.type === "tick") {
+            bars[event.key].tick()
+        }
+    })
 
     let elapsed = (performance.now() - t0)
     elapsed = Math.floor(elapsed * 100) / 100

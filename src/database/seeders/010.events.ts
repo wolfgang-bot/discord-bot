@@ -1,7 +1,7 @@
 import Event, { EVENT_TYPES, GuildEventMeta, GuildMemberEventMeta, UserEventMeta, VoiceChannelLeaveEventMeta } from "../../models/Event"
 import { Seeder, ProgressCallback } from "../index"
 
-const GENERATE_DATA_FOR_DAYS = 7
+let GENERATE_DATA_FOR_DAYS = 7
 const GUILD_ID = "786167187030540309"
 const USER_IDS = ["778665386497015838", "224908212212596736"]
 
@@ -213,7 +213,13 @@ const eventGenerators = [
 const seeder: Seeder = {
     table: "events",
 
-    run: async (callback: ProgressCallback) => {
+    run: async (args: any[], callback: ProgressCallback) => {
+        const days = parseInt(args[0])
+        
+        if (days && days > 0) {
+            GENERATE_DATA_FOR_DAYS = days
+        }
+
         await Promise.all(eventGenerators.map(
             generator => generator(callback)
         ))

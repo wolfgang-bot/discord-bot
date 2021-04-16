@@ -13,7 +13,7 @@ export type Migration = {
 
 export type Seeder = {
     table: string,
-    run: (callback: ProgressCallback) => Promise<void> | void
+    run: (args: any[], callback: ProgressCallback) => Promise<void> | void
 }
 
 export default new Database(process.env.SQLITE_DB_PATH)
