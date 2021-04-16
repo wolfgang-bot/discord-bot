@@ -38,6 +38,7 @@ export type EventModelValues<TMeta> = {
     type: EVENT_TYPES,
     timestamp: number,
     guild_id?: string,
+    user_id?: string,
     meta?: TMeta,
 }
 
@@ -50,13 +51,15 @@ class Event<TMeta = undefined> extends Model implements EventModelValues<TMeta> 
     type: EVENT_TYPES
     timestamp: number
     guild_id?: string
+    user_id?: string
     meta?: TMeta
 
     static findByTypes<TEventMeta = undefined>(
         types: EVENT_TYPES[],
-        { guildId, limit }: {
+        { guildId, userId, limit }: {
             guildId?: string,
-            limit?: number
+            userId?: string,
+            limit?: number,
         } = {}
     ) {
         const typesSelector = types
@@ -66,6 +69,7 @@ class Event<TMeta = undefined> extends Model implements EventModelValues<TMeta> 
         return Event.whereAll(`
             (${typesSelector})
             ${guildId ? `AND guild_id = '${guildId}'` : ""}
+            ${userId ? `AND user_id = '${userId}'` : ""}
             ORDER BY timestamp DESC
             ${limit ? `LIMIT ${limit}` : ""}
         `) as Promise<Collection<Event<TEventMeta>>>
@@ -74,7 +78,7 @@ class Event<TMeta = undefined> extends Model implements EventModelValues<TMeta> 
     constructor(values: EventModelValues<TMeta>) {
         super({
             table: "events",
-            columns: ["id", "type", "timestamp", "guild_id", "meta"],
+            columns: ["id", "type", "timestamp", "guild_id", "user_id", "meta"],
             defaultValues: {
                 id: uuid
             },
@@ -93,6 +97,7 @@ class Event<TMeta = undefined> extends Model implements EventModelValues<TMeta> 
             type: this.type,
             timestamp: this.timestamp,
             guild_id: this.guild_id,
+            user_id: this.user_id,
             meta: this.meta
         }
     }

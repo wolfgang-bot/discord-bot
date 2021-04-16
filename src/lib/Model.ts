@@ -130,6 +130,8 @@ abstract class Model {
                 } else {
                     values.push(this[column])
                 }
+            } else {
+                values.push(null)
             }
         })
         return values

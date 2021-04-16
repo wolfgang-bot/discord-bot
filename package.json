@@ -6,7 +6,7 @@
   "scripts": {
     "start": "npx ts-node-dev src/index.ts",
     "build": "npx tsc",
-    "reset-database": "rm src/database/db.sqlite3 && npm run migrate && npm run audit-database",
+    "reset-database": "rm db.sqlite3 && npm run migrate && npm run audit-database",
     "migrate": "ts-node src/scripts/migrate",
     "seed": "ts-node src/scripts/seed",
     "setup-tables": "src/scripts/setup-tables.sh",

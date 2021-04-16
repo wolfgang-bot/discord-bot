@@ -33,7 +33,7 @@ class EventManager extends Manager {
                     await message.channel.send(typeof error === "string" ? error : "Internal Server Error")
                 }
             } else {
-                await this.statistics.registerMessageSendEvent(message.guild)
+                await this.statistics.registerMessageSendEvent(message)
             }
         }
     }
@@ -41,8 +41,8 @@ class EventManager extends Manager {
     async handleGuildCreate(guild: Discord.Guild) {
         const setup = new GuildSetup(this.context.client, guild)
 
-        setup.on("user/create", () => {
-            this.statistics.registerUserAddEvent(guild)
+        setup.on("user/create", (user: User) => {
+            this.statistics.registerUserAddEvent(guild, user)
         })
 
         await setup.run()
@@ -74,7 +74,7 @@ class EventManager extends Manager {
             user = new User({ id: member.user.id })
             await Promise.all([
                 user.store(),
-                this.statistics.registerUserAddEvent(member.guild)
+                this.statistics.registerUserAddEvent(member.guild, member.user)
             ])
         }
         
@@ -85,7 +85,7 @@ class EventManager extends Manager {
         })
         await Promise.all([
             model.store(),
-            this.statistics.registerGuildMemberAddEvent(member.guild)
+            this.statistics.registerGuildMemberAddEvent(member)
         ])
     }
 
@@ -100,7 +100,7 @@ class EventManager extends Manager {
             await model.delete()
         }
 
-        await this.statistics.registerGuildMemberRemoveEvent(member.guild)
+        await this.statistics.registerGuildMemberRemoveEvent(member)
     }
 
     async handleVoiceStateUpdate(oldState: Discord.VoiceState, newState: Discord.VoiceState) {

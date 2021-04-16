@@ -8,6 +8,7 @@ const migration: Migration = {
         "type TINYINT NOT NULL",
         "timestamp TIMESTAMP NOT NULL",
         "guild_id varchar(255)",
+        "user_id varchar(255)",
         "meta TEXT"
     ]
 }

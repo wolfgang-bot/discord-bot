@@ -63,7 +63,7 @@ export default class GuildSetup extends EventEmitter {
         if (!user) {
             user = new User({ id: member.user.id })
             await user.store()
-            this.emit("user/create")
+            this.emit("user/create", user)
         }
 
         const model = new Member({
