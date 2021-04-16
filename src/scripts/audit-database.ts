@@ -45,7 +45,7 @@ const fixes: Array<() => Promise<void>> = []
  */
 makeRunnable(async () => {
     // Initialize connections
-    await run(() => boot(client), "Setup", opts)
+    await run(() => boot(client, { useHttpServer: false }), "Setup", opts)
 
     // Audit database
     await run(audit, "Audit", opts)
