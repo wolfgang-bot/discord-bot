@@ -11,7 +11,8 @@ export enum EVENT_STREAMS {
     GUILD_MODULE_INSTANCES = "guild-module-instances",
     MEMBERS = "members",
     MESSAGES = "messages",
-    VOICE = "voice"
+    VOICE = "voice",
+    USER_MESSAGE_LEADERBOARD = "user-message-leaderboard"
 }
 
 export enum AUTH_METHODS {

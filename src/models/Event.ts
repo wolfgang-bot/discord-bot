@@ -1,6 +1,7 @@
 import { v4 as uuid } from "uuid"
 import Model from "../lib/Model"
 import Collection from "../lib/Collection"
+import database from "../database"
 
 export enum EVENT_TYPES {
     GUILD_ADD,
@@ -73,6 +74,17 @@ class Event<TMeta = undefined> extends Model implements EventModelValues<TMeta> 
             ORDER BY timestamp DESC
             ${limit ? `LIMIT ${limit}` : ""}
         `) as Promise<Collection<Event<TEventMeta>>>
+    }
+
+    static async countPerUser(type: EVENT_TYPES) {
+        const result = await database.all(`
+            SELECT user_id, COUNT("user_id")
+            FROM "${this.context.table}"
+            WHERE type="${type}"
+            GROUP BY "user_id"
+        `)
+        
+        return Object.fromEntries(result.map(Object.values)) as Record<string, number>
     }
 
     constructor(values: EventModelValues<TMeta>) {

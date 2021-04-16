@@ -44,7 +44,7 @@ function random(min: number, max: number) {
 }
 
 function getRandomUserId() {
-    return USER_IDS[random(0, USER_IDS.length - 1)]
+    return USER_IDS[random(0, USER_IDS.length)]
 }
 
 function createRandomTimestampNDaysAgo(days: number) {

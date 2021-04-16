@@ -10,6 +10,7 @@ import ModuleInstanceStream from "./streams/ModuleInstanceStream"
 import { EVENT_STREAMS, SubscriptionArgs } from "./types"
 import { AuthorizedSocket } from "./SocketManager"
 import UserGuildStream from "./streams/UserGuildStream"
+import UserMessageLeaderboardStream from "./streams/UserMessageLeaderboardStream"
 
 const streams: Record<
     EVENT_STREAMS,
@@ -22,7 +23,8 @@ const streams: Record<
     [EVENT_STREAMS.GUILD_MODULE_INSTANCES]: GuildModuleInstanceStream,
     [EVENT_STREAMS.MEMBERS]: MemberStream,
     [EVENT_STREAMS.MESSAGES]: MessageStream,
-    [EVENT_STREAMS.VOICE]: VoiceStream
+    [EVENT_STREAMS.VOICE]: VoiceStream,
+    [EVENT_STREAMS.USER_MESSAGE_LEADERBOARD]: UserMessageLeaderboardStream
 }
 
 export default class StreamRegistry {
