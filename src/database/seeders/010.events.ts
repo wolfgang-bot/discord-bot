@@ -3,6 +3,7 @@ import { Seeder, ProgressCallback } from "../index"
 
 const GENERATE_DATA_FOR_DAYS = 7
 const GUILD_ID = "786167187030540309"
+const USER_IDS = ["778665386497015838", "224908212212596736"]
 
 const SKIP_DAY_PROBABILITY = 0
 const RANDOM_TIMESTAMPS_SPREAD_IN_MILLISECONDS = 1e4
@@ -42,6 +43,10 @@ function random(min: number, max: number) {
     return Math.floor(Math.random() * (max - min) + min)
 }
 
+function getRandomUserId() {
+    return USER_IDS[random(0, USER_IDS.length - 1)]
+}
+
 function createRandomTimestampNDaysAgo(days: number) {
     const randomOffset = random(0, RANDOM_TIMESTAMPS_SPREAD_IN_MILLISECONDS)
     return Date.now() - days * MILLISECONDS_PER_DAY + randomOffset
@@ -69,6 +74,7 @@ function makeDualEventsSeeder<TMeta = undefined>({
     typesRatio = 1,
     initialCount = 0,
     guildId = GUILD_ID,
+    withUserId,
     makeMetaValue
 }: {
     key: string,
@@ -78,6 +84,7 @@ function makeDualEventsSeeder<TMeta = undefined>({
     typesRatio?: number,
     initialCount?: number,
     guildId?: string,
+    withUserId?: boolean,
     makeMetaValue?: ({ count: number }) => TMeta
 }) {
     if (!Array.isArray(types)) {
@@ -121,6 +128,7 @@ function makeDualEventsSeeder<TMeta = undefined>({
                     type,
                     timestamp: createRandomTimestampNDaysAgo(i),
                     guild_id: guildId,
+                    user_id: withUserId ? getRandomUserId() : undefined,
                     meta: makeMetaValue?.({ count })
                 }).store()
 
@@ -136,7 +144,8 @@ const generateMessageEvents = makeDualEventsSeeder({
     amountOfEntriesMinMax: [
         MIN_AMOUNT_OF_MESSAGES_PER_DAY,
         MAX_AMOUNT_OF_MESSAGES_PER_DAY
-    ]
+    ],
+    withUserId: true
 })
 
 const generateGuildEvents = makeDualEventsSeeder<GuildEventMeta>({
@@ -159,7 +168,8 @@ const generateUserEvents = makeDualEventsSeeder<UserEventMeta>({
         MIN_INITIAL_USERS,
         MAX_INITIAL_USERS
     ],
-    makeMetaValue: ({ count }) => ({ userCount: count })
+    makeMetaValue: ({ count }) => ({ userCount: count }),
+    withUserId: true
 })
 
 const generateMemberEvents = makeDualEventsSeeder<GuildMemberEventMeta>({
@@ -172,7 +182,8 @@ const generateMemberEvents = makeDualEventsSeeder<GuildMemberEventMeta>({
     initialCount: INITIAL_MEMBER_COUNT,
     dropProbability: MEMBER_DROP_PROBABILITY,
     typesRatio: MEMBER_JOIN_LEAVE_RATIO,
-    makeMetaValue: ({ count }) => ({ memberCount: count })
+    makeMetaValue: ({ count }) => ({ memberCount: count }),
+    withUserId: true
 })
 
 const generateVoiceEvents = makeDualEventsSeeder<VoiceChannelLeaveEventMeta>({
@@ -187,7 +198,8 @@ const generateVoiceEvents = makeDualEventsSeeder<VoiceChannelLeaveEventMeta>({
             MIN_VOICECHAT_DURATION_PER_EVENT,
             MAX_VOICECHAT_DURATION_PER_EVENT
         )
-    })
+    }),
+    withUserId: true
 })
 
 const eventGenerators = [

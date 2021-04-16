@@ -5,6 +5,7 @@ import readline from "readline"
 import { makeRunnable, run } from "@m.moelter/task-runner"
 import dotenv from "dotenv"
 import log from "loglevel"
+dotenv.config({ path: path.join(__dirname, "..", "..", ".env")})
 import ModuleRegistry from "../services/ModuleRegistry"
 import database from "../database"
 import Guild, { GUILD_STATUS } from "../models/Guild"
@@ -15,7 +16,6 @@ import ModuleInstance from "../models/ModuleInstance"
 import Collection from "../lib/Collection"
 import ModuleInstanceRegistry from "../services/ModuleInstanceRegistry"
 import boot from "../boot"
-dotenv.config({ path: path.join(__dirname, "..", "..", ".env")})
 
 log.setLevel(log.levels.TRACE)
 
