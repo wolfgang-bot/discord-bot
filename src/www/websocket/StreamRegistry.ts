@@ -11,6 +11,7 @@ import { EVENT_STREAMS, SubscriptionArgs } from "./types"
 import { AuthorizedSocket } from "./SocketManager"
 import UserGuildStream from "./streams/UserGuildStream"
 import UserMessageLeaderboardStream from "./streams/UserMessageLeaderboardStream"
+import UserVoiceLeaderboardStream from "./streams/UserVoiceLeaderboardStream"
 
 const streams: Record<
     EVENT_STREAMS,
@@ -24,7 +25,8 @@ const streams: Record<
     [EVENT_STREAMS.MEMBERS]: MemberStream,
     [EVENT_STREAMS.MESSAGES]: MessageStream,
     [EVENT_STREAMS.VOICE]: VoiceStream,
-    [EVENT_STREAMS.USER_MESSAGE_LEADERBOARD]: UserMessageLeaderboardStream
+    [EVENT_STREAMS.USER_MESSAGE_LEADERBOARD]: UserMessageLeaderboardStream,
+    [EVENT_STREAMS.USER_VOICE_LEADERBOARD]: UserVoiceLeaderboardStream
 }
 
 export default class StreamRegistry {

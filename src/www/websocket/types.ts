@@ -12,7 +12,8 @@ export enum EVENT_STREAMS {
     MEMBERS = "members",
     MESSAGES = "messages",
     VOICE = "voice",
-    USER_MESSAGE_LEADERBOARD = "user-message-leaderboard"
+    USER_MESSAGE_LEADERBOARD = "user-message-leaderboard",
+    USER_VOICE_LEADERBOARD = "user-voice-leaderboard"
 }
 
 export enum AUTH_METHODS {

@@ -134,7 +134,7 @@ export default class StatisticsManager {
                     duration: timestamp - this.voiceChannelConnections[voiceState.sessionID].joinedAt
                 }
             },
-            broadcastEvent: "guild-channel-leave"
+            broadcastEvent: "voice-channel-leave"
         })
 
         delete this.voiceChannelConnections[voiceState.sessionID]

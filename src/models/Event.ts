@@ -76,15 +76,25 @@ class Event<TMeta = undefined> extends Model implements EventModelValues<TMeta> 
         `) as Promise<Collection<Event<TEventMeta>>>
     }
 
-    static async countPerUser(type: EVENT_TYPES) {
+    static async queryGroupedByUser(query: string, type: EVENT_TYPES) {
         const result = await database.all(`
-            SELECT user_id, COUNT("user_id")
+            SELECT user_id, ${query}
             FROM "${this.context.table}"
-            WHERE type="${type}"
-            GROUP BY "user_id"
+            WHERE type=${type}
+            GROUP BY user_id
         `)
-        
+
         return Object.fromEntries(result.map(Object.values)) as Record<string, number>
+    }
+
+    static countRowsPerUser(type: EVENT_TYPES) {
+        return this.queryGroupedByUser("COUNT('user_id')", type)
+    }
+
+    static async sumMetaValuePerUser(type: EVENT_TYPES, metaKey: string) {
+        return this.queryGroupedByUser(`
+            SUM(JSON_EXTRACT(meta, "$.${metaKey}")) as ${metaKey}
+        `, type)
     }
 
     constructor(values: EventModelValues<TMeta>) {

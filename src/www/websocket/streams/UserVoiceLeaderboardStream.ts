@@ -14,7 +14,7 @@ class LeaderboardDataset {
 
     async fetchLeaderboard() {
         const users = Object.entries(
-            await Event.countRowsPerUser(EVENT_TYPES.MESSAGE_SEND)
+            await Event.sumMetaValuePerUser(EVENT_TYPES.VOICECHANNEL_LEAVE, "duration")
         )
 
         users.sort((a, b) => b[1] - a[1])
@@ -33,7 +33,7 @@ class LeaderboardDataset {
     }
 }
 
-export default class UserMessageLeaderboardStream extends Readable<LeaderboardDataset> {    
+export default class UserVoiceLeaderboardStream extends Readable<LeaderboardDataset> {    
     constructor(
         public client: Discord.Client,
         public socket: AuthorizedSocket,
@@ -46,12 +46,12 @@ export default class UserMessageLeaderboardStream extends Readable<LeaderboardDa
 
     construct() {
         this.pushDataset().then(() => {
-            BroadcastChannel.on("statistics/message-send", this.handleMessageEvent)
+            BroadcastChannel.on("statistics/voice-channel-leave", this.handleMessageEvent)
         })
     }
 
     destroy() {
-        BroadcastChannel.removeListener("statistics/message-send", this.handleMessageEvent)
+        BroadcastChannel.removeListener("statistics/voice-channel-leave", this.handleMessageEvent)
     }
 
     collectBuffer(buffer: LeaderboardDataset) {

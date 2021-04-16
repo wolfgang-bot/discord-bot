@@ -23,12 +23,12 @@ export default class VoiceStream extends Readable<Dataset> {
 
     construct() {
         this.pushInitialValues().then(() => {
-            BroadcastChannel.on("statistics/guild-channel-leave", this.handleVoiceEvent)
+            BroadcastChannel.on("statistics/voice-channel-leave", this.handleVoiceEvent)
         })
     }
     
     destroy() {
-        BroadcastChannel.removeListener("statistics/guild-channel-leave", this.handleVoiceEvent)
+        BroadcastChannel.removeListener("statistics/voice-channel-leave", this.handleVoiceEvent)
     }
 
     collectBuffer(buffer: Dataset) {
