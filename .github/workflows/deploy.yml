@@ -23,3 +23,7 @@ jobs:
             --build-arg PUBLIC_PORT=${{ secrets.PUBLIC_PORT }} \
             --tag tracer1337/discord-bot:discord-bot \
             .
+      - name: Docker Push
+        run: |
+          docker login --username tracer1337 --password ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          docker push tracer1337/discord-bot:discord-bot
