@@ -17,7 +17,7 @@ ENV SQLITE_DB_PATH=/etc/storage/db.sqlite3
 
 WORKDIR /app
 
-COPY package*.json .
+COPY package*.json ./
 
 RUN npm install
 
