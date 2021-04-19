@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
     app:
-        build: .
+        image: tracer1337/discord-bot:discord-bot
         ports:
             - 80:8080
         volumes:
