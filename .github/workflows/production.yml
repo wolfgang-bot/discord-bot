@@ -50,7 +50,7 @@ jobs:
           envs: HOST,PUBLIC_PORT,PROTOCOL
           script_stop: true
           script: |
-            docker rm -f tracer1337/discord-bot:discord-bot || true
+            docker rm -f tracer1337/discord-bot:discord-bot 2> /dev/null
             docker run \
               --detach \
               --publish 80:8080 \
