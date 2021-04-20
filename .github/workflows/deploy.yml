@@ -10,20 +10,33 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+
       - name: Docker Build
-        run: |
-          docker build \
-            --build-arg DISCORD_BOT_TOKEN=${{ secrets.DISCORD_BOT_TOKEN }} \
-            --build-arg DISCORD_API_CLIENT_ID=${{ secrets.DISCORD_API_CLIENT_ID }} \
-            --build-arg DISCORD_API_CLIENT_SECRET=${{ secrets.DISCORD_API_CLIENT_SECRET }} \
-            --build-arg JWT_SECRET=${{ secrets.JWT_SECRET }} \
-            --build-arg ADMIN_USER_IDS=${{ secrets.ADMIN_USER_IDS }} \
-            --build-arg HOST=${{ secrets.HOST }} \
-            --build-arg PROTOCOL=${{ secrets.PROTOCOL }} \
-            --build-arg PUBLIC_PORT=${{ secrets.PUBLIC_PORT }} \
-            --tag tracer1337/discord-bot:discord-bot \
-            .
+        run: docker build --tag tracer1337/discord-bot:discord-bot .
+
       - name: Docker Push
         run: |
           docker login --username tracer1337 --password ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
           docker push tracer1337/discord-bot:discord-bot
+
+      - name: Docker Pull
+        uses: appleboy/ssh-action@v0.1.4
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: docker pull tracer1337/discord-bot:discord-bot
+          
+      # - name: Docker Run
+      #   run: |
+      #     ssh \
+      #       cd /var/www/discord-bot && \
+      #       docker-compose up \
+      #         --build-arg DISCORD_BOT_TOKEN=${{ secrets.DISCORD_BOT_TOKEN }} \
+      #         --build-arg DISCORD_API_CLIENT_ID=${{ secrets.DISCORD_API_CLIENT_ID }} \
+      #         --build-arg DISCORD_API_CLIENT_SECRET=${{ secrets.DISCORD_API_CLIENT_SECRET }} \
+      #         --build-arg JWT_SECRET=${{ secrets.JWT_SECRET }} \
+      #         --build-arg ADMIN_USER_IDS=${{ secrets.ADMIN_USER_IDS }} \
+      #         --build-arg HOST=${{ secrets.HOST }} \
+      #         --build-arg PROTOCOL=${{ secrets.PROTOCOL }} \
+      #         --build-arg PUBLIC_PORT=${{ secrets.PUBLIC_PORT }} \
