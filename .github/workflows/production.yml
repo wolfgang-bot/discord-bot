@@ -35,6 +35,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             docker login --username tracer1337 --password ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+            docker rmi -f tracer1337/discord-bot:discord-bot
             docker pull tracer1337/discord-bot:discord-bot
           
       - name: Docker Run
@@ -48,10 +49,10 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           envs: HOST,PUBLIC_PORT,PROTOCOL
-          script_stop: true
           script: |
-            docker rm -f tracer1337/discord-bot:discord-bot 2> /dev/null
+            docker rm -f discord-bot
             docker run \
+              --name discord-bot \
               --detach \
               --publish 80:8080 \
               --volume discord-bot:/etc/storage \
