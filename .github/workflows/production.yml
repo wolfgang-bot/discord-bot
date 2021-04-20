@@ -6,19 +6,26 @@ on:
       - master
 
 jobs:
-  deploy:
+  docker-build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
       - name: Docker Build
-        run: docker build --tag ${{ secrets.DOCKER_IMAGE_TAG }} .
+        run: docker build --tag tracer1337/discord-bot:discord-bot .
 
       - name: Docker Push
         run: |
           docker login --username ${{ secrets.DOCKER_HUB_USERNAME }} --password ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-          docker push ${{ secrets.DOCKER_IMAGE_TAG }}
+          docker push tracer1337/discord-bot:discord-bot
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: docker-build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
 
       - name: Docker Pull
         uses: appleboy/ssh-action@v0.1.4
@@ -28,7 +35,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             docker login --username ${{ secrets.DOCKER_HUB_USERNAME }} --password ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-            docker pull ${{ secrets.DOCKER_IMAGE_TAG }}
+            docker pull tracer1337/discord-bot:discord-bot
           
       - name: Docker Run
         uses: appleboy/ssh-action@v0.1.4
@@ -36,18 +43,24 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          env:
+            HOST: v2202104145753149514.ultrasrv.de
+            PUBLIC_PORT: 4000
+            PROTOCOL: http
           script: |
-            docker rm -f ${{ secrets.DOCKER_IMAGE_TAG }}
-            docker run ${{ secrets.DOCKER_IMAGE_TAG }} \
+            docker rm -f tracer1337/discord-bot:discord-bot || true
+            docker run \
               --detach \
               --publish 80:8080 \
               --volume discord-bot:/etc/storage \
               --network discord-bot \
+              --restart always \ 
               --env DISCORD_BOT_TOKEN=${{ secrets.DISCORD_BOT_TOKEN }} \
               --env DISCORD_API_CLIENT_ID=${{ secrets.DISCORD_API_CLIENT_ID }} \
               --env DISCORD_API_CLIENT_SECRET=${{ secrets.DISCORD_API_CLIENT_SECRET }} \
               --env JWT_SECRET=${{ secrets.JWT_SECRET }} \
               --env ADMIN_USER_IDS=${{ secrets.ADMIN_USER_IDS }} \
-              --env HOST=${{ secrets.HOST }} \
-              --env PROTOCOL=${{ secrets.PROTOCOL }} \
-              --env PUBLIC_PORT=${{ secrets.PUBLIC_PORT }} \
+              --env HOST \
+              --env PUBLIC_PORT \
+              --env PROTOCOL \
+              tracer1337/discord-bot:discord-bot
