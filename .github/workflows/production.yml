@@ -39,14 +39,14 @@ jobs:
           
       - name: Docker Run
         uses: appleboy/ssh-action@v0.1.4
+        env:
+          HOST: v2202104145753149514.ultrasrv.de
+          PUBLIC_PORT: 4000
+          PROTOCOL: http
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          env:
-            HOST: v2202104145753149514.ultrasrv.de
-            PUBLIC_PORT: 4000
-            PROTOCOL: http
           script: |
             docker rm -f tracer1337/discord-bot:discord-bot || true
             docker run \
