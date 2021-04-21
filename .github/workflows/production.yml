@@ -41,20 +41,21 @@ jobs:
       - name: Docker Run
         uses: appleboy/ssh-action@v0.1.4
         env:
-          HOST: v2202104145753149514.ultrasrv.de
-          PUBLIC_PORT: 4000
-          PROTOCOL: http
-          PORT: 8300
+          DOCKER_HOST: v2202104145753149514.ultrasrv.de
+          DOCKER_PUBLIC_PORT: "4000"
+          DOCKER_PROTOCOL: http
+          DOCKER_PORT: "8300"
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          envs: HOST,PUBLIC_PORT,PROTOCOL,PORT
+          envs: DOCKER_HOST,DOCKER_PUBLIC_PORT,DOCKER_PROTOCOL,DOCKER_PORT
           script: |
             docker rm -f discord-bot
             docker run \\
               --name discord-bot \\
               --detach \\
+              --publish $DOCKER_PORT:8080 \\
               --volume discord-bot:/etc/storage \\
               --network discord-bot \\
               --restart always \\ 
@@ -63,7 +64,7 @@ jobs:
               --env DISCORD_API_CLIENT_SECRET=${{ secrets.DISCORD_API_CLIENT_SECRET }} \\
               --env JWT_SECRET=${{ secrets.JWT_SECRET }} \\
               --env ADMIN_USER_IDS=${{ secrets.ADMIN_USER_IDS }} \\
-              --env HOST \\
-              --env PUBLIC_PORT \\
-              --env PROTOCOL \\
+              --env HOST=$DOCKER_HOST \\
+              --env PUBLIC_PORT=$DOCKER_PUBLIC_PORT \\
+              --env PROTOCOL=$DOCKER_PROTOCOL \\
               tracer1337/discord-bot:discord-bot
