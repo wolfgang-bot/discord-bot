@@ -27,7 +27,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Docker Pull
+      - name: Docker Login
         uses: appleboy/ssh-action@v0.1.4
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -35,8 +35,16 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             docker login --username tracer1337 --password ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Docker Remove
+        uses: appleboy/ssh-action@v0.1.4
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            docker rm -f discord-bot
             docker rmi -f tracer1337/discord-bot:discord-bot
-            docker pull tracer1337/discord-bot:discord-bot
           
       - name: Docker Run
         uses: appleboy/ssh-action@v0.1.4
@@ -51,7 +59,6 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           envs: DISCORD_BOT_HOST,DISCORD_BOT_PUBLIC_PORT,DISCORD_BOT_PROTOCOL,DISCORD_BOT_PORT
           script: |
-            docker rm -f discord-bot
             docker run \
               --name discord-bot \
               --detach \
