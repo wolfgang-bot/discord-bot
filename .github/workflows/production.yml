@@ -52,4 +52,18 @@ jobs:
           envs: HOST,PUBLIC_PORT,PROTOCOL,PORT
           script: |
             docker rm -f discord-bot
-            docker run --name discord-bot --detach --publish $PORT:8080 --volume discord-bot:/etc/storage --network discord-bot --restart always  --env DISCORD_BOT_TOKEN=${{ secrets.DISCORD_BOT_TOKEN }} --env DISCORD_API_CLIENT_ID=${{ secrets.DISCORD_API_CLIENT_ID }} --env DISCORD_API_CLIENT_SECRET=${{ secrets.DISCORD_API_CLIENT_SECRET }} --env JWT_SECRET=${{ secrets.JWT_SECRET }} --env ADMIN_USER_IDS=${{ secrets.ADMIN_USER_IDS }} --env HOST --env PUBLIC_PORT --env PROTOCOL tracer1337/discord-bot:discord-bot
+            docker run \\
+              --name discord-bot \\
+              --detach \\
+              --volume discord-bot:/etc/storage \\
+              --network discord-bot \\
+              --restart always \\ 
+              --env DISCORD_BOT_TOKEN=${{ secrets.DISCORD_BOT_TOKEN }} \\
+              --env DISCORD_API_CLIENT_ID=${{ secrets.DISCORD_API_CLIENT_ID }} \\
+              --env DISCORD_API_CLIENT_SECRET=${{ secrets.DISCORD_API_CLIENT_SECRET }} \\
+              --env JWT_SECRET=${{ secrets.JWT_SECRET }} \\
+              --env ADMIN_USER_IDS=${{ secrets.ADMIN_USER_IDS }} \\
+              --env HOST \\
+              --env PUBLIC_PORT \\
+              --env PROTOCOL \\
+              tracer1337/discord-bot:discord-bot
