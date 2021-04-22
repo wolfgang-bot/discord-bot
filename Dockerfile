@@ -9,13 +9,12 @@ WORKDIR /app
 
 COPY package*.json ./
 
-RUN npm install
+RUN npm ci
 
 COPY . .
 
 RUN npm run build
 
-# Somehow building with NODE_ENV=production throws an error ¯\_(ツ)_/¯ (That's why it's down here)
 ENV NODE_ENV=production
 
 EXPOSE 8080
