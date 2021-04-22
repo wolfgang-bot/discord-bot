@@ -1,0 +1,18 @@
+version: "3.9"
+
+services:
+    app:
+        build: .
+        ports:
+            - 8080:8080
+        volumes:
+            - storage:/etc/storage
+        networks:
+            - discord-bot
+
+volumes:
+    storage:
+
+networks:
+    discord-bot:
+        external: true
