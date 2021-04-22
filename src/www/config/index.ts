@@ -3,10 +3,6 @@ const config = {
         api: {
             basename: "https://discord.com/api"
         }
-    },
-
-    stream: {
-        maxInitialValues: 1e5
     }
 }
 

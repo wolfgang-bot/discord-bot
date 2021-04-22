@@ -21,7 +21,7 @@ export default async function boot({ app, websocket, client }: BootProps) {
 function setupExpress(app: express.Application) {
     // Set pug as template engine
     app.set("view engine", "pug")
-    app.set("views", path.join(__dirname, "..", "views"))
+    app.set("views", path.join(ROOT_DIR, "views"))
 
     // Support json
     app.use(express.json())
