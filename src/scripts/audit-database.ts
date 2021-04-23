@@ -70,7 +70,7 @@ makeRunnable(async () => {
 
     // Close connections
     await run(() => Promise.all([
-        database.db.close(),
+        database.disconnect(),
         client.destroy()
     ]), "Cleanup")
 
@@ -193,7 +193,7 @@ async function auditModuleInstances() {
 
         const staticModules = ModuleRegistry.modules.filter(module => module.isStatic)
         const keys = staticModules.map(module => `'${module.key}'`).join(",")
-        const moduleModels = await Module.whereAll(`key IN (${keys})`) as Collection<Module>
+        const moduleModels = await Module.whereAll(`\`key\` IN (${keys})`) as Collection<Module>
 
         const instances = await ModuleInstance.findAllBy("guild_id", id) as Collection<ModuleInstance>
 

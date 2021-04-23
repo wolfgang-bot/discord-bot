@@ -9,7 +9,7 @@ import log from "loglevel"
 import database from "../database"
 import seed from "../database/seeders"
 
-const table = process.argv[2].replace(/\r/, "")
+const table = process.argv[2]?.replace(/\r/, "")
 const args = process.argv.slice(3)
 
 const multiProgress = new MultiProgress()
@@ -48,4 +48,6 @@ function createProgressBar(label: string, length: number) {
     elapsed = Math.floor(elapsed * 100) / 100
     elapsed /= 1000
     log.info(chalk.cyan(`Executed in ${elapsed}s`))
+    
+    database.disconnect()
 })()

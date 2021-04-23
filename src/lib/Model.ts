@@ -2,6 +2,7 @@ import { RowDataPacket } from "mysql2"
 import log from "loglevel"
 import Collection from "./Collection"
 import database from "../database"
+import { applyBackticks } from "../utils"
 
 export type ModelProps = {
     table: string
@@ -37,7 +38,7 @@ abstract class Model {
     static async whereAll(selector: string, options: QueryOptions = {}): Promise<Collection<Model>> {
         // Get matches from database
         const query = `SELECT * FROM ${this.context.table} WHERE ${selector}`
-        const results: RowDataPacket[] = await database.all(query)
+        const results = await database.query(query)
 
         // Create models from results
         const models = await Promise.all(results.map(async row => {
@@ -62,14 +63,14 @@ abstract class Model {
      * Create a model from the first match for 'column = value'
      */
     static async findBy(column: string, value: string, options?: QueryOptions): ReturnType<typeof Model.where> {
-        return await Model.where.call(this, `${column} = '${value}'`, options)
+        return await Model.where.call(this, `\`${column}\` = '${value}'`, options)
     }
 
     /**
      * Create a collection from all matches for 'column = value'
      */
     static async findAllBy(column: string, value: string, options?: QueryOptions): ReturnType<typeof Model.whereAll> {
-        return await Model.whereAll.call(this, `${column} = '${value}'`, options)
+        return await Model.whereAll.call(this, `\`${column}\` = '${value}'`, options)
     }
 
     /**
@@ -83,8 +84,8 @@ abstract class Model {
      * Get the amount of rows in the table
      */
     static async getRowCount() {
-        const res = await await database.get(`SELECT COUNT(*) FROM ${this.context.table}`)
-        return res["COUNT(*)"] as number
+        const res = await database.query(`SELECT COUNT(*) FROM ${this.context.table}`)
+        return res[0]["COUNT(*)"] as number
     }
 
     /**
@@ -98,24 +99,41 @@ abstract class Model {
      * Store the model into the database
      */
     async store() {
-        const query = `INSERT INTO ${this.table}(${this.columns.join(",")}) VALUES (${"?,".repeat(this.columns.length).slice(0, -1)})`
-        await database.run(query, this.getColumns())
+        const columns = this.columns.map(applyBackticks).join(",")
+        const placeholders = "?,".repeat(this.columns.length).slice(0, -1)
+        const query = `
+            INSERT INTO ${this.table}
+            (${columns})
+            VALUES (${placeholders})
+        `
+        await database.query(query, this.getColumns())
     }
 
     /**
      * Update the model in the database
      */
     async update() {
-        const query = `UPDATE ${this.table} SET ${this.columns.map(col => `${col} = ?`).join(", ")} WHERE ${this.pkColumn} = '${this[this.pkColumn]}'`
-        await database.run(query, this.getColumns())
+        const columns = this.columns
+            .map(applyBackticks)
+            .map(col => `${col} = ?`)
+            .join(", ")
+        const query = `
+            UPDATE ${this.table}
+            SET ${columns}
+            WHERE \`${this.pkColumn}\` = '${this[this.pkColumn]}'
+        `
+        await database.query(query, this.getColumns())
     }
 
     /**
      * Delete the model from the database
      */
     async delete() {
-        const query = `DELETE FROM ${this.table} WHERE ${this.pkColumn} = '${this[this.pkColumn]}'`
-        await database.run(query)
+        const query = `
+            DELETE FROM ${this.table}
+            WHERE \`${this.pkColumn}\` = '${this[this.pkColumn]}'
+        `
+        await database.query(query)
     }
 
     /**

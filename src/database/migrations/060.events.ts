@@ -6,7 +6,7 @@ const migration: Migration = {
     columns: [
         "id varchar(255) PRIMARY KEY",
         "type TINYINT NOT NULL",
-        "timestamp TIMESTAMP NOT NULL",
+        "timestamp BIGINT UNSIGNED NOT NULL",
         "guild_id varchar(255)",
         "user_id varchar(255)",
         "meta TEXT"

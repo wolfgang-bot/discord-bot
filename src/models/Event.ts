@@ -77,9 +77,9 @@ class Event<TMeta = undefined> extends Model implements EventModelValues<TMeta> 
     }
 
     static async queryGroupedByUser(query: string, type: EVENT_TYPES) {
-        const result = await database.all(`
+        const result = await database.query(`
             SELECT user_id, ${query}
-            FROM "${this.context.table}"
+            FROM ${this.context.table}
             WHERE type=${type}
             GROUP BY user_id
         `)
