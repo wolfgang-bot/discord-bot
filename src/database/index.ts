@@ -16,4 +16,4 @@ export type Seeder = {
     run: (args: any[], callback: ProgressCallback) => Promise<void> | void
 }
 
-export default new Database(process.env.SQLITE_DB_PATH)
+export default new Database()

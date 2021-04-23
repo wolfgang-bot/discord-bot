@@ -11,7 +11,13 @@ const tables = process.argv.slice(2)
 makeRunnable(async () => {
     await database.connect()
 
-    for (let table of tables) {
-        await run(() => migrate(database, table), `Migrate table: ${table}`)
+    if (tables.length !== 0) {
+        for (let table of tables) {
+            await run(() => migrate(database, table), `Migrate table: ${table}`)
+        }
+    } else {
+        await run(() => migrate(database), 'Migrate database')
     }
+
+    database.disconnect()
 })()

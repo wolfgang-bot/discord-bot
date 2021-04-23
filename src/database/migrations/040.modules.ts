@@ -4,7 +4,7 @@ const migration: Migration = {
     table: "modules",
 
     columns: [
-        "key varchar(255) PRIMARY KEY"
+        "`key` varchar(255) PRIMARY KEY"
     ]
 }
 

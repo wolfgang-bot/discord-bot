@@ -3,10 +3,8 @@ import path from "path"
 import Database from "../Database"
 import { Migration } from "../index"
 
-const ext = process.env.NODE_ENV === "development" ? ".ts" : ".js"
-
 async function run(database: Database, table?: string) {
-    let migrations: Migration[] = (await glob("*" + ext, { cwd: __dirname }))
+    let migrations: Migration[] = (await glob("*.ts", { cwd: __dirname }))
         .filter(filename => /[0-9]+\.\w+.\w+/.test(filename))
         .map(filename => require(path.join(__dirname, filename)).default)
 
@@ -19,17 +17,22 @@ async function run(database: Database, table?: string) {
     }
 
     for (let migration of migrations.reverse()) {
-        await database.run(`DROP TABLE IF EXISTS '${migration.table}'`)
+        await database.query(`DROP TABLE IF EXISTS ${migration.table}`)
     }
 
     for (let migration of migrations) {
-        const query = `
+        await database.query(`
             CREATE TABLE ${migration.table} (
                 ${migration.columns.join(",\n")}
             );
-        `
-        
-        await database.run(query)
+        `)
+
+        // Convert charset for storing emojis
+        await database.query(`
+            ALTER TABLE ${migration.table}
+            CONVERT TO CHARACTER SET utf8mb4
+            COLLATE utf8mb4_bin;
+        `)
     }
 }
 

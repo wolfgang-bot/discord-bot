@@ -1,6 +1,6 @@
 import { Migration } from "../index"
 
-const migrate: Migration = {
+const migration: Migration = {
     table: "guilds",
 
     columns: [
@@ -9,4 +9,4 @@ const migrate: Migration = {
     ]
 }
 
-export default migrate
+export default migration

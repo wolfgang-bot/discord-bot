@@ -1,55 +1,25 @@
-import fs from "fs"
-import sqlite from "sqlite3"
-import migrate from "./migrations"
-
-sqlite.verbose()
+import mysql, { Connection, RowDataPacket } from "mysql2/promise"
 
 class Database {
-    db: sqlite.Database
+    public db: Connection
 
-    constructor(private path: string) {}
-
-    connect(): Promise<void> {
-        return new Promise((resolve, reject) => {
-            let fileExists = fs.existsSync(this.path)
-
-            this.db = new sqlite.Database(this.path, async (error) => {
-                if (error) return reject()
-
-                if (!fileExists) {
-                    await migrate(this)
-                }
-
-                resolve()
-            })
+    async connect() {
+        this.db = await mysql.createConnection({
+            host: process.env.DATABASE_HOST,
+            port: parseInt(process.env.DATABASE_PORT),
+            user: process.env.DATABASE_USER,
+            password: process.env.DATABASE_PASSWORD,
+            database: process.env.DATABASE_NAME
         })
     }
 
-    run(query: string, config?: any): Promise<void> {
-        return new Promise((resolve, reject) => {
-            this.db.run(query, config, (error) => {
-                if (error) reject(error)
-                else resolve()
-            })
-        })
+    disconnect() {
+        this.db.destroy()
     }
 
-    get(query: string, config?: any): Promise<any> {
-        return new Promise((resolve, reject) => {
-            this.db.get(query, config, (error, result) => {
-                if (error) reject(error)
-                else resolve(result)
-            })
-        })
-    }
-
-    all(query: string, config?: any): Promise<any[]> {
-        return new Promise((resolve, reject) => {
-            this.db.all(query, config, (error, results) => {
-                if (error) reject(error)
-                else resolve(results)
-            })
-        })
+    async query(query: string, values?: any) {
+        const [result] = await this.db.query<RowDataPacket[]>(query, values)
+        return result
     }
 }
 

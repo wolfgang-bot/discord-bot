@@ -119,3 +119,10 @@ export async function filterAsync<T>(array: T[], filterFn: (value: T) => Promise
     const filter = await Promise.all(array.map(filterFn))
     return array.filter((_, i) => filter[i])
 }
+
+/**
+ * Surround string with backticks
+ */
+export function applyBackticks(input: string) {
+    return `\`${input}\``
+}
