@@ -17,13 +17,13 @@ function boot(
             if (options.useHttpServer !== false) {
                 await startServer(client)
             }
-
+            
             resolve()
         })
 
+        await database.connect()
+
         await Promise.all([
-            database.connect(),
-            
             loadLocales(),
 
             client.login(process.env.DISCORD_BOT_TOKEN)

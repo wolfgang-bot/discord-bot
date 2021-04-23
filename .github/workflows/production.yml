@@ -53,18 +53,21 @@ jobs:
           DISCORD_BOT_PUBLIC_PORT: "3100"
           DISCORD_BOT_PROTOCOL: http
           DISCORD_BOT_PORT: "8300"
+          DATABASE_HOST: host.docker.internal
+          DATABASE_PORT: "3306"
+          DATABASE_NAME: discord-bot
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          envs: DISCORD_BOT_HOST,DISCORD_BOT_PUBLIC_PORT,DISCORD_BOT_PROTOCOL,DISCORD_BOT_PORT
+          envs: DISCORD_BOT_HOST,DISCORD_BOT_PUBLIC_PORT,DISCORD_BOT_PROTOCOL,DISCORD_BOT_PORT,DATABASE_HOST,DATABASE_PORT,DATABASE_NAME
           script: |
             docker run \
               --name discord-bot \
               --detach \
               --publish $DISCORD_BOT_PORT:8080 \
-              --volume discord-bot:/etc/storage \
               --network discord-bot \
+              --add-host host.docker.internal:host-gateway \
               --restart=always \
               --env DISCORD_BOT_TOKEN=${{ secrets.DISCORD_BOT_TOKEN }} \
               --env DISCORD_API_CLIENT_ID=${{ secrets.DISCORD_API_CLIENT_ID }} \
@@ -74,4 +77,9 @@ jobs:
               --env HOST=$DISCORD_BOT_HOST \
               --env PUBLIC_PORT=$DISCORD_BOT_PUBLIC_PORT \
               --env PROTOCOL=$DISCORD_BOT_PROTOCOL \
+              --env DATABASE_HOST \
+              --env DATABASE_PORT \
+              --env DATABASE_USER=${{ secrets.DATABASE_USER }} \
+              --env DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }} \
+              --env DATABASE_NAME \
               tracer1337/discord-bot:discord-bot
