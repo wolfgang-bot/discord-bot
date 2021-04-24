@@ -1,10 +1,10 @@
-import mysql, { Connection, RowDataPacket } from "mysql2/promise"
+import mysql, { Pool, RowDataPacket } from "mysql2/promise"
 
 class Database {
-    public db: Connection
+    private pool: Pool
 
     async connect() {
-        this.db = await mysql.createConnection({
+        this.pool = mysql.createPool({
             host: process.env.DATABASE_HOST,
             port: parseInt(process.env.DATABASE_PORT),
             user: process.env.DATABASE_USER,
@@ -14,11 +14,11 @@ class Database {
     }
 
     disconnect() {
-        this.db.destroy()
+        this.pool.end()
     }
 
     async query(query: string, values?: any) {
-        const [result] = await this.db.query<RowDataPacket[]>(query, values)
+        const [result] = await this.pool.query<RowDataPacket[]>(query, values)
         return result
     }
 }
