@@ -1,8 +1,29 @@
 import Discord from "discord.js"
 import DefaultConfig, { Validator } from "../../../lib/Configuration"
-import { emojiConstraint } from "../../../lib/constraints"
+import {
+    channelNameConstraint,
+    emojiConstraint,
+    minMaxConstraint,
+    useConstraint
+} from "../../../lib/constraints"
 
-const MAX_AMOUNT_OF_CHANNELS = 100
+const DELETE_MESSAGE_MIN_LENGTH = 1
+const DELETE_MESSAGE_MAX_LENGTH = 30
+
+const ACCEPT_REPUTATION_MIN = 0
+const ACCEPT_REPUTATION_MAX = 5000
+
+const MESSAGE_REPUTATION_MIN = 0
+const MESSAGE_REPUTATION_MAX = 100
+
+const MESSAGE_REPUTATION_TIMEOUT_MIN = 0
+const MESSAGE_REPUTATION_TIMEOUT_MAX = 1e3 * 3600 // One Hour
+
+const ASK_CHANNEL_RATE_LIMIT_MIN = 0
+const ASK_CHANNEL_RATE_LIMIT_MAX = 1e3 * 3600 // One Hour
+
+const MAX_CHANNELS_MIN_AMOUNT = 1
+const MAX_CHANNELS_MAX_AMOUNT = 100
 
 type ConfigProps = {
     channel: Discord.TextChannel,
@@ -16,6 +37,38 @@ type ConfigProps = {
     maxChannels: number
 }
 
+const deleteMessageConstraint = minMaxConstraint({
+    min: DELETE_MESSAGE_MIN_LENGTH,
+    max: DELETE_MESSAGE_MAX_LENGTH,
+    subjectName: "Length",
+    getNumericValue: (value: string) => value.length
+})
+
+const acceptReputationConstraint = minMaxConstraint({
+    min: ACCEPT_REPUTATION_MIN,
+    max: ACCEPT_REPUTATION_MAX
+})
+
+const messageReputationConstraint = minMaxConstraint({
+    min: MESSAGE_REPUTATION_MIN,
+    max: MESSAGE_REPUTATION_MAX
+})
+
+const messageReputationTimeoutConstraint = minMaxConstraint({
+    min: MESSAGE_REPUTATION_TIMEOUT_MIN,
+    max: MESSAGE_REPUTATION_TIMEOUT_MAX
+})
+
+const askChannelRateLimitConstraint = minMaxConstraint({
+    min: ASK_CHANNEL_RATE_LIMIT_MIN,
+    max: ASK_CHANNEL_RATE_LIMIT_MAX
+})
+
+const maxChannelsConstraint = minMaxConstraint({
+    min: MAX_CHANNELS_MIN_AMOUNT,
+    max: MAX_CHANNELS_MAX_AMOUNT
+})
+
 export default class Configuration extends DefaultConfig implements ConfigProps {
     channel: Discord.TextChannel
     channelName: string
@@ -28,21 +81,14 @@ export default class Configuration extends DefaultConfig implements ConfigProps 
     maxChannels: number
 
     static validators: Validator<ConfigProps>[] = [
-        {
-            key: "resolveReaction",
-            validate: (props) => emojiConstraint.verifyConstraints(props.resolveReaction),
-            message: emojiConstraint.constraints
-        },
-        {
-            key: "maxChannels",
-            validate: (props) => props.maxChannels <= MAX_AMOUNT_OF_CHANNELS,
-            message: `Cannot be greater than ${MAX_AMOUNT_OF_CHANNELS}`
-        },
-        {
-            key: "maxChannels",
-            validate: (props) => props.maxChannels > 0,
-            message: "Must be greater than 0"
-        }
+        useConstraint<ConfigProps, string>("resolveReaction", emojiConstraint),
+        useConstraint<ConfigProps, string>("channelName", channelNameConstraint),
+        useConstraint<ConfigProps, string>("deleteMessage", deleteMessageConstraint),
+        useConstraint<ConfigProps, number>("acceptReputation", acceptReputationConstraint),
+        useConstraint<ConfigProps, number>("messageReputation", messageReputationConstraint),
+        useConstraint<ConfigProps, number>("messageReputationTimeout", messageReputationTimeoutConstraint),
+        useConstraint<ConfigProps, number>("askChannelRateLimit", askChannelRateLimitConstraint),
+        useConstraint<ConfigProps, number>("maxChannels", maxChannelsConstraint)
     ]
 
     constructor(props: ConfigProps) {

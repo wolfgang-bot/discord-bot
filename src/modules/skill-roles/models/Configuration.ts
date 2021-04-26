@@ -1,10 +1,9 @@
 import Discord from "discord.js"
 import DefaultConfig, { Validator } from "../../../lib/Configuration"
-import { COLOR_REGEX } from "../../../lib/constraints"
+import { discordColorConstraint, minMaxConstraint, noDuplicatesConstraint, useConstraint } from "../../../lib/constraints"
 
-function hasDuplicates(array: any[]) {
-    return new Set(array).size !== array.length
-}
+const EMOJI_PREFIX_MIN_LENGTH = 0
+const EMOJI_PREFIX_MAX_LENGTH = 20
 
 type ConfigProps = {
     channel: Discord.TextChannel,
@@ -12,6 +11,14 @@ type ConfigProps = {
     roleColor: string,
     roles: string[]
 }
+
+const emojiPrefixConstraint = minMaxConstraint({
+    min: EMOJI_PREFIX_MIN_LENGTH,
+    max: EMOJI_PREFIX_MAX_LENGTH,
+    subjectName: "Length",
+    getNumericValue: (value: string) => value.length
+})
+
 export default class Configuration extends DefaultConfig implements ConfigProps {
     channel: Discord.TextChannel
     emojiPrefix: string
@@ -19,16 +26,9 @@ export default class Configuration extends DefaultConfig implements ConfigProps 
     roles: string[]
 
     static validators: Validator<ConfigProps>[] = [
-        {
-            key: "roleColor",
-            validate: (props) => COLOR_REGEX.test(props.roleColor),
-            message: "Must be a valid color code"
-        },
-        {
-            key: "roles",
-            validate: (props) => !hasDuplicates(props.roles),
-            message: "Cannot contain duplicates"
-        }
+        useConstraint<ConfigProps, string>("emojiPrefix", emojiPrefixConstraint),
+        useConstraint<ConfigProps, string>("roleColor", discordColorConstraint),
+        useConstraint<ConfigProps, string[]>("roles", noDuplicatesConstraint)
     ]
     
     constructor(props: ConfigProps) {

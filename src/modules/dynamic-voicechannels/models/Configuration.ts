@@ -1,7 +1,9 @@
 import Discord from "discord.js"
 import DefaultConfig, { Validator } from "../../../lib/Configuration"
+import { channelNameConstraint, minMaxConstraint, useConstraint } from "../../../lib/constraints"
 
-const MAX_AMOUNT_OF_CHANNELS = 20
+const DEFAULT_CHANNELS_MIN_AMOUNT = 1
+const DEFAULT_CHANNELS_MAX_AMOUNT = 20
 
 type ConfigProps = {
     parentChannel: Discord.CategoryChannel
@@ -9,27 +11,19 @@ type ConfigProps = {
     channelName: string
 }
 
+const defaultChannelsConstraint = minMaxConstraint({
+    min: DEFAULT_CHANNELS_MIN_AMOUNT,
+    max: DEFAULT_CHANNELS_MAX_AMOUNT
+})
+
 export default class Configuration extends DefaultConfig implements ConfigProps {
     parentChannel: Discord.CategoryChannel
     defaultChannels: number
     channelName: string
 
     static validators: Validator<ConfigProps>[] = [
-        {
-            key: "defaultChannels",
-            validate: (props) => props.defaultChannels > 0,
-            message: "Must be greater than 0"
-        },
-        {
-            key: "defaultChannels",
-            validate: (props) => props.defaultChannels <= MAX_AMOUNT_OF_CHANNELS,
-            message: `Cannot be larger than ${MAX_AMOUNT_OF_CHANNELS}`
-        },
-        {
-            key: "channelName",
-            validate: (props) => props.channelName.length > 0,
-            message: "Cannot be empty"
-        }
+        useConstraint<ConfigProps, number>("defaultChannels", defaultChannelsConstraint),
+        useConstraint<ConfigProps, string>("channelName", channelNameConstraint),
     ]
 
     constructor(props: ConfigProps) {
