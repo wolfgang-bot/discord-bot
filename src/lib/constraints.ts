@@ -55,10 +55,14 @@ export function everyGreaterThanPreceeding(array: number[]) {
     ))
 }
 
+export function hasDuplicates(array: any[]) {
+    return new Set(array).size !== array.length
+}
+
 // Match hex colors
 export const HEX_COLOR_REGEX = /^#([0-9a-fA-F]{3}){1,2}$/
 // Match hex colors and discord color names
-export const COLOR_REGEX = /^((#([0-9a-fA-F]{3}){1,2})|(DEFAULT|WHITE|AQUA|GREEN|BLUE|YELLOW|PURPLE|LUMINOUS_VIVID_PINK|GOLD|ORANGE|RED|GREY|DARKER_GREY|NAVY|DARK_AQUA|DARK_GREEN|DARK_BLUE|DARK_PURPLE|DARK_VIVID_PINK|DARK_GOLD|DARK_ORANGE|DARK_RED|DARK_GREY|LIGHT_GREY|DARK_NAVY|BLURPLE|GREYPLE|DARK_BUT_NOT_BLACK|NOT_QUITE_BLACK|RANDOM))$/
+export const DISCORD_COLOR_REGEX = /^((#([0-9a-fA-F]{3}){1,2})|(DEFAULT|WHITE|AQUA|GREEN|BLUE|YELLOW|PURPLE|LUMINOUS_VIVID_PINK|GOLD|ORANGE|RED|GREY|DARKER_GREY|NAVY|DARK_AQUA|DARK_GREEN|DARK_BLUE|DARK_PURPLE|DARK_VIVID_PINK|DARK_GOLD|DARK_ORANGE|DARK_RED|DARK_GREY|LIGHT_GREY|DARK_NAVY|BLURPLE|GREYPLE|DARK_BUT_NOT_BLACK|NOT_QUITE_BLACK|RANDOM))$/
 
 export const emojiConstraint: Constraint<string> = {
     constraints: "Must be one unicode emoji",
@@ -72,9 +76,19 @@ export const hexColorConstraint: Constraint<string> = {
     verifyConstraints: (value) => HEX_COLOR_REGEX.test(value)
 }
 
+export const discordColorConstraint: Constraint<string> = {
+    constraints: "Must be a valid discord color-code",
+    verifyConstraints: (value) => DISCORD_COLOR_REGEX.test(value)
+}
+
 export const channelNameConstraint = minMaxConstraint({
     min: CHANNEL_NAME_MIN_LENGTH,
     max: CHANNEL_NAME_MAX_LENGTH,
     subjectName: "Length",
     getNumericValue: (value: string) => value.length
 })
+
+export const noDuplicatesConstraint: Constraint<any[]> = {
+    constraints: "Cannot contain duplicates",
+    verifyConstraints: (array) => !hasDuplicates(array)
+}
