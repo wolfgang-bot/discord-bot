@@ -39,6 +39,22 @@ export function minMaxConstraint<T = number>(options: {
     }
 }
 
+export function hasSameLength(...arrays: any[][]) {
+    return arrays.some(array => !arrays.some(
+        _array => array.length !== _array.length
+    ))
+}
+
+export function everyGreaterThanZero(array: number[]) {
+    return array.every(value => value > 0)
+}
+
+export function everyGreaterThanPreceeding(array: number[]) {
+    return array.every((value, i) => (
+        i === 0 ? true : value > array[i - 1]
+    ))
+}
+
 // Match hex colors
 export const HEX_COLOR_REGEX = /^#([0-9a-fA-F]{3}){1,2}$/
 // Match hex colors and discord color names
