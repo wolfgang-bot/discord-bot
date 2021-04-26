@@ -67,6 +67,11 @@ export const emojiConstraint: Constraint<string> = {
         value.match(emojiRegex()).length === 1
 }
 
+export const hexColorConstraint: Constraint<string> = {
+    constraints: "Must be a valid hexadecimal color",
+    verifyConstraints: (value) => HEX_COLOR_REGEX.test(value)
+}
+
 export const channelNameConstraint = minMaxConstraint({
     min: CHANNEL_NAME_MIN_LENGTH,
     max: CHANNEL_NAME_MAX_LENGTH,
