@@ -1,7 +1,7 @@
 import Discord from "discord.js"
 import { APIUser } from "discord-api-types/v8"
 import Model from "../lib/Model"
-import { checkPermissions, isBotAdmin } from "../utils"
+import { checkPermissions } from "../utils"
 import { ConfigJSON as SettingsConfigJSON } from "../modules/settings/models/Configuration"
 
 export type UserModelValues = {
@@ -19,7 +19,7 @@ class User extends Model implements UserModelValues {
     access_token?: string
     refresh_token?: string
     discordUser: Discord.User | APIUser = null
-    isBotAdmin: boolean
+    isBotAdmin?: boolean
 
     constructor(values: UserModelValues) {
         super({
@@ -27,8 +27,6 @@ class User extends Model implements UserModelValues {
             columns: ["id", "access_token", "refresh_token"],
             values
         })
-
-        this.isBotAdmin = isBotAdmin(this.id)
     }
 
     async isAdmin(guild: Discord.Guild | Guild) {
@@ -50,6 +48,14 @@ class User extends Model implements UserModelValues {
         ]) as [Discord.GuildMember, SettingsConfigJSON]
 
         return settings.adminRoles.some(id => member.roles.cache.has(id))
+    }
+
+    async fetchIsBotAdmin() {
+        if (this.isBotAdmin !== undefined) {
+            return
+        }
+        const admin = await Admin.findBy("user_id", this.id)
+        this.isBotAdmin = !!admin
     }
     
     init() {}
@@ -74,3 +80,4 @@ export default User
 
 import Guild from "./Guild"
 import ModuleInstance from "./ModuleInstance"
+import Admin from "./Admin"

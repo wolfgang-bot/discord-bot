@@ -104,15 +104,6 @@ export async function checkPermissions(guild: Discord.Guild, user: User | Discor
 }
 
 /**
- * Check if a user-id corresponds to a user who is an admin of the bot
- */
-export function isBotAdmin(userId: string) {
-    return process.env.ADMIN_USER_IDS
-        .split(",")
-        .includes(userId)
-}
-
-/**
  * Filter with async support
  */
 export async function filterAsync<T>(array: T[], filterFn: (value: T) => Promise<boolean>) {

@@ -1,6 +1,5 @@
 import Discord from "discord.js"
 import User from "../../models/User"
-import { isBotAdmin } from "../../utils"
 import { AUTH_METHODS, EVENT_STREAMS, SubscriptionArgs } from "./types"
 
 type AuthFunction = (args: SubscriptionArgs) => Promise<number | void>
@@ -48,7 +47,8 @@ export default class StreamAuthorizer {
     }
 
     async isBotAdmin() {
-        if (!isBotAdmin(this.user.id)) {
+        await this.user.fetchIsBotAdmin()
+        if (!this.user.isBotAdmin) {
             return 403
         }
     }
