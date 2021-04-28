@@ -51,9 +51,6 @@ class User extends Model implements UserModelValues {
     }
 
     async fetchIsBotAdmin() {
-        if (this.isBotAdmin !== undefined) {
-            return
-        }
         const admin = await Admin.findBy("user_id", this.id)
         this.isBotAdmin = !!admin
     }

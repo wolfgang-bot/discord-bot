@@ -57,7 +57,12 @@ export default class SocketManager {
                 return next(new Error("Unauthorized"))
             }
 
-            user.discordUser = await OAuthServiceProvider.fetchProfile(user.access_token)
+            const [discordUser] = await Promise.all([
+                OAuthServiceProvider.fetchProfile(user.access_token),
+                user.fetchIsBotAdmin()
+            ])
+
+            user.discordUser = discordUser
             socket.user = user
         } catch (error) {
             log.debug(error)

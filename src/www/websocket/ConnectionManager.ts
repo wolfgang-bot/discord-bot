@@ -4,6 +4,7 @@ import StreamSubscriber from "./StreamSubscriber"
 import GuildController from "./controllers/GuildController"
 import ModuleController from "./controllers/ModuleController"
 import SubscriptionController from "./controllers/SubscriptionController"
+import UserController from "./controllers/UserController"
 
 export default class ConnectionManager {
     socket: AuthorizedSocket
@@ -12,6 +13,7 @@ export default class ConnectionManager {
     guildController: GuildController
     moduleController: ModuleController
     subscriptionController: SubscriptionController
+    userController: UserController
 
     streamSubscriber: StreamSubscriber
 
@@ -24,6 +26,7 @@ export default class ConnectionManager {
         this.guildController = new GuildController(client, socket)
         this.moduleController = new ModuleController(client, socket)
         this.subscriptionController = new SubscriptionController(client, socket, this.streamSubscriber)
+        this.userController = new UserController(client, this.socket)
 
         this.attachReceivers()
     }
@@ -45,6 +48,10 @@ export default class ConnectionManager {
         this.socket.on("post:stream/unsubscribe",       this.subscriptionController.unsubscribe.bind(this.subscriptionController))
         this.socket.on("post:stream/pause",             this.subscriptionController.pause.bind(this.subscriptionController))
         this.socket.on("post:stream/resume",            this.subscriptionController.resume.bind(this.subscriptionController))
+
+        this.socket.on("get:admins",                    this.userController.getAdmins.bind(this.userController))
+        this.socket.on("post:admins/create",            this.userController.createAdmin.bind(this.userController))
+        this.socket.on("post:admins/remove",            this.userController.removeAdmin.bind(this.userController))
     }
 
     destroy() {

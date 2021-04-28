@@ -41,13 +41,13 @@ export default class StreamManager {
 
     assertStreamExists(args: SubscriptionArgs) {
         if (!this.streamRegistry.getStream(args)) {
-            throw new Error(`Not subscribed to stream ${args.eventStream}`)
+            throw new Error(`Not subscribed to stream '${args.eventStream}'`)
         }
     }
 
     assertStreamDoesNotExist(args: SubscriptionArgs) {
         if (this.streamRegistry.getStream(args)) {
-            throw new Error(`Already subscribed to stream ${args.eventStream}`)
+            throw new Error(`Already subscribed to stream '${args.eventStream}'`)
         }
     }
 }
