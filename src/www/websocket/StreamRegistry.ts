@@ -14,6 +14,7 @@ import ModuleInstanceStream from "./streams/ModuleInstanceStream"
 import UserGuildStream from "./streams/UserGuildStream"
 import UserMessageLeaderboardStream from "./streams/UserMessageLeaderboardStream"
 import UserVoiceLeaderboardStream from "./streams/UserVoiceLeaderboardStream"
+import ModuleSharesStream from "./streams/ModuleSharesStream"
 
 const streams: Record<
     EVENT_STREAMS,
@@ -23,6 +24,7 @@ const streams: Record<
     [EVENT_STREAMS.GUILDS_RESOURCES]: GuildResourceStream,
     [EVENT_STREAMS.USERS]: UserStream,
     [EVENT_STREAMS.MODULE_INSTANCES]: ModuleInstanceStream,
+    [EVENT_STREAMS.MODULE_SHARES]: ModuleSharesStream,
     [EVENT_STREAMS.USER_GUILDS]: UserGuildStream,
     [EVENT_STREAMS.GUILD_MODULE_INSTANCES]: GuildModuleInstanceStream,
     [EVENT_STREAMS.MEMBERS]: MemberStream,

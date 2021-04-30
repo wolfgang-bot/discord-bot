@@ -3,6 +3,8 @@ import Discord from "discord.js"
 import log from "loglevel"
 import Model from "../lib/Model"
 import Context from "../lib/Context"
+import { ExtendedAPIGuild } from "../www/services/OAuthServiceProvider"
+import database from "../database"
 
 export type ModuleInstanceModelValues = {
     id?: string
@@ -34,6 +36,20 @@ class ModuleInstance extends Model implements ModuleInstanceModelValues {
 
     static findByContext(context: Context) {
         return this.findByGuildAndModuleKey(context.guild, context.module.key)
+    }
+
+    static async countModuleKeys() {
+        const rows = await database.query(`
+            SELECT module_key, COUNT('*') as count
+            FROM module_instances
+            GROUP BY module_key
+        `) as { module_key: string, count: number }[]
+
+        const map = Object.fromEntries(
+            rows.map(row => [row.module_key, row.count])
+        )
+        
+        return map as Record<string, number>
     }
 
     static async config(guild: Discord.Guild | Guild | ExtendedAPIGuild, key: string) {
@@ -86,5 +102,3 @@ export default ModuleInstance
 
 import Module from "./Module"
 import Guild from "./Guild"
-import { ExtendedAPIGuild } from "../www/services/OAuthServiceProvider"
-
