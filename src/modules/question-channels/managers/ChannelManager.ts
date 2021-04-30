@@ -10,6 +10,7 @@ import Configuration from "../models/Configuration"
 import SettingsConfig from "../../settings/models/Configuration"
 import User from "../../../models/User"
 import BroadcastChannel from "../../../services/BroadcastChannel"
+import log from "loglevel"
 
 type InstanceData = {
     activeChannels: ActiveChannelsMap
@@ -23,7 +24,7 @@ class ChannelManager extends Manager {
     config: Configuration
     settings: SettingsConfig
     activeChannels: ActiveChannelsMap = {}
-    timeoutUsers: Set<string> = new Set
+    timeoutUsers: Set<string> = new Set()
 
     constructor(context: Context, config: Configuration) {
         super(context)
@@ -214,7 +215,13 @@ class ChannelManager extends Manager {
     async delete() {
         // Delete all active channels
         const channels = Object.values(this.activeChannels) as ActiveChannel[]
-        await Promise.all(channels.map(({ channel }) => channel.delete()))
+        await Promise.all(channels.map(async ({ channel }) => {
+            try {
+                await channel.delete()
+            } catch (error) {
+                log.debug(error)
+            }
+        }))
 
         this.context.client.removeListener("message", this.handleMessage)
         this.context.client.removeListener("messageReactionAdd", this.handleReaction)

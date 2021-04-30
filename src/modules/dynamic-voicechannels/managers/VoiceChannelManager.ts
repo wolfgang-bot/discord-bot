@@ -1,7 +1,13 @@
 import Discord from "discord.js"
+import log from "loglevel"
 import Manager from "../../../lib/Manager"
 import Context from "../../../lib/Context"
 import Configuration from "../models/Configuration"
+import ModuleInstance from "../../../models/ModuleInstance"
+
+type InstanceData = {
+    channelIds?: string[]
+}
 
 class VoiceChannelManager extends Manager {
     config: Configuration
@@ -13,16 +19,6 @@ class VoiceChannelManager extends Manager {
         this.updateVoiceChannels = this.updateVoiceChannels.bind(this)
     }
 
-    getVoiceChannels() {
-        return this.context.guild.channels.cache
-            .array()
-            .filter(channel => (
-                channel.type === "voice" &&
-                channel.parent &&
-                channel.parent.id === this.config.parentChannel.id
-            )) as Discord.VoiceChannel[]
-    }
-
     async createVoiceChannel(index: number) {
         const name = this.config.channelName.replace(/{}/g, (index + 1).toString())
         const channel = await this.context.guild.channels.create(name, {
@@ -31,6 +27,7 @@ class VoiceChannelManager extends Manager {
             position: index
         })
         this.channels[index] = channel
+        await this.storeVoiceChannels()
     }
 
     async updateVoiceChannels() {
@@ -56,9 +53,26 @@ class VoiceChannelManager extends Manager {
         }
     }
 
+    async storeVoiceChannels() {
+        const model = await ModuleInstance.findByContext(this.context) as ModuleInstance
+        model.data.channelIds = this.channels.map(channel => channel.id)
+        await model.update()
+    }
+
+    async loadVoiceChannels() {
+        const model = await ModuleInstance.findByContext(this.context) as ModuleInstance
+        const { channelIds } = model.data as InstanceData
+        if (channelIds) {
+            await Promise.all(channelIds.map(async (id, index) => {
+                this.channels[index] =
+                    await this.context.client.channels.fetch(id) as Discord.VoiceChannel
+            }))
+        }
+    }
+
     async init() {
-        this.channels = this.getVoiceChannels()
-        
+        await this.loadVoiceChannels()
+
         // Create remaining voice channels
         for (let i = this.channels.length; i < this.config.defaultChannels; i++) {
             await this.createVoiceChannel(i)
@@ -68,7 +82,13 @@ class VoiceChannelManager extends Manager {
     }
     
     async delete() {
-        await Promise.all(this.channels.map(channel => channel.delete()))
+        await Promise.all(this.channels.map(async channel => {
+            try {
+                await channel.delete()
+            } catch (error) {
+                log.debug(error)
+            }
+        }))
         
         this.context.client.removeListener("voiceStateUpdate", this.updateVoiceChannels)
     }
