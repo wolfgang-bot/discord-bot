@@ -1,4 +1,6 @@
 import Discord from "discord.js"
+import path from "path"
+import fs from "fs"
 import User from "../models/User"
 import ReputationSystemConfig from "../modules/reputation-system/models/Configuration"
 

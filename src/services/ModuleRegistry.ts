@@ -1,5 +1,6 @@
 import glob from "glob-promise"
 import path from "path"
+import fs from "fs"
 import Discord from "discord.js"
 import Module from "../lib/Module"
 import Collection from "../lib/Collection"
@@ -84,6 +85,18 @@ class ModuleRegistry {
         return this.modules
             .map(module => module.createCommands())
             .flat()
+    }
+
+    /**
+     * Get the filenames of a module's images
+     */
+    static findModuleImages(module: typeof Module) {
+        const imagesDir = path.join(MODULES_DIR, module.key, "images")
+        if (!fs.existsSync(imagesDir)) {
+            return []
+        }
+        return fs.readdirSync(imagesDir)
+            .map((imagePath) => path.basename(imagePath))
     }
 }
 
