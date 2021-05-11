@@ -1,4 +1,4 @@
-import Discord from "discord.js"
+import Discord, { DiscordAPIError } from "discord.js"
 import log from "loglevel"
 import WebSocketController from "../../../lib/WebSocketController"
 import ModuleRegistry from "../../../services/ModuleRegistry"
@@ -67,6 +67,8 @@ export default class ModuleController extends WebSocketController {
     private sendError(send: Function, err: any) {
         if (typeof err === "string" || err instanceof ConfigValidationError) {
             send(error(400, err))
+        } else if (err instanceof DiscordAPIError) {
+            send(error(409, err.message))
         } else {
             send(error(500))
         }

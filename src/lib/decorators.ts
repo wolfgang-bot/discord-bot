@@ -1,12 +1,14 @@
 import Module from "./Module"
 import Argument, { ArgumentProps } from "./Argument"
 import Command from "./Command"
+import ModuleRegistry from "../services/ModuleRegistry"
 
 type ModuleProps = {
     key: string,
     name: string,
     desc?: string,
-    features?: string[]
+    features?: string[],
+    images?: string[]
 }
 
 export function argument(props: ArgumentProps) {
@@ -33,6 +35,7 @@ export function module(props: ModuleProps) {
         module.internalName = props.name
         module.desc = props.desc
         module.features = props.features
+        module.images = ModuleRegistry.findModuleImages(module)
 
         if (!module.args) {
             module.args = []

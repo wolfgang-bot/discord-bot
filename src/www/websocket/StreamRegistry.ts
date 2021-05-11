@@ -1,25 +1,30 @@
 import Discord from "discord.js"
 import { Readable } from "../../lib/Stream"
+import { EVENT_STREAMS, SubscriptionArgs } from "./types"
+import { AuthorizedSocket } from "./SocketManager"
+
 import GuildStream from "./streams/GuildStream"
+import GuildResourceStream from "./streams/GuildResourceStream"
 import UserStream from "./streams/UserStream"
 import GuildModuleInstanceStream from "./streams/GuildModuleInstanceStream"
 import MemberStream from "./streams/MemberStream"
 import MessageStream from "./streams/MessageStream"
 import VoiceStream from "./streams/VoiceStream"
 import ModuleInstanceStream from "./streams/ModuleInstanceStream"
-import { EVENT_STREAMS, SubscriptionArgs } from "./types"
-import { AuthorizedSocket } from "./SocketManager"
 import UserGuildStream from "./streams/UserGuildStream"
 import UserMessageLeaderboardStream from "./streams/UserMessageLeaderboardStream"
 import UserVoiceLeaderboardStream from "./streams/UserVoiceLeaderboardStream"
+import ModuleSharesStream from "./streams/ModuleSharesStream"
 
 const streams: Record<
     EVENT_STREAMS,
     new (client: Discord.Client, socket: AuthorizedSocket, args: SubscriptionArgs) => Readable<any>
 > = {
     [EVENT_STREAMS.GUILDS]: GuildStream,
+    [EVENT_STREAMS.GUILDS_RESOURCES]: GuildResourceStream,
     [EVENT_STREAMS.USERS]: UserStream,
     [EVENT_STREAMS.MODULE_INSTANCES]: ModuleInstanceStream,
+    [EVENT_STREAMS.MODULE_SHARES]: ModuleSharesStream,
     [EVENT_STREAMS.USER_GUILDS]: UserGuildStream,
     [EVENT_STREAMS.GUILD_MODULE_INSTANCES]: GuildModuleInstanceStream,
     [EVENT_STREAMS.MEMBERS]: MemberStream,

@@ -52,6 +52,16 @@ class Guild extends Model implements GuildModelValues {
     }
     
     init() {}
+
+    toJSON() {
+        return {
+            id: this.id,
+            status: this.status,
+            name: this.discordGuild?.name,
+            icon: this.discordGuild?.icon,
+            memberCount: this.discordGuild?.memberCount
+        }
+    }
 }
 
 export default Guild

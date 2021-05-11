@@ -1,4 +1,6 @@
 import Discord from "discord.js"
+import path from "path"
+import fs from "fs"
 import User from "../models/User"
 import ReputationSystemConfig from "../modules/reputation-system/models/Configuration"
 
@@ -101,15 +103,6 @@ export function makeURL(path: string) {
 export async function checkPermissions(guild: Discord.Guild, user: User | Discord.User, permissions: Discord.PermissionString[]) {
     const member = await guild.members.fetch(user.id)
     return member.hasPermission(permissions)
-}
-
-/**
- * Check if a user-id corresponds to a user who is an admin of the bot
- */
-export function isBotAdmin(userId: string) {
-    return process.env.ADMIN_USER_IDS
-        .split(",")
-        .includes(userId)
 }
 
 /**

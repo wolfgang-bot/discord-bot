@@ -49,7 +49,7 @@ const roles = [
     key: "roleColor",
     defaultValue: "AQUA",
     name: "Role Color",
-    desc: "Color of the roles (Discord color names allowed)"
+    desc: "Color of the roles"
 })
 @argument({
     type: ARGUMENT_TYPES.STRING,

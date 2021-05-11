@@ -19,6 +19,7 @@ class Module extends EventEmitter {
     static key: string
     static internalName: string
     static desc: string
+    static images: string[]
     static features?: string[]
     static args: Argument[]
     static commands: (new () => Command)[]
@@ -117,12 +118,13 @@ class Module extends EventEmitter {
             key: this.key,
             name: this.internalName,
             desc: this.desc,
+            images: this.images,
             features: this.features,
             args: this.args,
             commands: this.createCommands(),
             isGlobal: this.isGlobal,
             isPrivate: this.isPrivate,
-            isStatic: this.isStatic
+            isStatic: this.isStatic,
         }
     }
 }
