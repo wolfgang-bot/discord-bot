@@ -19,6 +19,7 @@ class Module extends EventEmitter {
     static key: string
     static internalName: string
     static desc: string
+    static position?: number
     static images: string[]
     static features?: string[]
     static args: Argument[]
@@ -99,7 +100,7 @@ class Module extends EventEmitter {
     }
 
     /**
-     * Convert an nstance of this module to JSON
+     * Convert an instance of this module to JSON
      */
     toJSON() {
         return {
@@ -118,13 +119,14 @@ class Module extends EventEmitter {
             key: this.key,
             name: this.internalName,
             desc: this.desc,
+            position: this.position,
             images: this.images,
             features: this.features,
             args: this.args,
             commands: this.createCommands(),
             isGlobal: this.isGlobal,
             isPrivate: this.isPrivate,
-            isStatic: this.isStatic,
+            isStatic: this.isStatic
         }
     }
 }

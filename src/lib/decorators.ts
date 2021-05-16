@@ -7,6 +7,7 @@ type ModuleProps = {
     key: string,
     name: string,
     desc?: string,
+    position?: number,
     features?: string[],
     images?: string[],
     isGlobal?: boolean,
@@ -48,6 +49,7 @@ export function module(props: ModuleProps) {
         module.key = props.key
         module.internalName = props.name
         module.desc = props.desc
+        module.position = props.position
         module.features = props.features
         module.isGlobal = props.isGlobal
         module.isStatic = props.isStatic

@@ -36,6 +36,17 @@ class ModuleRegistry {
 
             ModuleRegistry.modules.push(module)
         }))
+
+        this.sortModules()
+    }
+
+    /**
+     * Sort modules by position property
+     */
+    static sortModules() {
+        this.modules.sort((a, b) =>
+            (a.position || this.modules.length) - (b.position || this.modules.length)
+        )
     }
 
     /**

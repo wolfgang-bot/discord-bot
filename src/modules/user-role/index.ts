@@ -9,6 +9,7 @@ import Context from "../../lib/Context"
     key: "user-role",
     name: "User Role",
     desc: "Gives a role to each user",
+    position: 2,
     features: [
         "Assigns a role to each existing user on startup",
         "Assigns a role to each user who joins the guild"
