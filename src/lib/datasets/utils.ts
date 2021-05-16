@@ -52,7 +52,7 @@ export function getDaysBetweenTimestamps(
     const result: number[] = []
 
     const from = roundToLastFullDay(fromTimestamp)
-    const to = roundToLastFullDay(toTimestamp)
+    const to = roundToLastFullDay(toTimestamp + MILLISECONDS_PER_DAY)
 
     for (let i = 0; i < (to - from + 1) / MILLISECONDS_PER_DAY; i++) {
         const newKey = from + i * MILLISECONDS_PER_DAY
@@ -137,6 +137,8 @@ export function chunkTimestampsIntoDays<T extends TimestampObject>(data: T[]) {
         data[0].timestamp,
         Date.now()
     )
+
+    console.log(Array.from(dayMap.keys()).map((timestamp) => new Date(timestamp)))
 
     const days = Array.from(dayMap.keys())
     let currentDayIndex = 0
