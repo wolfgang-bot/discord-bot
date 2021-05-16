@@ -10,15 +10,13 @@ export default class OAuthController {
      */
     static async oauthDiscord(req: AuthorizedRequest, res: Response) {
         try {
-            // Request oauth token
             const data = await OAuthServiceProvider.requestToken(req.query.code as string)
             const { access_token, refresh_token } = data
 
-            // Get user profile
             const userData = await OAuthServiceProvider.fetchProfile(access_token)
 
             let user = await User.findBy("id", userData.id) as User
-            
+
             if (!user) {
                 user = new User({
                     id: userData.id
