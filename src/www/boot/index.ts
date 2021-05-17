@@ -33,6 +33,8 @@ function setupExpress(app: express.Application) {
 
     // Use Routes
     app.use("/", routes)
+    
+    app.disable("x-powered-by")
 }
 
 function setupWebSocket(websocket: WebSocketServer, client: Discord.Client) {
