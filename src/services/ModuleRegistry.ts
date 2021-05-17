@@ -67,8 +67,11 @@ class ModuleRegistry {
     /**
      * Get a module class from a database model
      */
-    static getModule(model: ModuleModel) {
-        return ModuleRegistry.modules.find(module => module.key === model.key)
+    static getModule(moduleKey: ModuleModel | string) {
+        if (moduleKey instanceof ModuleModel) {
+            moduleKey = moduleKey.key
+        }
+        return ModuleRegistry.modules.find(module => module.key === moduleKey)
     }
 
     /**
