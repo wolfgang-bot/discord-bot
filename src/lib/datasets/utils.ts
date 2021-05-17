@@ -138,8 +138,6 @@ export function chunkTimestampsIntoDays<T extends TimestampObject>(data: T[]) {
         Date.now()
     )
 
-    console.log(Array.from(dayMap.keys()).map((timestamp) => new Date(timestamp)))
-
     const days = Array.from(dayMap.keys())
     let currentDayIndex = 0
 
