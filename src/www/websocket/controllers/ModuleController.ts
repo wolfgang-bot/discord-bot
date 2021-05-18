@@ -39,7 +39,7 @@ export default class ModuleController extends WebSocketController {
             new ModuleExistsValidator(error(404, "Module not found"))
         ])
 
-        this.instanceValidationPipeline = this.moduleValidationPipeline.extend([
+        this.instanceValidationPipeline = new ValidationPipeline(client, [
             new ModuleInstanceExistsValidator(error(404, "Instance not found")),
             new ModuleInstanceGuildAdminValidator(error(403))
         ])
@@ -53,6 +53,11 @@ export default class ModuleController extends WebSocketController {
             ...makeGuildArgs({ guildId }),
             moduleKey
         })
+
+        const makeInstanceArgs = ({ instanceId }) => ({
+            instanceId,
+            user: this.socket.user
+        })
         
         this.getModules = this.guildValidationPipeline.bind(this.getModules.bind(this), makeGuildArgs)
         this.getInstances = this.guildValidationPipeline.bind(this.getInstances.bind(this), makeGuildArgs)
@@ -60,9 +65,9 @@ export default class ModuleController extends WebSocketController {
         this.validateArguments = this.moduleValidationPipeline.bind(this.validateArguments.bind(this), makeModuleArgs)
         this.startInstance = this.moduleValidationPipeline.bind(this.startInstance.bind(this), makeModuleArgs)
         
-        this.stopInstance = this.instanceValidationPipeline.bind(this.stopInstance.bind(this), makeModuleArgs)
-        this.restartInstance = this.instanceValidationPipeline.bind(this.restartInstance.bind(this), makeModuleArgs)
-        this.updateConfig = this.instanceValidationPipeline.bind(this.updateConfig.bind(this), makeModuleArgs)
+        this.stopInstance = this.instanceValidationPipeline.bind(this.stopInstance.bind(this), makeInstanceArgs)
+        this.restartInstance = this.instanceValidationPipeline.bind(this.restartInstance.bind(this), makeInstanceArgs)
+        this.updateConfig = this.instanceValidationPipeline.bind(this.updateConfig.bind(this), makeInstanceArgs)
     }
 
     /**
