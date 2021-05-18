@@ -50,13 +50,16 @@ export function module(props: ModuleProps) {
         module.key = props.key
         module.internalName = props.name
         module.desc = props.desc
-        module.maxInstances = props.maxInstances
         module.position = props.position
         module.features = props.features
         module.isGlobal = props.isGlobal
         module.isStatic = props.isStatic
         module.canUpdateConfig = props.canUpdateConfig
         module.images = ModuleRegistry.findModuleImages(module)
+
+        if (typeof props.maxInstances === "number") {
+            module.maxInstances = props.maxInstances
+        }
 
         if (!module.args) {
             module.args = []
