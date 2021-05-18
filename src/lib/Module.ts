@@ -19,6 +19,8 @@ class Module extends EventEmitter {
     static key: string
     static internalName: string
     static desc: string
+    static maxInstances = 1
+    static remainingInstances?: number
     static position?: number
     static images: string[]
     static features?: string[]
@@ -119,6 +121,8 @@ class Module extends EventEmitter {
             key: this.key,
             name: this.internalName,
             desc: this.desc,
+            maxInstances: this.maxInstances,
+            remainingInstances: this.remainingInstances,
             position: this.position,
             images: this.images,
             features: this.features,
