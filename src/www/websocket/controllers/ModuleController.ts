@@ -19,7 +19,6 @@ import {
 } from "../../../lib/Validation"
 import { AuthorizedSocket } from "../SocketManager"
 import { ValidationError as ConfigValidationError } from "../../../lib/Configuration"
-import { mapAsync } from "../../../utils"
 
 export default class ModuleController extends WebSocketController {
     guildValidationPipeline: ValidationPipeline
@@ -58,8 +57,7 @@ export default class ModuleController extends WebSocketController {
             instanceId,
             user: this.socket.user
         })
-        
-        this.getModules = this.guildValidationPipeline.bind(this.getModules.bind(this), makeGuildArgs)
+
         this.getInstances = this.guildValidationPipeline.bind(this.getInstances.bind(this), makeGuildArgs)
 
         this.validateArguments = this.moduleValidationPipeline.bind(this.validateArguments.bind(this), makeModuleArgs)
@@ -81,29 +79,6 @@ export default class ModuleController extends WebSocketController {
         } else {
             send(error(500))
         }
-    } 
-
-    /**
-     * Get all modules available to the requesting user
-     */
-    async getModules(validationError: ValidationError, { guildId }: {
-        guildId: string
-    }, send: Function) {
-        if (validationError) {
-            return void send(validationError)
-        }
-
-        const modules = ModuleRegistry.getPublicModules({ includeStatic: true })
-        const guild = await Guild.findBy("id", guildId) as Guild
-
-        await mapAsync(modules, async (module) => {
-            module.remainingInstances = await ModuleRegistry.getRemainingInstances(
-                module.key,
-                guild
-            )
-        })
-
-        send(success(modules))
     }
 
     /**
