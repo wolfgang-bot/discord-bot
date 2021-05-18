@@ -166,7 +166,9 @@ export default class ModuleController extends WebSocketController {
         const module = await Module.findBy("key", moduleKey) as Module
 
         try {
-            await ModuleInstanceRegistry.guild(guild.discordGuild).startModule(this.client, module, args)
+            await ModuleInstanceRegistry
+                .guild(guild.discordGuild)
+                .startModule(this.client, module, args)
         } catch (err) {
             log.debug(err)
             return this.sendError(send, err)

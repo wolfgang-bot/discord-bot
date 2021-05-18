@@ -120,11 +120,12 @@ class ModuleInstanceRegistry {
     }
 
     /**
-     * Check if a module is loaded for this guild
+     * Check if an instance can be started for the guild
      */
-    async isLoaded(model: ModuleModel) {
-        const moduleInstance = await ModuleInstanceModel.findByGuildAndModuleKey(this.guild, model.key)
-        return !!moduleInstance
+    async canStartInstance(model: ModuleModel) {
+        const module = ModuleInstanceRegistry.moduleRegistry.getModule(model.key)
+        const instances = await ModuleInstanceModel.findByGuildAndModuleKey(this.guild, model.key)
+        return instances.length < module.maxInstances
     }
 
     /**
@@ -136,8 +137,8 @@ class ModuleInstanceRegistry {
          */
         const module = ModuleInstanceRegistry.moduleRegistry.getModule(model)
 
-        if (await this.isLoaded(model)) {
-            throw "The module is already running"
+        if (!(await this.canStartInstance(model))) {
+            throw "Maximum amount of instances reached"
         }
 
         if (ModuleInstanceRegistry.moduleRegistry.isProtectedModule(module) && isUserInvocation) {
