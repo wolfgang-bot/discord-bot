@@ -14,7 +14,8 @@ import {
     ModuleExistsValidator,
     ModuleInstanceExistsValidator,
     ValidationPipeline,
-    ValidationError
+    ValidationError,
+    ModuleInstanceGuildAdminValidator
 } from "../../../lib/Validation"
 import { AuthorizedSocket } from "../SocketManager"
 import { ValidationError as ConfigValidationError } from "../../../lib/Configuration"
@@ -38,7 +39,8 @@ export default class ModuleController extends WebSocketController {
         ])
 
         this.instanceValidationPipeline = this.moduleValidationPipeline.extend([
-            new ModuleInstanceExistsValidator(error(404, "Instance not found"))
+            new ModuleInstanceExistsValidator(error(404, "Instance not found")),
+            new ModuleInstanceGuildAdminValidator(error(403))
         ])
 
         const makeGuildArgs = ({ guildId }) => ({
@@ -55,9 +57,9 @@ export default class ModuleController extends WebSocketController {
 
         this.validateArguments = this.moduleValidationPipeline.bind(this.validateArguments.bind(this), makeModuleArgs)
         this.startInstance = this.moduleValidationPipeline.bind(this.startInstance.bind(this), makeModuleArgs)
-        this.stopInstance = this.moduleValidationPipeline.bind(this.stopInstance.bind(this), makeModuleArgs)
-        this.restartInstance = this.moduleValidationPipeline.bind(this.restartInstance.bind(this), makeModuleArgs)
-
+        
+        this.stopInstance = this.instanceValidationPipeline.bind(this.stopInstance.bind(this), makeModuleArgs)
+        this.restartInstance = this.instanceValidationPipeline.bind(this.restartInstance.bind(this), makeModuleArgs)
         this.updateConfig = this.instanceValidationPipeline.bind(this.updateConfig.bind(this), makeModuleArgs)
     }
 
