@@ -148,17 +148,24 @@ class ModuleInstanceRegistry {
         /**
          * Create the instance
          */
-        const configValues = await this.resolveArgumentsToConfig(module, args, { shouldValidate: isUserInvocation })
-
-        const config = new module.config(configValues)
-        const context = new Context({ client, guild: this.guild, module })
-        const instance = new module(context, config)
-
         const instanceModel = new ModuleInstanceModel({
             module_key: model.key,
             guild_id: this.guild.id,
-            config: instance.getConfig()
+            config: null
         })
+        
+        const configValues = await this.resolveArgumentsToConfig(module, args, { shouldValidate: isUserInvocation })
+
+        const config = new module.config(configValues)
+        const context = new Context({
+            client,
+            guild: this.guild,
+            module,
+            instance: instanceModel
+        })
+        const instance = new module(context, config)
+
+        instanceModel.config = instance.getConfig()
 
         ModuleInstanceRegistry.registerInstance({
             guild: this.guild,
@@ -249,7 +256,12 @@ class ModuleInstanceRegistry {
 
         const configValues = await this.resolveArgumentsToConfig(module, model.config)
         const config = new module.config(configValues)
-        const context = new Context({ client, guild: this.guild, module })
+        const context = new Context({
+            client,
+            guild: this.guild,
+            module,
+            instance: model
+        })
         const instance = new module(context, config)
 
         await instance._start()
