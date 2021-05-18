@@ -36,9 +36,8 @@ class ModuleInstance extends Model implements ModuleInstanceModelValues {
         ) as Collection<ModuleInstance>
     }
 
-    static async findByContext(context: Context) {
-        const instances = await this.findByGuildAndModuleKey(context.guild, context.module.key)
-        return instances[0]
+    static findByContext(context: Context) {
+        return this.findBy("id", context.instanceId) as Promise<ModuleInstance>
     }
 
     static async countModuleKeys() {
