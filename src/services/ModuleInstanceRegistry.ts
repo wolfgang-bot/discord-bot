@@ -161,7 +161,7 @@ class ModuleInstanceRegistry {
             client,
             guild: this.guild,
             module,
-            instance: instanceModel
+            instanceId: instanceModel.id
         })
         const instance = new module(context, config)
 
@@ -260,7 +260,7 @@ class ModuleInstanceRegistry {
             client,
             guild: this.guild,
             module,
-            instance: model
+            instanceId: model.id
         })
         const instance = new module(context, config)
 
