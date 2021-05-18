@@ -38,27 +38,27 @@ class ModuleInstanceRegistry {
     }
 
     /**
-     * Restore all module instances (e.g. after restart)
+     * Restore all module instances, global ones and from the database
      */
     static async restoreInstances(client: Discord.Client) {
         // Start global modules independent from guilds
         const globalModules = ModuleInstanceRegistry.moduleRegistry.modules.filter(module => module.isGlobal)
-        await Promise.all(globalModules.map(module => ModuleInstanceRegistry.startGlobalModule(client, module)))
+        await Promise.all(globalModules.map(module => ModuleInstanceRegistry.startGlobalInstance(client, module)))
 
         // Start each guild's individual instances
         await Promise.all(client.guilds.cache.map(async guild => {
             const models = await ModuleInstanceModel.findAllBy("guild_id", guild.id) as Collection<ModuleInstanceModel>
 
             await Promise.all(models.map(model => {
-                return ModuleInstanceRegistry.guild(guild).startModuleFromInstanceModel(client, model)
+                return ModuleInstanceRegistry.guild(guild).startInstanceFromModel(client, model)
             }))
         }))
     }
 
     /**
-     * Start a global module (i.e. independent from guilds)
+     * Start an instance of a global module (i.e. independent from guilds)
      */
-    static async startGlobalModule(client: Discord.Client, module: typeof Module) {
+    static async startGlobalInstance(client: Discord.Client, module: typeof Module) {
         if (!module.isGlobal) {
             throw new Error(`The module '${module.key}' is not global`)
         }
@@ -67,7 +67,8 @@ class ModuleInstanceRegistry {
             throw new Error(`The module '${module.key}' is already running`)
         }
 
-        const instance = new module({ client, module })
+        const context = new Context({ client, module, instanceId: null })
+        const instance = new module(context)
         await instance._start()
 
         ModuleInstanceRegistry.globalInstances[module.key] = instance
@@ -129,9 +130,9 @@ class ModuleInstanceRegistry {
     }
 
     /**
-     * Start a module from arguments
+     * Start an instance from arguments
      */
-    async startModule(client: Discord.Client, model: ModuleModel, args: Record<string, any>, isUserInvocation = true) {
+    async startInstance(client: Discord.Client, model: ModuleModel, args: Record<string, any>, isUserInvocation = true) {
         /**
          * Validate invocation
          */
@@ -192,9 +193,9 @@ class ModuleInstanceRegistry {
     }
 
     /**
-     * Stop the module's instance from this guild
+     * Stop an instance
      */
-    async stopModule(model: ModuleInstanceModel) {
+    async stopInstance(model: ModuleInstanceModel) {
         const module = ModuleInstanceRegistry.moduleRegistry.getModule(model.module_key)
 
         if (module.isStatic) {
@@ -203,6 +204,10 @@ class ModuleInstanceRegistry {
 
         if (!(model.id in this.instances)) {
             throw "Instance does not exist"
+        }
+
+        if (model.guild_id !== this.guild.id) {
+            throw "Instance does not belong to this guild"
         }
 
         try {
@@ -221,9 +226,9 @@ class ModuleInstanceRegistry {
     }
 
     /**
-     * Restart a module's instance
+     * Restart an instance
      */
-    async restartModule(model: ModuleInstanceModel) {
+    async restartInstance(model: ModuleInstanceModel) {
         const module = ModuleInstanceRegistry.moduleRegistry.getModule(model.module_key)
 
         if (module.isStatic) {
@@ -232,6 +237,10 @@ class ModuleInstanceRegistry {
 
         if (!(model.id in this.instances)) {
             throw "Instance does not exist"
+        }
+
+        if (model.guild_id !== this.guild.id) {
+            throw "Instance does not belong to this guild"
         }
 
         const instance = this.instances[model.id]
@@ -248,9 +257,9 @@ class ModuleInstanceRegistry {
     }
 
     /**
-     * Start a module from instance model
+     * Start an instance from a model
      */
-    async startModuleFromInstanceModel(client: Discord.Client, model: ModuleInstanceModel) {
+    async startInstanceFromModel(client: Discord.Client, model: ModuleInstanceModel) {
         await model.fetchModule()
         const module = ModuleInstanceRegistry.moduleRegistry.getModule(model.module)
 
@@ -288,9 +297,9 @@ class ModuleInstanceRegistry {
     }
 
     /**
-     * Start all static modules for a guild
+     * Start an instance of each static module for this guild
      */
-    async startStaticModules(client: Discord.Client) {
+    async startStaticModuleInstances(client: Discord.Client) {
         const modules = ModuleInstanceRegistry.moduleRegistry.modules.filter(
             module => module.isStatic
         )
@@ -304,7 +313,7 @@ class ModuleInstanceRegistry {
             const args = Object.fromEntries(
                 module.args.map(arg => [arg.key, arg.defaultValue])
             )
-            return this.startModule(client, model, args, false)
+            return this.startInstance(client, model, args, false)
         }))
     }
 

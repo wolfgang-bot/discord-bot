@@ -168,7 +168,7 @@ export default class ModuleController extends WebSocketController {
         try {
             await ModuleInstanceRegistry
                 .guild(guild.discordGuild)
-                .startModule(this.client, module, args)
+                .startInstance(this.client, module, args)
         } catch (err) {
             log.debug(err)
             return this.sendError(send, err)
@@ -197,7 +197,7 @@ export default class ModuleController extends WebSocketController {
         try {
             await ModuleInstanceRegistry
                 .guild(instance.guild.discordGuild)
-                .stopModule(instance)
+                .stopInstance(instance)
         } catch (err) {
             log.debug(err)
             return this.sendError(send, err)
@@ -226,7 +226,7 @@ export default class ModuleController extends WebSocketController {
         try {
             await ModuleInstanceRegistry
                 .guild(instance.guild.discordGuild)
-                .restartModule(instance)
+                .restartInstance(instance)
         } catch (err) {
             log.debug(err)
             return this.sendError(send, err)
