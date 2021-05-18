@@ -57,8 +57,16 @@ class ModuleInstance extends Model implements ModuleInstanceModelValues {
     static async config(guild: Discord.Guild | Guild | ExtendedAPIGuild, key: string) {
         const instances = await this.findByGuildAndModuleKey(guild, key)
 
-        if (!instances || !instances?.length) {
+        if (!instances || instances.length === 0) {
             log.warn(`Could not find config of module '${key}' for guild '${guild.id}'`)
+            return
+        }
+
+        if (instances.length > 1) {
+            log.warn(
+                `Cannot get config when more than one instance was found`,
+                { key, guildId: guild.id }
+            )
             return
         }
 
