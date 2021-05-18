@@ -118,9 +118,9 @@ class ModuleRegistry {
     /**
      * Get the amount of remaining instances of a module for a guild
      */
-    static async getRemainingInstances(moduleModel: ModuleModel, guild: Guild) {
-        const instances = await ModuleInstance.findByGuildAndModuleKey(guild, moduleModel.key)
-        const module = this.getModule(moduleModel.key)
+    static async getRemainingInstances(moduleKey: string, guild: Guild) {
+        const instances = await ModuleInstance.findByGuildAndModuleKey(guild, moduleKey)
+        const module = this.getModule(moduleKey)
         return module.maxInstances - instances.length
     }
 }

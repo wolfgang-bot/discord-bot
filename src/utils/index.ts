@@ -119,3 +119,10 @@ export async function filterAsync<T>(array: T[], filterFn: (value: T) => Promise
 export function applyBackticks(input: string) {
     return `\`${input}\``
 }
+
+export function mapAsync<T, U>(
+    array: Array<T>,
+    callback: (item: T, index: number) => Promise<U>
+) {
+    return Promise.all(array.map(callback))
+}
