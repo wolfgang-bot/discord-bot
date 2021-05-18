@@ -6,6 +6,8 @@ import Module from "../lib/Module"
 import Collection from "../lib/Collection"
 import ModuleModel from "../models/Module"
 import ModuleInstanceRegistry from "./ModuleInstanceRegistry"
+import Guild from "../models/Guild"
+import ModuleInstance from "../models/ModuleInstance"
 
 const MODULES_DIR = path.join(__dirname, "..", "modules")
 
@@ -111,6 +113,15 @@ class ModuleRegistry {
         }
         return fs.readdirSync(imagesDir)
             .map((imagePath) => path.basename(imagePath))
+    }
+
+    /**
+     * Get the amount of remaining instances of a module for a guild
+     */
+    static async getRemainingInstances(moduleModel: ModuleModel, guild: Guild) {
+        const instances = await ModuleInstance.findByGuildAndModuleKey(guild, moduleModel.key)
+        const module = this.getModule(moduleModel.key)
+        return module.maxInstances - instances.length
     }
 }
 

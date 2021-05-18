@@ -186,49 +186,46 @@ class ModuleInstanceRegistry {
     /**
      * Stop the module's instance from this guild
      */
-    async stopModule(model: ModuleModel) {
-        const instanceModel = await ModuleInstanceModel.findByGuildAndModuleKey(this.guild, model.key)
-        
-        const module = ModuleInstanceRegistry.moduleRegistry.getModule(model)
+    async stopModule(model: ModuleInstanceModel) {
+        const module = ModuleInstanceRegistry.moduleRegistry.getModule(model.module_key)
 
         if (module.isStatic) {
             throw "Module does not exist"
         }
 
-        if (!instanceModel) {
-            throw "Module is not running"
+        if (!(model.id in this.instances)) {
+            throw "Instance does not exist"
         }
 
         try {
-            await this.instances[instanceModel.id]._stop()
+            await this.instances[model.id]._stop()
         } catch (error) {
             log.error(`Error stoppping instance '${module.key}' for guild '${this.guild.name}' ('${this.guild.id}')`, error)
-            ModuleInstanceRegistry.unregisterInstance({ guild: this.guild, model: instanceModel })
-            await instanceModel.delete()
+            ModuleInstanceRegistry.unregisterInstance({ guild: this.guild, model })
+            await model.delete()
             throw error
         }
         
-        ModuleInstanceRegistry.unregisterInstance({ guild: this.guild, model: instanceModel })
-        await instanceModel.delete()
+        ModuleInstanceRegistry.unregisterInstance({ guild: this.guild, model })
+        await model.delete()
 
-        BroadcastChannel.emit("module-instance/stop", instanceModel)
+        BroadcastChannel.emit("module-instance/stop", model)
     }
 
     /**
      * Restart a module's instance
      */
-    async restartModule(moduleModel: ModuleModel) {
-        const module = ModuleInstanceRegistry.moduleRegistry.getModule(moduleModel)
+    async restartModule(model: ModuleInstanceModel) {
+        const module = ModuleInstanceRegistry.moduleRegistry.getModule(model.module_key)
 
         if (module.isStatic) {
             throw "Module does not exist"
         }
 
-        const model = await ModuleInstanceModel.findByGuildAndModuleKey(this.guild, moduleModel.key)
-
-        if (!model) {
-            throw "Module is not running"
+        if (!(model.id in this.instances)) {
+            throw "Instance does not exist"
         }
+
         const instance = this.instances[model.id]
 
         await instance._stop()

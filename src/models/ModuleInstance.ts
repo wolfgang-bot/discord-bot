@@ -2,6 +2,7 @@ import { v4 as uuid } from "uuid"
 import Discord from "discord.js"
 import log from "loglevel"
 import Model from "../lib/Model"
+import Collection from "../lib/Collection"
 import Context from "../lib/Context"
 import { ExtendedAPIGuild } from "../www/services/OAuthServiceProvider"
 import database from "../database"
@@ -29,13 +30,15 @@ class ModuleInstance extends Model implements ModuleInstanceModelValues {
     discordUser: Discord.User
 
     static async findByGuildAndModuleKey(guild: Discord.Guild | Guild | ExtendedAPIGuild, key: string) {
-        return await ModuleInstance.where(`
-            guild_id='${guild.id}' AND module_key='${key}'`
-        ) as ModuleInstance
+        return await ModuleInstance.whereAll(`
+            guild_id='${guild.id}'
+            AND module_key='${key}'`
+        ) as Collection<ModuleInstance>
     }
 
-    static findByContext(context: Context) {
-        return this.findByGuildAndModuleKey(context.guild, context.module.key)
+    static async findByContext(context: Context) {
+        const instances = await this.findByGuildAndModuleKey(context.guild, context.module.key)
+        return instances[0]
     }
 
     static async countModuleKeys() {
@@ -53,14 +56,14 @@ class ModuleInstance extends Model implements ModuleInstanceModelValues {
     }
 
     static async config(guild: Discord.Guild | Guild | ExtendedAPIGuild, key: string) {
-        const instance = await this.findByGuildAndModuleKey(guild, key)
+        const instances = await this.findByGuildAndModuleKey(guild, key)
 
-        if (!instance) {
+        if (!instances || !instances?.length) {
             log.warn(`Could not find config of module '${key}' for guild '${guild.id}'`)
             return
         }
 
-        return instance.config
+        return instances[0].config
     }
 
     constructor(values: ModuleInstanceModelValues) {

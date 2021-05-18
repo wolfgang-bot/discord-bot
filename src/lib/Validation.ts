@@ -112,12 +112,12 @@ export class ModuleInstanceExistsValidator extends Validator {
     async run(client: Discord.Client, { guild, moduleKey }) {
         this.assert({ guild })
 
-        const instance = await ModuleInstance.findByGuildAndModuleKey(guild, moduleKey)
+        const instances = await ModuleInstance.findByGuildAndModuleKey(guild, moduleKey)
 
-        if (!instance) {
+        if (!instances || !instances?.length) {
             throw this.error
         }
 
-        return { instance }
+        return { instances }
     }
 }

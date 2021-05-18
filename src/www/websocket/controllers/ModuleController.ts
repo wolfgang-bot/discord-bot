@@ -196,7 +196,7 @@ export default class ModuleController extends WebSocketController {
         const module = await Module.findBy("key", moduleKey) as Module
 
         try {
-            await ModuleInstanceRegistry.guild(guild.discordGuild).stopModule(module)
+            // await ModuleInstanceRegistry.guild(guild.discordGuild).stopModule(module)
         } catch (err) {
             log.debug(err)
             return this.sendError(send, err)
@@ -227,7 +227,7 @@ export default class ModuleController extends WebSocketController {
         const module = await Module.findBy("key", moduleKey) as Module
 
         try {
-            await ModuleInstanceRegistry.guild(guild.discordGuild).restartModule(module)
+            // await ModuleInstanceRegistry.guild(guild.discordGuild).restartModule(module)
         } catch (err) {
             log.debug(err)
             return this.sendError(send, err)
@@ -241,9 +241,8 @@ export default class ModuleController extends WebSocketController {
      */
     async updateConfig(
         validationError: ValidationError,
-        { guildId, moduleKey, newConfig }: {
-            guildId: string,
-            moduleKey: string,
+        { instanceId, newConfig }: {
+            instanceId: string,
             newConfig: object
         },
         send: Function
@@ -257,22 +256,24 @@ export default class ModuleController extends WebSocketController {
             return send(error(400, "New config is not an object"))
         }
 
-        const model = await Module.findBy("key", moduleKey) as Module
-        const module = ModuleRegistry.getModule(model)
+        const model = await ModuleInstance.findBy("id", instanceId) as ModuleInstance
+        const module = ModuleRegistry.getModule(model.module_key)
 
         if (!module.canUpdateConfig) {
             return send(error(400, "Cannot update configuration"))
         }
 
-        const guild = await Guild.findBy("id", guildId) as Guild
+        const guild = await Guild.findBy("id", model.guild_id) as Guild
         await guild.fetchDiscordGuild(this.client)
 
-        const instanceModel = await ModuleInstance.findByGuildAndModuleKey(guild, moduleKey)
+        if (!(await this.socket.user.isAdmin(guild))) {
+            throw send(error(403, "Missing permissions"))
+        }
 
         try {
             await ModuleInstanceRegistry
                 .guild(guild.discordGuild)
-                .updateConfig(instanceModel, newConfig)
+                .updateConfig(model, newConfig)
         } catch (err) {
             log.debug(err)
             return this.sendError(send, err)
