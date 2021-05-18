@@ -178,11 +178,7 @@ export default class ModuleController extends WebSocketController {
      */
     async stopInstance(
         validationError: ValidationError,
-        { guildId, moduleKey }:
-        {
-            guildId: string,
-            moduleKey: string
-        },
+        { instanceId }: { instanceId: string },
         send: Function
     ) {
         if (validationError) {
@@ -190,13 +186,14 @@ export default class ModuleController extends WebSocketController {
             return
         }
 
-        const guild = await Guild.findBy("id", guildId) as Guild
-        await guild.fetchDiscordGuild(this.client)
-
-        const module = await Module.findBy("key", moduleKey) as Module
+        const instance = await ModuleInstance.findBy("id", instanceId) as ModuleInstance
+        await instance.fetchGuild()
+        await instance.guild.fetchDiscordGuild(this.client)
 
         try {
-            // await ModuleInstanceRegistry.guild(guild.discordGuild).stopModule(module)
+            await ModuleInstanceRegistry
+                .guild(instance.guild.discordGuild)
+                .stopModule(instance)
         } catch (err) {
             log.debug(err)
             return this.sendError(send, err)
@@ -210,24 +207,22 @@ export default class ModuleController extends WebSocketController {
      */
     async restartInstance(
         validationError: ValidationError,
-        { guildId, moduleKey }: {
-            guildId: string,
-            moduleKey: string
-        },
+        { instanceId }: { instanceId: string },
         send: Function
     ) {
         if (validationError) {
             send(validationError)
             return
         }
-
-        const guild = await Guild.findBy("id", guildId) as Guild
-        await guild.fetchDiscordGuild(this.client)
-
-        const module = await Module.findBy("key", moduleKey) as Module
+        
+        const instance = await ModuleInstance.findBy("id", instanceId) as ModuleInstance
+        await instance.fetchGuild()
+        await instance.guild.fetchDiscordGuild(this.client)
 
         try {
-            // await ModuleInstanceRegistry.guild(guild.discordGuild).restartModule(module)
+            await ModuleInstanceRegistry
+                .guild(instance.guild.discordGuild)
+                .restartModule(instance)
         } catch (err) {
             log.debug(err)
             return this.sendError(send, err)
@@ -256,24 +251,20 @@ export default class ModuleController extends WebSocketController {
             return send(error(400, "New config is not an object"))
         }
 
-        const model = await ModuleInstance.findBy("id", instanceId) as ModuleInstance
-        const module = ModuleRegistry.getModule(model.module_key)
+        const instance = await ModuleInstance.findBy("id", instanceId) as ModuleInstance
+        const module = ModuleRegistry.getModule(instance.module_key)
 
         if (!module.canUpdateConfig) {
             return send(error(400, "Cannot update configuration"))
         }
 
-        const guild = await Guild.findBy("id", model.guild_id) as Guild
-        await guild.fetchDiscordGuild(this.client)
-
-        if (!(await this.socket.user.isAdmin(guild))) {
-            throw send(error(403, "Missing permissions"))
-        }
+        await instance.fetchGuild()
+        await instance.guild.fetchDiscordGuild(this.client)
 
         try {
             await ModuleInstanceRegistry
-                .guild(guild.discordGuild)
-                .updateConfig(model, newConfig)
+                .guild(instance.guild.discordGuild)
+                .updateConfig(instance, newConfig)
         } catch (err) {
             log.debug(err)
             return this.sendError(send, err)
