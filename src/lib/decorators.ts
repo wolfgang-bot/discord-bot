@@ -2,6 +2,7 @@ import Module from "./Module"
 import Argument, { ArgumentProps } from "./Argument"
 import Command from "./Command"
 import ModuleRegistry from "../services/ModuleRegistry"
+import { labelArgumentProps } from "../config"
 
 type ModuleProps = {
     key: string,
@@ -55,22 +56,26 @@ export function module(props: ModuleProps) {
         module.isGlobal = props.isGlobal
         module.isStatic = props.isStatic
         module.canUpdateConfig = props.canUpdateConfig
-        module.images = ModuleRegistry.findModuleImages(module)
-
+        
         if (typeof props.maxInstances === "number") {
             module.maxInstances = props.maxInstances
         }
-
-        if (!module.args) {
-            module.args = []
-        }
-
+        
         if (!module.commands) {
             module.commands = []
         }
-
+        
         if (!module.guildIds) {
             module.guildIds = []
         }
+
+        applyModuleDefaultValues(module)
+    }
+}
+
+function applyModuleDefaultValues(module: typeof Module) {
+    module.images = ModuleRegistry.findModuleImages(module)
+    if (module.maxInstances > 1) {
+        argument(labelArgumentProps)(module)
     }
 }
