@@ -1,7 +1,7 @@
 import Discord from "discord.js"
 import Module from "../../lib/Module"
 import Context from "../../lib/Context"
-import { module, global, command } from "../../lib/decorators"
+import { module } from "../../lib/decorators"
 import Collection from "../../lib/Collection"
 import CommandRegistry from "../../services/CommandRegistry"
 import EventManager from "./managers/EventManager"
@@ -10,9 +10,9 @@ import RootCommandGroup from "./commands"
 
 @module({
     key: "main",
-    name: "Main"
+    name: "Main",
+    isGlobal: true
 })
-@global
 class MainModule extends Module {
     client: Discord.Client
     eventManager: EventManager

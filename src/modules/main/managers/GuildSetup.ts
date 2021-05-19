@@ -31,7 +31,7 @@ export default class GuildSetup extends EventEmitter {
         const guildModel = await this.storeGuild(this.guild)
 
         CommandRegistry.registerGroupForGuild(this.guild, new RootCommandGroup())
-        await ModuleInstanceRegistry.guild(this.guild).startStaticModules(this.client)
+        await ModuleInstanceRegistry.guild(this.guild).startStaticModuleInstances(this.client)
 
         await this.guild.members.fetch()
 

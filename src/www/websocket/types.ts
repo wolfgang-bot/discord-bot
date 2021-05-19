@@ -10,6 +10,7 @@ export enum EVENT_STREAMS {
     MODULE_INSTANCES = "module-instances",
     MODULE_SHARES = "module-shares",
     USER_GUILDS = "user-guilds",
+    GUILD_MODULES = "guild-modules",
     GUILD_MODULE_INSTANCES = "guild-module-instances",
     MEMBERS = "members",
     MESSAGES = "messages",

@@ -1,5 +1,5 @@
 import Module from "../../lib/Module"
-import { module, _static, argument, canUpdateConfig } from "../../lib/decorators"
+import { module, argument } from "../../lib/decorators"
 import { TYPES as ARGUMENT_TYPES } from "../../lib/Argument"
 import Configuration from "./models/Configuration"
 import LocaleProvider from "../../services/LocaleProvider"
@@ -7,10 +7,10 @@ import LocaleProvider from "../../services/LocaleProvider"
 @module({
     key: "settings",
     name: "Settings",
-    desc: "Provides guild-specific settings for the bot."
+    desc: "Provides guild-specific settings for the bot.",
+    isStatic: true,
+    canUpdateConfig: true
 })
-@_static
-@canUpdateConfig
 @argument({
     type: ARGUMENT_TYPES.STRING,
     key: "commandPrefix",

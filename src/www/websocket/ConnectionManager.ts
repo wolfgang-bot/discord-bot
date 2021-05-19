@@ -36,7 +36,6 @@ export default class ConnectionManager {
         this.socket.on("get:guild/channels",            this.guildController.getChannels.bind(this.guildController))
         this.socket.on("get:guild/roles",               this.guildController.getRoles.bind(this.guildController))
 
-        this.socket.on("get:modules",                   this.moduleController.getModules.bind(this.moduleController))
         this.socket.on("post:modules/validate-args",    this.moduleController.validateArguments.bind(this.moduleController))
         this.socket.on("get:module-instances",          this.moduleController.getInstances.bind(this.moduleController))
         this.socket.on("post:module-instances/start",   this.moduleController.startInstance.bind(this.moduleController))

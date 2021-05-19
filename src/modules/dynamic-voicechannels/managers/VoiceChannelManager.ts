@@ -54,13 +54,13 @@ class VoiceChannelManager extends Manager {
     }
 
     async storeVoiceChannels() {
-        const model = await ModuleInstance.findByContext(this.context) as ModuleInstance
+        const model = await ModuleInstance.findByContext(this.context)
         model.data.channelIds = this.channels.map(channel => channel.id)
         await model.update()
     }
 
     async loadVoiceChannels() {
-        const model = await ModuleInstance.findByContext(this.context) as ModuleInstance
+        const model = await ModuleInstance.findByContext(this.context)
         const { channelIds } = model.data as InstanceData
         if (channelIds) {
             await Promise.all(channelIds.map(async (id, index) => {

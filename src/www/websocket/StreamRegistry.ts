@@ -6,6 +6,7 @@ import { AuthorizedSocket } from "./SocketManager"
 import GuildStream from "./streams/GuildStream"
 import GuildResourceStream from "./streams/GuildResourceStream"
 import UserStream from "./streams/UserStream"
+import GuildModuleStream from "./streams/GuildModuleStream"
 import GuildModuleInstanceStream from "./streams/GuildModuleInstanceStream"
 import MemberStream from "./streams/MemberStream"
 import MessageStream from "./streams/MessageStream"
@@ -26,6 +27,7 @@ const streams: Record<
     [EVENT_STREAMS.MODULE_INSTANCES]: ModuleInstanceStream,
     [EVENT_STREAMS.MODULE_SHARES]: ModuleSharesStream,
     [EVENT_STREAMS.USER_GUILDS]: UserGuildStream,
+    [EVENT_STREAMS.GUILD_MODULES]: GuildModuleStream,
     [EVENT_STREAMS.GUILD_MODULE_INSTANCES]: GuildModuleInstanceStream,
     [EVENT_STREAMS.MEMBERS]: MemberStream,
     [EVENT_STREAMS.MESSAGES]: MessageStream,

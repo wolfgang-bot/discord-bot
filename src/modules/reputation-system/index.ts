@@ -12,6 +12,8 @@ import ProfileCommand from "./commands/profile"
     key: "reputation-system",
     name: "Reputation System",
     desc: "Manages the reputation and the level roles of the users.",
+    // Somehow position 0 will not be sorted to the first index ¯\_(ツ)_/¯
+    position: 0.1,
     features: [
         "Creates a new role for every level with a unique color.",
         "Allows other modules to give reputation to specific users.",

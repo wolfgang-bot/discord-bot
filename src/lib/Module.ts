@@ -19,6 +19,9 @@ class Module extends EventEmitter {
     static key: string
     static internalName: string
     static desc: string
+    static maxInstances = 1
+    static remainingInstances?: number
+    static position?: number
     static images: string[]
     static features?: string[]
     static args: Argument[]
@@ -99,10 +102,11 @@ class Module extends EventEmitter {
     }
 
     /**
-     * Convert an nstance of this module to JSON
+     * Convert an instance of this module to JSON
      */
     toJSON() {
         return {
+            id: this.context.instanceId,
             moduleKey: this.context.module.key,
             guildId: this.context.guild.id,
             state: this.state,
@@ -118,13 +122,16 @@ class Module extends EventEmitter {
             key: this.key,
             name: this.internalName,
             desc: this.desc,
+            maxInstances: this.maxInstances,
+            remainingInstances: this.remainingInstances,
+            position: this.position,
             images: this.images,
             features: this.features,
             args: this.args,
             commands: this.createCommands(),
             isGlobal: this.isGlobal,
             isPrivate: this.isPrivate,
-            isStatic: this.isStatic,
+            isStatic: this.isStatic
         }
     }
 }

@@ -109,15 +109,29 @@ export class ModuleExistsValidator extends Validator {
 }
 
 export class ModuleInstanceExistsValidator extends Validator {
-    async run(client: Discord.Client, { guild, moduleKey }) {
-        this.assert({ guild })
-
-        const instance = await ModuleInstance.findByGuildAndModuleKey(guild, moduleKey)
-
+    async run(client: Discord.Client, { instanceId }: {
+        instanceId: string
+    }) {
+        const instance = await ModuleInstance.findBy("id", instanceId)
+        
         if (!instance) {
             throw this.error
         }
 
         return { instance }
+    }
+}
+
+export class ModuleInstanceGuildAdminValidator extends Validator {
+    async run(client: Discord.Client, { instance, user }: {
+        instance: ModuleInstance,
+        user: User
+    }) {
+        await instance.fetchGuild()
+        await instance.guild.fetchDiscordGuild(client)
+
+        if (!(await user.isAdmin(instance.guild.discordGuild))) {
+            throw this.error
+        }
     }
 }

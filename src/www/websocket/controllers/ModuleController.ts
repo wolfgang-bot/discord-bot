@@ -14,7 +14,8 @@ import {
     ModuleExistsValidator,
     ModuleInstanceExistsValidator,
     ValidationPipeline,
-    ValidationError
+    ValidationError,
+    ModuleInstanceGuildAdminValidator
 } from "../../../lib/Validation"
 import { AuthorizedSocket } from "../SocketManager"
 import { ValidationError as ConfigValidationError } from "../../../lib/Configuration"
@@ -37,8 +38,9 @@ export default class ModuleController extends WebSocketController {
             new ModuleExistsValidator(error(404, "Module not found"))
         ])
 
-        this.instanceValidationPipeline = this.moduleValidationPipeline.extend([
-            new ModuleInstanceExistsValidator(error(404, "Instance not found"))
+        this.instanceValidationPipeline = new ValidationPipeline(client, [
+            new ModuleInstanceExistsValidator(error(404, "Instance not found")),
+            new ModuleInstanceGuildAdminValidator(error(403))
         ])
 
         const makeGuildArgs = ({ guildId }) => ({
@@ -50,15 +52,20 @@ export default class ModuleController extends WebSocketController {
             ...makeGuildArgs({ guildId }),
             moduleKey
         })
-        
+
+        const makeInstanceArgs = ({ instanceId }) => ({
+            instanceId,
+            user: this.socket.user
+        })
+
         this.getInstances = this.guildValidationPipeline.bind(this.getInstances.bind(this), makeGuildArgs)
 
         this.validateArguments = this.moduleValidationPipeline.bind(this.validateArguments.bind(this), makeModuleArgs)
         this.startInstance = this.moduleValidationPipeline.bind(this.startInstance.bind(this), makeModuleArgs)
-        this.stopInstance = this.moduleValidationPipeline.bind(this.stopInstance.bind(this), makeModuleArgs)
-        this.restartInstance = this.moduleValidationPipeline.bind(this.restartInstance.bind(this), makeModuleArgs)
-
-        this.updateConfig = this.instanceValidationPipeline.bind(this.updateConfig.bind(this), makeModuleArgs)
+        
+        this.stopInstance = this.instanceValidationPipeline.bind(this.stopInstance.bind(this), makeInstanceArgs)
+        this.restartInstance = this.instanceValidationPipeline.bind(this.restartInstance.bind(this), makeInstanceArgs)
+        this.updateConfig = this.instanceValidationPipeline.bind(this.updateConfig.bind(this), makeInstanceArgs)
     }
 
     /**
@@ -72,14 +79,6 @@ export default class ModuleController extends WebSocketController {
         } else {
             send(error(500))
         }
-    } 
-
-    /**
-     * Get all modules available to the requesting user
-     */
-    getModules(_arg: object, send: Function) {
-        const modules = ModuleRegistry.getPublicModules({ includeStatic: true })
-        send(success(modules))
     }
 
     /**
@@ -164,7 +163,9 @@ export default class ModuleController extends WebSocketController {
         const module = await Module.findBy("key", moduleKey) as Module
 
         try {
-            await ModuleInstanceRegistry.guild(guild.discordGuild).startModule(this.client, module, args)
+            await ModuleInstanceRegistry
+                .guild(guild.discordGuild)
+                .startInstance(this.client, module, args)
         } catch (err) {
             log.debug(err)
             return this.sendError(send, err)
@@ -178,11 +179,7 @@ export default class ModuleController extends WebSocketController {
      */
     async stopInstance(
         validationError: ValidationError,
-        { guildId, moduleKey }:
-        {
-            guildId: string,
-            moduleKey: string
-        },
+        { instanceId }: { instanceId: string },
         send: Function
     ) {
         if (validationError) {
@@ -190,13 +187,14 @@ export default class ModuleController extends WebSocketController {
             return
         }
 
-        const guild = await Guild.findBy("id", guildId) as Guild
-        await guild.fetchDiscordGuild(this.client)
-
-        const module = await Module.findBy("key", moduleKey) as Module
+        const instance = await ModuleInstance.findBy("id", instanceId) as ModuleInstance
+        await instance.fetchGuild()
+        await instance.guild.fetchDiscordGuild(this.client)
 
         try {
-            await ModuleInstanceRegistry.guild(guild.discordGuild).stopModule(module)
+            await ModuleInstanceRegistry
+                .guild(instance.guild.discordGuild)
+                .stopInstance(instance)
         } catch (err) {
             log.debug(err)
             return this.sendError(send, err)
@@ -210,24 +208,22 @@ export default class ModuleController extends WebSocketController {
      */
     async restartInstance(
         validationError: ValidationError,
-        { guildId, moduleKey }: {
-            guildId: string,
-            moduleKey: string
-        },
+        { instanceId }: { instanceId: string },
         send: Function
     ) {
         if (validationError) {
             send(validationError)
             return
         }
-
-        const guild = await Guild.findBy("id", guildId) as Guild
-        await guild.fetchDiscordGuild(this.client)
-
-        const module = await Module.findBy("key", moduleKey) as Module
+        
+        const instance = await ModuleInstance.findBy("id", instanceId) as ModuleInstance
+        await instance.fetchGuild()
+        await instance.guild.fetchDiscordGuild(this.client)
 
         try {
-            await ModuleInstanceRegistry.guild(guild.discordGuild).restartModule(module)
+            await ModuleInstanceRegistry
+                .guild(instance.guild.discordGuild)
+                .restartInstance(instance)
         } catch (err) {
             log.debug(err)
             return this.sendError(send, err)
@@ -241,9 +237,8 @@ export default class ModuleController extends WebSocketController {
      */
     async updateConfig(
         validationError: ValidationError,
-        { guildId, moduleKey, newConfig }: {
-            guildId: string,
-            moduleKey: string,
+        { instanceId, newConfig }: {
+            instanceId: string,
             newConfig: object
         },
         send: Function
@@ -257,22 +252,20 @@ export default class ModuleController extends WebSocketController {
             return send(error(400, "New config is not an object"))
         }
 
-        const model = await Module.findBy("key", moduleKey) as Module
-        const module = ModuleRegistry.getModule(model)
+        const instance = await ModuleInstance.findBy("id", instanceId) as ModuleInstance
+        const module = ModuleRegistry.getModule(instance.module_key)
 
         if (!module.canUpdateConfig) {
             return send(error(400, "Cannot update configuration"))
         }
 
-        const guild = await Guild.findBy("id", guildId) as Guild
-        await guild.fetchDiscordGuild(this.client)
-
-        const instanceModel = await ModuleInstance.findByGuildAndModuleKey(guild, moduleKey)
+        await instance.fetchGuild()
+        await instance.guild.fetchDiscordGuild(this.client)
 
         try {
             await ModuleInstanceRegistry
-                .guild(guild.discordGuild)
-                .updateConfig(instanceModel, newConfig)
+                .guild(instance.guild.discordGuild)
+                .updateConfig(instance, newConfig)
         } catch (err) {
             log.debug(err)
             return this.sendError(send, err)

@@ -206,7 +206,7 @@ async function auditModuleInstances() {
                     const args = Object.fromEntries(
                         module.args.map(arg => [arg.key, arg.defaultValue])
                     )
-                    await ModuleInstanceRegistry.guild(guild).startModule(client, moduleModel, args, false)
+                    await ModuleInstanceRegistry.guild(guild).startInstance(client, moduleModel, args, false)
                 })
             }
         })

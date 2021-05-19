@@ -47,7 +47,13 @@ export default class GuildController extends WebSocketController {
         const guild = await Guild.findBy("id", guildId) as Guild
         await guild.fetchDiscordGuild(this.client)
 
-        send(success(guild.discordGuild.channels.cache))
+        const botMember = await guild.discordGuild.members.fetch(this.client.user.id)
+
+        const channels = guild.discordGuild.channels.cache.filter((channel) => {
+            return channel.permissionsFor(botMember).has("SEND_MESSAGES")
+        })
+
+        send(success(channels))
     }
 
     /**

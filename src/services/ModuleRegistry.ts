@@ -6,6 +6,8 @@ import Module from "../lib/Module"
 import Collection from "../lib/Collection"
 import ModuleModel from "../models/Module"
 import ModuleInstanceRegistry from "./ModuleInstanceRegistry"
+import Guild from "../models/Guild"
+import ModuleInstance from "../models/ModuleInstance"
 
 const MODULES_DIR = path.join(__dirname, "..", "modules")
 
@@ -36,6 +38,17 @@ class ModuleRegistry {
 
             ModuleRegistry.modules.push(module)
         }))
+
+        this.sortModules()
+    }
+
+    /**
+     * Sort modules by position property
+     */
+    static sortModules() {
+        this.modules.sort((a, b) =>
+            (a.position || this.modules.length) - (b.position || this.modules.length)
+        )
     }
 
     /**
@@ -56,8 +69,11 @@ class ModuleRegistry {
     /**
      * Get a module class from a database model
      */
-    static getModule(model: ModuleModel) {
-        return ModuleRegistry.modules.find(module => module.key === model.key)
+    static getModule(moduleKey: ModuleModel | string) {
+        if (moduleKey instanceof ModuleModel) {
+            moduleKey = moduleKey.key
+        }
+        return ModuleRegistry.modules.find(module => module.key === moduleKey)
     }
 
     /**
@@ -97,6 +113,15 @@ class ModuleRegistry {
         }
         return fs.readdirSync(imagesDir)
             .map((imagePath) => path.basename(imagePath))
+    }
+
+    /**
+     * Get the amount of remaining instances of a module for a guild
+     */
+    static async getRemainingInstances(moduleKey: string, guild: Guild) {
+        const instances = await ModuleInstance.findByGuildAndModuleKey(guild, moduleKey)
+        const module = this.getModule(moduleKey)
+        return module.maxInstances - instances.length
     }
 }
 

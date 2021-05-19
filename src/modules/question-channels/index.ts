@@ -13,6 +13,8 @@ import SettingsConfig from "../settings/models/Configuration"
     key: "question-channels",
     name: "Question Channels",
     desc: "Manages textchannels used for answering questions.",
+    position: 1,
+    maxInstances: 3,
     features: [
         "Creates a textchannel for a user when he asks a question in the question channel.",
         "Removes a textchannel when the creator marks a message as the answer or the question as irrelevant.",
