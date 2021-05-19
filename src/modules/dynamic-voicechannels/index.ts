@@ -9,6 +9,7 @@ import VoiceChannelManager from "./managers/VoiceChannelManager"
     name: "Dynamic Voicechannels",
     desc: "Ensures that there always is an empty voicechannel.",
     position: 3,
+    maxInstances: 3,
     features: [
         "Creates a predefined amount of persistant voicechannels in the given category.",
         "Creates a new voicechannels if there is at least one member in every other voicechannel.",
