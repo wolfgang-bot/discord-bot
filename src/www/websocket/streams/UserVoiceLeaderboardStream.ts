@@ -14,7 +14,11 @@ class LeaderboardDataset {
 
     async fetchLeaderboard() {
         const users = Object.entries(
-            await Event.sumMetaValuePerUser(EVENT_TYPES.VOICECHANNEL_LEAVE, "duration")
+            await Event.sumMetaValuePerUser({
+                type: EVENT_TYPES.VOICECHANNEL_LEAVE,
+                metaKey: "duration",
+                guildId: this.guildId
+            })
         )
 
         users.sort((a, b) => b[1] - a[1])

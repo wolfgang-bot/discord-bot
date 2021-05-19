@@ -76,25 +76,40 @@ class Event<TMeta = undefined> extends Model implements EventModelValues<TMeta> 
         `) as Promise<Collection<Event<TEventMeta>>>
     }
 
-    static async queryGroupedByUser(query: string, type: EVENT_TYPES) {
+    static async queryGroupedByUser({ query, type, guildId }: {
+        query: string,
+        type: EVENT_TYPES,
+        guildId?: string
+    }) {
         const result = await database.query(`
             SELECT user_id, ${query}
             FROM ${this.context.table}
             WHERE type=${type}
+            ${guildId ? `AND guild_id='${guildId}'` : ""}
             GROUP BY user_id
         `)
 
         return Object.fromEntries(result.map(Object.values)) as Record<string, number>
     }
 
-    static countRowsPerUser(type: EVENT_TYPES) {
-        return this.queryGroupedByUser("COUNT('user_id')", type)
+    static countRowsPerUser(type: EVENT_TYPES, guildId?: string) {
+        return this.queryGroupedByUser({
+            query: "COUNT('user_id')",
+            type,
+            guildId
+        })
     }
 
-    static async sumMetaValuePerUser(type: EVENT_TYPES, metaKey: string) {
-        return this.queryGroupedByUser(`
-            SUM(JSON_EXTRACT(meta, "$.${metaKey}")) as ${metaKey}
-        `, type)
+    static async sumMetaValuePerUser({ type, metaKey, guildId }: {
+        type: EVENT_TYPES,
+        metaKey: string,
+        guildId: string
+    }) {
+        return this.queryGroupedByUser({
+            query: `SUM(JSON_EXTRACT(meta, "$.${metaKey}")) as ${metaKey}`,
+            type,
+            guildId
+        })
     }
 
     constructor(values: EventModelValues<TMeta>) {

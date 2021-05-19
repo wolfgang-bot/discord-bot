@@ -14,7 +14,7 @@ class LeaderboardDataset {
 
     async fetchLeaderboard() {
         const users = Object.entries(
-            await Event.countRowsPerUser(EVENT_TYPES.MESSAGE_SEND)
+            await Event.countRowsPerUser(EVENT_TYPES.MESSAGE_SEND, this.guildId)
         )
 
         users.sort((a, b) => b[1] - a[1])
