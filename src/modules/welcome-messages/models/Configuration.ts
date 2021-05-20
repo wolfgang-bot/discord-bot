@@ -36,6 +36,11 @@ export default class Configuration extends DefaultConfig implements ConfigProps 
         }
     ]
 
+    constructor(props: ConfigProps) {
+        super(props)
+        Configuration.validate(props)
+    }
+
     toJSON() {
         return {
             ...this,

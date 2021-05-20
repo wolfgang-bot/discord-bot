@@ -9,7 +9,7 @@ import Context from "../../lib/Context"
     key: "user-role",
     name: "User Role",
     desc: "Gives a role to each user",
-    position: 3,
+    position: 4,
     maxInstances: 3,
     features: [
         "Assigns a role to each existing user on startup",
