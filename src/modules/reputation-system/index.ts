@@ -72,7 +72,7 @@ export default class ReputationSystemModule extends Module {
 
     async start() {
         this.registerCommands()
-
+        
         this.reputationManager = new ReputationManager(this.context, this.config)
         await this.reputationManager.init()
     }
@@ -80,7 +80,6 @@ export default class ReputationSystemModule extends Module {
     async stop() {
         this.unregisterCommands()
 
-        CommandRegistry.guild(this.context.guild).unregister(this.commands)
         await this.reputationManager.delete()
     }
 }
