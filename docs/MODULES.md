@@ -1,8 +1,9 @@
 # Modules
 
-* [General](#general)
-* [Create a module](#create-a-module)
-* [Folder structure](#folder-structure)
+- [Modules](#modules)
+  - [General](#general)
+  - [Create a module](#create-a-module)
+  - [Folder structure](#folder-structure)
 
 ## General
 
@@ -26,7 +27,7 @@ To assign meta-data like the commands used or arguments required, decorators fro
 
 1. ``npm run create-module <module-key>``
 2. Rename the class in the index.js file
-3. Replace the icon.png file
+3. Replace the icon.svg file
 
 ## Folder structure
 
@@ -40,6 +41,6 @@ The folder structure is not mandatory but recommended.
 |-- managers
 |-- models
 |   |-- Configuration.ts
-|-- icon.png
+|-- icon.svg
 |-- index.js
 ```

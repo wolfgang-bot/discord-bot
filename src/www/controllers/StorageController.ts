@@ -4,7 +4,7 @@ import fs from "fs"
 import log from "loglevel"
 import ModuleRegistry from "../../services/ModuleRegistry"
 
-const ICON_FILE_NAME = "icon.png"
+const ICON_FILE_NAME = "icon.svg"
 const IMAGES_DIR_NAME = "images"
 
 const ROOT_DIR = path.join(__dirname, "..", "..")
@@ -33,6 +33,7 @@ export default class StorageController {
                 return res.sendStatus(404)
             }
 
+            res.setHeader("Content-Type", "image/svg+xml")
             fs.createReadStream(filePath).pipe(res)
         } catch (error) {
             log.debug(error)
