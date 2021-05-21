@@ -12,6 +12,7 @@ import MuteManager from "./managers/MuteManager"
 import MuteCommand from "./commands/mute"
 import UnmuteCommand from "./commands/unmute"
 import TempmuteCommand from "./commands/tempmute"
+import SweepCommand from "./commands/sweep"
 
 @module({
     key: "moderation",
@@ -28,6 +29,7 @@ import TempmuteCommand from "./commands/tempmute"
 @command(MuteCommand)
 @command(TempmuteCommand)
 @command(UnmuteCommand)
+@command(SweepCommand)
 export default class ToolboxModule extends Module {
     static config = Configuration
     
