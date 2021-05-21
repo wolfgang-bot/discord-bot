@@ -2,11 +2,12 @@ import Configuration from "../../lib/Configuration"
 import Context from "../../lib/Context"
 import { command, module } from "../../lib/decorators"
 import Module from "../../lib/Module"
+import SchedulesManager from "./managers/SchedulesManager"
+import CustomCommand from "./CustomCommand"
 import BanCommand from "./commands/ban"
+import KickCommand from "./commands/kick"
 import TempbanCommand from "./commands/tempban"
 import UnbanCommand from "./commands/unban"
-import CustomCommand from "./CustomCommand"
-import SchedulesManager from "./managers/SchedulesManager"
 
 @module({
     key: "moderation",
@@ -19,6 +20,7 @@ import SchedulesManager from "./managers/SchedulesManager"
 @command(BanCommand)
 @command(TempbanCommand)
 @command(UnbanCommand)
+@command(KickCommand)
 export default class ToolboxModule extends Module {
     static config = Configuration
     

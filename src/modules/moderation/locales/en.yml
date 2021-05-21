@@ -7,6 +7,9 @@ command_unban_args: <user>
 command_tempban_desc: Bans a user for a given duration
 command_tempban_args: <user> <hours>
 
+command_kick_desc: Kicks a user
+command_kick_args: <user>
+
 error_missing_arg: "Missing argument: '{0}'"
 error_user_not_found: User not found
 error_invalid_number: Invalid duration
