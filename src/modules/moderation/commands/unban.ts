@@ -1,9 +1,9 @@
 import Discord, { DiscordAPIError } from "discord.js"
-import Command from "../../../lib/Command"
+import CustomCommand from "../CustomCommand"
 import LocaleProvider from "../../../services/LocaleProvider"
 import { getUserIdFromMention } from "../../../utils"
 
-export default class UnbanCommand extends Command {
+export default class UnbanCommand extends CustomCommand {
     name = "unban"
     group = "Moderation"
     permissions: Discord.PermissionString[] = ["BAN_MEMBERS"]

@@ -4,7 +4,12 @@ command_ban_args: <user>
 command_unban_desc: Unbans a user
 command_unban_args: <user>
 
+command_tempban_desc: Bans a user for a given duration
+command_tempban_args: <user> <hours>
+
 error_missing_arg: "Missing argument: '{0}'"
 error_user_not_found: User not found
+error_invalid_number: Invalid duration
+error_duration_between: The duration must be between {0}h ({1} minutes) and {2}h ({3} days)
 
 success: Success
