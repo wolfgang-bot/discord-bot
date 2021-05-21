@@ -1,15 +1,8 @@
 import log from "loglevel"
 import Manager from "../../../lib/Manager"
 import ModuleInstance from "../../../models/ModuleInstance"
-import ActiveSchedule, { ActiveScheduleJSON } from "../models/ActiveSchedule"
-
-enum SCHEDULE_TYPES {
-    UNBAN = 0
-}
-
-type InstanceData = {
-    schedules?: Record<SCHEDULE_TYPES, ActiveScheduleJSON[]>
-}
+import ActiveSchedule from "../models/ActiveSchedule"
+import { InstanceData, SCHEDULE_TYPES } from "../models/InstanceData"
 
 class SchedulesManager extends Manager {
     timeouts: NodeJS.Timeout[] = []

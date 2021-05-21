@@ -2,12 +2,14 @@ import Configuration from "../../lib/Configuration"
 import Context from "../../lib/Context"
 import { command, module } from "../../lib/decorators"
 import Module from "../../lib/Module"
-import SchedulesManager from "./managers/SchedulesManager"
+import ScheduleManager from "./managers/ScheduleManager"
 import CustomCommand from "./CustomCommand"
 import BanCommand from "./commands/ban"
 import KickCommand from "./commands/kick"
 import TempbanCommand from "./commands/tempban"
 import UnbanCommand from "./commands/unban"
+import MuteManager from "./managers/MuteManager"
+import MuteCommand from "./commands/mute"
 
 @module({
     key: "moderation",
@@ -21,10 +23,13 @@ import UnbanCommand from "./commands/unban"
 @command(TempbanCommand)
 @command(UnbanCommand)
 @command(KickCommand)
+@command(MuteCommand)
 export default class ToolboxModule extends Module {
     static config = Configuration
     
-    schedulesManager: SchedulesManager
+    scheduleManager: ScheduleManager
+    muteManager: MuteManager
+
     commands: CustomCommand[]
 
     constructor(context: Context, config: Configuration) {
@@ -33,16 +38,26 @@ export default class ToolboxModule extends Module {
     }
 
     async start() {
-        this.schedulesManager = new SchedulesManager(this.context, this.config)
-        await this.schedulesManager.init()
+        this.scheduleManager = new ScheduleManager(this.context, this.config)
+        this.muteManager = new MuteManager(this.context, this.config)
+        
+        await Promise.all([
+            this.scheduleManager.init(),
+            this.muteManager.init()
+        ])
+
         this.registerCommands()
         this.commands.forEach(command => {
-            command.scheduler = this.schedulesManager
+            command.scheduler = this.scheduleManager
+            command.muter = this.muteManager
         })
     }
 
     async stop() {
         this.unregisterCommands()
-        await this.schedulesManager.delete()
+        await Promise.all([
+            this.scheduleManager.delete(),
+            this.muteManager.delete()
+        ])
     }
 }

@@ -1,6 +1,8 @@
 import Command from "../../lib/Command"
-import SchedulesManager from "./managers/SchedulesManager"
+import MuteManager from "./managers/MuteManager"
+import ScheduleManager from "./managers/ScheduleManager"
 
 export default abstract class CustomCommand extends Command {
-    scheduler: SchedulesManager
+    scheduler: ScheduleManager
+    muter: MuteManager
 }
