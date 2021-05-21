@@ -1,2 +1,2 @@
-Dev:  https://discord.com/oauth2/authorize?client_id=772865751560093708&scope=bot&permissions=1342318608
-Prod: https://discord.com/oauth2/authorize?client_id=779716499313131551&scope=bot&permissions=1342318608
+Dev:  https://discord.com/oauth2/authorize?client_id=772865751560093708&scope=bot&permissions=1345535071
+Prod: https://discord.com/oauth2/authorize?client_id=779716499313131551&scope=bot&permissions=1345535071

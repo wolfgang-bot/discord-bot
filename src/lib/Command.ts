@@ -70,12 +70,12 @@ abstract class Command {
      */
     getUsage() {
         const args = this.arguments &&
-            new LocaleProvider().scope(this.module).translate(this.arguments)
+            new LocaleProvider().scope(this.getModule()).translate(this.arguments)
         return `${defaultCommandPrefix}${this.getCallableName()} ${args || ""}`.trim()
     }
 
     toJSON() {
-        const locale = new LocaleProvider().scope(this.module)
+        const locale = new LocaleProvider().scope(this.getModule())
 
         return {
             name: this.name,

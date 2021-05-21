@@ -1,0 +1,23 @@
+embed_codeblocks_title: Codeblocks Guide
+embed_codeblocks_content: |
+  \```language
+  <code>
+  \```
+
+  **Example**
+  \```python
+  print("Hello World")
+  \```
+  *turns into*
+  ```python
+  print("Hello World")
+  ```
+  All popular languages are supported, e.g:
+  ```
+  c, c++, css, diff, html, js, java, php, python, sql
+  ```
+  See also [this link](https://highlightjs.org/static/demo/) for a list of all supported languages.
+
+command_guide_desc: Shows discord guides
+
+command_codeblocks_desc: Shows how to use codeblocks

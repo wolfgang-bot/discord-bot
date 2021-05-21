@@ -9,7 +9,7 @@ import Context from "../../lib/Context"
     key: "user-role",
     name: "User Role",
     desc: "Gives a role to each user",
-    position: 2,
+    position: 4,
     maxInstances: 3,
     features: [
         "Assigns a role to each existing user on startup",
@@ -26,7 +26,7 @@ import Context from "../../lib/Context"
     type: ARGUMENT_TYPES.BOOLEAN,
     key: "assignRoleToEachUser",
     name: "Assign Role",
-    desc: "Assign the role to each user",
+    desc: "Assign the role to each existing user",
     defaultValue: true
 })
 export default class UserRoleModule extends Module {

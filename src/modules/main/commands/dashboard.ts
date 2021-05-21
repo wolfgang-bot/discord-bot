@@ -6,7 +6,7 @@ import SettingsConfig from "../../settings/models/Configuration"
 
 export default class DashboardCommand extends Command {
     name = "dashboard"
-    group = "Admin"
+    group = "General"
     description = "command_dashboard_desc"
 
     async run(message: Discord.Message) {

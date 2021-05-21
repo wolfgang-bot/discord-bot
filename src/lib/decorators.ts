@@ -69,6 +69,10 @@ export function module(props: ModuleProps) {
             module.guildIds = []
         }
 
+        if (!module.args) {
+            module.args = []
+        }
+
         applyModuleDefaultValues(module)
     }
 }

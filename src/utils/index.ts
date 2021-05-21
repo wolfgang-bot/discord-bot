@@ -120,9 +120,28 @@ export function applyBackticks(input: string) {
     return `\`${input}\``
 }
 
+/**
+ * Like Array.prototype.map, but with support for async function
+ */
 export function mapAsync<T, U>(
     array: Array<T>,
     callback: (item: T, index: number) => Promise<U>
 ) {
     return Promise.all(array.map(callback))
+}
+
+/**
+ * Pick a random element from an array
+ */
+export function pickRandomFromArray<T>(array: T[]) {
+    return array[Math.floor(Math.random() * array.length)]
+}
+
+/**
+ * Get the user-id from a mention
+ * Example:
+ * <@!123456> --> 123456
+ */
+export function getUserIdFromMention(mention: string) {
+    return mention.match(/\d+/)?.[0]
 }

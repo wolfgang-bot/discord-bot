@@ -1,0 +1,31 @@
+command_ban_desc: Bans a user
+command_ban_args: <user>
+
+command_unban_desc: Unbans a user
+command_unban_args: <user>
+
+command_tempban_desc: Bans a user for a given duration
+command_tempban_args: <user> <hours>
+
+command_kick_desc: Kicks a user
+command_kick_args: <user>
+
+command_mute_desc: Mutes a user
+command_mute_args: <user>
+
+command_unmute_desc: Unmutes a user
+command_unmute_args: <user>
+
+command_tempmute_desc: Mutes a user for a given duration
+command_tempmute_args: <user> <hours>
+
+command_sweep_desc: Deletes a given amount of messages
+command_sweep_args: <amount>
+
+error_missing_arg: "Missing argument: '{0}'"
+error_user_not_found: User not found
+error_invalid_number: Invalid duration
+error_duration_between: The duration must be between {0}h ({1} minutes) and {2}h ({3} days)
+error_amount_between: The amount must be between {0} and {1}
+
+success: Success
