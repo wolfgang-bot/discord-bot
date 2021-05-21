@@ -3,6 +3,7 @@ import Context from "../../lib/Context"
 import { command, module } from "../../lib/decorators"
 import Module from "../../lib/Module"
 import BanCommand from "./commands/ban"
+import UnbanCommand from "./commands/unban"
 
 @module({
     key: "moderation",
@@ -13,6 +14,7 @@ import BanCommand from "./commands/ban"
     ]
 })
 @command(BanCommand)
+@command(UnbanCommand)
 export default class ToolboxModule extends Module {
     static config = Configuration
 

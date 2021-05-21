@@ -1,5 +1,10 @@
 command_ban_desc: Bans a user
 command_ban_args: <user>
 
+command_unban_desc: Unbans a user
+command_unban_args: <user>
+
 error_missing_arg: "Missing argument: '{0}'"
 error_user_not_found: User not found
+
+success: Success

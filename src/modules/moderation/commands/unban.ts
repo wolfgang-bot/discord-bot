@@ -3,12 +3,12 @@ import Command from "../../../lib/Command"
 import LocaleProvider from "../../../services/LocaleProvider"
 import { getUserIdFromMention } from "../../../utils"
 
-export default class BanCommand extends Command {
-    name = "ban"
+export default class UnbanCommand extends Command {
+    name = "unban"
     group = "Moderation"
     permissions: Discord.PermissionString[] = ["BAN_MEMBERS"]
-    description = "command_ban_desc"
-    arguments = "command_ban_args"
+    description = "command_unban_desc"
+    arguments = "command_unban_args"
 
     async run(message: Discord.Message, args: string[]) {
         const locale = (await LocaleProvider.guild(message.guild)).scope(this.getModule())
@@ -29,7 +29,7 @@ export default class BanCommand extends Command {
             throw error
         }
 
-        await message.guild.members.ban(user)
+        await message.guild.members.unban(user)
         await message.react("👍")
     }
 }
