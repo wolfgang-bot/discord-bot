@@ -73,7 +73,7 @@ class CommandGroup extends Command {
 
         commands.forEach(command => {
             delete this.commands[command.name]
-            command.alias.forEach(alias => delete this.commands[alias])
+            command.alias?.forEach(alias => delete this.commands[alias])
     
             this.commandNames.delete(command.name)
         })
