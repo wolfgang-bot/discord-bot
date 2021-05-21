@@ -6,7 +6,7 @@ import Manager from "../../../lib/Manager"
 import ModuleInstance from "../../../models/ModuleInstance"
 import { InstanceData } from "../models/InstanceData"
 
-const MUTE_ROLE_NAME = "mute"
+const MUTE_ROLE_NAME = "🔇 Muted"
 
 class MuteRoleManager extends Manager {
     role: Discord.Role

@@ -13,6 +13,9 @@ command_kick_args: <user>
 command_mute_desc: Mutes a user
 command_mute_args: <user>
 
+command_unmute_desc: Unmutes a user
+command_unmute_args: <user>
+
 error_missing_arg: "Missing argument: '{0}'"
 error_user_not_found: User not found
 error_invalid_number: Invalid duration

@@ -10,13 +10,14 @@ import TempbanCommand from "./commands/tempban"
 import UnbanCommand from "./commands/unban"
 import MuteManager from "./managers/MuteManager"
 import MuteCommand from "./commands/mute"
+import UnmuteCommand from "./commands/unmute"
 
 @module({
     key: "moderation",
     name: "Moderation",
     desc: "Adds moderation commands",
     features: [
-        "Addds moderation commands"
+        "Adds moderation commands"
     ]
 })
 @command(BanCommand)
@@ -24,6 +25,7 @@ import MuteCommand from "./commands/mute"
 @command(UnbanCommand)
 @command(KickCommand)
 @command(MuteCommand)
+@command(UnmuteCommand)
 export default class ToolboxModule extends Module {
     static config = Configuration
     
