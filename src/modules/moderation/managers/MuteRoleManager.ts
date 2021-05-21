@@ -52,13 +52,12 @@ class MuteRoleManager extends Manager {
     }
 
     async overwriteChannelPermissions(channel: Discord.GuildChannel) {
-        await channel.overwritePermissions([
-            {
-                type: "role",
-                id: this.role.id,
-                deny: ["SEND_MESSAGES", "ADD_REACTIONS", "SPEAK", "STREAM"]
-            }
-        ])
+        await channel.updateOverwrite(this.role, {
+            SEND_MESSAGES: false,
+            ADD_REACTIONS: false,
+            SPEAK: false,
+            STREAM: false
+        })
     }
 
     async handleChannelCreate(channel: Discord.GuildChannel) {
