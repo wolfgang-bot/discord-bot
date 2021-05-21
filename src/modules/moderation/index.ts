@@ -11,6 +11,7 @@ import UnbanCommand from "./commands/unban"
 import MuteManager from "./managers/MuteManager"
 import MuteCommand from "./commands/mute"
 import UnmuteCommand from "./commands/unmute"
+import TempmuteCommand from "./commands/tempmute"
 
 @module({
     key: "moderation",
@@ -25,6 +26,7 @@ import UnmuteCommand from "./commands/unmute"
 @command(UnbanCommand)
 @command(KickCommand)
 @command(MuteCommand)
+@command(TempmuteCommand)
 @command(UnmuteCommand)
 export default class ToolboxModule extends Module {
     static config = Configuration
@@ -40,8 +42,12 @@ export default class ToolboxModule extends Module {
     }
 
     async start() {
-        this.scheduleManager = new ScheduleManager(this.context, this.config)
         this.muteManager = new MuteManager(this.context, this.config)
+        this.scheduleManager = new ScheduleManager(
+            this.context,
+            this.config,
+            this.muteManager
+        )
         
         await Promise.all([
             this.scheduleManager.init(),

@@ -79,7 +79,11 @@ class MuteRoleManager extends Manager {
     }
     
     async delete() {
-        await this.role.delete()
+        try {
+            await this.role.delete()
+        } catch (error) {
+            log.error(error)
+        }
         this.context.client.removeListener("channelCreate", this.handleChannelCreate)
     }
 }

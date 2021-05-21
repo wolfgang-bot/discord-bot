@@ -1,16 +1,32 @@
 import log from "loglevel"
+import Configuration from "../../../lib/Configuration"
+import Context from "../../../lib/Context"
 import Manager from "../../../lib/Manager"
 import ModuleInstance from "../../../models/ModuleInstance"
 import ActiveSchedule from "../models/ActiveSchedule"
 import { InstanceData, SCHEDULE_TYPES } from "../models/InstanceData"
+import MuteManager from "./MuteManager"
 
 class SchedulesManager extends Manager {
     timeouts: NodeJS.Timeout[] = []
+    muter: MuteManager
+
+    constructor(context: Context, config: Configuration, muter: MuteManager) {
+        super(context, config)
+        this.muter = muter
+    }
 
     async scheduleUnban(userId: string, timestamp: number) {
         const schedule = new ActiveSchedule(userId, timestamp)
         schedule.type = SCHEDULE_TYPES.UNBAN
         this.scheduleFunction(this.handleUnban.bind(this, userId), schedule)
+        await this.storeSchedule(schedule)
+    }
+
+    async scheduleUnmute(userId: string, timestamp: number) {
+        const schedule = new ActiveSchedule(userId, timestamp)
+        schedule.type = SCHEDULE_TYPES.UNMUTE
+        this.scheduleFunction(this.handleUnmute.bind(this, userId), schedule)
         await this.storeSchedule(schedule)
     }
 
@@ -27,6 +43,16 @@ class SchedulesManager extends Manager {
         try {
             const user = await this.context.client.users.fetch(userId)
             await this.context.guild.members.unban(user)
+        } catch (error) {
+            log.error(error)
+        }
+    }
+
+    async handleUnmute(userId: string) {
+        try {
+            const user = await this.context.client.users.fetch(userId)
+            const member = await this.context.guild.members.fetch(user)
+            this.muter.unmuteMember(member)
         } catch (error) {
             log.error(error)
         }
@@ -60,6 +86,11 @@ class SchedulesManager extends Manager {
             if (schedule.type === SCHEDULE_TYPES.UNBAN) {
                 this.scheduleFunction(
                     this.handleUnban.bind(this, schedule.userId),
+                    schedule
+                )
+            } else if (schedule.type === SCHEDULE_TYPES.UNMUTE) {
+                this.scheduleFunction(
+                    this.handleUnmute.bind(this, schedule.userId),
                     schedule
                 )
             }
