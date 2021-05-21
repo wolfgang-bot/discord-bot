@@ -52,7 +52,7 @@ jobs:
           STAGE_DISCORD_BOT_HOST: backstage.wolfgang.gg
           STAGE_DISCORD_BOT_PUBLIC_PORT: "80"
           STAGE_DISCORD_BOT_PROTOCOL: https
-          STAGE_DISCORD_BOT_PORT: "8300"
+          STAGE_DISCORD_BOT_PORT: "8400"
           STAGE_DATABASE_HOST: host.docker.internal
           STAGE_DATABASE_PORT: "3306"
           STAGE_DATABASE_NAME: wolfgang-backstage
