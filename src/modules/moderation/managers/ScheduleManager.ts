@@ -1,9 +1,9 @@
 import log from "loglevel"
-import Configuration from "../../../lib/Configuration"
 import Context from "../../../lib/Context"
 import Manager from "../../../lib/Manager"
 import ModuleInstance from "../../../models/ModuleInstance"
 import ActiveSchedule from "../models/ActiveSchedule"
+import Configuration from "../models/Configuration"
 import { InstanceData, SCHEDULE_TYPES } from "../models/InstanceData"
 import MuteManager from "./MuteManager"
 

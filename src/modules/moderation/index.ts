@@ -1,9 +1,10 @@
-import Configuration from "../../lib/Configuration"
 import Context from "../../lib/Context"
-import { command, module } from "../../lib/decorators"
+import { argument, command, module } from "../../lib/decorators"
 import Module from "../../lib/Module"
+import { TYPES as ARGUMENT_TYPES } from "../../lib/Argument"
 import ScheduleManager from "./managers/ScheduleManager"
 import CustomCommand from "./CustomCommand"
+import Configuration from "./models/Configuration"
 import BanCommand from "./commands/ban"
 import KickCommand from "./commands/kick"
 import TempbanCommand from "./commands/tempban"
@@ -18,9 +19,17 @@ import SweepCommand from "./commands/sweep"
     key: "moderation",
     name: "Moderation",
     desc: "Adds moderation commands",
+    position: 5,
     features: [
         "Adds moderation commands"
     ]
+})
+@argument({
+    type: ARGUMENT_TYPES.STRING,
+    key: "mutedRoleName",
+    name: "Muted Role Name",
+    desc: "Name of the role for muted users",
+    defaultValue: "🔇 Muted"
 })
 @command(BanCommand)
 @command(TempbanCommand)
@@ -33,10 +42,10 @@ import SweepCommand from "./commands/sweep"
 export default class ToolboxModule extends Module {
     static config = Configuration
     
+    config: Configuration
+    commands: CustomCommand[]
     scheduleManager: ScheduleManager
     muteManager: MuteManager
-
-    commands: CustomCommand[]
 
     constructor(context: Context, config: Configuration) {
         super(context, config)

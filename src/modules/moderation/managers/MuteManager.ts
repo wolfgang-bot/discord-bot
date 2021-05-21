@@ -1,8 +1,10 @@
 import Discord from "discord.js"
 import Manager from "../../../lib/Manager"
+import Configuration from "../models/Configuration"
 import MuteRoleManager from "./MuteRoleManager"
 
 class MuteManager extends Manager {
+    config: Configuration
     muteRoleManager = new MuteRoleManager(this.context, this.config)
 
     async muteMember(member: Discord.GuildMember) {

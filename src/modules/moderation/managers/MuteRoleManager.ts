@@ -1,14 +1,13 @@
 import Discord from "discord.js"
 import log from "loglevel"
-import Configuration from "../../../lib/Configuration"
 import Context from "../../../lib/Context"
 import Manager from "../../../lib/Manager"
 import ModuleInstance from "../../../models/ModuleInstance"
+import Configuration from "../models/Configuration"
 import { InstanceData } from "../models/InstanceData"
 
-const MUTE_ROLE_NAME = "🔇 Muted"
-
 class MuteRoleManager extends Manager {
+    config: Configuration
     role: Discord.Role
 
     constructor(context: Context, config: Configuration) {
@@ -37,7 +36,7 @@ class MuteRoleManager extends Manager {
     async createRole() {
         this.role = await this.context.guild.roles.create({
             data: {
-                name: MUTE_ROLE_NAME
+                name: this.config.mutedRoleName
             }
         })
         const model = await ModuleInstance.findByContext(this.context)
