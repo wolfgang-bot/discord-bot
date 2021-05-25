@@ -50,7 +50,6 @@ jobs:
         uses: appleboy/ssh-action@v0.1.4
         env:
           PROD_DISCORD_BOT_HOST: wolfgang.gg
-          PROD_DISCORD_BOT_PUBLIC_PORT: "443"
           PROD_DISCORD_BOT_PROTOCOL: https
           PROD_DISCORD_BOT_PORT: "8300"
           PROD_DATABASE_HOST: host.docker.internal
@@ -62,7 +61,6 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           envs: |
             PROD_DISCORD_BOT_HOST,
-            PROD_DISCORD_BOT_PUBLIC_PORT,
             PROD_DISCORD_BOT_PROTOCOL,
             PROD_DISCORD_BOT_PORT,
             PROD_DATABASE_HOST,
@@ -81,7 +79,6 @@ jobs:
               --env DISCORD_API_CLIENT_SECRET=${{ secrets.PROD_DISCORD_API_CLIENT_SECRET }} \
               --env JWT_SECRET=${{ secrets.PROD_JWT_SECRET }} \
               --env HOST=$PROD_DISCORD_BOT_HOST \
-              --env PUBLIC_PORT=$PROD_DISCORD_BOT_PUBLIC_PORT \
               --env PROTOCOL=$PROD_DISCORD_BOT_PROTOCOL \
               --env DATABASE_HOST=$PROD_DATABASE_HOST \
               --env DATABASE_PORT=$PROD_DATABASE_PORT \

@@ -94,7 +94,9 @@ export function space(length: number) {
  * Create a URL from a path with respect to the env variables
  */
 export function makeURL(path: string) {
-    return `${process.env.PROTOCOL}://${process.env.HOST}${process.env.PUBLIC_PORT ? ":" + process.env.PUBLIC_PORT : ""}${path}`
+    const url = new URL(path, `${process.env.PROTOCOL}://${process.env.HOST}`)
+    url.port = process.env.PUBLIC_PORT
+    return url.toString()
 }
 
 /**

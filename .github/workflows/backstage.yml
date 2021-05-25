@@ -50,7 +50,6 @@ jobs:
         uses: appleboy/ssh-action@v0.1.4
         env:
           STAGE_DISCORD_BOT_HOST: backstage.wolfgang.gg
-          STAGE_DISCORD_BOT_PUBLIC_PORT: "443"
           STAGE_DISCORD_BOT_PROTOCOL: https
           STAGE_DISCORD_BOT_PORT: "8400"
           STAGE_DATABASE_HOST: host.docker.internal
@@ -62,7 +61,6 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           envs: |
             STAGE_DISCORD_BOT_HOST,
-            STAGE_DISCORD_BOT_PUBLIC_PORT,
             STAGE_DISCORD_BOT_PROTOCOL,
             STAGE_DISCORD_BOT_PORT,
             STAGE_DATABASE_HOST,
@@ -81,7 +79,6 @@ jobs:
               --env DISCORD_API_CLIENT_SECRET=${{ secrets.STAGE_DISCORD_API_CLIENT_SECRET }} \
               --env JWT_SECRET=${{ secrets.STAGE_JWT_SECRET }} \
               --env HOST=$STAGE_DISCORD_BOT_HOST \
-              --env PUBLIC_PORT=$STAGE_DISCORD_BOT_PUBLIC_PORT \
               --env PROTOCOL=$STAGE_DISCORD_BOT_PROTOCOL \
               --env DATABASE_HOST=$STAGE_DATABASE_HOST \
               --env DATABASE_PORT=$STAGE_DATABASE_PORT \
