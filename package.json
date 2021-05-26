@@ -6,6 +6,7 @@
   "scripts": {
     "start": "npx ts-node-dev src/index.ts",
     "build": "npx tsc",
+    "revert-build": "find src -name '*.js' -type f -delete",
     "reset-database": "npm run migrate && npm run audit-database",
     "migrate": "ts-node src/scripts/migrate",
     "seed": "ts-node src/scripts/seed",
